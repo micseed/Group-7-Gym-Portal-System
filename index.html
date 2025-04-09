@@ -5,42 +5,190 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Energize Gym Center</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header> 
-        <nav class="navbar">
-        <div class="navdiv">
+    <!-- Navigation Bar -->
+    <header>
+        <nav class="nav-bar">
             <div class="logo">
-                <a href="#">ENERGIZE<br><div class="sub">GYM CENTER</div></a>
-             </div>
-                <ul class="nav-links">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#plans">Plans</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-                    <button><a href="#register">Register</a></button>
-                    <button><a href="#login">Log In</a></button></div>
-                </div>
-            </nav>
-        </header>
-  
-       
-      
-    <div class="hero">
-        <img src="gym-big-pic.png" alt="Gym Hero Image">
-        <div class="hero-content">
-          <h1>Transform Your Fitness Journey. Train Smarter, Live Healthier!</h1>
-          <p>Connect with expert coaches, follow personalized plans, and book your sessions with ease.</p>
-          <a href="#" class="get-started">Get Started</a>
+                <h1>ENERGIZE</h1>
+                <h3>GYM CENTER</h3>
+            </div>
+
+            <ul class="menus">
+                <li class="items"><a href="#home">Home</a></li>
+                <li class="items"><a href="#features">Features</a></li>
+                <li class="items"><a href="#plans">Plans</a></li>
+                <li class="items"><a href="#contact">Contact</a></li>
+            </ul>
+
+            <div class="buttons">
+                <button class="log/reg"><a href="">Register</a></button>
+                <button class="log/reg"><a href="">Log In</a></button>
+            </div>
+           
+        </nav>
+    </header>
+
+    <!-- Banner Image -->
+    <div class="image-container" id="home">
+        <img src="gym-big-pic.png" class="main-pic" alt="gym banner">
+        <div class="text-overlay">
+            <h1>Transform Your</h1>
+            <h2>Fitness <span style="color: #F1D27C">Journey.</span></h2>
+            <h2><span style="color: #F1D27C">Train</span> Smarter, <span style="color: #F1D27C">Live</span></h2>
+            <h2>Healthier!</h2>
+            <br>
+            <p>Connect with expert coaches, follow personalized plans, and book your sessions with ease.</p>
+            <br>
+            <button class="getstarted"><a href="">Get Started</a></button>
         </div>
-      </div>
+    </div>
 
-      
+    <!-- Feature Section -->
+    <section class="features-cards" id="features">
+        <h1>Features Built for Your Fitness Journey</h1>
+        <p>From expert coaching to easy scheduling, discover the smart features designed to help you <br> stay on track and reach your fitness goals.</p>
+        <div class="row-feature">
+            <div class="col">
+                <img src="workout-plan.png" alt="Personalized Workout Plans">
+                <h2>Personalized Workout Plans</h2>
+                <p>Get customized workouts tailored to your goals, fitness level, and schedule.</p>
+            </div>
+    
+            <div class="col">
+                <img src="coaches.png" alt="Expert Coaches">
+                <h2>Expert Coaches</h2>
+                <p>Work with certified coaches for guidance, motivation, and accountability.</p>
+            </div>
+    
+            <div class="col">
+                <img src="calendar.png" alt="Easy Scheduling">
+                <h2>Easy Scheduling</h2>
+                <p>Book sessions and manage your availability anytime, anywhere.</p>
+            </div>
+    
+            <div class="col">
+                <img src="chart.png" alt="Progress Tracking">
+                <h2>Progress Tracking</h2>
+                <p>Monitor your achievements and stay motivated with progress insights.</p>
+            </div>
+        </div>
+    </section>
 
+
+    <!-- Pricing Plans -->
+    <section class="pricing-plans" id="plans">
+        <h1>Pricing Plans</h1>
+        <p>Choose the plan that suits your goals and start your journey to better health today.</p>
+    </section>
+    
+    <div class="semi-circle"></div>
+    
+    <section class="big-container">
+        <div class="plans-container">
+            <div class="blue-box">
+                <div class="plan">
+                    <div class="plan-header">
+                        <div class="line"></div>
+                        <h2>Starter Access</h2>
+                        <div class="small-line"></div>
+                        <p><sup>Php</sup><span class="price">499</span><sub>/mo</sub></p>
+                        <div class="small-line"></div>
+                    </div>
+                    <div class="plan-content">
+                        <p>Start strong with guided workouts and gym access at your pace.</p>
+                        <br>
+                        <ul>
+                            <li>Limited gym access (off-peak hours)</li>
+                            <li>Monthly workout plan from coach</li>
+                            <li>Progress tracking dashboard</li>
+                            <li>Group sessions access</li>
+                        </ul>
+                        <br>
+                        <br>
+                        <br>
+                        <a href="#" class="plan-button-1">Get Plan</a>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="blue-box">
+                <div class="plan">
+                    <div class="plan-header">
+                        <div class="line-2"></div>
+                        <h2>Coach Connect</h2>
+                        <div class="small-line"></div>
+                        <p><sup>Php</sup><span class="price">1,799</span><sub>/mo</sub></p>
+                        <div class="small-line"></div>
+                    </div>
+                    <div class="plan-content">
+                        <p>Your coach, your plan, your progress - stay connected every week.</p>
+                        <ul>
+                            <li>Full gym access</li>
+                            <li>Weekly personal check-ins with coach</li>
+                            <li>Customized workout</li>
+                            <li>Booking private sessions</li>
+                            <li>Progress reports</li>
+                            <li>Motivational tips</li>
+                        </ul>
+                        <br>
+                        <a href="#" class="plan-button-2">Get Plan</a>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="blue-box">
+                <div class="plan">
+                    <div class="plan-header">
+                        <div class="line-3"></div>
+                        <h2>Elite Coaching</h2>
+                        <div class="small-line"></div>
+                        <p><sup>Php</sup><span class="price">3,599</span><sub>/mo</sub></p>
+                        <div class="small-line"></div>
+                    </div>
+                    <div class="plan-content">
+                        <p>For those who want it all: unlimited access, expert coaching, and faster results.</p>
+                        <ul>
+                            <li>Unlimited gym access</li>
+                            <li>Unlimited 1-on-1 coaching</li>
+                            <li>Priority session booking</li>
+                            <li>Personalized nutrition coaching</li>
+                            <li>Monthly fitness assessment</li>
+                            <li>Exclusive online content</li>
+                        </ul>
+                        <br>
+                        <a href="#" class="plan-button-3">Get Plan</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Customer Service -->
+    <div class="contact-text"><h2>Get in Touch with Us</h2></div>
+    <section class="contact-section" id="contact">
+        <div class="contact-content">
+            <div class="contact-image">
+                <img src="girl-customer-service.png" alt="Girl customer service representative"> 
+            </div>
+            <br>
+            <div class="contact-text">
+                <p>Whether you're looking to start your fitness journey, need assistance with your membership, or want to learn more about our coaching services, our team is ready to assist you. Send us a message and we'll respond promptly!</p>
+            </div>
+        </div>
+        <div class="contact-form">
+            <form>
+                <input type="text" placeholder="Name">
+                <input type="email" placeholder="Email">
+                <textarea placeholder="Write your message here..."></textarea>
+                <button type="submit">Send Message</button>
+            </form>
+        </div>
+    </section>
+    
+    <!-- Footer -->
     <footer>
         <div class="footer-container">
         <div class="footer-section">
