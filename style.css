@@ -376,7 +376,14 @@ header {
   color: white;
   padding: 10px 20px;
   border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  justify-content: center; 
+  margin: 0 auto; 
+  width: fit-content; 
 }
+
+background-color: #E3242B; 
 
 /* Customer Service */
 .contact-text h2 {
