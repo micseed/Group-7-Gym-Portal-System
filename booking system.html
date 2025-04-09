@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Energize Gym Center</title>
+     <link rel="stylesheet" href="styles.css">
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+   <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+   <title>Booking System with Dates</title>
+   <style>
+     body {
+       font-family: Arial, sans-serif;
+       padding: 40px;
+       background-color: #f3f4f6;
+     }
+ 
+     .container {
+       max-width: 500px;
+       margin: auto;
+       background: white;
+       padding: 30px;
+       border-radius: 12px;
+       box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+     }
+ 
+     h1 {
+       text-align: center;
+       margin-bottom: 25px;
+     }
+ 
+     .date-picker {
+       margin-bottom: 20px;
+       display: flex;
+       justify-content: center;
+     }
+ 
+     input[type="date"] {
+       padding: 10px;
+       border-radius: 8px;
+       border: 1px solid #ccc;
+     }
+ 
+     .slots {
+       display: grid;
+       grid-template-columns: repeat(2, 1fr);
+       gap: 15px;
+     }
+ 
+     button {
+       padding: 10px;
+       border: none;
+       border-radius: 8px;
+       background-color: #3b82f6;
+       color: white;
+       font-weight: bold;
+       cursor: pointer;
+       transition: 0.3s;
+     }
+ 
+     button:disabled {
+       background-color: #d1d5db;
+       cursor: not-allowed;
+     }
+ 
+     .confirmation {
+       margin-top: 20px;
+       padding: 15px;
+       background-color: #d1fae5;
+       color: #065f46;
+       border-radius: 8px;
+       text-align: center;
+       font-weight: bold;
+     }
+   </style>
+ </head>
+ <body>
+     <header> 
+         <nav class="navbar">
+         <div class="navdiv">
+             <div class="logo">
+                 <a href="#">ENERGIZE<br><div class="sub">GYM CENTER</div></a>
+              </div>
+                 <ul class="nav-links">
+                     <li><a href="#home">Home</a></li>
+                     <li><a href="#features">Features</a></li>
+                     <li><a href="#plans">Plans</a></li>
+                     <li><a href="#contact">Contact</a></li>
+                 </ul>
+                     <button><a href="#register">Register</a></button>
+                     <button><a href="#login">Log In</a></button></div>
+                 </div>
+             </nav>
+         </header>
+   
+        
+       
+     <div class="hero">
+         <img src="gym-big-pic.png" alt="Gym Hero Image">
+         <div class="hero-content">
+           <h1>Transform Your Fitness Journey. Train Smarter, Live Healthier!</h1>
+           <p>Connect with expert coaches, follow personalized plans, and book your sessions with ease.</p>
+           <a href="#" class="get-started">Get Started</a>
+         </div>
+       </div>
+ 
+       
+ 
+     <footer>
+         <div class="footer-container">
+         <div class="footer-section">
+             <h3>ENERGIZE GYM CENTER</h3>
+             <p>"Empowering your fitness journey, one step at a time."</p>
+         </div>
+         <div class="footer-section">
+             <h3>Quick Links</h3>
+             <ul>
+             <li><a href="#">Home</a></li>
+             <li><a href="#">Feature</a></li>
+             <li><a href="#">Pricing Plans</a></li>
+             <li><a href="#">Contact</a></li>
+             </ul>
+         </div>
+         <div class="footer-section">
+             <h3>Contact Info</h3>
+             <p>Address</p>
+             <p>Phone</p>
+             <p>Email</p>
+         </div>
+         </div>
+         <div class="footer-bottom">
+         <p>Terms of Service</p>
+         <p>Privacy Policy</p>
+         </div>
+     </footer>
+     
+   <div class="container">
+     <h1>Booking System</h1>
+ 
+     <div class="date-picker">
+       <input type="date" id="bookingDate" />
+     </div>
+ 
+     <div class="slots" id="slots"></div>
+ 
+     <div class="confirmation" id="confirmation" style="display: none;"></div>
+   </div>
+ 
+   <script>
+     const slots = [
+       "09:00 AM", "10:00 AM", "11:00 AM",
+       "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM"
+     ];
+ 
+     const slotsContainer = document.getElementById("slots");
+     const confirmationBox = document.getElementById("confirmation");
+     const dateInput = document.getElementById("bookingDate");
+ 
+     let selectedDate = null;
+     let bookedSlots = {}; // Store booked slots per date
+ 
+     dateInput.addEventListener("change", () => {
+       selectedDate = dateInput.value;
+       renderSlots();
+       confirmationBox.style.display = "none";
+     });
+ 
+     function renderSlots() {
+       slotsContainer.innerHTML = "";
+       if (!selectedDate) return;
+ 
+       const bookedForDate = bookedSlots[selectedDate] || [];
+ 
+       slots.forEach(slot => {
+         const btn = document.createElement("button");
+         btn.textContent = slot;
+         btn.disabled = bookedForDate.includes(slot);
+ 
+         btn.addEventListener("click", () => {
+           if (!bookedSlots[selectedDate]) {
+             bookedSlots[selectedDate] = [];
+           }
+           bookedSlots[selectedDate].push(slot);
+           btn.disabled = true;
+           confirmationBox.style.display = "block";
+           confirmationBox.textContent = `You have successfully booked ${slot} on ${selectedDate}`;
+         });
+ 
+         slotsContainer.appendChild(btn);
+       });
+     }
+   </script>
+ </body>
+ </html>
+ </html>
