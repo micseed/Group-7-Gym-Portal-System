@@ -103,6 +103,8 @@
   
   .register-form h2 {
     margin-bottom: 1.5rem;
+    font-weight: 600;
+    color: #333;
     text-align: center;
   }
   
