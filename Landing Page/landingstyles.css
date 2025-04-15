@@ -234,7 +234,7 @@ header {
 }
 
 .big-container {
-  height: 600px;
+  height: 650px;
   background-color: #83c7f0;
 }
 
@@ -247,15 +247,15 @@ header {
 
 .blue-box {
   background-color: #203A93; 
-  border-radius: 20px; 
+  border-radius: 30px; 
   display: flex; 
   justify-content: center; 
   align-items: center; 
 }
 
 .plan {
-  width: 400px;
-  height: 500px;
+  width: 380px;
+  height: 580px;
   margin: 20px;
   padding: 30px;
   padding-top: 0;
@@ -269,21 +269,21 @@ header {
   width: 100%;
   background-color: #B51963;
   border-radius: 10px;
-  height: 15px;
+  height: 10px;
 }
 
 .line-2 {
   width: 100%;
   background-color: #F57600;
   border-radius: 10px;
-  height: 15px;
+  height: 10px;
 }
 
 .line-3 {
   width: 100%;
   background-color: #E3242B;
   border-radius: 10px;
-  height: 15px;
+  height: 10px;
 }
 
 .small-line {
@@ -465,6 +465,8 @@ header {
   cursor: pointer;
   width: fit-content; 
 }
+
+/* Footer */
   
 footer {
   background-color: #404141;

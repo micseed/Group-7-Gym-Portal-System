@@ -1,80 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ENERGIZE Gym Center - Login</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ENERGIZE Gym Center - Login</title>
+  <link rel="stylesheet" href="styleslogin.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="logo">
-                <h1>ENERGIZE</h1>
-                <p>GYM CENTER</p>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">Feature</a></li>
-                    <li><a href="#">Pricing Plans</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-    <div class="login-container">
-        <div class="login-quote">
-            <h2>Welcome back to ENERGIZE Gym Center!</h2>
-            <p>"Passion is the genesis of genius. Drive is the fuel that keeps it burning."</p>
-        </div>
-        <div class="login-form-wrapper">
-            <form class="login-form" id="loginForm">
-                <h2>Member Login</h2>
-                <div class="form-group">
-                    <label for="username">Username or Email:</label>
-                    <input type="text" id="username" name="username" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                <p class="error-message" id="loginError"></p>
-                <button type="submit" class="login-button">Login</button>
-                <p class="register-link">Don't have an account? <a href="register.html">Register here</a></p>
-            </form>
-        </div>
+
+  <a href="index.html" class="back-button">← Back</a>
+
+  <div class="login-container">
+    <div class="login-quote">
+      <h2>Welcome back to ENERGIZE Gym Center!</h2>
+      <p>"Passion is the genesis of genius. Drive is the fuel that keeps it burning."</p>
     </div>
-    <footer>
-        <div class="container">
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">Feature</a></li>
-                    <li><a href="#">Pricing Plans</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">Terms of Service</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
 
-                <h3>Contact Info</h3>    
-                <p>Address: Zamboanga City</p>
-                <p>Phone: +63 111 222 3333</p>
-               <p>Email: energizegym@gmail.com</p>
-                </div>
+    <div class="login-form-wrapper">
+      <form class="login-form" id="loginForm">
+        <h2>Member Login</h2>
+        <div class="form-group">
+          <label for="username">Username or Email:</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <p class="error-message" id="loginError"></p>
+        <button type="submit" class="login-button">Login</button>
+        <p class="register-link">Don't have an account? <a href="register.html">Register here</a></p>
+      </form>
+    </div>
+  </div>
 
-            <div class="footer-section tagline">
-                <p>"Empowering your fitness journey, one step at a time."</p>
-            </div>
-        </div>
-        <div class="copyright">
-            <p>&copy; 2025 ENERGIZE Gym Center. All rights reserved.</p>
-        </div>
-    </footer>
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
