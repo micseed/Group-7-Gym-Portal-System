@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Admin Dashboard</title>
+    <style>
+        /* =============== Globals ============== */
+        * {
+        font-family: "Ubuntu", sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        }
+
+        :root {
+        --blue: #203A93;
+        --white: #fff;
+        --gray: #f5f5f5;
+        --black1: #222;
+        --black2: #999;
+        }
+
+        body {
+        min-height: 100vh;
+        overflow-x: hidden;
+        }
+
+        .container {
+        position: relative;
+        width: 100%;
+        }
+
+        /* =============== Navigation ================ */
+        .navigation {
+        position: fixed;
+        width: 300px;
+        height: 100%;
+        background: var(--blue);
+        border-left: 10px solid var(--blue);
+        transition: 0.5s;
+        overflow: hidden;
+        }
+        .navigation.active {
+        width: 80px;
+        }
+
+        .navigation ul {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        }
+
+        .navigation ul li {
+        position: relative;
+        width: 100%;
+        list-style: none;
+        border-top-left-radius: 30px;
+        border-bottom-left-radius: 30px;
+        }
+
+        .navigation ul li:hover,
+        .navigation ul li.hovered {
+        background-color: var(--white);
+        }
+
+        .navigation ul li:nth-child(1) {
+        margin-bottom: 40px;
+        pointer-events: none;
+        }
+
+        .navigation ul li a {
+        position: relative;
+        display: block;
+        width: 100%;
+        display: flex;
+        text-decoration: none;
+        color: var(--white);
+        }
+        .navigation ul li:hover a,
+        .navigation ul li.hovered a {
+        color: var(--blue);
+        }
+
+        .navigation ul li a .icon {
+        position: relative;
+        display: block;
+        min-width: 60px;
+        height: 60px;
+        line-height: 75px;
+        text-align: center;
+        }
+        .navigation ul li a .icon ion-icon {
+        font-size: 1.75rem;
+        }
+
+        .navigation ul li a .title {
+        position: relative;
+        display: block;
+        padding: 0 10px;
+        height: 60px;
+        line-height: 60px;
+        text-align: start;
+        white-space: nowrap;
+        }
+
+        /* --------- curve outside ---------- */
+        .navigation ul li:hover a::before,
+        .navigation ul li.hovered a::before {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: -50px;
+        width: 50px;
+        height: 50px;
+        background-color: transparent;
+        border-radius: 50%;
+        box-shadow: 35px 35px 0 10px var(--white);
+        pointer-events: none;
+        }
+        .navigation ul li:hover a::after,
+        .navigation ul li.hovered a::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        bottom: -50px;
+        width: 50px;
+        height: 50px;
+        background-color: transparent;
+        border-radius: 50%;
+        box-shadow: 35px -35px 0 10px var(--white);
+        pointer-events: none;
+        }
+
+        /* ===================== Main ===================== */
+        .main {
+        position: absolute;
+        width: calc(100% - 300px);
+        left: 300px;
+        min-height: 100vh;
+        background: var(--white);
+        transition: 0.5s;
+        }
+        .main.active {
+        width: calc(100% - 80px);
+        left: 80px;
+        }
+
+        .topbar {
+        width: 100%;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        padding: 0 10px;
+        justify-content:space-between;
+        }
+
+        .toggle {
+        position: relative;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2.5rem;
+        cursor: pointer;
+        }
+
+        /* =============== Search Icon ================ */
+        .search-container {
+        position: relative;
+        width: 800px;
+        margin: 0 10px;
+        }
+
+        .search-container label {
+        display: flex; 
+        align-items: center; 
+        width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 15px;
+        overflow: hidden;
+        }
+
+        #search-input {
+        flex-grow: 1; 
+        padding: 10px;
+        border: none;
+        outline: none;
+        font-size: 16px;
+        box-sizing: border-box; 
+        margin-right: 5px;
+        }
+
+        .search-container label ion-icon {
+        padding-right: 10px;
+        font-size: 20px; 
+        color: #777;
+        }
+
+        #search-results {
+        position: absolute;
+        top: calc(100% + 2px); 
+        left: 0;
+        right: 0;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        margin-top: 2px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        z-index: 10;
+        display: none;
+        overflow: hidden;
+        }
+
+        #search-results ul {
+        list-style: none;
+        padding: 8px 0;
+        margin: 0;
+        }
+
+        #search-results li {
+        padding: 12px 16px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        font-size: 1.0em;
+        color: #333;
+        }
+
+        #search-results li:hover {
+        background-color: #f5f5f5;
+        color: #222;
+        }
+
+        #search-results li:active {
+        background-color: #eee;
+        }
+
+
+        #search-results li span.highlight {
+        font-weight: bold;
+        color: #007bff; 
+        }
+
+        /* =============== Mail Icon ================ */
+        .mail-container {
+        position: relative;
+        display: inline-block;
+        }
+
+        #mail-icon-inbox {
+        font-size: 25px;
+        color: #203A93;
+        cursor: pointer;
+        }
+
+        #mail-icon-inbox:hover {
+        opacity: 0.8;
+        }
+
+        #unread-notification {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background-color: red;
+        color: white;
+        font-size: 12px;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        text-align: center;
+        line-height: 18px;
+        display: none; 
+        }
+
+        #inbox-preview {
+        position: absolute;
+        top: calc(100% + 5px);
+        right: -10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        width: 250px;
+        padding: 15px;
+        display: none; 
+        z-index: 10;
+        text-align: left;
+        }
+
+        #inbox-preview strong {
+        display: block;
+        margin-bottom: 5px;
+        }
+
+        .email-item {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 3px 0; 
+        }
+
+        .email-item.sender {
+        font-weight: bold;
+        }
+
+        .email-item.subject {
+        color: #555;
+        font-size: 0.9em; 
+        }
+
+        #inbox-preview hr {
+        margin-top: 8px;
+        margin-bottom: 8px;
+        }
+
+        #inbox-preview a {
+        display: block;
+        margin-top: 10px;
+        font-size: 0.8em;
+        text-align: right;
+        color: #007bff;
+        text-decoration: none;
+        }
+
+        /* =============== Notification ================ */
+        .notification-container {
+        position: relative;
+        display: inline-block;
+        }
+
+        #notification-icon {
+        font-size: 25px;
+        color: #203A93;
+        cursor: pointer;
+        }
+
+        #notification-icon:hover {
+        opacity: 0.8;
+        }
+
+        #notification-badge {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background-color: orange;
+        color: white;
+        font-size: 12px;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        text-align: center;
+        line-height: 18px;
+        display: block; 
+        }
+
+        #notifications-dropdown {
+        position: absolute;
+        top: calc(100% + 5px);
+        right: -10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        width: 250px;
+        padding: 15px;
+        display: none;
+        z-index: 10;
+        text-align: left;
+        }
+
+        #notifications-dropdown strong {
+        display: block;
+        margin-bottom: 5px;
+        }
+
+        .notification-item {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 3px 0;
+        }
+
+        .notification-item.title {
+        font-weight: bold;
+        margin-top: 5px;
+        }
+
+        .notification-item.message {
+        color: #555;
+        font-size: 0.9em;
+        }
+
+        #notifications-dropdown hr {
+        margin-top: 8px;
+        margin-bottom: 8px;
+        }
+
+        #notifications-dropdown a {
+        display: block;
+        margin-top: 10px;
+        font-size: 0.8em;
+        text-align: right;
+        color: #007bff;
+        text-decoration: none;
+        }
+
+        /* ======================= User ====================== */
+        .user {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        overflow: hidden;
+        cursor: pointer;
+        }
+
+
+        .user img {
+        position: absolute;
+        justify-items: end;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        }
+
+        /* Settings */
+        .settings-container {
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        width: 90%;
+        max-width: 800px;
+        margin-top: 70px;
+        margin-bottom: 70px;
+        justify-self: center;
+        }
+
+        h2 {
+        color: #333;
+        margin-bottom: 30px;
+        text-align: center;
+        }
+
+        .setting-group {
+        margin-bottom: 25px;
+        padding-bottom: 25px;
+        border-bottom: 1px solid #eee;
+        }
+
+        .setting-group:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+        }
+
+        .setting-title {
+        color: #555;
+        margin-bottom: 15px;
+        font-size: 1.1em;
+        font-weight: bold;
+        }
+
+        .setting-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        }
+
+        .setting-label {
+        color: #777;
+        flex-grow: 1;
+        }
+
+        .setting-control {
+        flex-shrink: 0;
+        }
+
+        /* Input styles */
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            width: 250px;
+            color: #555;
+        }
+
+        select {
+        appearance: none;
+        background-image: url('currency.jpg');
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 16px;
+        padding-right: 30px;
+        }
+
+        input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        }
+
+        .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 28px;
+        }
+
+        .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+        }
+
+        .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+        }
+
+        .slider:before {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+        }
+
+        input:checked + .slider {
+        background-color: #007bff;
+        }
+
+        input:focus + .slider {
+        box-shadow: 0 0 1px #007bff;
+        }
+
+        input:checked + .slider:before {
+        transform: translateX(22px);
+        }
+
+        button {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+        margin-top: 20px;
+        }
+
+        button:hover {
+        background-color: #1e7e34;
+        }
+
+        /* Modal Styles */
+        .modal {
+        display: none;
+        position: fixed; 
+        z-index: 1; 
+        left: 0;
+        top: 0;
+        width: 100%; 
+        height: 100%; 
+        overflow: auto; 
+        background-color: rgba(0,0,0,0.4); 
+        }
+
+        .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto; 
+        padding: 20px;
+        border: 1px solid #888;
+        width: 30%; 
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        position: relative;
+        }
+
+        .modal-header {
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 15px;
+        }
+
+        .modal-title {
+        font-size: 1.2em;
+        color: #333;
+        font-weight: bold;
+        }
+
+        .modal-body {
+        padding: 15px 0;
+        }
+
+        .modal-footer {
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+        text-align: center;
+        }
+
+        .modal-button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+        }
+
+        .modal-button:hover {
+        background-color: #0056b3;
+        }
+
+        .close-button {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+        }
+
+        /* Modal Styles for Sign out*/
+        .modal {
+        display: none; 
+        position: fixed; 
+        z-index: 1000; 
+        left: 0;
+        top: 0;
+        width: 100%; 
+        height: 100%; 
+        overflow: auto; 
+        background-color: rgba(0,0,0,0.4); 
+        backdrop-filter: blur(5px);
+        justify-content: center;
+        align-items: center;
+        }
+
+        .modal.show {
+        display: flex; 
+        }
+
+        .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto; 
+        padding: 30px;
+        border: 1px solid #888;
+        width: 600px; 
+        max-width: 400px; 
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        position: relative;
+        }
+
+        .modal-header {
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 20px;
+        }
+
+        .modal-title {
+        font-size: 1.5em;
+        color: #333;
+        font-weight: bold;
+        }
+
+        .modal-body {
+        font-size: 1.1em;
+        color: #555;
+        margin-bottom: 20px;
+        }
+
+        .modal-footer.sign-out-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        }
+
+        .modal-button {
+        background-color: #007bff; 
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+        }
+
+        .modal-button:hover {
+        background-color: #0056b3;
+        }
+
+        .modal-button.yes-button {
+        background-color: #203A93;
+        }
+
+        .modal-button.yes-button:hover {
+        background-color: #c82333;
+        }
+
+        .modal-button.no-button {
+        background-color: #F1D27C;
+        }
+
+        .modal-button.no-button:hover {
+        background-color: #5a6268;
+        }
+
+    </style>
+</head>
+
+<body>
+    <!-- =============== Navigation ================ -->
+    <div class="container">
+        <div class="navigation">
+            <ul>
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="barbell"></ion-icon>
+                        </span>
+                        <span class="title">ENERGIZE</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="testadmin.html">
+                        <span class="icon">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="adminclients.html">
+                        <span class="icon">
+                            <ion-icon name="people-outline"></ion-icon>
+                        </span>
+                        <span class="title">Manage Clients</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="admincoaches.html">
+                        <span class="icon">
+                            <ion-icon name="people-outline"></ion-icon>
+                        </span>
+                        <span class="title">Manage Coaches</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="admincomplaint.html">
+                        <span class="icon">
+                            <ion-icon name="chatbubble-outline"></ion-icon>
+                        </span>
+                        <span class="title">Complaints</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="adminpayments.html">
+                        <span class="icon">
+                            <ion-icon name="card-outline"></ion-icon>
+                        </span>
+                        <span class="title"> Clients Payments</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="adminsettings.html">
+                        <span class="icon">
+                            <ion-icon name="settings-outline"></ion-icon>
+                        </span>
+                        <span class="title">Settings</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ========================= Main ==================== -->
+        <div class="main">
+            <div class="topbar">
+                <div class="toggle">
+                    <ion-icon name="menu-outline"></ion-icon>
+                </div>
+
+                <div class="search-container">
+                    <label>
+                      <input type="text" id="search-input" placeholder="Search what you're looking for">
+                      <ion-icon name="search-outline"></ion-icon>
+                    </label>
+                    <div id="search-results">
+                    </div>
+                  </div>
+
+                  
+                <div class="mail-container">
+                    <ion-icon name="mail" id="mail-icon-inbox"></ion-icon>
+                    <div id="unread-notification">1</div>
+                    <div id="inbox-preview">
+                    <strong>Inbox</strong>
+                    <hr>
+                    <div id="unread-messages">
+                        <div class="email-item sender">Clients</div>
+                        <div class="email-item subject">3 complaints were submitted</div>
+                        <hr>
+                    </div>
+                    <div id="read-messages">
+                        <div class="email-item sender">Coach</div>
+                        <div class="email-item subject">Can I ask?</div>
+                    </div>
+                    <a href="#">See All</a>
+                    </div>
+                </div>
+
+                <div class="notification-container">
+                    <ion-icon name="notifications" id="notification-icon"></ion-icon>
+                    <div id="notification-badge">1</div>
+                    <div id="notifications-dropdown">
+                      <strong>Notifications</strong>
+                      <hr>
+                      <div id="notification-list">
+                        <div class="notification-item title">Today, 1:00 PM</div>
+                        <div class="notification-item message">New clients added.</div>
+                        <hr>
+                        <div class="notification-item title">Sales Update</div>
+                        <div class="notification-item message">It increased by 25%</div>
+                      </div>
+                      <a href="#">See All</a>
+                    </div>
+                  </div>
+            
+                <div class="name">
+                    <p>Peter Pan</p>
+                </div>
+    
+                <div class="user">
+                    <img src="customer01.jpg" alt="">
+                </div>                
+            </div>
+
+            <!-- Settings -->
+            <div class="settings-container">
+                <h2>Admin Settings</h2>
+            
+                <div class="setting-group">
+                  <h3 class="setting-title">Account Information</h3>
+                  <div class="setting-item">
+                    <label class="setting-label" for="username">Username:</label>
+                    <input class="setting-control" type="text" id="username" value="admin123">
+                  </div>
+                  <div class="setting-item">
+                    <label class="setting-label" for="email">Email:</label>
+                    <input class="setting-control" type="email" id="email" value="admin@example.com">
+                  </div>
+                  <div class="setting-item">
+                    <label class="setting-label" for="new-password">New Password:</label>
+                    <input class="setting-control" type="password" id="new-password" placeholder="Leave blank to keep current">
+                  </div>
+                  <div class="setting-item">
+                    <label class="setting-label" for="confirm-password">Confirm New Password:</label>
+                    <input class="setting-control" type="password" id="confirm-password" placeholder="Confirm new password">
+                  </div>
+                </div>
+            
+                <div class="setting-group">
+                  <h3 class="setting-title">Gym Settings</h3>
+                  <div class="setting-item">
+                    <label class="setting-label" for="gym-name">Gym Name:</label>
+                    <input class="setting-control" type="text" id="gym-name" value="Energize Fitness">
+                  </div>
+                  <div class="setting-item">
+                    <label class="setting-label" for="currency">Currency:</label>
+                    <select class="setting-control" id="currency">
+                      <option value="PHP" selected>Philippine Peso (PHP)</option>
+                      <option value="USD">US Dollar (USD)</option>
+                      <option value="EUR">Euro (EUR)</option>
+                    </select>
+                  </div>
+                  <div class="setting-item">
+                    <label class="setting-label">Allow New Registrations:</label>
+                    <label class="toggle-switch setting-control">
+                      <input type="checkbox" id="allow-registration" checked>
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                </div>
+            
+                <div class="setting-group">
+                  <h3 class="setting-title">Notification Settings</h3>
+                  <div class="setting-item">
+                    <label class="setting-label">Email Notifications:</label>
+                    <label class="toggle-switch setting-control">
+                      <input type="checkbox" id="email-notifications">
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                  <div class="setting-item">
+                    <label class="setting-label">SMS Notifications:</label>
+                    <label class="toggle-switch setting-control">
+                      <input type="checkbox" id="sms-notifications" checked>
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                </div>
+            
+                <button id="save-button">Save Changes</button>
+                <div id="message" class="alert" style="display:none;"></div>
+
+                <div id="successModal" class="modal">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <span class="close-button" id="closeModal">&times;</span>
+                        <h2 class="modal-title">Success</h2>
+                      </div>
+                      <div class="modal-body">
+                        <p>Settings saved successfully!</p>
+                      </div>
+                      <div class="modal-footer">
+                        <button class="modal-button" id="okayButton">Okay</button>
+                      </div>
+                    </div>
+                  </div>
+              
+                  <div id="errorModal" class="modal">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <span class="close-button" id="closeErrorModal">&times;</span>
+                        <h2 class="modal-title">Error</h2>
+                      </div>
+                      <div class="modal-body">
+                        <p id="errorMessage"></p>
+                      </div>
+                      <div class="modal-footer">
+                        <button class="modal-button" id="errorOkayButton">Okay</button>
+                      </div>
+                    </div>
+                  </div>
+
+            </div>
+
+                  <div id="signOutModal" class="modal">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h2 class="modal-title">Sign Out</h2>
+                      </div>
+                      <div class="modal-body">
+                        <p>Are you sure you want to sign out?</p>
+                      </div>
+                      <div class="modal-footer sign-out-actions">
+                        <button class="modal-button no-button" id="signOutNo">No</button>
+                        <button class="modal-button yes-button" id="signOutYes">Yes</button>
+                      </div>
+                    </div>
+                  </div>
+            
+              </div>
+
+            <script>
+                let list = document.querySelectorAll(".navigation li");
+    
+                function activeLink() {
+                list.forEach((item) => {
+                    item.classList.remove("hovered");
+                });
+                this.classList.add("hovered");
+                }
+    
+                list.forEach((item) => item.addEventListener("click", activeLink));
+    
+                // Menu Toggle (remains the same)
+                let toggle = document.querySelector(".toggle");
+                let navigation = document.querySelector(".navigation");
+                let main = document.querySelector(".main");
+    
+                toggle.onclick = function () {
+                navigation.classList.toggle("active");
+                main.classList.toggle("active");
+                };
+    
+                //Search Function
+                const searchInput = document.getElementById('search-input');
+                const searchResultsDiv = document.getElementById('search-results');
+    
+                const searchData = [
+                "Total Sales",
+                "Total Clients",
+                "Settings",
+                "Total Coaches",
+                "Payments",
+                "Recent Complaints",
+                "Admin Dashboard",
+                "Updates",
+                "Database Updates",
+                "Added Admins"
+                ];
+    
+                searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const filteredResults = searchData.filter(item =>
+                    item.toLowerCase().includes(searchTerm)
+                );
+    
+                displayResults(filteredResults);
+                });
+    
+                function displayResults(results) {
+                searchResultsDiv.innerHTML = '';
+    
+                if (results.length > 0 && searchInput.value.trim() !== '') {
+                    const ul = document.createElement('ul');
+                    results.forEach(result => {
+                    const li = document.createElement('li');
+                    li.textContent = result;
+                    li.addEventListener('click', function() {
+                        searchInput.value = this.textContent;
+                        searchResultsDiv.style.display = 'none'; 
+                    });
+                    ul.appendChild(li);
+                    });
+                    searchResultsDiv.appendChild(ul);
+                    searchResultsDiv.style.display = 'block'; 
+                } else {
+                    searchResultsDiv.style.display = 'none';
+                }
+                }
+    
+                document.addEventListener('click', function(event) {
+                if (!event.target.closest('.search-container')) {
+                    searchResultsDiv.style.display = 'none';
+                }
+                });
+    
+                //Mail Function
+                const mailIconInbox = document.getElementById('mail-icon-inbox');
+                const unreadNotification = document.getElementById('unread-notification');
+                const inboxPreview = document.getElementById('inbox-preview');
+                let hasUnread = true; 
+    
+                function updateUnreadIndicator() {
+                unreadNotification.style.display = hasUnread ? 'block' : 'none';
+                }
+    
+                updateUnreadIndicator();
+    
+                mailIconInbox.addEventListener('click', function() {
+                inboxPreview.style.display = (inboxPreview.style.display === 'block' ? 'none' : 'block');
+    
+                if (hasUnread && inboxPreview.style.display === 'block') {
+                    hasUnread = false;
+                    updateUnreadIndicator();
+                ad
+                    console.log('Mail icon clicked - marking as read');
+                }
+                });
+    
+    
+                document.addEventListener('click', function(event) {
+                if (!event.target.closest('.mail-container')) {
+                    inboxPreview.style.display = 'none';
+                }
+                });
+    
+    
+                //Notification Function
+                const notificationIcon = document.getElementById('notification-icon');
+                const notificationBadge = document.getElementById('notification-badge');
+                const notificationsDropdown = document.getElementById('notifications-dropdown');
+    
+                notificationIcon.addEventListener('click', function() {
+                notificationsDropdown.style.display = (notificationsDropdown.style.display === 'block' ? 'none' : 'block');
+                
+                notificationBadge.style.display = 'none';
+                });
+    
+    
+                document.addEventListener('click', function(event) {
+                if (!event.target.closest('.notification-container')) {
+                    notificationsDropdown.style.display = 'none';
+                }
+                });
+
+                //Settings Function
+                document.addEventListener('DOMContentLoaded', function() {
+                const saveButton = document.getElementById('save-button');
+                const successModal = document.getElementById('successModal');
+                const errorModal = document.getElementById('errorModal');
+                const closeModalButton = document.getElementById('closeModal');
+                const okayButton = document.getElementById('okayButton');
+                const closeErrorModalButton = document.getElementById('closeErrorModal');
+                const errorOkayButton = document.getElementById('errorOkayButton');
+                const errorMessageDisplay = document.getElementById('errorMessage');
+                const passwordInput = document.getElementById('new-password');
+                const confirmPasswordInput = document.getElementById('confirm-password');
+
+                saveButton.addEventListener('click', function() {
+                    const username = document.getElementById('username').value;
+                    const email = document.getElementById('email').value;
+                    const newPassword = passwordInput.value;
+                    const confirmPassword = confirmPasswordInput.value;
+                    const gymName = document.getElementById('gym-name').value;
+                    const currency = document.getElementById('currency').value;
+                    const allowRegistration = document.getElementById('allow-registration').checked;
+                    const emailNotifications = document.getElementById('email-notifications').checked;
+                    const smsNotifications = document.getElementById('sms-notifications').checked;
+
+                    if (newPassword !== confirmPassword) {
+                    showErrorModal('Passwords do not match!');
+                    return;
+                    }
+
+                    const settingsData = {
+                    username: username,
+                    email: email,
+                    newPassword: newPassword,
+                    gymName: gymName,
+                    currency: currency,
+                    allowRegistration: allowRegistration,
+                    emailNotifications: emailNotifications,
+                    smsNotifications: smsNotifications
+                    };
+
+                    console.log('Settings data to be saved:', settingsData);
+
+                    showSuccessModal();
+
+                    passwordInput.value = '';
+                    confirmPasswordInput.value = '';
+                     });
+
+                    function showSuccessModal() {
+                        successModal.style.display = "block";
+                    }
+
+                    function showErrorModal(message) {
+                        errorMessageDisplay.textContent = message;
+                        errorModal.style.display = "block";
+                    }
+
+                    closeModalButton.addEventListener('click', function() {
+                        successModal.style.display = "none";
+                    });
+
+                    okayButton.addEventListener('click', function() {
+                        successModal.style.display = "none";
+                    });
+
+                    closeErrorModalButton.addEventListener('click', function() {
+                        errorModal.style.display = "none";
+                    });
+
+                    errorOkayButton.addEventListener('click', function() {
+                        errorModal.style.display = "none";
+                    });
+
+                    window.addEventListener('click', function(event) {
+                        if (event.target == successModal) {
+                        successModal.style.display = "none";
+                        }
+                        if (event.target == errorModal) {
+                        errorModal.style.display = "none";
+                        }
+                    });
+                    });
+
+                    //Sign out
+                    document.addEventListener('DOMContentLoaded', function() {
+                    const signOutLink = document.querySelector('.navigation ul li:last-child a');
+                    const signOutModal = document.getElementById('signOutModal');
+                    const signOutYesButton = document.getElementById('signOutYes');
+                    const signOutNoButton = document.getElementById('signOutNo');
+
+                    if (signOutLink) {
+                    signOutLink.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        showModal(signOutModal);
+                    });
+                    } else {
+                    console.error("Sign Out link not found!");
+                    }
+
+                    signOutYesButton.addEventListener('click', function() {
+                    window.location.href = 'index.html';
+                    });
+
+                    signOutNoButton.addEventListener('click', function() {
+                    hideModal(signOutModal);
+                    });
+
+                    window.addEventListener('click', function(event) {
+                    if (event.target == signOutModal) {
+                        hideModal(signOutModal);
+                    }
+                    });
+
+                    // Helper functions for showing and hiding the modal
+                    function showModal(modalElement) {
+                    modalElement.classList.add('show');
+                    }
+
+                    function hideModal(modalElement) {
+                    modalElement.classList.remove('show');
+                    }
+                });
+            </script>
+
+<!-- ====== ionicons ======= -->
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+
+</html>
