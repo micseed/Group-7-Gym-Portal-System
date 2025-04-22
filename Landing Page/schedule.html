@@ -1,54 +1,1091 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Class Schedule & Booking - ENERGIZE Gym Center</title>
-    <link rel="stylesheet" href="schedule.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Client Dashboard</title>
+    <!-- ======= Styles ====== -->
+    <style>
+        /* =============== Globals ============== */
+* {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --blue: #203A93;
+  --white: #fff;
+  --gray: #f5f5f5;
+  --black1: #222;
+  --black2: #999;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.container {
+  position: relative;
+  width: 100%;
+}
+
+/* =============== Navigation ================ */
+.navigation {
+  position: fixed;
+  width: 300px;
+  height: 100%;
+  background: var(--blue);
+  border-left: 10px solid var(--blue);
+  transition: 0.5s;
+  overflow: hidden;
+}
+.navigation.active {
+  width: 80px;
+}
+
+.navigation ul {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.navigation ul li {
+  position: relative;
+  width: 100%;
+  list-style: none;
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
+}
+
+.navigation ul li:hover,
+.navigation ul li.hovered {
+  background-color: var(--white);
+}
+
+.navigation ul li:nth-child(1) {
+  margin-bottom: 40px;
+  pointer-events: none;
+}
+
+.navigation ul li a {
+  position: relative;
+  display: block;
+  width: 100%;
+  display: flex;
+  text-decoration: none;
+  color: var(--white);
+}
+.navigation ul li:hover a,
+.navigation ul li.hovered a {
+  color: var(--blue);
+}
+
+.navigation ul li a .icon {
+  position: relative;
+  display: block;
+  min-width: 60px;
+  height: 60px;
+  line-height: 75px;
+  text-align: center;
+}
+.navigation ul li a .icon ion-icon {
+  font-size: 1.75rem;
+}
+
+.navigation ul li a .title {
+  position: relative;
+  display: block;
+  padding: 0 10px;
+  height: 60px;
+  line-height: 60px;
+  text-align: start;
+  white-space: nowrap;
+}
+
+/* --------- Curve Outside ---------- */
+.navigation ul li:hover a::before,
+.navigation ul li.hovered a::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: -50px;
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  border-radius: 50%;
+  box-shadow: 35px 35px 0 10px var(--white);
+  pointer-events: none;
+}
+
+.navigation ul li:hover a::after,
+.navigation ul li.hovered a::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -50px;
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  border-radius: 50%;
+  box-shadow: 35px -35px 0 10px var(--white);
+  pointer-events: none;
+}
+
+/* ===================== Main ===================== */
+.main {
+  position: absolute;
+  width: calc(100% - 300px);
+  left: 300px;
+  min-height: 100vh;
+  background: var(--white);
+  transition: 0.5s;
+}
+.main.active {
+  width: calc(100% - 80px);
+  left: 80px;
+}
+
+.topbar {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  justify-content:space-between;
+}
+
+.toggle {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
+  cursor: pointer;
+}
+
+.search {
+  position: relative;
+  width: 800px;
+  margin: 0 10px;
+}
+
+.search label {
+  position: relative;
+  width: 100%;
+}
+
+.search label input {
+  width: 100%;
+  height: 40px;
+  border-radius: 40px;
+  padding: 5px 20px;
+  padding-left: 35px;
+  font-size: 18px;
+  outline: none;
+  border: 1px solid var(--black2);
+}
+
+.search label ion-icon {
+  position: absolute;
+  top: 0;
+  left: 10px;
+  font-size: 1.2rem;
+}
+
+.user {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+
+.user img {
+  position: absolute;
+  justify-items: end;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* =============== Search ============== */
+.search-container {
+  position: relative;
+  width: 800px;
+  margin: 0 10px;
+}
+
+.search-container label {
+  display: flex;
+align-items: center; 
+width: 100%;
+border: 1px solid #ccc;
+border-radius: 15px;
+overflow: hidden; 
+}
+
+#search-input {
+  flex-grow: 1; 
+padding: 10px;
+border: none;
+outline: none;
+font-size: 16px;
+box-sizing: border-box; 
+margin-right: 5px; 
+}
+
+.search-container label ion-icon {
+  padding-right: 10px;
+  font-size: 20px; 
+  color: #777;
+}
+
+#search-results {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-top: 2px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  display: none;
+  overflow: hidden; 
+}
+
+#search-results ul {
+  list-style: none;
+  padding: 8px 0;
+  margin: 0;
+}
+
+#search-results li {
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 1.0em;
+  color: #333;
+}
+
+#search-results li:hover {
+  background-color: #f5f5f5;
+  color: #222;
+}
+
+#search-results li:active {
+  background-color: #eee;
+}
+
+
+#search-results li span.highlight {
+  font-weight: bold;
+  color: #007bff; 
+}
+
+/* =============== Mail Icon ============== */
+.mail-container {
+  position: relative;
+  display: inline-block;
+}
+
+#mail-icon-inbox {
+  font-size: 25px;
+  color: #203A93;
+  cursor: pointer;
+}
+
+#mail-icon-inbox:hover {
+  opacity: 0.8;
+}
+
+#unread-notification {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: red;
+  color: white;
+  font-size: 12px;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  text-align: center;
+  line-height: 18px;
+  display: none; 
+}
+
+#inbox-preview {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: -10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 250px;
+  padding: 15px;
+  display: none;
+  z-index: 10;
+  text-align: left;
+}
+
+#inbox-preview strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.email-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 3px 0; 
+}
+
+.email-item.sender {
+  font-weight: bold;
+}
+
+.email-item.subject {
+  color: #555;
+  font-size: 0.9em; 
+}
+
+#inbox-preview hr {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+#inbox-preview a {
+  display: block;
+  margin-top: 10px;
+  font-size: 0.8em;
+  text-align: right;
+  color: #007bff;
+  text-decoration: none;
+}
+
+/* =============== Notification Icon ============== */
+.notification-container {
+  position: relative;
+  display: inline-block;
+}
+
+#notification-icon {
+  font-size: 25px;
+  color: #203A93;
+  cursor: pointer;
+}
+
+#notification-icon:hover {
+  opacity: 0.8;
+}
+
+#notification-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: orange;
+  color: white;
+  font-size: 12px;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  text-align: center;
+  line-height: 18px;
+  display: block; 
+}
+
+#notifications-dropdown {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: -10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 250px;
+  padding: 15px;
+  display: none;
+  z-index: 10;
+  text-align: left;
+}
+
+#notifications-dropdown strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.notification-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 3px 0;
+}
+
+.notification-item.title {
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.notification-item.message {
+  color: #555;
+  font-size: 0.9em;
+}
+
+#notifications-dropdown hr {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+#notifications-dropdown a {
+  display: block;
+  margin-top: 10px;
+  font-size: 0.8em;
+  text-align: right;
+  color: #007bff;
+  text-decoration: none;
+}
+
+/* ======================= Cards ====================== */
+.greetings {
+  padding: 0 30px;
+  margin-top: 2%;
+
+}
+
+.welcome h1 {
+  color: #484848;
+  font-weight: 200;
+  font-size: 2.5rem;
+}
+
+.cardBox {
+  position: relative;
+  width: 100%;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 30px;
+}
+
+.cardBox .card {
+  position: relative;
+  background: var(--white);
+  padding: 30px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
+}
+
+.cardBox .card .numbers {
+  position: relative;
+  font-weight: 500;
+  font-size: 2.5rem;
+  color: var(--blue);
+}
+
+.cardBox .card .cardName {
+  color: var(--black2);
+  font-size: 1.1rem;
+  margin-top: 5px;
+}
+
+.cardBox .card .iconBx {
+  font-size: 3.5rem;
+  color: var(--black2);
+}
+
+.cardBox .card:hover {
+  background: var(--blue);
+}
+.cardBox .card:hover .numbers,
+.cardBox .card:hover .cardName,
+.cardBox .card:hover .iconBx {
+  color: var(--white);
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    width: 95%;
+    justify-self: center;
+    margin-bottom: 5%;
+}
+
+.widget {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.widget h3 {
+    color: #203a93;
+    font-size: 1.5em;
+    margin-bottom: 15px;
+}
+
+.workout-plan-section p {
+    color: #484848;
+    margin-bottom: 10px;
+}
+
+.workout-plan-section strong {
+    font-weight: bold;
+}
+
+.workout-plan-section .button {
+    margin-top: 15px;
+}
+
+.next-session-section p {
+    color: #484848;
+    margin-bottom: 10px;
+}
+
+.next-session-section strong {
+    font-weight: bold;
+}
+
+.book-session-section p {
+    color: #484848;
+    margin-bottom: 15px;
+}
+
+.goals-section .goals-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.goals-section .goals-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    color: #484848;
+}
+
+.goals-section .goal-icon {
+    font-size: 1em;
+    color: #203a93;
+}
+
+.button {
+    background-color: #F1D27C;
+    color: #404141;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #e0c36b;
+}
+
+.button.primary {
+    background-color: #203a93;
+    color: #fff;
+}
+
+.button.primary:hover {
+    background-color: #18267a;
+}
+
+.schedule-page {
+    padding-top: 0;
+    padding-bottom: 40px;
+}
+
+.schedule-filter {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.schedule-filter h2 {
+    color: #203a93;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+.filter-controls {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.filter-controls label {
+    font-weight: 500;
+    color: #484848;
+}
+
+.filter-controls select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+    color: #484848;
+}
+
+.class-list {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.class-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.class-list li {
+    border-bottom: 1px solid #eee;
+    padding: 15px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.class-list li:last-child {
+    border-bottom: none;
+}
+
+.class-info {
+    flex-grow: 1;
+}
+
+.class-name {
+    font-weight: 600;
+    color: #203a93;
+    margin-bottom: 5px;
+}
+
+.class-details {
+    color: #484848;
+    font-size: 0.9em;
+}
+
+.book-button {
+    background-color: #203a93;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.book-button:hover {
+    background-color: #18267a;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    margin-top: 20%;
+    margin-left: 20%;
+    background-color: #fefefe;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 10px;
+    position: relative;
+    text-align: center;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+.close-button {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-content h3 {
+    color: #203a93;
+    margin-bottom: 15px;
+}
+
+.modal-content p {
+    color: #484848;
+    margin-bottom: 10px;
+}
+
+.modal-content strong {
+    font-weight: 600;
+}
+
+.modal-content .button {
+    margin-top: 20px;
+    background-color: #203a93;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.modal-content .button:hover {
+    background-color: #18267a;
+}
+
+.modal-content .message {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.modal-content .message.success {
+    color: green;
+}
+
+.modal-content .message.error {
+    color: red;
+}
+
+@media (max-width: 768px) {
+    .filter-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-controls label,
+    .filter-controls select {
+        margin-bottom: 10px;
+    }
+
+    .class-list li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .book-button {
+        width: 100%;
+    }
+
+    .modal-content {
+        width: 90%;
+        max-width: 450px;
+        margin-top: 30vh;
+    }
+
+    .sidebar {
+        width: 250px;
+        transform: translateX(-300px);
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        z-index: 10;
+        overflow-y: auto;
+    }
+
+    .sidebar.expanded {
+        transform: translateX(0);
+    }
+
+    .sidebar-toggle {
+        display: block;
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 1.5em;
+        padding: 10px;
+        cursor: pointer;
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        z-index: 15;
+    }
+
+    .sidebar-toggle i.fa-bars {
+        color: #182c70;
+    }
+
+    .sidebar-toggle i.fa-bars:hover {
+        color: #101f50;
+    }
+
+    .main-content {
+        padding-left: 15px;
+    }
+}
+
+/* Modal Styles for Sign out*/
+.modal {
+        display: none; 
+        position: fixed; 
+        z-index: 1000; 
+        left: 0;
+        top: 0;
+        width: 100%; 
+        height: 100%; 
+        overflow: auto; 
+        background-color: rgba(0,0,0,0.4); 
+        backdrop-filter: blur(5px);
+        justify-content: center;
+        align-items: center;
+        }
+
+        .modal.show {
+        display: flex; 
+        }
+
+        .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto; 
+        padding: 30px;
+        border: 1px solid #888;
+        width: 600px; 
+        max-width: 400px; 
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        position: relative;
+        }
+
+        .modal-header {
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 20px;
+        }
+
+        .modal-title {
+        font-size: 1.5em;
+        color: #333;
+        font-weight: bold;
+        }
+
+        .modal-body {
+        font-size: 1.1em;
+        color: #555;
+        margin-bottom: 20px;
+        }
+
+        .modal-footer.sign-out-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        }
+
+        .modal-button {
+        background-color: #007bff; 
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+        }
+
+        .modal-button:hover {
+        background-color: #0056b3;
+        }
+
+        .modal-button.yes-button {
+        background-color: #203A93;
+        }
+
+        .modal-button.yes-button:hover {
+        background-color: #c82333;
+        }
+
+        .modal-button.no-button {
+        background-color: #F1D27C;
+        }
+
+        .modal-button.no-button:hover {
+        background-color: #5a6268;
+        }
+
+    </style>
 </head>
+
 <body>
-    <button class="sidebar-toggle">
-        <i class="fas fa-bars"></i>
-    </button>
-    <div class="user-interface">
-        <nav class="sidebar">
-            <h1 class="brand-name">ENERGIZE</h1>
-            <p class="brand-subtitle">GYM CENTER</p>
-            <a href="client.html" class="nav-item">
-                <i class="fas fa-home nav-icon"></i>
-                <span>Home</span>
-            </a>
-            <a href="profile.html" class="nav-item">
-                <i class="fas fa-user nav-icon"></i>
-                <span>Profile</span>
-            </a>
-            <a href="schedule.html" class="nav-item">
-                <i class="fas fa-list-alt nav-icon"></i>
-                <span>Sessions</span>
-            </a>
-                        <a href="payment.html" class="nav-item">
-                <i class="fas fa-cash-register nav-icon"></i>
-                <span>Payment</span>
-            </a>
-            <a href="settings.html" class="nav-item">
-                <i class="fas fa-cog nav-icon"></i>
-                <span>Settings</span>
-            </a>
-        </nav>
-        <main class="main-content">
-            <header class="header">
-                <div class="search-bar">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" placeholder="Search what you're looking for" aria-label="Search">
+    <!-- =============== Navigation ================ -->
+    <div class="container">
+        <div class="navigation">
+            <ul>
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="barbell"></ion-icon>
+                        </span>
+                        <span class="title">ENERGIZE</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="testclient.html">
+                        <span class="icon">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="profile.html">
+                        <span class="icon">
+                            <ion-icon name="person-circle-outline"></ion-icon>
+                        </span>
+                        <span class="title">Profile</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="schedule.html">
+                        <span class="icon">
+                            <ion-icon name="calendar-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sessions</span>
+                    </a>
+                </li>
+
+                <li>
+                  <a href="payment.html">
+                      <span class="icon">
+                          <ion-icon name="card-outline"></ion-icon>
+                      </span>
+                      <span class="title">Payments</span>
+                  </a>
+              </li>
+
+              <li>
+                  <a href="settings.html">
+                      <span class="icon">
+                          <ion-icon name="settings-outline"></ion-icon>
+                      </span>
+                      <span class="title">Settings</span>
+                  </a>
+              </li>
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ========================= Main ==================== -->
+        <div class="main">
+            <div class="topbar">
+                <div class="toggle">
+                    <ion-icon name="menu-outline"></ion-icon>
                 </div>
 
-                <div class="user-info">
-                    <a href="profile.html">
-                        <div class="user-avatar">M</div>
-                    </a>
-            </header>
+                <div class="search-container">
+                    <label>
+                      <input type="text" id="search-input" placeholder="Search what you're looking for">
+                      <ion-icon name="search-outline"></ion-icon>
+                    </label>
+                    <div id="search-results">
+                    </div>
+                  </div>
+
+                  
+                  <div class="mail-container">
+                    <ion-icon name="mail" id="mail-icon-inbox"></ion-icon>
+                    <div id="unread-notification">1</div>
+                    <div id="inbox-preview">
+                    <strong>Inbox</strong>
+                    <hr>
+                    <div id="unread-messages">
+                        <div class="email-item sender">Coaches</div>
+                        <div class="email-item subject">Session today!</div>
+                        <hr>
+                    </div>
+                    <div id="read-messages">
+                        <div class="email-item sender">Coach</div>
+                        <div class="email-item subject">Can I ask?</div>
+                    </div>
+                    <a href="#">See All</a>
+                    </div>
+                </div>
+
+                <div class="notification-container">
+                    <ion-icon name="notifications" id="notification-icon"></ion-icon>
+                    <div id="notification-badge">1</div>
+                    <div id="notifications-dropdown">
+                      <strong>Notifications</strong>
+                      <hr>
+                      <div id="notification-list">
+                        <div class="notification-item title">Today, 1:00 PM</div>
+                        <div class="notification-item message">Your schedule is today.</div>
+                        <hr>
+                        <div class="notification-item title">Coach John Cena</div>
+                        <div class="notification-item message">Cancelled the session</div>
+                      </div>
+                      <a href="#">See All</a>
+                    </div>
+                  </div>
+            
+                <div class="name">
+                    <p>Esnyr Slayalili</p>
+                </div>
+    
+                <div class="user">
+                    <img src="esnyr.jpg" alt="">
+                </div>                
+            </div>
+
             <div class="schedule-page">
                 <section class="schedule-filter">
                     <h2>Available Sessions</h2>
@@ -92,8 +1129,319 @@
                     </div>
                 </div>
             </div>
+
+            <div id="signOutModal" class="modal">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h2 class="modal-title">Sign Out</h2>
+                </div>
+                <div class="modal-body">
+                  <p>Are you sure you want to sign out?</p>
+                </div>
+                <div class="modal-footer sign-out-actions">
+                  <button class="modal-button no-button" id="signOutNo">No</button>
+                  <button class="modal-button yes-button" id="signOutYes">Yes</button>
+                </div>
+              </div>
+            </div>
         </main>
     </div>
+    <script>
+         let list = document.querySelectorAll(".navigation li");
+
+function activeLink() {
+  list.forEach((item) => {
+    item.classList.remove("hovered");
+  });
+  this.classList.add("hovered");
+}
+
+list.forEach((item) => item.addEventListener("click", activeLink));
+
+// Menu Toggle (remains the same)
+let toggle = document.querySelector(".toggle");
+let navigation = document.querySelector(".navigation");
+let main = document.querySelector(".main");
+
+toggle.onclick = function () {
+  navigation.classList.toggle("active");
+  main.classList.toggle("active");
+};
+
+//Search Function
+const searchInput = document.getElementById('search-input');
+const searchResultsDiv = document.getElementById('search-results');
+
+const searchData = [
+  "How to diet",
+  "Paano makapasa sa webdev",
+  "Effective workout plan",
+  "Effective sleep",
+  "Gulay effective diet",
+  "Recent Sessions",
+  "Overall well being",
+  "Updates",
+  "Coaches",
+  "Plans"
+];
+
+searchInput.addEventListener('input', function() {
+  const searchTerm = this.value.toLowerCase();
+  const filteredResults = searchData.filter(item =>
+    item.toLowerCase().includes(searchTerm)
+  );
+
+  displayResults(filteredResults);
+});
+
+function displayResults(results) {
+  searchResultsDiv.innerHTML = '';
+
+  if (results.length > 0 && searchInput.value.trim() !== '') {
+    const ul = document.createElement('ul');
+    results.forEach(result => {
+      const li = document.createElement('li');
+      li.textContent = result;
+      li.addEventListener('click', function() {
+        searchInput.value = this.textContent;
+        searchResultsDiv.style.display = 'none'; 
+      });
+      ul.appendChild(li);
+    });
+    searchResultsDiv.appendChild(ul);
+    searchResultsDiv.style.display = 'block'; 
+  } else {
+    searchResultsDiv.style.display = 'none';
+  }
+}
+
+document.addEventListener('click', function(event) {
+  if (!event.target.closest('.search-container')) {
+    searchResultsDiv.style.display = 'none';
+  }
+});
+
+//Mail Function
+const mailIconInbox = document.getElementById('mail-icon-inbox');
+const unreadNotification = document.getElementById('unread-notification');
+const inboxPreview = document.getElementById('inbox-preview');
+let hasUnread = true; 
+
+function updateUnreadIndicator() {
+  unreadNotification.style.display = hasUnread ? 'block' : 'none';
+}
+
+updateUnreadIndicator();
+
+mailIconInbox.addEventListener('click', function() {
+  inboxPreview.style.display = (inboxPreview.style.display === 'block' ? 'none' : 'block');
+
+  if (hasUnread && inboxPreview.style.display === 'block') {
+    hasUnread = false;
+    updateUnreadIndicator();
+ad
+    console.log('Mail icon clicked - marking as read');
+  }
+});
+
+
+document.addEventListener('click', function(event) {
+  if (!event.target.closest('.mail-container')) {
+    inboxPreview.style.display = 'none';
+  }
+});
+
+
+//Notification Function
+const notificationIcon = document.getElementById('notification-icon');
+const notificationBadge = document.getElementById('notification-badge');
+const notificationsDropdown = document.getElementById('notifications-dropdown');
+
+notificationIcon.addEventListener('click', function() {
+  notificationsDropdown.style.display = (notificationsDropdown.style.display === 'block' ? 'none' : 'block');
+  
+  notificationBadge.style.display = 'none';
+});
+
+
+document.addEventListener('click', function(event) {
+  if (!event.target.closest('.notification-container')) {
+    notificationsDropdown.style.display = 'none';
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const classesData = [
+        { id: 1, name: "Yoga", day: "Monday", time: "9:00 AM", instructor: "Jane Doe", availableSlots: 10 },
+        { id: 2, name: "Zumba", day: "Monday", time: "6:00 PM", instructor: "Carlos Garcia", availableSlots: 15 },
+        { id: 3, name: "Strength Training", day: "Tuesday", time: "7:00 AM", instructor: "Mike Smith", availableSlots: 8 },
+        { id: 4, name: "Cardio Blast", day: "Tuesday", time: "5:00 PM", instructor: "Sarah Lee", availableSlots: 20 },
+        { id: 5, name: "Pilates", day: "Wednesday", time: "10:00 AM", instructor: "Jane Doe", availableSlots: 12 },
+        { id: 6, name: "Zumba", day: "Wednesday", time: "7:00 PM", instructor: "Carlos Garcia", availableSlots: 18 },
+        { id: 7, name: "Yoga", day: "Thursday", time: "6:00 PM", instructor: "Jane Doe", availableSlots: 9 },
+        { id: 8, name: "Strength Training", day: "Friday", time: "8:00 AM", instructor: "Mike Smith", availableSlots: 11 },
+        { id: 9, name: "Cardio Blast", day: "Saturday", time: "9:30 AM", instructor: "Sarah Lee", availableSlots: 25 },
+        { id: 10, name: "Pilates", day: "Sunday", time: "11:00 AM", instructor: "Jane Doe", availableSlots: 14 },
+        { id: 11, name: "Web Development 1", day: "Tuesday", time: "11:00 AM", instructor: "Sir Rham", availableSlots: 14 },
+
+    ];
+
+    const sidebar = document.querySelector('.sidebar');
+    const sidebarToggle = document.querySelector('.sidebar-toggle');
+    const classesListElement = document.getElementById('classes');
+    const filterDaySelect = document.getElementById('filter-day');
+    const filterClassSelect = document.getElementById('filter-class');
+    const bookingModal = document.getElementById('booking-modal');
+    const closeModalButton = bookingModal.querySelector('.close-button');
+    const modalClassName = document.getElementById('modal-class-name');
+    const modalClassDay = document.getElementById('modal-class-day');
+    const modalClassTime = document.getElementById('modal-class-time');
+    const confirmBookingButton = document.getElementById('confirm-booking-button');
+    const bookingMessage = document.getElementById('booking-message');
+
+    let selectedClassId = null;
+
+    if (bookingModal) {
+        bookingModal.style.display = 'none';
+    }
+
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('expanded');
+        });
+    }
+
+    function displayClasses(classes) {
+        classesListElement.innerHTML = '';
+        if (classes.length === 0) {
+            classesListElement.innerHTML = '<p>No classes found matching your criteria.</p>';
+            return;
+        }
+        classes.forEach(cls => {
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `
+                <div class="class-info">
+                    <h3>${cls.name}</h3>
+                    <p>${cls.day} - ${cls.time} (${cls.instructor})</p>
+                    <p>Available Slots: ${cls.availableSlots}</p>
+                </div>
+                <button class="book-button" data-class-id="${cls.id}">Book Now</button>
+            `;
+            classesListElement.appendChild(listItem);
+        });
+
+        const bookButtons = classesListElement.querySelectorAll('.book-button');
+        bookButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                selectedClassId = parseInt(this.dataset.classId);
+                const selectedClass = classesData.find(cls => cls.id === selectedClassId);
+                if (selectedClass) {
+                    modalClassName.textContent = selectedClass.name;
+                    modalClassDay.textContent = selectedClass.day;
+                    modalClassTime.textContent = selectedClass.time;
+                    bookingMessage.textContent = '';
+                    bookingModal.style.display = "block";
+                }
+            });
+        });
+    }
+
+    function filterClasses() {
+        const selectedDay = filterDaySelect.value;
+        const selectedClassType = filterClassSelect.value;
+
+        const filteredClasses = classesData.filter(cls => {
+            const dayMatch = !selectedDay || cls.day === selectedDay;
+            const classMatch = !selectedClassType || cls.name === selectedClassType;
+            return dayMatch && classMatch;
+        });
+
+        displayClasses(filteredClasses);
+    }
+
+    filterDaySelect.addEventListener('change', filterClasses);
+    filterClassSelect.addEventListener('change', filterClasses);
+
+    closeModalButton.addEventListener('click', function() {
+        bookingModal.style.display = "none";
+    });
+
+    window.addEventListener('click', function(event) {
+        if (event.target === bookingModal) {
+            bookingModal.style.display = "none";
+        }
+    });
+
+    confirmBookingButton.addEventListener('click', function() {
+        if (selectedClassId) {
+            const bookedClass = classesData.find(cls => cls.id === selectedClassId);
+            if (bookedClass && bookedClass.availableSlots > 0) {
+                bookedClass.availableSlots--;
+                bookingMessage.textContent = `You have successfully booked ${bookedClass.name} on ${bookedClass.day} at ${bookedClass.time}.`;
+                bookingMessage.className = 'message success';
+                displayClasses(classesData);
+            } else {
+                bookingMessage.textContent = "Sorry, this class is full or no longer available.";
+                bookingMessage.className = 'message error';
+            }
+            selectedClassId = null;
+            setTimeout(() => {
+                bookingModal.style.display = "none";
+            }, 2000);
+        } else {
+            bookingMessage.textContent = "Please select a class to book.";
+            bookingMessage.className = 'message error';
+        }
+    });
+
+    displayClasses(classesData);
+});
+
+//Sign out
+document.addEventListener('DOMContentLoaded', function() {
+                    const signOutLink = document.querySelector('.navigation ul li:last-child a');
+                    const signOutModal = document.getElementById('signOutModal');
+                    const signOutYesButton = document.getElementById('signOutYes');
+                    const signOutNoButton = document.getElementById('signOutNo');
+
+                    if (signOutLink) {
+                    signOutLink.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        showModal(signOutModal);
+                    });
+                    } else {
+                    console.error("Sign Out link not found!");
+                    }
+
+                    signOutYesButton.addEventListener('click', function() {
+                    window.location.href = 'index.html';
+                    });
+
+                    signOutNoButton.addEventListener('click', function() {
+                    hideModal(signOutModal);
+                    });
+
+                    window.addEventListener('click', function(event) {
+                    if (event.target == signOutModal) {
+                        hideModal(signOutModal);
+                    }
+                    });
+
+                    // Helper functions for showing and hiding the modal
+                    function showModal(modalElement) {
+                    modalElement.classList.add('show');
+                    }
+
+                    function hideModal(modalElement) {
+                    modalElement.classList.remove('show');
+                    }
+                });
+
+    </script>
     <script src="schedule.js"></script>
-</body>
-</html>
+            <!-- ====== ionicons ======= -->
+            <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+            <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+            </body>
+            
+            </html>

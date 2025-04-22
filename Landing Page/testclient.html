@@ -521,162 +521,100 @@ margin-right: 5px;
   color: var(--white);
 }
 
-.settings-container {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 30px;
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    width: 95%;
+    justify-self: center;
+    margin-bottom: 5%;
+}
+
+.widget {
     background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.settings-header {
-    text-align: center;
-    padding-bottom: 20px;
-    margin-bottom: 30px;
-    border-bottom: 1px solid #eee;
-}
-
-.settings-header h1 {
-    color: #203a93;
-    font-size: 2em;
-    margin-bottom: 5px;
-}
-
-.settings-header p {
-    color: #777;
-    font-size: 0.9em;
-}
-
-.settings-section {
-    margin-bottom: 25px;
+    border-radius: 10px;
     padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    background-color: #f9f9f9;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.settings-section h2 {
-    color: #444;
+.widget h3 {
+    color: #203a93;
     font-size: 1.5em;
-    margin-top: 0;
     margin-bottom: 15px;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
 }
 
-.setting-item {
+.workout-plan-section p {
+    color: #484848;
+    margin-bottom: 10px;
+}
+
+.workout-plan-section strong {
+    font-weight: bold;
+}
+
+.workout-plan-section .button {
+    margin-top: 15px;
+}
+
+.next-session-section p {
+    color: #484848;
+    margin-bottom: 10px;
+}
+
+.next-session-section strong {
+    font-weight: bold;
+}
+
+.book-session-section p {
+    color: #484848;
+    margin-bottom: 15px;
+}
+
+.goals-section .goals-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.goals-section .goals-list li {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
+    gap: 10px;
+    margin-bottom: 10px;
+    color: #484848;
 }
 
-.setting-item label {
-    width: 150px;
-    font-weight: bold;
-    color: #555;
-    margin-right: 15px;
-}
-
-.setting-item input[type="email"],
-.setting-item input[type="text"],
-.setting-item select {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+.goals-section .goal-icon {
     font-size: 1em;
-    color: #666;
-    flex-grow: 1;
+    color: #203a93;
 }
 
-.setting-item input[type="email"]:disabled,
-.setting-item input[type="text"]:disabled {
-    background-color: #eee;
-    color: #777;
-    cursor: not-allowed;
-}
-
-.settings-actions button {
-    background-color: #203a93;
-    color: white;
+.button {
+    background-color: #F1D27C;
+    color: #404141;
     padding: 10px 15px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 1em;
-    margin-right: 10px;
-
+    transition: background-color 0.3s ease;
 }
 
-.settings-actions button:hover {
+.button:hover {
+    background-color: #e0c36b;
+}
+
+.button.primary {
+    background-color: #203a93;
+    color: #fff;
+}
+
+.button.primary:hover {
     background-color: #18267a;
 }
 
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 40px;
-    height: 20px;
-}
-
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.slider {
-    position: absolute;
-    cursor: pointer;
-    width: 40px;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-    border-radius: 20px;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 16px;
-    width: 16px;
-    left: 2px;
-    bottom: 2px;
-    background-color: white;
-    transition: .4s;
-    border-radius: 50%;
-}
-
-input:checked + .slider {
-    background-color: #203a93;
-}
-
-input:focus + .slider {
-    box-shadow: 0 0 1px #203a93;
-}
-
-input:checked + .slider:before {
-    transform: translateX(20px);
-}
-
-.settings-footer {
-    text-align: center;
-    margin-top: 40px;
-    padding: 20px 0;
-    border-top: 1px solid #eee;
-    color: #777;
-    font-size: 0.8em;
-}
-
-.settings-footer p {
-    margin: 5px 0;
-}
-
- /* Modal Styles for Sign out*/
- .modal {
+/* Modal Styles for Sign out*/
+.modal {
         display: none; 
         position: fixed; 
         z-index: 1000; 
@@ -761,7 +699,6 @@ input:checked + .slider:before {
         .modal-button.no-button:hover {
         background-color: #5a6268;
         }
-
     </style>
 </head>
 
@@ -897,254 +834,235 @@ input:checked + .slider:before {
                 </div>                
             </div>
 
-            <div class="settings-container">
-                <header class="settings-header">
-                    <h1>Settings</h1>
-                    <p>Customize your account and preferences.</p>
-                </header>
-        
-                <section class="settings-section">
-                    <h2>Account</h2>
-                    <div class="setting-item">
-                        <label for="email">Email:</label>
-                        <input type="email" id="email" value="micahsedigo@energize.com" disabled>
-                    </div>
-                    <div class="setting-item">
-                        <label for="username">Username:</label>
-                        <input type="text" id="username" value="micahsedigo" disabled>
-                    </div>
-                    <div class="setting-item">
-                        <label for="change-password">Change Password:</label>
-                        <button class="settings-actions button">Change Password</button>
-                    </div>
-                </section>
-        
-                <section class="settings-section">
-                    <h2>Notifications</h2>
-                    <div class="setting-item">
-                        <label class="switch">
-                            <input type="checkbox" id="email-notifications" checked>
-                            <span class="slider round"></span>
-                        </label>
-                        <span>Email Notifications</span>
-                    </div>
-                    <div class="setting-item">
-                        <label class="switch">
-                            <input type="checkbox" id="push-notifications">
-                            <span class="slider round"></span>
-                        </label>
-                        <span>Push Notifications</span>
-                    </div>
-                </section>
-        
-                <section class="settings-section">
-                    <h2>Preferences</h2>
-                    <div class="setting-item">
-                        <label for="language">Language:</label>
-                        <select id="language">
-                            <option value="en">English</option>
-                            <option value="es">Spanish</option>
-                            <option value="fr">French</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label for="theme">Theme:</label>
-                        <select id="theme">
-                            <option value="light">Light</option>
-                            <option value="dark">Dark</option>
-                        </select>
-                    </div>
-                </section>
-        
-                <div class="settings-actions">
-                    <button class="button primary save-settings-button">Save Changes</button>
-                    
-                <footer class="settings-footer">
-                    <p>&copy; 2025 ENERGIZE Gym Center</p>
-                    <p>Contact: info@energizegym.com</p>
-                </footer>
+             <!-- ======================= Cards ================== -->
+
+             <div class="greetings">
+                <div class="welcome">
+                    <h1>Welcome, Esnyr!</h1>
+                </div>
             </div>
 
-            <div id="signOutModal" class="modal">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h2 class="modal-title">Sign Out</h2>
-                  </div>
-                  <div class="modal-body">
-                    <p>Are you sure you want to sign out?</p>
-                  </div>
-                  <div class="modal-footer sign-out-actions">
-                    <button class="modal-button no-button" id="signOutNo">No</button>
-                    <button class="modal-button yes-button" id="signOutYes">Yes</button>
-                  </div>
+            <div class="cardBox">
+                <div class="card">
+                    <div>
+                        <div class="numbers">10%</div>
+                        <div class="cardName">Weekly Progress</div>
+                    </div>
+
+                    <div class="iconBx">
+                        <ion-icon name="barbell-outline"></ion-icon>
+                    </div>
                 </div>
-              </div>
+
+                <div class="card">
+                    <div>
+                        <div class="numbers">25%</div>
+                        <div class="cardName">Weekly Progress</div>
+                    </div>
+
+                    <div class="iconBx">
+                        <ion-icon name="medkit-outline"></ion-icon>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <div class="numbers">15%</div>
+                        <div class="cardName">Weekly Progress</div>
+                    </div>
+
+                    <div class="iconBx">
+                        <ion-icon name="medkit-outline"></ion-icon>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <div class="numbers">75%</div>
+                        <div class="cardName">Overall Progress</div>
+                    </div>
+
+                    <div class="iconBx">
+                        <ion-icon name="medkit-outline"></ion-icon>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <section class="workout-plan-section widget">
+                    <h3>Current Workout Plan</h3>
+                    <p><strong>Workout Name:</strong> The Guts</p>
+                    <p><strong>Your Coach:</strong> John Cena</p>
+                    <p><strong>Today's Workout:</strong> Cardio and Weightlifting</p>
+                    <p><strong>Status:</strong> In Progress</p>
+                </section>
+                <section class="next-session-section widget">
+                    <h3>Next Scheduled Session</h3>
+                    <p><strong>Coach Name:</strong> John Cena</p>
+                    <p><strong>Status:</strong> Pending</p>
+                    <p><strong>Date and Time:</strong> May 9, 2025 | 9:00 am</p>
+                </section>
+                <section class="goals-section widget">
+                    <h3>Your Goals</h3>
+                    <ul class="goals-list">
+                        <li><i class="fas fa-check-circle goal-icon"></i> <span>Stay Healthy</span></li>
+                        <li><i class="fas fa-check-circle goal-icon"></i> <span>Be Productive</span></li>
+                        <li><i class="fas fa-check-circle goal-icon"></i> <span>Be Buff</span></li>
+                    </ul>
+                </section>
+                <section class="book-session-section widget">
+                    <h3>Book a Session</h3>
+                    <p>Need a new workout time? Book below!</p>
+                    <a href="schedule.html">
+                        <button class="button primary">Book Session</button>
+                    </a>
+                </section>
+
+                <div id="signOutModal" class="modal">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h2 class="modal-title">Sign Out</h2>
+                      </div>
+                      <div class="modal-body">
+                        <p>Are you sure you want to sign out?</p>
+                      </div>
+                      <div class="modal-footer sign-out-actions">
+                        <button class="modal-button no-button" id="signOutNo">No</button>
+                        <button class="modal-button yes-button" id="signOutYes">Yes</button>
+                      </div>
+                    </div>
+                  </div>
+
+                
+            </div>
 
 
-    
             <script>
                 let list = document.querySelectorAll(".navigation li");
-        
-        function activeLink() {
-        list.forEach((item) => {
-        item.classList.remove("hovered");
-        });
-        this.classList.add("hovered");
-        }
-        
-        list.forEach((item) => item.addEventListener("click", activeLink));
-        
-        // Menu Toggle (remains the same)
-        let toggle = document.querySelector(".toggle");
-        let navigation = document.querySelector(".navigation");
-        let main = document.querySelector(".main");
-        
-        toggle.onclick = function () {
-        navigation.classList.toggle("active");
-        main.classList.toggle("active");
-        };
-        
-        //Search Function
-        const searchInput = document.getElementById('search-input');
-        const searchResultsDiv = document.getElementById('search-results');
-        
-        const searchData = [
-        "How to diet",
-        "Paano makapasa sa webdev",
-        "Effective workout plan",
-        "Effective sleep",
-        "Gulay effective diet",
-        "Recent Sessions",
-        "Overall well being",
-        "Updates",
-        "Coaches",
-        "Plans"
-        ];
-        
-        searchInput.addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase();
-        const filteredResults = searchData.filter(item =>
-        item.toLowerCase().includes(searchTerm)
-        );
-        
-        displayResults(filteredResults);
-        });
-        
-        function displayResults(results) {
-        searchResultsDiv.innerHTML = '';
-        
-        if (results.length > 0 && searchInput.value.trim() !== '') {
-        const ul = document.createElement('ul');
-        results.forEach(result => {
-        const li = document.createElement('li');
-        li.textContent = result;
-        li.addEventListener('click', function() {
+
+function activeLink() {
+  list.forEach((item) => {
+    item.classList.remove("hovered");
+  });
+  this.classList.add("hovered");
+}
+
+list.forEach((item) => item.addEventListener("click", activeLink));
+
+// Menu Toggle (remains the same)
+let toggle = document.querySelector(".toggle");
+let navigation = document.querySelector(".navigation");
+let main = document.querySelector(".main");
+
+toggle.onclick = function () {
+  navigation.classList.toggle("active");
+  main.classList.toggle("active");
+};
+
+//Search Function
+const searchInput = document.getElementById('search-input');
+const searchResultsDiv = document.getElementById('search-results');
+
+const searchData = [
+  "How to diet",
+  "Paano makapasa sa webdev",
+  "Effective workout plan",
+  "Effective sleep",
+  "Gulay effective diet",
+  "Recent Sessions",
+  "Overall well being",
+  "Updates",
+  "Coaches",
+  "Plans"
+];
+
+searchInput.addEventListener('input', function() {
+  const searchTerm = this.value.toLowerCase();
+  const filteredResults = searchData.filter(item =>
+    item.toLowerCase().includes(searchTerm)
+  );
+
+  displayResults(filteredResults);
+});
+
+function displayResults(results) {
+  searchResultsDiv.innerHTML = '';
+
+  if (results.length > 0 && searchInput.value.trim() !== '') {
+    const ul = document.createElement('ul');
+    results.forEach(result => {
+      const li = document.createElement('li');
+      li.textContent = result;
+      li.addEventListener('click', function() {
         searchInput.value = this.textContent;
         searchResultsDiv.style.display = 'none'; 
-        });
-        ul.appendChild(li);
-        });
-        searchResultsDiv.appendChild(ul);
-        searchResultsDiv.style.display = 'block'; 
-        } else {
-        searchResultsDiv.style.display = 'none';
-        }
-        }
-        
-        document.addEventListener('click', function(event) {
-        if (!event.target.closest('.search-container')) {
-        searchResultsDiv.style.display = 'none';
-        }
-        });
-        
-        //Mail Function
-        const mailIconInbox = document.getElementById('mail-icon-inbox');
-        const unreadNotification = document.getElementById('unread-notification');
-        const inboxPreview = document.getElementById('inbox-preview');
-        let hasUnread = true; 
-        
-        function updateUnreadIndicator() {
-        unreadNotification.style.display = hasUnread ? 'block' : 'none';
-        }
-        
-        updateUnreadIndicator();
-        
-        mailIconInbox.addEventListener('click', function() {
-        inboxPreview.style.display = (inboxPreview.style.display === 'block' ? 'none' : 'block');
-        
-        if (hasUnread && inboxPreview.style.display === 'block') {
-        hasUnread = false;
-        updateUnreadIndicator();
-        ad
-        console.log('Mail icon clicked - marking as read');
-        }
-        });
-        
-        
-        document.addEventListener('click', function(event) {
-        if (!event.target.closest('.mail-container')) {
-        inboxPreview.style.display = 'none';
-        }
-        });
-        
-        
-        //Notification Function
-        const notificationIcon = document.getElementById('notification-icon');
-        const notificationBadge = document.getElementById('notification-badge');
-        const notificationsDropdown = document.getElementById('notifications-dropdown');
-        
-        notificationIcon.addEventListener('click', function() {
-        notificationsDropdown.style.display = (notificationsDropdown.style.display === 'block' ? 'none' : 'block');
-        
-        notificationBadge.style.display = 'none';
-        });
-        
-        
-        document.addEventListener('click', function(event) {
-        if (!event.target.closest('.notification-container')) {
-        notificationsDropdown.style.display = 'none';
-        }
-        });
-        
-        document.addEventListener('DOMContentLoaded', function() {
-                    const submitPaymentButton = document.getElementById('submit-payment');
-                    const cardNumberInput = document.getElementById('card-number');
-                    const expiryDateInput = document.getElementById('expiry-date');
-                    const cvvInput = document.getElementById('cvv');
-                    const cardholderNameInput = document.getElementById('cardholder-name');
-                    const errorMessages = document.querySelectorAll('.error-message');
-        
-                    submitPaymentButton.addEventListener('click', function(event) {
-                        event.preventDefault();
-        
-                        let isValid = true;
-                        errorMessages.forEach(error => error.textContent = '');
-        
-                        if (!/^\d{16}$/.test(cardNumberInput.value.replace(/[^0-9]/g, ''))) {
-                            document.getElementById('card-number-error').textContent = 'Please enter a valid 16-digit card number.';
-                            isValid = false;
-                        }
-                        if (!/^\d{2}\/\d{4}$/.test(expiryDateInput.value)) {
-                            document.getElementById('expiry-date-error').textContent = 'Please enter a valid expiry date (MM/YYYY).';
-                            isValid = false;
-                        }
-                        if (!/^\d{3}$/.test(cvvInput.value)) {
-                            document.getElementById('cvv-error').textContent = 'Please enter a valid 3-digit CVV.';
-                            isValid = false;
-                        }
-                        if (cardholderNameInput.value.trim() === '') {
-                            document.getElementById('cardholder-name-error').textContent = 'Please enter the cardholder name.';
-                            isValid = false;
-                        }
-        
-                        if (isValid) {
-                            alert('Payment successful! Thank you for your renewal.');
-                        }
-                    });
-                });
+      });
+      ul.appendChild(li);
+    });
+    searchResultsDiv.appendChild(ul);
+    searchResultsDiv.style.display = 'block'; 
+  } else {
+    searchResultsDiv.style.display = 'none';
+  }
+}
 
-                //Sign out
-                document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('click', function(event) {
+  if (!event.target.closest('.search-container')) {
+    searchResultsDiv.style.display = 'none';
+  }
+});
+
+//Mail Function
+const mailIconInbox = document.getElementById('mail-icon-inbox');
+const unreadNotification = document.getElementById('unread-notification');
+const inboxPreview = document.getElementById('inbox-preview');
+let hasUnread = true; 
+
+function updateUnreadIndicator() {
+  unreadNotification.style.display = hasUnread ? 'block' : 'none';
+}
+
+updateUnreadIndicator();
+
+mailIconInbox.addEventListener('click', function() {
+  inboxPreview.style.display = (inboxPreview.style.display === 'block' ? 'none' : 'block');
+
+  if (hasUnread && inboxPreview.style.display === 'block') {
+    hasUnread = false;
+    updateUnreadIndicator();
+ad
+    console.log('Mail icon clicked - marking as read');
+  }
+});
+
+
+document.addEventListener('click', function(event) {
+  if (!event.target.closest('.mail-container')) {
+    inboxPreview.style.display = 'none';
+  }
+});
+
+
+//Notification Function
+const notificationIcon = document.getElementById('notification-icon');
+const notificationBadge = document.getElementById('notification-badge');
+const notificationsDropdown = document.getElementById('notifications-dropdown');
+
+notificationIcon.addEventListener('click', function() {
+  notificationsDropdown.style.display = (notificationsDropdown.style.display === 'block' ? 'none' : 'block');
+  
+  notificationBadge.style.display = 'none';
+});
+
+
+document.addEventListener('click', function(event) {
+  if (!event.target.closest('.notification-container')) {
+    notificationsDropdown.style.display = 'none';
+  }
+});
+
+//Sign out
+document.addEventListener('DOMContentLoaded', function() {
                     const signOutLink = document.querySelector('.navigation ul li:last-child a');
                     const signOutModal = document.getElementById('signOutModal');
                     const signOutYesButton = document.getElementById('signOutYes');
@@ -1182,12 +1100,14 @@ input:checked + .slider:before {
                     modalElement.classList.remove('show');
                     }
                 });
-        
+
             </script>
-        
+
             <!-- ====== ionicons ======= -->
-        <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-        <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-        </body>
-        
-        </html>
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+
+</html>
+
+            
