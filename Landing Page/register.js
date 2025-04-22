@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (isValid) {
                 alert('Registration Successful!');
-                window.location.href = 'client.html';
+                window.location.href = 'testclient.html';
             }
         });
     }
