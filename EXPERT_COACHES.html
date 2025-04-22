@@ -1,0 +1,326 @@
+
+<!--link sa font-->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+
+<h2 style="text-align: center; margin-top: 60px; font-size: 2rem;">Meet Our Expert Coaches</h2>
+
+
+<div id="coachModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <img id="modalImage" src="" alt="Coach Image" />
+      <h2 id="modalName"></h2>
+      <p id="modalSpecialty"></p>
+      <p id="modalBio"></p>
+    </div>
+  </div>
+  
+
+<div class="coach-container">
+  <div class="coach-card">
+    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Coach Kyla">
+    <div class="coach-info">
+      <h3>Coach Kyla</h3>
+      <p>Strength & Conditioning</p>
+      <div class="socials">
+        <i class="fab fa-facebook-f"></i>
+        <i class="fab fa-instagram"></i>
+        <i class="fab fa-twitter"></i>
+      </div>
+    </div>
+  </div>
+  <div class="coach-card">
+    <img src="https://randomuser.me/api/portraits/women/47.jpg" alt="Coach Pearl">
+    <div class="coach-info">
+      <h3>Coach Pearl</h3>
+      <p>Yoga & Flexibility</p>
+      <div class="socials">
+        <i class="fab fa-facebook-f"></i>
+        <i class="fab fa-instagram"></i>
+        <i class="fab fa-twitter"></i>
+      </div>
+    </div>
+  </div>
+  <div class="coach-card">
+    <img src="https://randomuser.me/api/portraits/men/40.jpg" alt="Coach Jaxon">
+    <div class="coach-info">
+      <h3>Coach Jaxon</h3>
+      <p>Cardio & Endurance</p>
+      <div class="socials">
+        <i class="fab fa-facebook-f"></i>
+        <i class="fab fa-instagram"></i>
+        <i class="fab fa-twitter"></i>
+      </div>
+    </div>
+  </div>
+  <div class="coach-card">
+    <img src="https://randomuser.me/api/portraits/men/31.jpg" alt="Coach Marco">
+    <div class="coach-info">
+      <h3>Coach Marco</h3>
+      <p>HIIT Specialist</p>
+      <div class="socials">
+        <i class="fab fa-facebook-f"></i>
+        <i class="fab fa-instagram"></i>
+        <i class="fab fa-twitter"></i>
+      </div>
+    </div>
+  </div>
+  <div class="coach-card">
+    <img src="https://randomuser.me/api/portraits/women/53.jpg" alt="Coach Nina">
+    <div class="coach-info">
+      <h3>Coach Nina</h3>
+      <p>Pilates & Mobility</p>
+      <div class="socials">
+        <i class="fab fa-facebook-f"></i>
+        <i class="fab fa-instagram"></i>
+        <i class="fab fa-twitter"></i>
+      </div>
+    </div>
+  </div>
+  <div class="coach-card">
+    <img src="https://randomuser.me/api/portraits/men/39.jpg" alt="Coach Eli">
+    <div class="coach-info">
+      <h3>Coach Eli</h3>
+      <p>Bodybuilding Coach</p>
+      <div class="socials">
+        <i class="fab fa-facebook-f"></i>
+        <i class="fab fa-instagram"></i>
+        <i class="fab fa-twitter"></i>
+      </div>
+    </div>
+  </div>
+  <div class="coach-card">
+    <img src="https://randomuser.me/api/portraits/women/25.jpg" alt="Coach Sam">
+    <div class="coach-info">
+      <h3>Coach Sam</h3>
+      <p>Functional Fitness</p>
+      <div class="socials">
+        <i class="fab fa-facebook-f"></i>
+        <i class="fab fa-instagram"></i>
+        <i class="fab fa-twitter"></i>
+      </div>
+    </div>
+  </div>
+  
+  <div class="coach-card">
+    <img src="https://randomuser.me/api/portraits/women/62.jpg" alt="Coach Mira">
+    <div class="coach-info">
+      <h3>Coach Mira</h3>
+      <p>Zumba Instructor</p>
+      <div class="socials">
+        <i class="fab fa-facebook-f"></i>
+        <i class="fab fa-instagram"></i>
+        <i class="fab fa-twitter"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- link sa FontAwesome Script -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+<style>
+  .coach-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 40px auto;
+  }
+
+  .coach-card {
+    width: 250px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .coach-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+
+  .coach-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+  }
+
+  .coach-info {
+    position: absolute;
+    bottom: 0;
+    background: rgba(21, 59, 163, 0.85);
+    color: white;
+    width: 100%;
+    padding: 20px;
+    transform: translateY(100%);
+    transition: transform 0.4s ease;
+  }
+
+  .coach-card:hover .coach-info {
+    transform: translateY(0);
+  }
+
+  .coach-info h3 {
+    margin: 0;
+    font-size: 20px;
+  }
+
+  .coach-info p {
+    margin: 5px 0 15px;
+    font-size: 14px;
+  }
+
+  .socials {
+    display: flex;
+    gap: 15px;
+  }
+
+  .socials i {
+    font-size: 16px;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+
+  .socials i:hover {
+    color: #ffd700;
+  }
+
+  .modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  padding-top: 60px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.7);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: auto;
+  padding: 30px;
+  border: 1px solid #888;
+  width: 50%;
+  border-radius: 10px;
+  text-align: center;
+  position: relative;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content img {
+  width: 120px;
+  border-radius: 50%;
+  margin-bottom: 15px;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 24px;
+  color: #aaa;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: #000;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+
+</style>
+
+<script>
+    const modal = document.getElementById("coachModal");
+    const modalImage = document.getElementById("modalImage");
+    const modalName = document.getElementById("modalName");
+    const modalSpecialty = document.getElementById("modalSpecialty");
+    const modalBio = document.getElementById("modalBio");
+    const closeBtn = document.querySelector(".close-btn");
+  
+    const coachCards = document.querySelectorAll(".coach-card");
+  
+   
+    const coachDetails = {
+      "Coach Kyla": {
+        specialty: "Strength & Conditioning",
+        image: "https://randomuser.me/api/portraits/women/44.jpg",
+        bio: "Kyla helps clients build strength with personalized resistance training programs."
+      },
+      "Coach Pearl": {
+        specialty: "Yoga & Flexibility",
+        image: "https://randomuser.me/api/portraits/women/47.jpg",
+        bio: "Pearl guides sessions focused on improving posture and flexibility."
+      },
+      "Coach Jaxon": {
+        specialty: "Cardio & Endurance",
+        image: "https://randomuser.me/api/portraits/men/40.jpg",
+        bio: "Jaxon leads high-intensity cardio sessions that boost stamina."
+      },
+      "Coach Marco": {
+        specialty: "HIIT Specialist",
+        image: "https://randomuser.me/api/portraits/men/31.jpg",
+        bio: "Marco specializes in interval training to burn calories fast."
+      },
+      "Coach Nina": {
+        specialty: "Pilates & Mobility",
+        image: "https://randomuser.me/api/portraits/women/53.jpg",
+        bio: "Nina offers low-impact routines to improve mobility and core strength."
+      },
+      "Coach Eli": {
+        specialty: "Bodybuilding Coach",
+        image: "https://randomuser.me/api/portraits/men/39.jpg",
+        bio: "Eli helps aspiring bodybuilders achieve competition-level physiques."
+      },
+      "Coach Sam": {
+        specialty: "Functional Fitness",
+        image: "https://randomuser.me/api/portraits/women/25.jpg",
+        bio: "Sam's training focuses on real-life strength and injury prevention."
+      },
+      "Coach Mira": {
+        specialty: "Zumba Instructor",
+        image: "https://randomuser.me/api/portraits/women/62.jpg",
+        bio: "Mira delivers high-energy Zumba classes for fun, full-body workouts."
+      }
+    };
+  
+    coachCards.forEach(card => {
+      card.addEventListener("click", () => {
+        const name = card.querySelector("h3").textContent;
+        const details = coachDetails[name];
+  
+        if (details) {
+          modalImage.src = details.image;
+          modalName.textContent = name;
+          modalSpecialty.textContent = details.specialty;
+          modalBio.textContent = details.bio;
+          modal.style.display = "block";
+        }
+      });
+    });
+  
+    closeBtn.onclick = () => {
+      modal.style.display = "none";
+    };
+  
+    window.onclick = (e) => {
+      if (e.target == modal) {
+        modal.style.display = "none";
+      }
+    };
+  </script>
+  
