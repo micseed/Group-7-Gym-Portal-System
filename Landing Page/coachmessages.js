@@ -145,6 +145,7 @@ function generateReply(incomingMessage) {
             'Interesting!',
             'Thanks for the update.',
             'Okay, noted.',
+            'Hi, beh.',
             'Understood.'
         ];
         return replies[Math.floor(Math.random() * replies.length)];
@@ -191,7 +192,6 @@ if (firstChatItem) {
 //Search Button
 const searchInput = document.getElementById('search-input');
 const searchResultsDiv = document.getElementById('search-results');
-
 const searchData = [
   "Sessions with Client",
   "Workout Plan",

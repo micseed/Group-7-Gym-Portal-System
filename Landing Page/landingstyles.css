@@ -605,8 +605,10 @@ background-color: rgba(0,0,0,0.7);
 }
 
 .modal-content {
+  margin-left: 23%;
+  margin-top: 10%;
 background-color: #fff;
-margin: auto;
+margin-top: 10%;
 padding: 30px;
 border: 1px solid #888;
 width: 50%;
