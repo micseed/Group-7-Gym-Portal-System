@@ -1,0 +1,986 @@
+/* =============== Globals ============== */
+* {
+  font-family: "Ubuntu", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --blue: #203A93;
+  --white: #fff;
+  --gray: #f5f5f5;
+  --black1: #222;
+  --black2: #999;
+  --breakpoint-lg: 992px; /* Define breakpoints */
+  --breakpoint-md: 768px;
+  --breakpoint-sm: 576px;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative; /* Needed for potential overlay */
+}
+
+.container {
+  position: relative;
+  width: 100%;
+}
+
+/* =============== Navigation ================ */
+.navigation {
+  position: fixed;
+  width: 300px;
+  height: 100%;
+  background: var(--blue);
+  border-left: 10px solid var(--blue);
+  transition: width 0.5s, left 0.5s; /* Added left transition */
+  overflow: hidden;
+  z-index: 1000; /* Ensure nav is on top */
+}
+.navigation.active {
+  width: 80px;
+}
+
+.navigation ul {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding-left: 0;
+}
+
+.navigation ul li {
+  position: relative;
+  width: 100%;
+  list-style: none;
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
+}
+
+.navigation ul li:hover,
+.navigation ul li.hovered {
+  background-color: var(--white);
+}
+
+.navigation ul li:nth-child(1) {
+  margin-bottom: 40px;
+  pointer-events: none;
+}
+
+.navigation ul li a {
+  position: relative;
+  display: block;
+  width: 100%;
+  display: flex;
+  text-decoration: none;
+  color: var(--white);
+}
+.navigation ul li:hover a,
+.navigation ul li.hovered a {
+  color: var(--blue);
+}
+
+.navigation ul li a .icon {
+  position: relative;
+  display: block;
+  min-width: 60px;
+  height: 60px;
+  line-height: 75px;
+  text-align: center;
+}
+.navigation ul li a .icon ion-icon {
+  font-size: 1.75rem;
+  vertical-align: middle;
+}
+
+.navigation ul li a .title {
+  position: relative;
+  display: block;
+  padding: 0 10px;
+  height: 60px;
+  line-height: 60px;
+  text-align: start;
+  white-space: nowrap;
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+/* Hide title when navigation is collapsed */
+.navigation.active ul li a .title {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* --------- Curve Outside ---------- */
+.navigation ul li:hover a::before,
+.navigation ul li.hovered a::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: -50px;
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  border-radius: 50%;
+  box-shadow: 35px 35px 0 10px var(--white);
+  pointer-events: none;
+  z-index: -1;
+}
+.navigation ul li:hover a::after,
+.navigation ul li.hovered a::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -50px;
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  border-radius: 50%;
+  box-shadow: 35px -35px 0 10px var(--white);
+  pointer-events: none;
+   z-index: -1;
+}
+
+/* ===================== Main ===================== */
+.main {
+  position: absolute;
+  width: calc(100% - 300px);
+  left: 300px;
+  min-height: 100vh;
+  background: var(--gray); /* Use gray background for main area */
+  transition: width 0.5s, left 0.5s;
+  display: flex; /* Use flex for centering content if needed */
+  flex-direction: column; /* Stack topbar and content */
+  padding-top: 60px; /* Account for fixed topbar height */
+}
+.main.active {
+  width: calc(100% - 80px);
+  left: 80px;
+}
+
+/* Optional: Overlay for mobile when nav is open */
+.main-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999; /* Below nav, above main content */
+}
+
+.topbar {
+  width: calc(100% - 300px); /* Match main width */
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  justify-content: space-between;
+  position: fixed; /* Make topbar fixed */
+  top: 0;
+  left: 300px; /* Match main left position */
+  background: var(--white);
+  z-index: 900; /* Below nav */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: width 0.5s, left 0.5s; /* Match main transition */
+}
+/* Adjust topbar when sidebar is active */
+.main.active ~ .topbar, /* If topbar is sibling */
+.main.active .topbar { /* If topbar is child (adjust selector) */
+    width: calc(100% - 80px);
+    left: 80px;
+}
+
+
+.toggle {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
+  cursor: pointer;
+  color: var(--black1);
+}
+
+/* =============== Search ============== */
+.search-container {
+  position: relative;
+  /* width: 800px; */ /* Let it be flexible */
+  flex-grow: 1;
+  max-width: 600px;
+  margin: 0 15px;
+}
+
+.search-container label {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--gray);
+}
+
+#search-input {
+  flex-grow: 1;
+  padding: 10px 15px;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  box-sizing: border-box;
+  background: transparent;
+  color: var(--black1);
+}
+
+.search-container label ion-icon {
+  padding: 0 15px;
+  font-size: 1.25rem;
+  color: var(--black2);
+  cursor: pointer;
+}
+
+#search-results {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  right: 0;
+  background-color: var(--white);
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-top: 2px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 910; /* Above topbar content, below nav */
+  display: none;
+  overflow-y: auto;
+  max-height: 300px;
+}
+
+#search-results ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#search-results li {
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 0.95rem;
+  color: var(--black1);
+  border-bottom: 1px solid var(--gray);
+}
+#search-results li:last-child { border-bottom: none; }
+#search-results li:hover { background-color: var(--gray); color: var(--blue); }
+#search-results li:active { background-color: #eee; }
+#search-results li span.highlight { font-weight: bold; color: var(--blue); }
+
+/* Topbar Icons Container */
+.topbar-icons {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* =============== Mail Icon ============== */
+.mail-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+#mail-icon-inbox {
+  font-size: 1.5rem;
+  color: var(--blue);
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+#mail-icon-inbox:hover { opacity: 0.7; }
+
+#unread-notification {
+  position: absolute;
+  top: -5px;
+  right: -8px;
+  background-color: red;
+  color: white;
+  font-size: 0.7rem;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  text-align: center;
+  line-height: 16px;
+  display: none; /* Control visibility with JS */
+  font-weight: bold;
+}
+
+#inbox-preview {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: -10px;
+  background-color: var(--white);
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  padding: 0;
+  display: none; /* Control visibility with JS */
+  z-index: 910; /* Above topbar content */
+  text-align: left;
+  overflow: hidden;
+}
+/* (Keep internal inbox-preview styles as needed) */
+/* Example simplified internal structure for dropdowns */
+.preview-header { padding: 10px 15px; font-weight: bold; border-bottom: 1px solid var(--gray); font-size: 0.9rem; color: var(--black1); }
+.preview-list { list-style: none; padding: 0; margin: 0; max-height: 250px; overflow-y: auto; }
+.preview-list li { padding: 10px 15px; border-bottom: 1px solid var(--gray); cursor: pointer; transition: background-color 0.2s ease; }
+.preview-list li:last-child { border-bottom: none; }
+.preview-list li:hover { background-color: var(--gray); }
+.preview-footer { padding: 10px 15px; text-align: center; border-top: 1px solid var(--gray); }
+.preview-footer a { font-size: 0.85rem; color: var(--blue); text-decoration: none; font-weight: bold; }
+.preview-footer a:hover { text-decoration: underline; }
+.email-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+.email-item.sender { font-weight: bold; font-size: 0.9rem; color: var(--black1); margin-bottom: 3px; }
+.email-item.subject { color: var(--black2); font-size: 0.85rem; }
+
+/* =============== Notification Icon ============== */
+.notification-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+#notification-icon {
+  font-size: 1.5rem;
+  color: var(--blue);
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+#notification-icon:hover { opacity: 0.7; }
+
+#notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -8px;
+  background-color: orange;
+  color: white;
+  font-size: 0.7rem;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  text-align: center;
+  line-height: 16px;
+  display: none; /* Control visibility with JS */
+  font-weight: bold;
+}
+/* Example: Show badge if it has class 'visible' */
+#notification-badge.visible { display: block; }
+
+#notifications-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: -10px;
+  background-color: var(--white);
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  padding: 0;
+  display: none; /* Control visibility with JS */
+  z-index: 910; /* Above topbar content */
+  text-align: left;
+  overflow: hidden;
+}
+/* (Keep internal notifications-dropdown styles as needed) */
+.notification-item { white-space: normal; overflow: hidden; display: block; }
+.notification-item.title { font-weight: bold; font-size: 0.9rem; color: var(--black1); margin-bottom: 3px; }
+.notification-item.message { color: var(--black2); font-size: 0.85rem; line-height: 1.3; }
+
+/* ======================= User ====================== */
+.user {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid var(--gray);
+}
+
+.user img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* =============== Message Section ============== */
+.main-content-area { /* Wrapper for content below topbar */
+    padding: 20px;
+    flex-grow: 1; /* Takes remaining space */
+    display: flex; /* To center messenger or control its size */
+    justify-content: center; /* Center messenger horizontally */
+    align-items: flex-start; /* Align messenger to top */
+}
+
+.messenger-wrapper {
+  display: flex;
+  width: 100%; /* Take full width of its container */
+  max-width: 1400px; /* Limit max width on large screens */
+  /* margin: 20px; */ /* Removed, use padding on parent */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08); /* Softer shadow */
+  /* height: 85vh; */ /* Avoid fixed viewport height */
+  height: calc(100vh - 100px); /* Calculate height based on topbar + padding */
+  min-height: 500px;
+}
+
+.chat-list-sidebar {
+  width: 300px; /* Fixed width for sidebar */
+  flex-shrink: 0; /* Prevent shrinking */
+  background-color: #f8f9fa; /* Lighter gray */
+  border-right: 1px solid #e9ecef; /* Lighter border */
+  padding: 10px 0; /* Adjust padding */
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease, margin-left 0.3s ease; /* Add transitions */
+}
+
+.chat-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px; /* Adjust padding */
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid #eee; /* Separator */
+}
+.chat-item:last-child { border-bottom: none; }
+
+.chat-item.active-chat {
+  background-color: #e0f0ff; /* Lighter blue highlight */
+}
+
+.chat-item:hover {
+  background-color: #e9ecef; /* Subtle hover */
+}
+
+.profile-pic {
+  width: 45px; /* Slightly larger */
+  height: 45px;
+  border-radius: 50%;
+  background-color: #adb5bd; /* Default background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+  margin-right: 12px;
+  overflow: hidden;
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+.profile-pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.initials {
+  font-size: 1.2em;
+}
+
+.chat-info {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: hidden; /* Prevent content overflow */
+}
+
+.username {
+  font-weight: 600; /* Bolder */
+  color: #343a40; /* Darker */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 0.95em;
+}
+
+.last-message {
+  color: #6c757d; /* Gray */
+  font-size: 0.85em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+.main-chat-area {
+  /* width: 70%; */ /* Removed, use flex-grow */
+  flex-grow: 1; /* Take remaining space */
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  height: 100%;
+  overflow: hidden; /* Prevent chat area itself from scrolling */
+}
+
+.chat-header {
+  background-color: #f8f9fa; /* Match sidebar */
+  padding: 12px 20px; /* Adjust padding */
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+.chat-header .profile-info {
+  display: flex;
+  align-items: center;
+  overflow: hidden; /* Prevent overflow */
+}
+
+.chat-header .user-details {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+  overflow: hidden;
+}
+
+.chat-header .user-details .username {
+  font-weight: 600;
+  color: #343a40;
+  font-size: 1.05em; /* Slightly larger */
+}
+
+.chat-header .user-details .status {
+  color: #6c757d;
+  font-size: 0.8em;
+}
+
+.chat-header .chat-actions span {
+  margin-left: 15px;
+  font-size: 1.3em; /* Larger icons */
+  color: #6c757d;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.chat-header .chat-actions span:hover { color: var(--blue); }
+
+.message-body {
+  padding: 20px; /* Increased padding */
+  overflow-y: auto; /* Enable scrolling for messages */
+  flex-grow: 1; /* Take available vertical space */
+  display: flex;
+  flex-direction: column;
+  background-color: #e9ecef; /* Light background for message area */
+}
+
+.message {
+  margin-bottom: 12px; /* Increased spacing */
+  padding: 10px 15px;
+  border-radius: 12px; /* More rounded */
+  clear: both;
+  font-size: 0.95em;
+  position: relative;
+  max-width: 75%; /* Limit message width */
+  word-wrap: break-word; /* Use word-wrap */
+  line-height: 1.4;
+}
+
+.received-msg {
+  background-color: #fff; /* White background */
+  color: #333;
+  float: left;
+  align-self: flex-start;
+  border: 1px solid #eee; /* Subtle border */
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.sent-msg {
+  background-color: #d1e7ff; /* Lighter blue for sent */
+  color: #0d6efd; /* Blue text */
+  float: right;
+  align-self: flex-end;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.message img {
+  max-width: 100%;
+  border-radius: 6px;
+  height: auto;
+  margin-top: 5px; /* Space if image follows text */
+}
+
+.message-input-area {
+  padding: 15px 20px;
+  border-top: 1px solid #e9ecef;
+  background-color: #f8f9fa; /* Match header/sidebar */
+  display: flex; /* Align items horizontally */
+  align-items: center; /* Center items vertically */
+  gap: 10px; /* Space between elements */
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+/* Attachment button styles (Optional - Add if needed) */
+.attachment-btn {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.input-field {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  border: 1px solid #ced4da; /* Standard border */
+  border-radius: 20px;
+  padding: 0px 5px 0px 15px; /* Adjust padding */
+  background-color: #fff; /* White background */
+}
+
+.input-field input[type="text"] {
+  flex-grow: 1;
+  border: none;
+  outline: none;
+  font-size: 0.95em;
+  /* margin-right: 10px; */ /* Removed, use gap */
+  padding: 10px 0; /* Vertical padding */
+  background: transparent;
+}
+
+.input-field button#main-send-btn {
+  background-color: var(--blue); /* Use theme color */
+  color: white;
+  border: none;
+  border-radius: 50%; /* Make it circular */
+  width: 40px; /* Fixed size */
+  height: 40px;
+  cursor: pointer;
+  font-size: 1.2em; /* Icon size */
+  transition: background-color 0.2s ease;
+  /* margin-left: 10px; */ /* Removed, use gap */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+.input-field button#main-send-btn:hover {
+  background-color: #162c7a; /* Darker blue */
+}
+
+
+/* ===================== Modal Styles ===================== */
+/* (Using the improved modal styles from previous examples) */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1050;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  outline: 0;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal.show {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-dialog {
+    position: relative;
+    width: auto;
+    margin: .5rem;
+    pointer-events: none;
+}
+
+.modal.show .modal-dialog { pointer-events: auto; }
+
+.modal-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  pointer-events: auto;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0,0,0,.2);
+  border-radius: .5rem;
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+  outline: 0;
+  max-height: calc(100vh - 1rem);
+  overflow-y: auto;
+}
+
+.modal-dialog { max-width: 500px; margin: 1.75rem auto; }
+#signOutModal .modal-dialog { max-width: 400px; } /* Sign out specific size */
+
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #dee2e6;
+  border-top-left-radius: calc(.5rem - 1px);
+  border-top-right-radius: calc(.5rem - 1px);
+}
+
+.modal-title { margin-bottom: 0; line-height: 1.5; font-size: 1.25rem; font-weight: 500; color: var(--black1); }
+
+.close-button {
+  padding: 1rem 1rem; margin: -1rem -1rem -1rem auto; background-color: transparent; border: 0; font-size: 1.5rem; font-weight: 700; line-height: 1; color: #000; text-shadow: 0 1px 0 #fff; opacity: .5; cursor: pointer;
+}
+.close-button:hover { opacity: .75; }
+
+.modal-body { position: relative; flex: 1 1 auto; padding: 1.5rem; font-size: 1rem; color: var(--black2); }
+
+.modal-footer {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; padding: 1rem 1.5rem; border-top: 1px solid #dee2e6; border-bottom-right-radius: calc(.5rem - 1px); border-bottom-left-radius: calc(.5rem - 1px); gap: .5rem;
+}
+
+/* Sign out specific footer */
+/* .modal-footer.sign-out-actions { */
+    /* Keep existing styles */
+/* } */
+
+.modal-button {
+  display: inline-block; font-weight: 400; color: #fff; text-align: center; vertical-align: middle; cursor: pointer; user-select: none; background-color: var(--blue); border: 1px solid var(--blue); padding: .5rem 1rem; font-size: 1rem; line-height: 1.5; border-radius: .25rem; transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.modal-button:hover { opacity: 0.85; }
+.modal-button.yes-button { background-color: var(--blue); border-color: var(--blue); }
+.modal-button.yes-button:hover { background-color: #dc3545; border-color: #dc3545; } /* Red hover for confirmation */
+.modal-button.no-button { background-color: #6c757d; border-color: #6c757d; color: #fff; }
+.modal-button.no-button:hover { background-color: #5a6268; border-color: #545b62; }
+
+/* ===================== Responsive Design ===================== */
+
+/* Medium devices (tablets, less than 992px) */
+@media (max-width: 991.98px) {
+  .navigation {
+    left: -300px;
+    border-left: none;
+  }
+  .navigation.active {
+    left: 0;
+    width: 300px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  }
+  .main {
+    width: 100%;
+    left: 0;
+    padding-top: 60px; /* Ensure padding remains */
+  }
+  .main.active {
+    left: 0;
+    width: 100%;
+  }
+  .topbar {
+      width: 100%;
+      left: 0;
+  }
+  .main.active ~ .topbar,
+  .main.active .topbar {
+      width: 100%;
+      left: 0;
+  }
+
+
+  /* Show overlay when nav is active */
+  .navigation.active ~ .main .main-overlay,
+  .navigation.active ~ .main-overlay { /* If overlay is sibling to main */
+    display: block;
+    opacity: 1; /* Control opacity via JS if needed */
+    transition: opacity 0.3s ease;
+  }
+  .main-overlay { /* Base style for overlay */
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4); z-index: 999;
+  }
+
+
+  .toggle {
+    z-index: 1001;
+    position: fixed; /* Fix toggle button position */
+    top: 0;
+    left: 0;
+    color: var(--blue); /* Ensure visibility */
+  }
+  .topbar {
+      padding-left: 70px; /* Make space for fixed toggle */
+  }
+
+
+  .search-container { max-width: 400px; }
+  .topbar-icons { gap: 15px; }
+
+  /* Messenger adjustments for tablet */
+  .messenger-wrapper {
+      max-width: 95%; /* Allow slightly wider */
+      height: calc(100vh - 80px); /* Adjust height calc */
+      min-height: 450px;
+  }
+  .chat-list-sidebar { width: 250px; } /* Slightly narrower list */
+
+}
+
+/* Small devices (landscape phones, less than 768px) */
+@media (max-width: 767.98px) {
+    .topbar { padding-left: 65px; } /* Adjust padding */
+    .topbar-icons { gap: 10px; }
+    #mail-icon-inbox, #notification-icon { font-size: 1.4rem; }
+    .user { width: 35px; height: 35px; }
+    .search-container { margin: 0 10px; max-width: none; } /* Allow search to grow more */
+    #search-input { padding: 8px 12px; font-size: 0.9rem; }
+    .search-container label ion-icon { font-size: 1.1rem; padding: 0 10px; }
+
+
+    /* === Messenger Stacking === */
+    .main-content-area {
+        padding: 10px; /* Reduce padding */
+    }
+    .messenger-wrapper {
+        flex-direction: column; /* Stack vertically */
+        height: calc(100vh - 60px); /* Adjust height calc for stacked view */
+        min-height: 0; /* Remove min-height */
+        border: none; /* Remove border for seamless look */
+        box-shadow: none;
+        max-width: 100%; /* Full width */
+    }
+
+    .chat-list-sidebar {
+        width: 100%; /* Full width */
+        border-right: none; /* Remove side border */
+        border-bottom: 1px solid #e9ecef; /* Add bottom border */
+        max-height: 200px; /* Limit height and enable scroll */
+        flex-shrink: 0; /* Prevent shrinking */
+        margin-left: 0 !important; /* Override any inline style if present */
+    }
+
+    .main-chat-area {
+        width: 100%; /* Full width */
+        height: auto; /* Auto height */
+        flex-grow: 1; /* Allow chat area to take remaining space */
+    }
+    .message-body {
+        padding: 15px; /* Adjust padding */
+    }
+    .message-input-area {
+        padding: 10px 15px; /* Adjust padding */
+    }
+    .chat-header {
+        padding: 10px 15px; /* Adjust padding */
+    }
+    .chat-header .user-details .status {
+        display: none; /* Hide status on small screens */
+    }
+    .chat-header .chat-actions span {
+        font-size: 1.2em; /* Adjust icon size */
+        margin-left: 10px;
+    }
+    .profile-pic {
+        width: 40px;
+        height: 40px;
+        margin-right: 10px;
+    }
+    /* === End Messenger Stacking === */
+
+    /* Make dropdowns slightly narrower/position */
+    #inbox-preview, #notifications-dropdown {
+        width: 280px;
+    }
+}
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) {
+  .navigation {
+    width: 100%; /* Make nav full width when opening */
+    left: -100%;
+    border-left: none;
+  }
+  .navigation.active {
+    width: 100%;
+    left: 0;
+    box-shadow: none;
+  }
+  .navigation ul li a .icon { min-width: 50px; height: 50px; line-height: 60px; }
+  .navigation ul li a .icon ion-icon { font-size: 1.5rem; }
+  .navigation ul li a .title { height: 50px; line-height: 50px; }
+  .navigation ul li:hover a::before, .navigation ul li.hovered a::before,
+  .navigation ul li:hover a::after, .navigation ul li.hovered a::after { display: none; }
+
+
+  .topbar {
+    padding: 0 10px 0 60px; /* Adjust padding */
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 60px;
+    gap: 5px; /* Reduce gap */
+  }
+  .toggle { font-size: 2rem; } /* Adjust toggle size */
+  .search-container {
+    order: 3;
+    width: calc(100% - 20px); /* Adjust width considering padding */
+    margin: 5px 10px 5px 10px; /* Adjust margins */
+  }
+  .topbar-icons {
+      /* Adjust spacing if necessary */
+      margin-left: auto; /* Push icons to the right */
+      gap: 10px;
+      padding-right: 5px; /* Add padding */
+  }
+  .user {
+      width: 30px;
+      height: 30px;
+  }
+
+  /* Messenger adjustments */
+  .main-content-area { padding: 5px; }
+  .messenger-wrapper { height: calc(100vh - 50px); } /* Adjust based on potential shorter topbar */
+  .chat-list-sidebar { max-height: 150px; } /* Further limit list height */
+  .chat-item { padding: 8px 10px; }
+  .profile-pic { width: 35px; height: 35px; margin-right: 8px; }
+  .username { font-size: 0.9em; }
+  .last-message { font-size: 0.8em; }
+  .chat-header { padding: 8px 10px; }
+  .chat-header .user-details .username { font-size: 1em; }
+  .message-body { padding: 10px; }
+  .message { padding: 8px 12px; font-size: 0.9em; max-width: 85%; }
+  .message-input-area { padding: 8px 10px; gap: 8px; }
+  .input-field { padding: 0px 5px 0px 12px; }
+  .input-field input[type="text"] { font-size: 0.9em; }
+  .input-field button#main-send-btn { width: 35px; height: 35px; font-size: 1.1em; }
+
+
+  /* Modal adjustments */
+  .modal-dialog { margin: .5rem; max-width: calc(100% - 1rem); }
+  .modal-header, .modal-body, .modal-footer { padding: .75rem 1rem; }
+  .modal-title { font-size: 1.1rem; }
+  .modal-body { font-size: 0.9rem; }
+  .modal-footer { justify-content: center; }
+  .modal-button { padding: .4rem .8rem; font-size: 0.9rem; }
+
+  #inbox-preview, #notifications-dropdown {
+        right: 5px;
+        left: 5px;
+        width: auto;
+  }
+}

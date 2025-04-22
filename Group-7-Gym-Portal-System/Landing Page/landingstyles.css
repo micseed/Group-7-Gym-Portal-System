@@ -1,0 +1,796 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-size: 1em; /* Base font size */
+  font-family: 'Poppins', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+/* Navigation Bar */
+header {
+  background-color: #203A93;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  transition: padding 0.3s ease; /* Smooth padding transition */
+}
+
+.nav-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  max-width: 1400px; /* Optional: Limit nav bar width on very wide screens */
+  margin: 0 auto; /* Center nav bar if max-width is used */
+}
+
+.logo {
+  color: white;
+}
+
+.logo h1 {
+  font-size: 1.6em; /* Use em for scalability */
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.logo h3 {
+  font-size: 1.2em; /* Use em */
+  font-weight: lighter;
+  line-height: 1.1;
+}
+
+.menus {
+  display: flex;
+  align-items: center; /* Center vertically */
+  list-style: none;
+  gap: 60px; /* Reduced default gap */
+  padding: 10px 0; /* Adjusted padding */
+}
+
+.menus a {
+  text-decoration: none;
+  color: white;
+  font-size: 1.1em; /* Use em */
+  position: relative;
+  padding-bottom: 10px; /* Space for the underline */
+}
+
+.menus a:after {
+  content: "";
+  position: absolute;
+  background-color: #F1D27C; /* Changed color for visibility */
+  height: 3px;
+  width: 0;
+  left: 0;
+  bottom: 0; /* Position right below text */
+  transition: 0.3s;
+}
+
+.menus a:hover {
+  color: #F1D27C;
+}
+
+.menus a:hover:after {
+  width: 100%;
+}
+
+/* Hamburger Menu Icon - Hidden by default */
+.menu-toggle {
+  display: none; /* Hidden on desktop */
+  flex-direction: column;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.menu-toggle span {
+  height: 3px;
+  width: 25px;
+  background-color: white;
+  margin-bottom: 5px;
+  border-radius: 2px;
+  transition: all 0.3s ease-in-out;
+}
+
+.menu-toggle span:last-child {
+  margin-bottom: 0;
+}
+
+/* Styles for active hamburger menu (optional, needs JS) */
+/*
+.menu-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.menu-toggle.active span:nth-child(2) { opacity: 0; }
+.menu-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+*/
+
+
+.buttons button {
+  border-radius: 10px;
+  border: 1px solid white; /* Added subtle border */
+  background-color: transparent; /* Make transparent */
+  color: white;
+  padding: 8px 18px; /* Adjusted padding */
+  cursor: pointer;
+  font-size: 1em; /* Use em */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.buttons a {
+  text-decoration: none;
+  color: white;
+  font-size: 1em; /* Use em */
+}
+
+.buttons button:hover {
+  background-color: white; /* Fill on hover */
+  color: #203A93;
+}
+.buttons button:hover a {
+  color: #203A93; /* Change link color on button hover */
+}
+
+/* Banner Image */
+.banner-section { /* Added a wrapper */
+  position: relative; /* Needed for absolute positioning of overlay */
+  width: 100%;
+  margin-top: 70px; /* Adjust based on final header height */
+  min-height: 70vh; /* Give banner minimum height */
+  display: flex; /* Use flex for alignment */
+  align-items: center; /* Vertically center content */
+}
+
+.image-container img {
+  width: 100%;
+  height: 100%; /* Make image cover the banner section height */
+  display: block;
+  object-fit: cover;
+  position: absolute; /* Position behind text */
+  top: 0;
+  left: 0;
+  filter: brightness(45%);
+  z-index: -1; /* Send behind text */
+}
+
+.text-overlay {
+  /* position: absolute; Removed */
+  /* top: 60%; Removed */
+  /* transform: translateY(-50%); Removed */
+  position: relative; /* Now positioned by flex container */
+  z-index: 1;
+  text-align: left;
+  width: 90%; /* Adjust width */
+  max-width: 700px; /* Max width for text */
+  color: white;
+  padding: 0 5%; /* Add horizontal padding */
+  /* margin-left: 15px; Replaced by padding */
+}
+
+.text-overlay h1 {
+  font-size: 3.5em; /* Adjusted size */
+  line-height: 1.1;
+  color: #F1D27C;
+  margin-bottom: 0.1em;
+}
+
+.text-overlay h2 {
+  font-size: 3.5em; /* Adjusted size */
+  line-height: 1.1;
+   margin-bottom: 0.3em;
+}
+
+.text-overlay p {
+  font-size: 1.3em; /* Adjusted size */
+  margin-bottom: 1.5em;
+}
+
+.getstarted {
+  /* position: absolute; Removed */
+  /* top: 110%; Removed */
+  /* transform: translateY(-50%); Removed */
+  display: inline-block; /* Allow padding */
+  padding: 12px 25px; /* Adjusted padding */
+  font-size: 1.2em; /* Adjusted size */
+  background-color: #83c7f0;
+  color: #203A93; /* Darker text for contrast */
+  font-weight: bold;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-decoration: none; /* Ensure link is styled as button */
+}
+
+.getstarted a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.getstarted:hover {
+  background-color: #F1D27C;
+  color: white;
+}
+
+/* Feature Cards */
+.features-cards {
+  text-align: center;
+  padding: 50px 20px; /* Increased padding */
+}
+
+.features-cards h1 {
+  font-size: 2.2em; /* Adjusted size */
+  margin-bottom: 15px;
+  color: #203A93;
+}
+
+.features-cards p {
+  font-size: 1.1em;
+  color: #484848;
+  margin-bottom: 40px;
+  max-width: 800px; /* Limit width of intro text */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.row-feature {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px; /* Add gap between cards */
+}
+
+.col {
+  width: 320px;
+  margin: 0; /* Removed margin, using gap now */
+  padding: 25px; /* Adjusted padding */
+  background-color: #f8f9fa; /* Lighter background */
+  border-radius: 15px; /* Softer radius */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05); /* Subtle shadow */
+  transition: transform 0.3s ease; /* Add hover effect */
+}
+.col:hover {
+  transform: translateY(-5px); /* Lift card on hover */
+}
+
+.col img {
+  width: 100px; /* Smaller icon */
+  height: 100px;
+  margin-bottom: 20px;
+  filter: none; /* Remove filter if icons are colored */
+  /* Or use themed color filter: */
+  /* filter: invert(18%) sepia(58%) saturate(2888%) hue-rotate(217deg) brightness(90%) contrast(90%); */
+  /* color: #203A93; */
+}
+
+.col h2 {
+  font-size: 1.5em; /* Adjusted size */
+  margin-bottom: 10px;
+  color: #203A93; /* Use theme color */
+}
+
+.col p {
+  font-size: 1em;
+  color: #484848; /* Darker text */
+  line-height: 1.6;
+}
+
+/* Pricing Plans */
+.pricing-plans {
+  text-align: center;
+  padding: 50px 20px 0 20px; /* Remove bottom padding */
+  background-color: #fff; /* Add background if needed */
+}
+
+.pricing-plans h1 {
+  color: #203A93;
+  font-size: 2.2em;
+  margin-bottom: 15px;
+}
+
+.pricing-plans > p { /* Target direct child p */
+  font-size: 1.1em;
+  color: #484848;
+  margin-bottom: 40px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.semi-circle {
+  display: none; /* Hide this - can be achieved with container background */
+}
+
+.big-container {
+  min-height: auto; /* Remove fixed height */
+  height: auto;
+  background-color: #83c7f0;
+  padding: 50px 0; /* Add padding top/bottom */
+  border-top-left-radius: 50% 40px; /* Curve top corners */
+  border-top-right-radius: 50% 40px;
+}
+
+.plans-container {
+  display: flex;
+  justify-content: center;
+  align-items: stretch; /* Make plans equal height */
+  flex-wrap: wrap;
+  gap: 30px; /* Use gap */
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.blue-box {
+  /* Removed - styles applied directly to plan or container */
+}
+
+.plan {
+  width: 350px; /* Slightly narrower */
+  height: auto; /* Auto height */
+  margin: 0; /* Removed margin */
+  padding: 0; /* Remove outer padding, handle inside */
+  background-color: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  display: flex;
+  flex-direction: column; /* Stack content vertically */
+  overflow: hidden; /* Ensure radius clips content */
+}
+
+.line, .line-2, .line-3 {
+  width: 100%;
+  border-radius: 0; /* Remove radius from line */
+  height: 10px;
+  flex-shrink: 0; /* Prevent line from shrinking */
+}
+.line { background-color: #B51963; }
+.line-2 { background-color: #F57600; }
+.line-3 { background-color: #E3242B; }
+
+
+.plan-content-wrapper {
+  padding: 25px; /* Add padding inside */
+  flex-grow: 1; /* Allow content to grow */
+  display: flex;
+  flex-direction: column;
+}
+
+
+.small-line {
+  width: 100%;
+  height: 1px; /* Thinner line */
+  background-color: #ddd; /* Lighter color */
+  margin: 15px 0;
+}
+
+.plan-header {
+  margin-bottom: 15px; /* Adjusted margin */
+  text-align: center;
+}
+
+.plan-header h2 {
+  font-size: 1.6em; /* Adjusted size */
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.plan-header p { /* Price line */
+  font-size: 1.2em; /* Adjusted size */
+  color: #484848;
+  font-weight: normal; /* Normal weight */
+  margin-bottom: 5px;
+}
+.plan-header .price {
+  font-size: 2.5em; /* Larger price */
+  font-weight: bold;
+  color: #203A93; /* Theme color */
+}
+
+.plan-header sup, .plan-header sub {
+  font-size: 0.5em; /* Smaller */
+  vertical-align: baseline; /* Adjust alignment */
+  position: relative;
+}
+.plan-header sup { top: -1em; }
+.plan-header sub { top: 0.3em; }
+
+.plan-content {
+  flex-grow: 1; /* Push button to bottom */
+}
+
+.plan-content p {
+  text-align: center;
+  font-size: 0.95em;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.plan-content ul {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 25px;
+}
+
+.plan-content li {
+  margin-bottom: 12px;
+  position: relative;
+  padding-left: 25px;
+  font-size: 1em;
+  color: #484848;
+}
+
+.plan-content li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #28a745; /* Green check */
+  font-weight: bold;
+}
+
+.plan-button-1, .plan-button-2, .plan-button-3 {
+  display: block; /* Make it block */
+  color: white;
+  padding: 12px 25px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  text-align: center;
+  margin-top: auto; /* Push to bottom */
+  width: 100%; /* Full width */
+  transition: opacity 0.3s ease;
+}
+.plan-button-1 { background-color: #B51963; }
+.plan-button-2 { background-color: #F57600; }
+.plan-button-3 { background-color: #E3242B; }
+
+.plan-button-1:hover, .plan-button-2:hover, .plan-button-3:hover {
+  opacity: 0.9;
+}
+
+
+/* Customer Service */
+.contact-section-wrapper { /* Added wrapper for background */
+  background-color: #f8f9fa;
+  padding: 50px 20px;
+}
+
+.contact-text h2 { /* This is a heading for the section */
+  margin-top: 0;
+  color:#203A93;
+  text-align: center;
+  font-size: 2.2em;
+  margin-bottom: 40px;
+}
+
+.contact-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start; /* Align items top */
+  gap: 40px; /* Gap between columns */
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.contact-content { /* Left column */
+  flex: 1 1 45%; /* Takes up roughly 45% */
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Space between text and image */
+}
+
+.contact-text { /* Text part within left column */
+  flex: none; /* Don't grow/shrink */
+  padding-right: 0; /* Removed padding */
+}
+
+.contact-text h3 { /* Sub-heading for contact text */
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.contact-text p {
+  font-size: 1em;
+  color: #484848;
+  line-height: 1.6;
+}
+
+.contact-image { /* Image part within left column */
+  flex: none; /* Don't grow/shrink */
+  text-align: left;
+  width: 100%; /* Take full width of parent */
+}
+
+.contact-image img {
+  max-width: 100%; /* Responsive image */
+  height: auto;
+  border-radius: 8px;
+}
+
+.contact-form { /* Right column */
+  flex: 1 1 45%; /* Takes up roughly 45% */
+  padding: 30px;
+  background-color: #fff; /* White background */
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.contact-form h3 {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%; /* Use full width */
+  padding: 12px; /* Increased padding */
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 1em;
+}
+
+.contact-form textarea {
+  height: 150px;
+  resize: vertical; /* Allow vertical resize */
+}
+
+.contact-form button {
+  display: block; /* Block level */
+  background-color: #28a745; /* Green submit */
+  color: white;
+  padding: 12px 25px;
+  border-radius: 5px;
+  border: none;
+  text-decoration: none;
+  font-weight: bold;
+  justify-content: center;
+  margin: 15px auto 0 auto; /* Center button */
+  cursor: pointer;
+  width: auto; /* Auto width */
+  transition: background-color 0.3s ease;
+}
+.contact-form button:hover {
+  background-color: #218838;
+}
+
+/* Footer */
+footer {
+  background-color: #404141;
+  color: white;
+  padding: 50px 20px 30px 20px; /* Added horizontal padding */
+  border-top: 1px solid #555; /* Slightly lighter border */
+  flex-shrink: 0;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap; /* Allow wrapping */
+  gap: 30px; /* Add gap */
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-section {
+  width: auto; /* Auto width */
+  min-width: 200px; /* Minimum width */
+  flex: 1; /* Allow sections to grow */
+}
+
+.footer-section h3 {
+  margin-bottom: 15px;
+  font-size: 1.2em;
+  color: #F1D27C; /* Accent color */
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section li {
+  margin-bottom: 10px;
+}
+
+.footer-section a {
+  color: #eee; /* Lighter text color */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+.footer-section a:hover {
+  color: #F1D27C; /* Highlight on hover */
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #555; /* Separator line */
+  flex-wrap: wrap;
+  gap: 10px 20px; /* Row and column gap */
+}
+
+.footer-bottom p {
+  margin: 0; /* Removed margin */
+  font-size: 0.9em;
+  color: #ccc;
+}
+
+/* =================================== */
+/* ========== Media Queries ========== */
+/* =================================== */
+
+/* ----- Medium Devices (Tablets, etc.) ----- */
+@media (max-width: 992px) {
+  .menus {
+    gap: 40px; /* Reduce gap further */
+  }
+  .menus a {
+    font-size: 1em; /* Slightly smaller menu items */
+  }
+  .text-overlay h1, .text-overlay h2 {
+    font-size: 3em; /* Reduce banner text size */
+  }
+  .text-overlay p {
+    font-size: 1.2em;
+  }
+  .getstarted {
+    font-size: 1.1em;
+    padding: 10px 20px;
+  }
+  .plans-container {
+    gap: 25px;
+  }
+  .plan {
+    width: 300px; /* Adjust plan width */
+  }
+  .contact-section {
+    gap: 30px;
+  }
+  .contact-content, .contact-form {
+    flex-basis: 48%; /* Adjust basis slightly */
+  }
+}
+
+/* ----- Small Devices (Mobiles) ----- */
+@media (max-width: 768px) {
+  .nav-bar {
+    padding: 10px 15px; /* Reduce nav padding */
+  }
+  .logo h1 { font-size: 1.4em; }
+  .logo h3 { font-size: 1em; }
+
+  .menu-toggle {
+    display: flex; /* Show hamburger icon */
+  }
+  .menus {
+    display: none; /* Hide menu items by default */
+    /* --- Mobile Menu Styles (Needs JS for toggle) --- */
+    /* position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #203A93;
+    flex-direction: column;
+    padding: 20px 0;
+    gap: 0;
+    align-items: center; */
+  }
+  .menus.active { /* Class added by JS */
+     display: flex;
+  }
+  .menus li {
+     width: 100%;
+     text-align: center;
+     padding: 15px 0;
+  }
+   .menus a::after { /* Hide underline on mobile */
+      display: none;
+   }
+
+  .buttons {
+    display: none; /* Hide desktop buttons */
+    /* Consider adding login/signup to mobile menu */
+  }
+
+  .banner-section {
+     margin-top: 60px; /* Adjust based on mobile header height */
+     min-height: 60vh;
+  }
+
+  .text-overlay {
+    width: 90%;
+    padding: 0 5%;
+    text-align: center; /* Center text on mobile */
+  }
+  .text-overlay h1, .text-overlay h2 {
+    font-size: 2.2em; /* Significantly reduce font size */
+  }
+  .text-overlay p {
+    font-size: 1.1em;
+  }
+  .getstarted {
+    font-size: 1em;
+    padding: 10px 18px;
+  }
+
+  .features-cards { padding: 40px 15px; }
+  .features-cards h1 { font-size: 2em; }
+  .features-cards p { font-size: 1em; }
+  .col { width: 90%; max-width: 320px; } /* Stack feature cards */
+
+  .pricing-plans { padding: 40px 15px 0 15px; }
+  .pricing-plans h1 { font-size: 2em; }
+  .pricing-plans > p { font-size: 1em; }
+  .big-container { padding: 40px 0; }
+  .plans-container { gap: 25px; }
+  .plan { width: 90%; max-width: 350px; } /* Stack plans */
+
+  .contact-section-wrapper { padding: 40px 15px; }
+  .contact-text h2 { font-size: 2em; }
+  .contact-section {
+    flex-direction: column; /* Stack columns */
+    align-items: center; /* Center items */
+    gap: 30px;
+  }
+  .contact-content, .contact-form {
+    flex-basis: auto; /* Reset basis */
+    width: 100%; /* Full width */
+    max-width: 500px; /* Max width for content/form */
+  }
+  .contact-image { text-align: center; }
+  .contact-image img { max-width: 80%; } /* Adjust image size */
+
+  .footer-container {
+    flex-direction: column; /* Stack footer sections */
+    align-items: center; /* Center align */
+    text-align: center;
+  }
+  .footer-section {
+    min-width: auto; /* Remove min-width */
+    width: 90%; /* Set width */
+  }
+  .footer-bottom { text-align: center; }
+}
+
+/* ----- Extra Small Devices ----- */
+@media (max-width: 480px) {
+  body { font-size: 15px; } /* Adjust base font slightly */
+
+  .logo h1 { font-size: 1.2em; }
+  .logo h3 { display: none; } /* Hide subtitle */
+
+  .text-overlay h1, .text-overlay h2 {
+    font-size: 1.8em; /* Further reduce */
+  }
+  .text-overlay p {
+    font-size: 1em;
+  }
+
+  .col { padding: 20px; }
+  .col h2 { font-size: 1.4em; }
+
+  .plan-header h2 { font-size: 1.5em; }
+  .plan-header .price { font-size: 2.2em; }
+  .plan-content li { font-size: 0.95em; }
+  .plan-button-1, .plan-button-2, .plan-button-3 { padding: 10px 20px; }
+
+  .contact-form { padding: 20px; }
+  .contact-form input, .contact-form textarea { padding: 10px; }
+
+  .footer-section h3 { font-size: 1.1em; }
+}
