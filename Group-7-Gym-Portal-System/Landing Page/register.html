@@ -1,0 +1,68 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ENERGIZE Gym Center - Register</title>
+  <link rel="stylesheet" href="stylesregister.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <a href="index.html" class="back-button">← Back</a>
+
+  <div class="login-container">
+    <div class="login-quote register-quote">
+      <h2>Welcome to ENERGIZE Gym Center!</h2>
+      <p>"Every new beginning comes from some other beginning's end."</p>
+    </div>
+
+    <div class="register-container">
+      <div class="register-form-wrapper">
+        <form class="register-form" id="registerForm">
+          <h2>New Member Registration</h2>
+
+          <div class="form-group">
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="name" required>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+
+          <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+          </div>
+
+          <div class="form-group">
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" required>
+            <p class="error-message" id="ageError"></p>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <p class="error-message" id="passwordError"></p>
+          </div>
+
+          <div class="form-group">
+            <label for="confirm-password">Confirm Password:</label>
+            <input type="password" id="confirm-password" name="confirm-password" required>
+            <p class="error-message" id="confirmPasswordError"></p>
+          </div>
+
+          <button type="submit" class="register-button">Register</button>
+          <p class="login-link">Already have an account? <a href="login.html">Login here</a></p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="register.js"></script>
+
+</body>
+</html>

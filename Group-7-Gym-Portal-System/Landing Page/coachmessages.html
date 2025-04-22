@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <title>Coach Dashboard</title>
+    <!-- ======= Styles ====== -->
+    <link rel="stylesheet" href="coachmessages.css">
+</head>
+
+<body>
+    <!-- =============== Navigation ================ -->
+    <div class="container">
+        <div class="navigation">
+            <ul>
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="barbell"></ion-icon>
+                        </span>
+                        <span class="title">ENERGIZE</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="coachmain.html">
+                        <span class="icon">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="coachclient.html">
+                        <span class="icon">
+                            <ion-icon name="people-outline"></ion-icon>
+                        </span>
+                        <span class="title">Clients</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="coachmessages.html">
+                        <span class="icon">
+                            <ion-icon name="chatbubble-outline"></ion-icon>
+                        </span>
+                        <span class="title">Messages</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="coachschedule.html">
+                        <span class="icon">
+                            <ion-icon name="calendar-outline"></ion-icon>
+                        </span>
+                        <span class="title">Your Schedule</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="coachsettings.html">
+                        <span class="icon">
+                            <ion-icon name="settings-outline"></ion-icon>
+                        </span>
+                        <span class="title">Settings</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ========================= Main ==================== -->
+        <div class="main">
+            <div class="topbar">
+                <div class="toggle">
+                    <ion-icon name="menu-outline"></ion-icon>
+                </div>
+
+                <div class="search-container">
+                    <label>
+                      <input type="text" id="search-input" placeholder="Search what you're looking for">
+                      <ion-icon name="search-outline"></ion-icon>
+                    </label>
+                    <div id="search-results">
+                    </div>
+                  </div>
+
+                  
+                <div class="mail-container">
+                    <ion-icon name="mail" id="mail-icon-inbox"></ion-icon>
+                    <div id="unread-notification">1</div>
+                    <div id="inbox-preview">
+                    <strong>Inbox</strong>
+                    <hr>
+                    <div id="unread-messages">
+                        <div class="email-item sender">Coach</div>
+                        <div class="email-item subject">Can you help me?</div>
+                        <hr>
+                    </div>
+                    <div id="read-messages">
+                        <div class="email-item sender">User 1</div>
+                        <div class="email-item subject">Previous message...</div>
+                    </div>
+                    <a href="#">See All</a>
+                    </div>
+                </div>
+
+                <div class="notification-container">
+                    <ion-icon name="notifications" id="notification-icon"></ion-icon>
+                    <div id="notification-badge">1</div>
+                    <div id="notifications-dropdown">
+                      <strong>Notifications</strong>
+                      <hr>
+                      <div id="notification-list">
+                        <div class="notification-item title">Today, 5:00 PM</div>
+                        <div class="notification-item message">You have a session scheduled.</div>
+                        <hr>
+                        <div class="notification-item title">New Request</div>
+                        <div class="notification-item message">Veronica has requested a session with you.</div>
+                      </div>
+                      <a href="#">See All</a>
+                    </div>
+                  </div>
+            
+                <div class="name">
+                    <p>Edward Linkin</p>
+                </div>
+    
+                <div class="user">
+                    <img src="customer01.jpg" alt="">
+                </div>                
+            </div>
+
+             <!-- ========================= Message Section ==================== -->
+            <div class="messenger-wrapper">
+                <div class="chat-list-sidebar">
+                    <div class="chat-item active-chat">
+                        <div class="profile-pic">
+                            <img src="sigma.jpg" alt="Sigma">
+                        </div>
+                        <div class="chat-info">
+                            <span class="username">Sigma</span>
+                            <span class="last-message">Hi, This is Sigma</span>
+                        </div>
+                    </div>
+                    <div class="chat-item">
+                        <div class="profile-pic">
+                            <img src="pusa.jpg" alt="Pusa">
+                        </div>
+                        <div class="chat-info">
+                            <span class="username">Pusa Suit</span>
+                            <span class="last-message">No messages</span>
+                        </div>
+                    </div>
+                    <div class="chat-item">
+                        <div class="profile-pic">
+                            <img src="sakses.jpg" alt="Nina">
+                        </div>
+                        <div class="chat-info">
+                            <span class="username">Nina Sakses</span>
+                            <span class="last-message">No messages</span>
+                        </div>
+                    </div>
+                    <div class="chat-item">
+                        <div class="profile-pic">
+                            <img src="ramburat.jpg" alt="Patricia">
+                        </div>
+                        <div class="chat-info">
+                            <span class="username">Patricia</span>
+                            <span class="last-message">Be...</span>
+                        </div>
+                    </div>
+                    <div class="chat-item">
+                        <div class="profile-pic">
+                            <img src="katik.jpg" alt="Micah">
+                        </div>
+                        <div class="chat-info">
+                            <span class="username">Micah</span>
+                            <span class="last-message">Thank you!</span>
+                        </div>
+                    </div>
+                    </div>
+                <div class="main-chat-area">
+                    <div class="chat-header">
+                        <div class="profile-info">
+                            <div class="profile-pic">
+                                <img src="katik.jpg" alt="Micah">
+                            </div>
+                            <div class="user-details">
+                                <span class="username">Johnston</span>
+                                <span class="status">Online</span> </div>
+                        </div>
+                        <div class="chat-actions">
+                            <span>📞</span>
+                            <span>📹</span>
+                            <span>ℹ️</span>
+                        </div>
+                    </div>
+                    <div class="message-body" id="main-message-body">
+                        <div class="message received-msg">
+                            <div class="msg-bubble">
+                                <p>Hi, This is Micah</p>
+                            </div>
+                        </div>
+                        <div class="message received-msg">
+                            <div class="msg-bubble">
+                                <p>Sharing my progress today...</p>
+                            </div>
+                        </div>
+                        <div class="message received-msg">
+                            <div class="msg-bubble">
+                                <img src="katik.jpg" alt="Groupie">
+                            </div>
+                        </div>
+                        <div class="message sent-msg">
+                            <div class="msg-bubble">
+                                </div>
+                        </div>
+                        </div>
+                        <div class="message-input-area">
+                            <div class="input-field">
+                                <input type="text" id="main-message-input" placeholder="Type a message...">
+                                <button id="main-send-btn">Send</button>
+                            </div>
+                        </div>
+                </div>
+            </div>
+
+            <div id="signOutModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title">Sign Out</h2>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to sign out?</p>
+                    </div>
+                    <div class="modal-footer sign-out-actions">
+                        <button class="modal-button no-button" id="signOutNo">No</button>
+                        <button class="modal-button yes-button" id="signOutYes">Yes</button>
+                    </div>
+                </div>
+            </div>
+
+ <!-- =========== Scripts =========  -->
+ <script src="coachmessages.js"></script>
+
+<!-- ====== ionicons ======= -->
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+</body>
+
+</html>
