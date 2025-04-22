@@ -189,8 +189,7 @@ document.addEventListener('DOMContentLoaded', function() {
       hideModal(signOutModal);
   }
   });
-
-  // Helper functions for showing and hiding the modal
+  
   function showModal(modalElement) {
   modalElement.classList.add('show');
   }

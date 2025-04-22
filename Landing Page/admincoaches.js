@@ -19,22 +19,21 @@ toggle.onclick = function () {
   main.classList.toggle("active");
 };
 
-//Search
+//Search Function
 const searchInput = document.getElementById('search-input');
 const searchResultsDiv = document.getElementById('search-results');
 
-// Dummy search data (replace with your actual data source)
 const searchData = [
-  "Apple Pie Recipe",
-  "Best Beaches in Bali",
-  "Coding Tutorials for Beginners",
-  "Delicious Chocolate Cake",
-  "Easy Vegetarian Meals",
-  "Funny Cat Videos",
-  "Hiking Trails Near Me",
-  "Italian Pasta Dishes",
-  "Jazz Music Classics",
-  "Learn JavaScript Frameworks"
+  "Total Sales",
+  "Total Clients",
+  "Settings",
+  "Total Coaches",
+  "Payments",
+  "Recent Complaints",
+  "Admin Dashboard",
+  "Updates",
+  "Database Updates",
+  "Added Admins"
 ];
 
 searchInput.addEventListener('input', function() {
@@ -47,7 +46,7 @@ searchInput.addEventListener('input', function() {
 });
 
 function displayResults(results) {
-  searchResultsDiv.innerHTML = ''; // Clear previous results
+  searchResultsDiv.innerHTML = '';
 
   if (results.length > 0 && searchInput.value.trim() !== '') {
     const ul = document.createElement('ul');
@@ -56,29 +55,28 @@ function displayResults(results) {
       li.textContent = result;
       li.addEventListener('click', function() {
         searchInput.value = this.textContent;
-        searchResultsDiv.style.display = 'none'; // Hide results on selection
+        searchResultsDiv.style.display = 'none'; 
       });
       ul.appendChild(li);
     });
     searchResultsDiv.appendChild(ul);
-    searchResultsDiv.style.display = 'block'; // Show results
+    searchResultsDiv.style.display = 'block'; 
   } else {
-    searchResultsDiv.style.display = 'none'; // Hide if no results or empty input
+    searchResultsDiv.style.display = 'none';
   }
 }
 
-// Close results when clicking outside the search container
 document.addEventListener('click', function(event) {
   if (!event.target.closest('.search-container')) {
     searchResultsDiv.style.display = 'none';
   }
 });
 
-//mail
+//Mail Function
 const mailIconInbox = document.getElementById('mail-icon-inbox');
 const unreadNotification = document.getElementById('unread-notification');
 const inboxPreview = document.getElementById('inbox-preview');
-let hasUnread = true; // Initially, simulate having an unread message
+let hasUnread = true; 
 
 function updateUnreadIndicator() {
   unreadNotification.style.display = hasUnread ? 'block' : 'none';
@@ -88,16 +86,16 @@ updateUnreadIndicator();
 
 mailIconInbox.addEventListener('click', function() {
   inboxPreview.style.display = (inboxPreview.style.display === 'block' ? 'none' : 'block');
-  // When the inbox is opened, mark as read (for this simple example)
+
   if (hasUnread && inboxPreview.style.display === 'block') {
     hasUnread = false;
     updateUnreadIndicator();
-    // You would likely have more complex logic to handle marking as read
+ad
     console.log('Mail icon clicked - marking as read');
   }
 });
 
-// Close the preview if clicking outside
+
 document.addEventListener('click', function(event) {
   if (!event.target.closest('.mail-container')) {
     inboxPreview.style.display = 'none';
@@ -105,27 +103,27 @@ document.addEventListener('click', function(event) {
 });
 
 
-//notif bell
+//Notification Function
 const notificationIcon = document.getElementById('notification-icon');
 const notificationBadge = document.getElementById('notification-badge');
 const notificationsDropdown = document.getElementById('notifications-dropdown');
 
 notificationIcon.addEventListener('click', function() {
   notificationsDropdown.style.display = (notificationsDropdown.style.display === 'block' ? 'none' : 'block');
-  // When the notifications are opened, you might want to hide the badge
+  
   notificationBadge.style.display = 'none';
 });
 
-// Close the dropdown if clicking outside
+
 document.addEventListener('click', function(event) {
   if (!event.target.closest('.notification-container')) {
     notificationsDropdown.style.display = 'none';
   }
 });
 
-//coaches
-let coachesData = loadCoaches(); // Load coaches from local storage
-    let currentProfileId = null; // To keep track of the currently open profile
+//Coaches
+let coachesData = loadCoaches(); 
+    let currentProfileId = null; 
 
     renderCoachesTable(coachesData);
 
@@ -155,19 +153,16 @@ let coachesData = loadCoaches(); // Load coaches from local storage
         coachesData.unshift(newCoach);
         saveCoaches();
         renderCoachesTable(coachesData);
-
-        // Clear the input fields
         nameInput.value = '';
         emailInput.value = '';
         phoneInput.value = '';
         assignedClientInput.value = '';
         sessionsInput.value = '';
-        availabilityInput.value = 'available'; // Reset to default
+        availabilityInput.value = 'available'; 
     }
 
     function renderCoachesTable(coaches) {
         const tableBody = document.getElementById('coachesTableBody');
-        // Keep the "Add Coach" row
         const addRow = document.getElementById('addCoachRow');
         const existingDataRows = tableBody.querySelectorAll('tr:not(#addCoachRow)');
         existingDataRows.forEach(row => row.remove());
@@ -186,7 +181,7 @@ let coachesData = loadCoaches(); // Load coaches from local storage
                 const sessionsCell = row.insertCell();
                 const availabilityCell = row.insertCell();
                 const actionsCell = row.insertCell();
-                actionsCell.classList.add('action-buttons'); // Add class for styling
+                actionsCell.classList.add('action-buttons'); 
 
                 nameCell.innerHTML = `<a href="#" class="coach-name-link" data-coach-id="${coach.id}">${coach.name}</a>`;
                 emailCell.textContent = coach.email || '-';
@@ -195,7 +190,7 @@ let coachesData = loadCoaches(); // Load coaches from local storage
                 sessionsCell.textContent = coach.sessions || '-';
 
                 availabilityCell.textContent = coach.availability.toUpperCase();
-                availabilityCell.classList.add(coach.availability); // Add class for styling
+                availabilityCell.classList.add(coach.availability); 
 
                 const deleteButton = document.createElement('button');
                 deleteButton.textContent = 'Delete';
@@ -236,12 +231,11 @@ let coachesData = loadCoaches(); // Load coaches from local storage
         }
     }
 
-    // Event listener for showing coach profile
     document.getElementById('coachesTableBody').addEventListener('click', (event) => {
         if (event.target.classList.contains('coach-name-link')) {
             const coachId = event.target.dataset.coachId;
             showCoachProfileModal(coachId);
-            event.preventDefault(); // Prevent the link from navigating
+            event.preventDefault(); 
         } else if (event.target.classList.contains('delete-button')) {
             const coachIdToDelete = parseInt(event.target.dataset.coachId);
             deleteCoach(coachIdToDelete);
@@ -281,8 +275,6 @@ let coachesData = loadCoaches(); // Load coaches from local storage
         const storedCoaches = localStorage.getItem('coaches');
         return storedCoaches ? JSON.parse(storedCoaches) : [];
     }
-
-    // Initial render
     renderCoachesTable(coachesData);
 
 //Sign out
