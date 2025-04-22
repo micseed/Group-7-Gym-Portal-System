@@ -19,7 +19,7 @@
 
 <div class="coach-container">
   <div class="coach-card">
-    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Coach Kyla">
+    <img src="https://i.pinimg.com/236x/36/e0/ab/36e0ab491e007b66f8c18a6ac875bbdc.jpg" alt="Coach Kyla">
     <div class="coach-info">
       <h3>Coach Kyla</h3>
       <p>Strength & Conditioning</p>
@@ -31,7 +31,7 @@
     </div>
   </div>
   <div class="coach-card">
-    <img src="https://randomuser.me/api/portraits/women/47.jpg" alt="Coach Pearl">
+    <img src="https://i.pinimg.com/474x/47/fb/ae/47fbae94a459d0b01a55cca1d419ac87.jpg" alt="Coach Pearl">
     <div class="coach-info">
       <h3>Coach Pearl</h3>
       <p>Yoga & Flexibility</p>
@@ -43,7 +43,7 @@
     </div>
   </div>
   <div class="coach-card">
-    <img src="https://randomuser.me/api/portraits/men/40.jpg" alt="Coach Jaxon">
+    <img src="https://i.pinimg.com/236x/6b/19/09/6b1909327452ade3fe7dde95ed9be3bd.jpg" alt="Coach Jaxon">
     <div class="coach-info">
       <h3>Coach Jaxon</h3>
       <p>Cardio & Endurance</p>
@@ -55,7 +55,7 @@
     </div>
   </div>
   <div class="coach-card">
-    <img src="https://randomuser.me/api/portraits/men/31.jpg" alt="Coach Marco">
+    <img src="https://i.pinimg.com/474x/fd/3f/2f/fd3f2f54ef17721fd194a141c8a4a449.jpg" alt="Coach Marco">
     <div class="coach-info">
       <h3>Coach Marco</h3>
       <p>HIIT Specialist</p>
@@ -67,7 +67,7 @@
     </div>
   </div>
   <div class="coach-card">
-    <img src="https://randomuser.me/api/portraits/women/53.jpg" alt="Coach Nina">
+    <img src="https://i.pinimg.com/236x/2e/7b/6b/2e7b6b3f4c97d0045c30b4e4d1404ffa.jpg" alt="Coach Nina">
     <div class="coach-info">
       <h3>Coach Nina</h3>
       <p>Pilates & Mobility</p>
@@ -79,7 +79,7 @@
     </div>
   </div>
   <div class="coach-card">
-    <img src="https://randomuser.me/api/portraits/men/39.jpg" alt="Coach Eli">
+    <img src="https://i.pinimg.com/236x/02/73/ff/0273ff1da0ac4df7b98379a3b30e98b2.jpg" alt="Coach Eli">
     <div class="coach-info">
       <h3>Coach Eli</h3>
       <p>Bodybuilding Coach</p>
@@ -91,7 +91,7 @@
     </div>
   </div>
   <div class="coach-card">
-    <img src="https://randomuser.me/api/portraits/women/25.jpg" alt="Coach Sam">
+    <img src="https://i.pinimg.com/736x/5c/d5/f4/5cd5f4d5740eaefa6d098720f059e52b.jpg" alt="Coach Sam">
     <div class="coach-info">
       <h3>Coach Sam</h3>
       <p>Functional Fitness</p>
@@ -104,7 +104,7 @@
   </div>
   
   <div class="coach-card">
-    <img src="https://randomuser.me/api/portraits/women/62.jpg" alt="Coach Mira">
+    <img src="https://i.pinimg.com/236x/93/a8/49/93a84925623693c9e4aea682f10a6590.jpg" alt="Coach Mira">
     <div class="coach-info">
       <h3>Coach Mira</h3>
       <p>Zumba Instructor</p>
@@ -141,11 +141,13 @@
   }
 
   .coach-card img {
-    width: 100%;
-    height: auto;
-    display: block;
-    transition: transform 0.4s ease;
-  }
+  width: 100%;
+  height: 300px; 
+  object-fit: cover; 
+  display: block;
+  transition: transform 0.4s ease;
+}
+
 
   .coach-card:hover {
     transform: scale(1.05);
@@ -258,42 +260,42 @@
     const coachDetails = {
       "Coach Kyla": {
         specialty: "Strength & Conditioning",
-        image: "https://randomuser.me/api/portraits/women/44.jpg",
+        image: "https://i.pinimg.com/236x/36/e0/ab/36e0ab491e007b66f8c18a6ac875bbdc.jpg",
         bio: "Kyla helps clients build strength with personalized resistance training programs."
       },
       "Coach Pearl": {
         specialty: "Yoga & Flexibility",
-        image: "https://randomuser.me/api/portraits/women/47.jpg",
+        image: "https://i.pinimg.com/474x/47/fb/ae/47fbae94a459d0b01a55cca1d419ac87.jpg",
         bio: "Pearl guides sessions focused on improving posture and flexibility."
       },
       "Coach Jaxon": {
         specialty: "Cardio & Endurance",
-        image: "https://randomuser.me/api/portraits/men/40.jpg",
+        image: "https://i.pinimg.com/236x/6b/19/09/6b1909327452ade3fe7dde95ed9be3bd.jpg",
         bio: "Jaxon leads high-intensity cardio sessions that boost stamina."
       },
       "Coach Marco": {
         specialty: "HIIT Specialist",
-        image: "https://randomuser.me/api/portraits/men/31.jpg",
+        image: "https://i.pinimg.com/474x/fd/3f/2f/fd3f2f54ef17721fd194a141c8a4a449.jpg",
         bio: "Marco specializes in interval training to burn calories fast."
       },
       "Coach Nina": {
         specialty: "Pilates & Mobility",
-        image: "https://randomuser.me/api/portraits/women/53.jpg",
+        image: "https://i.pinimg.com/236x/2e/7b/6b/2e7b6b3f4c97d0045c30b4e4d1404ffa.jpg",
         bio: "Nina offers low-impact routines to improve mobility and core strength."
       },
       "Coach Eli": {
         specialty: "Bodybuilding Coach",
-        image: "https://randomuser.me/api/portraits/men/39.jpg",
+        image: "https://i.pinimg.com/236x/02/73/ff/0273ff1da0ac4df7b98379a3b30e98b2.jpg",
         bio: "Eli helps aspiring bodybuilders achieve competition-level physiques."
       },
       "Coach Sam": {
         specialty: "Functional Fitness",
-        image: "https://randomuser.me/api/portraits/women/25.jpg",
+        image: "https://i.pinimg.com/736x/5c/d5/f4/5cd5f4d5740eaefa6d098720f059e52b.jpg",
         bio: "Sam's training focuses on real-life strength and injury prevention."
       },
       "Coach Mira": {
         specialty: "Zumba Instructor",
-        image: "https://randomuser.me/api/portraits/women/62.jpg",
+        image: "https://i.pinimg.com/236x/93/a8/49/93a84925623693c9e4aea682f10a6590.jpg",
         bio: "Mira delivers high-energy Zumba classes for fun, full-body workouts."
       }
     };
