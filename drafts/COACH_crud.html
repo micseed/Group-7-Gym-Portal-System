@@ -1,0 +1,149 @@
+<h3 style="margin-top: 40px;">🏋️ Coach Weekly Schedule</h3>
+
+
+<div style="margin-bottom: 20px;">
+  <input type="text" id="coachName" placeholder="Coach Name" />
+  <select id="scheduleDay">
+    <option>Monday</option><option>Tuesday</option>
+    <option>Wednesday</option><option>Thursday</option>
+    <option>Friday</option><option>Saturday</option>
+  </select>
+  <input type="date" id="scheduleDate" />
+  <input type="text" id="clientName" placeholder="Client Name" />
+  <button onclick="addSchedule()">Add Schedule</button>
+</div>
+
+
+<table style="width: 100%; border-collapse: collapse;" id="scheduleTable">
+  <thead>
+    <tr style="background-color: #153ba3; color: white;">
+      <th>Coach</th>
+      <th>Day</th>
+      <th>Date</th>
+      <th>Client</th>
+      <th>Status</th>
+      <th>Reason</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+  let schedules = JSON.parse(localStorage.getItem("coachSchedules")) || [];
+
+  function saveSchedules() {
+    localStorage.setItem("coachSchedules", JSON.stringify(schedules));
+    renderTable();
+  }
+
+  function addSchedule() {
+    const coach = document.getElementById("coachName").value.trim();
+    const day = document.getElementById("scheduleDay").value;
+    const date = document.getElementById("scheduleDate").value;
+    const client = document.getElementById("clientName").value.trim();
+
+    if (!coach || !date || !client) return alert("Please fill all fields!");
+
+    schedules.push({
+      id: Date.now(),
+      coach,
+      day,
+      date,
+      client,
+      status: "Available",
+      reason: "-"
+    });
+
+    saveSchedules();
+    document.getElementById("coachName").value = "";
+    document.getElementById("scheduleDate").value = "";
+    document.getElementById("clientName").value = "";
+  }
+
+  function renderTable() {
+    const tbody = document.querySelector("#scheduleTable tbody");
+    tbody.innerHTML = "";
+
+    schedules.forEach((sched, i) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${sched.coach}</td>
+        <td>${sched.day}</td>
+        <td>${sched.date}</td>
+        <td>${sched.client}</td>
+        <td style="color:${sched.status === 'Unavailable' ? 'red' : 'green'};">${sched.status}</td>
+        <td>${sched.reason}</td>
+        <td>
+          <button onclick="markUnavailable(${sched.id})">Unavailable</button>
+          <button onclick="editSchedule(${sched.id})">Edit</button>
+          <button onclick="deleteSchedule(${sched.id})">Delete</button>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  function deleteSchedule(id) {
+    if (confirm("Are you sure you want to delete this schedule?")) {
+      schedules = schedules.filter(s => s.id !== id);
+      saveSchedules();
+    }
+  }
+
+  function editSchedule(id) {
+    const sched = schedules.find(s => s.id === id);
+    const newCoach = prompt("Update Coach Name:", sched.coach);
+    const newClient = prompt("Update Client Name:", sched.client);
+    const newDate = prompt("Update Date (YYYY-MM-DD):", sched.date);
+    const newDay = prompt("Update Day:", sched.day);
+
+    if (newCoach && newClient && newDate && newDay) {
+      sched.coach = newCoach;
+      sched.client = newClient;
+      sched.date = newDate;
+      sched.day = newDay;
+      saveSchedules();
+    }
+  }
+
+  function markUnavailable(id) {
+    const sched = schedules.find(s => s.id === id);
+    if (sched.status === "Unavailable") return alert("Already unavailable.");
+    const reason = prompt("Enter reason for unavailability:");
+    if (reason) {
+      sched.status = "Unavailable";
+      sched.reason = reason;
+      saveSchedules();
+    }
+  }
+
+  renderTable();
+</script>
+
+<style>
+  input, select {
+    padding: 6px;
+    margin-right: 10px;
+  }
+
+  button {
+    margin: 2px;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #153ba3;
+    color: white;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #0f2f80;
+  }
+
+  td, th {
+    border: 1px solid #ccc;
+    padding: 8px 10px;
+    text-align: center;
+  }
+</style>

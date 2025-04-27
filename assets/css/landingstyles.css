@@ -24,6 +24,7 @@ header {
   justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
+  margin-left: 50px;
 }
 
 .logo {
@@ -84,7 +85,8 @@ header {
   padding: 10px 20px; 
   cursor: pointer; 
   font-size: 20px; 
-  transition: background-color 0.3s ease; 
+  transition: background-color 0.3s ease;
+  margin-right: 50px; 
 }
 
 .buttons a{
@@ -416,12 +418,14 @@ header {
 
 .contact-text p {
   font-size: 1em; 
-  color: #333; 
+  color: #333;
+  margin-left: 9%; 
 }
 
 .contact-image {
   flex: 1;
-  text-align: start; 
+  text-align: start;
+  margin-left: 9%;
 }
 
 .contact-image img {
@@ -434,7 +438,8 @@ header {
   flex: 1 1 50%; 
   padding: 20px;
   background-color: #eee; 
-  border-radius: 8px;
+  border-radius: 15px;
+  margin-right: 5%;
 }
 
 .contact-form input,
@@ -444,7 +449,7 @@ header {
   margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  box-sizing: border-box; 
+  box-sizing: border-box;
 }
 
 .contact-form textarea {
@@ -545,7 +550,6 @@ display: block;
 transition: transform 0.4s ease;
 }
 
-
 .coach-card:hover {
   transform: scale(1.05);
   box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
@@ -605,13 +609,13 @@ background-color: rgba(0,0,0,0.7);
 }
 
 .modal-content {
-  margin-left: 23%;
-  margin-top: 10%;
+margin-left: 28%;
+margin-top: 10%;
 background-color: #fff;
 margin-top: 10%;
 padding: 30px;
 border: 1px solid #888;
-width: 50%;
+width: 40%;
 border-radius: 10px;
 text-align: center;
 position: relative;
@@ -642,5 +646,4 @@ from {opacity: 0;}
 to {opacity: 1;}
 }
 
-/* Responsive */
 

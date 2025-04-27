@@ -613,260 +613,116 @@ margin-right: 5px;
     background-color: #18267a;
 }
 
-.schedule-page {
-    padding-top: 0;
-    padding-bottom: 40px;
-}
+.payment-container {
+            max-width: 600px;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            justify-self: center;
+        }
 
-.schedule-filter {
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 30px;
-    text-align: center;
-}
+        h1 {
+            color: #203a93;
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-.schedule-filter h2 {
-    color: #203a93;
-    margin-bottom: 20px;
-    font-size: 1.8em;
-}
+        h2 {
+            color: #444;
+            font-size: 1.5em;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            text-align: left;
+        }
 
-.filter-controls {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-}
+        .subscription-selection label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
 
-.filter-controls label {
-    font-weight: 500;
-    color: #484848;
-}
+        #subscription-tier {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1em;
+        }
 
-.filter-controls select {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1em;
-    color: #484848;
-}
+        .payment-details {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
 
-.class-list {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+        .payment-details h2 {
+            text-align: center;
+        }
 
-.class-list ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
+        .form-group {
+            margin-bottom: 15px;
+        }
 
-.class-list li {
-    border-bottom: 1px solid #eee;
-    padding: 15px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
 
-.class-list li:last-child {
-    border-bottom: none;
-}
+        .form-group input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
 
-.class-info {
-    flex-grow: 1;
-}
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
 
-.class-name {
-    font-weight: 600;
-    color: #203a93;
-    margin-bottom: 5px;
-}
+        button.primary,
+        .button-link {
+            background-color: #203a93;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            display: block;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
 
-.class-details {
-    color: #484848;
-    font-size: 0.9em;
-}
+        .home {
+            text-align:center;
+        }
 
-.book-button {
-    background-color: #203a93;
-    color: #fff;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s ease;
-}
+        button.primary:hover,
+        .button-link:hover {
+            background-color: #18267a;
+        }
 
-.book-button:hover {
-    background-color: #18267a;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 10;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0,0,0,0.4);
-}
-
-.modal-content {
-    margin-top: 20%;
-    margin-left: 20%;
-    background-color: #fefefe;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
-    border-radius: 10px;
-    position: relative;
-    text-align: center;
-    max-height: 80vh;
-    overflow-y: auto;
-}
-.close-button {
-    color: #aaa;
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close-button:hover,
-.close-button:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.modal-content h3 {
-    color: #203a93;
-    margin-bottom: 15px;
-}
-
-.modal-content p {
-    color: #484848;
-    margin-bottom: 10px;
-}
-
-.modal-content strong {
-    font-weight: 600;
-}
-
-.modal-content .button {
-    margin-top: 20px;
-    background-color: #203a93;
-    color: #fff;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s ease;
-}
-
-.modal-content .button:hover {
-    background-color: #18267a;
-}
-
-.modal-content .message {
-    margin-top: 15px;
-    font-weight: bold;
-}
-
-.modal-content .message.success {
-    color: green;
-}
-
-.modal-content .message.error {
-    color: red;
-}
-
-@media (max-width: 768px) {
-    .filter-controls {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .filter-controls label,
-    .filter-controls select {
-        margin-bottom: 10px;
-    }
-
-    .class-list li {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-
-    .book-button {
-        width: 100%;
-    }
-
-    .modal-content {
-        width: 90%;
-        max-width: 450px;
-        margin-top: 30vh;
-    }
-
-    .sidebar {
-        width: 250px;
-        transform: translateX(-300px);
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-        z-index: 10;
-        overflow-y: auto;
-    }
-
-    .sidebar.expanded {
-        transform: translateX(0);
-    }
-
-    .sidebar-toggle {
-        display: block;
-        background: none;
-        border: none;
-        color: #fff;
-        font-size: 1.5em;
-        padding: 10px;
-        cursor: pointer;
-        position: fixed;
-        top: 10px;
-        left: 10px;
-        z-index: 15;
-    }
-
-    .sidebar-toggle i.fa-bars {
-        color: #182c70;
-    }
-
-    .sidebar-toggle i.fa-bars:hover {
-        color: #101f50;
-    }
-
-    .main-content {
-        padding-left: 15px;
-    }
-}
-
-/* Modal Styles for Sign out*/
-.modal {
+        /* Modal Styles for Sign out*/
+ .modal {
         display: none; 
         position: fixed; 
         z-index: 1000; 
@@ -997,22 +853,23 @@ margin-right: 5px;
                 </li>
 
                 <li>
-                  <a href="payment.html">
-                      <span class="icon">
-                          <ion-icon name="card-outline"></ion-icon>
-                      </span>
-                      <span class="title">Payments</span>
-                  </a>
-              </li>
+                    <a href="payment.html">
+                        <span class="icon">
+                            <ion-icon name="card-outline"></ion-icon>
+                        </span>
+                        <span class="title">Payments</span>
+                    </a>
+                </li>
 
-              <li>
-                  <a href="settings.html">
-                      <span class="icon">
-                          <ion-icon name="settings-outline"></ion-icon>
-                      </span>
-                      <span class="title">Settings</span>
-                  </a>
-              </li>
+                <li>
+                    <a href="settings.html">
+                        <span class="icon">
+                            <ion-icon name="settings-outline"></ion-icon>
+                        </span>
+                        <span class="title">Settings</span>
+                    </a>
+                </li>
+
                 <li>
                     <a href="#">
                         <span class="icon">
@@ -1086,74 +943,72 @@ margin-right: 5px;
                 </div>                
             </div>
 
-            <div class="schedule-page">
-                <section class="schedule-filter">
-                    <h2>Available Sessions</h2>
-                    <div class="filter-controls">
-                        <label for="filter-day">Filter by Day:</label>
-                        <select id="filter-day">
-                            <option value="">All Days</option>
-                            <option value="Monday">Monday</option>
-                            <option value="Tuesday">Tuesday</option>
-                            <option value="Wednesday">Wednesday</option>
-                            <option value="Thursday">Thursday</option>
-                            <option value="Friday">Friday</option>
-                            <option value="Saturday">Saturday</option>
-                            <option value="Sunday">Sunday</option>
-                        </select>
-                        <label for="filter-class">Filter by Class:</label>
-                        <select id="filter-class">
-                            <option value="">All Classes</option>
-                            <option value="Yoga">Yoga</option>
-                            <option value="Zumba">Zumba</option>
-                            <option value="Strength Training">Strength Training</option>
-                            <option value="Cardio Blast">Cardio Blast</option>
-                            <option value="Pilates">Pilates</option>
-                        </select>
+            <div class="payment-container">
+                <h1>ENERGIZE Gym Subscription Renewal</h1>
+        
+                <section class="subscription-selection">
+                    <h2>Select Subscription Tier</h2>
+                    <label for="subscription-tier">Subscription:</label>
+                    <select id="subscription-tier">
+                        <option value="starter">Starter Access - ₱499</option>
+                        <option value="coach">Coach Connect - ₱1799</option>
+                        <option value="elite">Elite Coaching - ₱3599</option>
+                    </select>
+                </section>
+        
+                <section class="payment-details">
+                    <h2>Credit Card Details</h2>
+                    <div class="form-group">
+                        <label for="card-number">Card Number:</label>
+                        <input type="text" id="card-number" name="card-number" placeholder="XXXX-XXXX-XXXX-XXXX">
+                        <div class="error-message" id="card-number-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="expiry-date">Expiration Date (MM/YYYY):</label>
+                        <input type="text" id="expiry-date" name="expiry-date" placeholder="MM/YYYY">
+                        <div class="error-message" id="expiry-date-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cvv">CVV:</label>
+                        <input type="text" id="cvv" name="cvv" placeholder="XXX">
+                        <div class="error-message" id="cvv-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cardholder-name">Cardholder Name:</label>
+                        <input type="text" id="cardholder-name" name="cardholder-name" placeholder="Full Name">
+                        <div class="error-message" id="cardholder-name-error"></div>
                     </div>
                 </section>
-                <section class="class-list">
-                    <ul id="classes">
-                        </ul>
-                </section>
-                <div id="booking-modal" class="modal">
-                    <div class="modal-content">
-                        <span class="close-button">&times;</span>
-                        <h3>Book Class</h3>
-                        <p><strong id="modal-class-name"></strong></p>
-                        <p>Day: <span id="modal-class-day"></span></p>
-                        <p>Time: <span id="modal-class-time"></span></p>
-                        <button id="confirm-booking-button" class="button">Confirm Booking</button>
-                        <p id="booking-message" class="message"></p>
-                        <p id="booking-message" class="message"></p>
-                    </div>
-                </div>
+        
+                <button id="submit-payment" class="button primary">Submit Payment</button>
+                <a href="schedule.html" class="home">Back to Sessions</a>
             </div>
 
             <div id="signOutModal" class="modal">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h2 class="modal-title">Sign Out</h2>
-                </div>
-                <div class="modal-body">
-                  <p>Are you sure you want to sign out?</p>
-                </div>
-                <div class="modal-footer sign-out-actions">
-                  <button class="modal-button no-button" id="signOutNo">No</button>
-                  <button class="modal-button yes-button" id="signOutYes">Yes</button>
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h2 class="modal-title">Sign Out</h2>
+                  </div>
+                  <div class="modal-body">
+                    <p>Are you sure you want to sign out?</p>
+                  </div>
+                  <div class="modal-footer sign-out-actions">
+                    <button class="modal-button no-button" id="signOutNo">No</button>
+                    <button class="modal-button yes-button" id="signOutYes">Yes</button>
+                  </div>
                 </div>
               </div>
-            </div>
-        </main>
+
     </div>
+
     <script>
-         let list = document.querySelectorAll(".navigation li");
+        let list = document.querySelectorAll(".navigation li");
 
 function activeLink() {
-  list.forEach((item) => {
-    item.classList.remove("hovered");
-  });
-  this.classList.add("hovered");
+list.forEach((item) => {
+item.classList.remove("hovered");
+});
+this.classList.add("hovered");
 }
 
 list.forEach((item) => item.addEventListener("click", activeLink));
@@ -1164,8 +1019,8 @@ let navigation = document.querySelector(".navigation");
 let main = document.querySelector(".main");
 
 toggle.onclick = function () {
-  navigation.classList.toggle("active");
-  main.classList.toggle("active");
+navigation.classList.toggle("active");
+main.classList.toggle("active");
 };
 
 //Search Function
@@ -1173,52 +1028,52 @@ const searchInput = document.getElementById('search-input');
 const searchResultsDiv = document.getElementById('search-results');
 
 const searchData = [
-  "How to diet",
-  "Paano makapasa sa webdev",
-  "Effective workout plan",
-  "Effective sleep",
-  "Gulay effective diet",
-  "Recent Sessions",
-  "Overall well being",
-  "Updates",
-  "Coaches",
-  "Plans"
+"How to diet",
+"Paano makapasa sa webdev",
+"Effective workout plan",
+"Effective sleep",
+"Gulay effective diet",
+"Recent Sessions",
+"Overall well being",
+"Updates",
+"Coaches",
+"Plans"
 ];
 
 searchInput.addEventListener('input', function() {
-  const searchTerm = this.value.toLowerCase();
-  const filteredResults = searchData.filter(item =>
-    item.toLowerCase().includes(searchTerm)
-  );
+const searchTerm = this.value.toLowerCase();
+const filteredResults = searchData.filter(item =>
+item.toLowerCase().includes(searchTerm)
+);
 
-  displayResults(filteredResults);
+displayResults(filteredResults);
 });
 
 function displayResults(results) {
-  searchResultsDiv.innerHTML = '';
+searchResultsDiv.innerHTML = '';
 
-  if (results.length > 0 && searchInput.value.trim() !== '') {
-    const ul = document.createElement('ul');
-    results.forEach(result => {
-      const li = document.createElement('li');
-      li.textContent = result;
-      li.addEventListener('click', function() {
-        searchInput.value = this.textContent;
-        searchResultsDiv.style.display = 'none'; 
-      });
-      ul.appendChild(li);
-    });
-    searchResultsDiv.appendChild(ul);
-    searchResultsDiv.style.display = 'block'; 
-  } else {
-    searchResultsDiv.style.display = 'none';
-  }
+if (results.length > 0 && searchInput.value.trim() !== '') {
+const ul = document.createElement('ul');
+results.forEach(result => {
+const li = document.createElement('li');
+li.textContent = result;
+li.addEventListener('click', function() {
+searchInput.value = this.textContent;
+searchResultsDiv.style.display = 'none'; 
+});
+ul.appendChild(li);
+});
+searchResultsDiv.appendChild(ul);
+searchResultsDiv.style.display = 'block'; 
+} else {
+searchResultsDiv.style.display = 'none';
+}
 }
 
 document.addEventListener('click', function(event) {
-  if (!event.target.closest('.search-container')) {
-    searchResultsDiv.style.display = 'none';
-  }
+if (!event.target.closest('.search-container')) {
+searchResultsDiv.style.display = 'none';
+}
 });
 
 //Mail Function
@@ -1228,27 +1083,27 @@ const inboxPreview = document.getElementById('inbox-preview');
 let hasUnread = true; 
 
 function updateUnreadIndicator() {
-  unreadNotification.style.display = hasUnread ? 'block' : 'none';
+unreadNotification.style.display = hasUnread ? 'block' : 'none';
 }
 
 updateUnreadIndicator();
 
 mailIconInbox.addEventListener('click', function() {
-  inboxPreview.style.display = (inboxPreview.style.display === 'block' ? 'none' : 'block');
+inboxPreview.style.display = (inboxPreview.style.display === 'block' ? 'none' : 'block');
 
-  if (hasUnread && inboxPreview.style.display === 'block') {
-    hasUnread = false;
-    updateUnreadIndicator();
+if (hasUnread && inboxPreview.style.display === 'block') {
+hasUnread = false;
+updateUnreadIndicator();
 ad
-    console.log('Mail icon clicked - marking as read');
-  }
+console.log('Mail icon clicked - marking as read');
+}
 });
 
 
 document.addEventListener('click', function(event) {
-  if (!event.target.closest('.mail-container')) {
-    inboxPreview.style.display = 'none';
-  }
+if (!event.target.closest('.mail-container')) {
+inboxPreview.style.display = 'none';
+}
 });
 
 
@@ -1258,147 +1113,57 @@ const notificationBadge = document.getElementById('notification-badge');
 const notificationsDropdown = document.getElementById('notifications-dropdown');
 
 notificationIcon.addEventListener('click', function() {
-  notificationsDropdown.style.display = (notificationsDropdown.style.display === 'block' ? 'none' : 'block');
-  
-  notificationBadge.style.display = 'none';
+notificationsDropdown.style.display = (notificationsDropdown.style.display === 'block' ? 'none' : 'block');
+
+notificationBadge.style.display = 'none';
 });
 
 
 document.addEventListener('click', function(event) {
-  if (!event.target.closest('.notification-container')) {
-    notificationsDropdown.style.display = 'none';
-  }
+if (!event.target.closest('.notification-container')) {
+notificationsDropdown.style.display = 'none';
+}
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-    const classesData = [
-        { id: 1, name: "Yoga", day: "Monday", time: "9:00 AM", instructor: "Jane Doe", availableSlots: 10 },
-        { id: 2, name: "Zumba", day: "Monday", time: "6:00 PM", instructor: "Carlos Garcia", availableSlots: 15 },
-        { id: 3, name: "Strength Training", day: "Tuesday", time: "7:00 AM", instructor: "Mike Smith", availableSlots: 8 },
-        { id: 4, name: "Cardio Blast", day: "Tuesday", time: "5:00 PM", instructor: "Sarah Lee", availableSlots: 20 },
-        { id: 5, name: "Pilates", day: "Wednesday", time: "10:00 AM", instructor: "Jane Doe", availableSlots: 12 },
-        { id: 6, name: "Zumba", day: "Wednesday", time: "7:00 PM", instructor: "Carlos Garcia", availableSlots: 18 },
-        { id: 7, name: "Yoga", day: "Thursday", time: "6:00 PM", instructor: "Jane Doe", availableSlots: 9 },
-        { id: 8, name: "Strength Training", day: "Friday", time: "8:00 AM", instructor: "Mike Smith", availableSlots: 11 },
-        { id: 9, name: "Cardio Blast", day: "Saturday", time: "9:30 AM", instructor: "Sarah Lee", availableSlots: 25 },
-        { id: 10, name: "Pilates", day: "Sunday", time: "11:00 AM", instructor: "Jane Doe", availableSlots: 14 },
-        { id: 11, name: "Web Development 1", day: "Tuesday", time: "11:00 AM", instructor: "Sir Rham", availableSlots: 14 },
+            const submitPaymentButton = document.getElementById('submit-payment');
+            const cardNumberInput = document.getElementById('card-number');
+            const expiryDateInput = document.getElementById('expiry-date');
+            const cvvInput = document.getElementById('cvv');
+            const cardholderNameInput = document.getElementById('cardholder-name');
+            const errorMessages = document.querySelectorAll('.error-message');
 
-    ];
+            submitPaymentButton.addEventListener('click', function(event) {
+                event.preventDefault();
 
-    const sidebar = document.querySelector('.sidebar');
-    const sidebarToggle = document.querySelector('.sidebar-toggle');
-    const classesListElement = document.getElementById('classes');
-    const filterDaySelect = document.getElementById('filter-day');
-    const filterClassSelect = document.getElementById('filter-class');
-    const bookingModal = document.getElementById('booking-modal');
-    const closeModalButton = bookingModal.querySelector('.close-button');
-    const modalClassName = document.getElementById('modal-class-name');
-    const modalClassDay = document.getElementById('modal-class-day');
-    const modalClassTime = document.getElementById('modal-class-time');
-    const confirmBookingButton = document.getElementById('confirm-booking-button');
-    const bookingMessage = document.getElementById('booking-message');
+                let isValid = true;
+                errorMessages.forEach(error => error.textContent = '');
 
-    let selectedClassId = null;
+                if (!/^\d{16}$/.test(cardNumberInput.value.replace(/[^0-9]/g, ''))) {
+                    document.getElementById('card-number-error').textContent = 'Please enter a valid 16-digit card number.';
+                    isValid = false;
+                }
+                if (!/^\d{2}\/\d{4}$/.test(expiryDateInput.value)) {
+                    document.getElementById('expiry-date-error').textContent = 'Please enter a valid expiry date (MM/YYYY).';
+                    isValid = false;
+                }
+                if (!/^\d{3}$/.test(cvvInput.value)) {
+                    document.getElementById('cvv-error').textContent = 'Please enter a valid 3-digit CVV.';
+                    isValid = false;
+                }
+                if (cardholderNameInput.value.trim() === '') {
+                    document.getElementById('cardholder-name-error').textContent = 'Please enter the cardholder name.';
+                    isValid = false;
+                }
 
-    if (bookingModal) {
-        bookingModal.style.display = 'none';
-    }
-
-    if (sidebarToggle) {
-        sidebarToggle.addEventListener('click', function() {
-            sidebar.classList.toggle('expanded');
-        });
-    }
-
-    function displayClasses(classes) {
-        classesListElement.innerHTML = '';
-        if (classes.length === 0) {
-            classesListElement.innerHTML = '<p>No classes found matching your criteria.</p>';
-            return;
-        }
-        classes.forEach(cls => {
-            const listItem = document.createElement('li');
-            listItem.innerHTML = `
-                <div class="class-info">
-                    <h3>${cls.name}</h3>
-                    <p>${cls.day} - ${cls.time} (${cls.instructor})</p>
-                    <p>Available Slots: ${cls.availableSlots}</p>
-                </div>
-                <button class="book-button" data-class-id="${cls.id}">Book Now</button>
-            `;
-            classesListElement.appendChild(listItem);
-        });
-
-        const bookButtons = classesListElement.querySelectorAll('.book-button');
-        bookButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                selectedClassId = parseInt(this.dataset.classId);
-                const selectedClass = classesData.find(cls => cls.id === selectedClassId);
-                if (selectedClass) {
-                    modalClassName.textContent = selectedClass.name;
-                    modalClassDay.textContent = selectedClass.day;
-                    modalClassTime.textContent = selectedClass.time;
-                    bookingMessage.textContent = '';
-                    bookingModal.style.display = "block";
+                if (isValid) {
+                    alert('Payment successful! Thank you for your renewal.');
                 }
             });
         });
-    }
 
-    function filterClasses() {
-        const selectedDay = filterDaySelect.value;
-        const selectedClassType = filterClassSelect.value;
-
-        const filteredClasses = classesData.filter(cls => {
-            const dayMatch = !selectedDay || cls.day === selectedDay;
-            const classMatch = !selectedClassType || cls.name === selectedClassType;
-            return dayMatch && classMatch;
-        });
-
-        displayClasses(filteredClasses);
-    }
-
-    filterDaySelect.addEventListener('change', filterClasses);
-    filterClassSelect.addEventListener('change', filterClasses);
-
-    closeModalButton.addEventListener('click', function() {
-        bookingModal.style.display = "none";
-    });
-
-    window.addEventListener('click', function(event) {
-        if (event.target === bookingModal) {
-            bookingModal.style.display = "none";
-        }
-    });
-
-    confirmBookingButton.addEventListener('click', function() {
-        if (selectedClassId) {
-            const bookedClass = classesData.find(cls => cls.id === selectedClassId);
-            if (bookedClass && bookedClass.availableSlots > 0) {
-                bookedClass.availableSlots--;
-                bookingMessage.textContent = `You have successfully booked ${bookedClass.name} on ${bookedClass.day} at ${bookedClass.time}.`;
-                bookingMessage.className = 'message success';
-                displayClasses(classesData);
-            } else {
-                bookingMessage.textContent = "Sorry, this class is full or no longer available.";
-                bookingMessage.className = 'message error';
-            }
-            selectedClassId = null;
-            setTimeout(() => {
-                bookingModal.style.display = "none";
-            }, 2000);
-        } else {
-            bookingMessage.textContent = "Please select a class to book.";
-            bookingMessage.className = 'message error';
-        }
-    });
-
-    displayClasses(classesData);
-});
-
-//Sign out
-document.addEventListener('DOMContentLoaded', function() {
+        //Sign out
+        document.addEventListener('DOMContentLoaded', function() {
                     const signOutLink = document.querySelector('.navigation ul li:last-child a');
                     const signOutModal = document.getElementById('signOutModal');
                     const signOutYesButton = document.getElementById('signOutYes');
@@ -1438,10 +1203,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
     </script>
-    <script src="schedule.js"></script>
-            <!-- ====== ionicons ======= -->
-            <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-            <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-            </body>
-            
-            </html>
+
+    <!-- ====== ionicons ======= -->
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+
+</html>

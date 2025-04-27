@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <title>Admin Dashboard</title>
+    <!-- ======= Styles ====== -->
+    <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+
+<body>
+    <!-- =============== Navigation ================ -->
+    <div class="container">
+        <div class="navigation">
+            <ul>
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="barbell"></ion-icon>
+                        </span>
+                        <span class="title">ENERGIZE</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="adminclients.html">
+                        <span class="icon">
+                            <ion-icon name="people-outline"></ion-icon>
+                        </span>
+                        <span class="title">Manage Clients</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="admincoaches.html">
+                        <span class="icon">
+                            <ion-icon name="people-outline"></ion-icon>
+                        </span>
+                        <span class="title">Manage Coaches</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="admincomplaint.html">
+                        <span class="icon">
+                            <ion-icon name="chatbubble-outline"></ion-icon>
+                        </span>
+                        <span class="title">Complaints</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="adminpayments.html">
+                        <span class="icon">
+                            <ion-icon name="card-outline"></ion-icon>
+                        </span>
+                        <span class="title"> Clients Payments</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="adminsettings.html">
+                        <span class="icon">
+                            <ion-icon name="settings-outline"></ion-icon>
+                        </span>
+                        <span class="title">Settings</span>
+                    </a>
+                </li>
+
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ========================= Main ==================== -->
+        <div class="main">
+            <div class="topbar">
+                <div class="toggle">
+                    <ion-icon name="menu-outline"></ion-icon>
+                </div>
+
+                <div class="search-container">
+                    <label>
+                      <input type="text" id="search-input" placeholder="Search what you're looking for">
+                      <ion-icon name="search-outline"></ion-icon>
+                    </label>
+                    <div id="search-results">
+                    </div>
+                  </div>
+
+                  
+                  <div class="mail-container">
+                    <ion-icon name="mail" id="mail-icon-inbox"></ion-icon>
+                    <div id="unread-notification">1</div>
+                    <div id="inbox-preview">
+                    <strong>Inbox</strong>
+                    <hr>
+                    <div id="unread-messages">
+                        <div class="email-item sender">Clients</div>
+                        <div class="email-item subject">3 complaints were submitted</div>
+                        <hr>
+                    </div>
+                    <div id="read-messages">
+                        <div class="email-item sender">Coach</div>
+                        <div class="email-item subject">Can I ask?</div>
+                    </div>
+                    <a href="#">See All</a>
+                    </div>
+                </div>
+
+                <div class="notification-container">
+                    <ion-icon name="notifications" id="notification-icon"></ion-icon>
+                    <div id="notification-badge">1</div>
+                    <div id="notifications-dropdown">
+                      <strong>Notifications</strong>
+                      <hr>
+                      <div id="notification-list">
+                        <div class="notification-item title">Today, 1:00 PM</div>
+                        <div class="notification-item message">New clients added.</div>
+                        <hr>
+                        <div class="notification-item title">Sales Update</div>
+                        <div class="notification-item message">It increased by 25%</div>
+                      </div>
+                      <a href="#">See All</a>
+                    </div>
+                  </div>
+            
+                <div class="name">
+                    <p>Edward Linkin</p>
+                </div>
+    
+                <div class="user">
+                    <img src="customer01.jpg" alt="">
+                </div>                
+            </div>
+
+             <!-- ======================= Cards ================== -->
+
+             <div class="greetings">
+                <div class="welcome">
+                    <h1>Welcome, Admin!</h1>
+                </div>
+            </div>
+
+            <div class="cardBox">
+                <div class="card">
+                    <div>
+                        <div class="numbers">549</div>
+                        <div class="cardName">Total Clients</div>
+                    </div>
+
+                    <div class="iconBx">
+                        <ion-icon name="people"></ion-icon>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <div class="numbers">421</div>
+                        <div class="cardName">Scheduled Sessions Today</div>
+                    </div>
+
+                    <div class="iconBx">
+                        <ion-icon name="calendar"></ion-icon>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <div class="numbers">15</div>
+                        <div class="cardName">Pending Coaches Applicants</div>
+                    </div>
+
+                    <div class="iconBx">
+                        <ion-icon name="arrow-down-circle"></ion-icon>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <div class="numbers">$10,842</div>
+                        <div class="cardName">Total Earnings</div>
+                    </div>
+
+                    <div class="iconBx">
+                        <ion-icon name="cash-outline"></ion-icon>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-section">
+                <div class="analytics-card">
+                    <h3>Analytics</h3>
+                    <canvas id="analyticsChart" width="400" height="200"></canvas>
+                    </div>
+        
+                <div class="updates-card">
+                    <h3>Latest Updates</h3>
+                    <div class="update-item">
+                        <span class="update-time">2 hours ago</span>
+                        <i class="fa-solid fa-circle-user user-icon"></i>
+                        <span class="update-text">New users added!</span>
+                    </div>
+                    <div class="update-item">
+                        <span class="update-time">1 hr ago</span>
+                        <i class="fa-solid fa-database database-icon"></i>
+                        <span class="update-text">Database was fixed!</span>
+                    </div>
+                    <div class="update-item">
+                        <span class="update-time">1 day ago</span>
+                        <i class="fa-solid fa-file-invoice-dollar invoice-icon"></i>
+                        <span class="update-text">Pricing plans updated!</span>
+                    </div>
+                    <div class="update-item">
+                        <span class="update-time">3 days ago</span>
+                        <i class="fa-solid fa-calendar-check calendar-icon"></i>
+                        <span class="update-text">Sessions approved!</span>
+                    </div>
+                    <div class="update-item">
+                        <span class="update-time">6 days ago</span>
+                        <i class="fa-solid fa-user-lock admin-icon"></i>
+                        <span class="update-text">New admins added!</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="signOutModal" class="modal">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h2 class="modal-title">Sign Out</h2>
+                  </div>
+                  <div class="modal-body">
+                    <p>Are you sure you want to sign out?</p>
+                  </div>
+                  <div class="modal-footer sign-out-actions">
+                    <button class="modal-button no-button" id="signOutNo">No</button>
+                    <button class="modal-button yes-button" id="signOutYes">Yes</button>
+                  </div>
+                </div>
+              </div>
+            
+        </div>
+
+ <!-- =========== Scripts =========  -->
+ <script src="assets/js/admin.js"></script>
+
+<!-- ====== ionicons ======= -->
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+
+</html>

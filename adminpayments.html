@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <title>Admin Dashboard</title>
+    <style>
+        /* =============== Globals ============== */
+        * {
+        font-family: "Poppins", sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        }
+
+        :root {
+        --blue: #203A93;
+        --white: #fff;
+        --gray: #f5f5f5;
+        --black1: #222;
+        --black2: #999;
+        }
+
+        body {
+        min-height: 100vh;
+        overflow-x: hidden;
+        }
+
+        .container {
+        position: relative;
+        width: 100%;
+        }
+
+        /* =============== Navigation ================ */
+        .navigation {
+        position: fixed;
+        width: 300px;
+        height: 100%;
+        background: var(--blue);
+        border-left: 10px solid var(--blue);
+        transition: 0.5s;
+        overflow: hidden;
+        }
+        .navigation.active {
+        width: 80px;
+        }
+
+        .navigation ul {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        }
+
+        .navigation ul li {
+        position: relative;
+        width: 100%;
+        list-style: none;
+        border-top-left-radius: 30px;
+        border-bottom-left-radius: 30px;
+        }
+
+        .navigation ul li:hover,
+        .navigation ul li.hovered {
+        background-color: var(--white);
+        }
+
+        .navigation ul li:nth-child(1) {
+        margin-bottom: 40px;
+        pointer-events: none;
+        }
+
+        .navigation ul li a {
+        position: relative;
+        display: block;
+        width: 100%;
+        display: flex;
+        text-decoration: none;
+        color: var(--white);
+        }
+        .navigation ul li:hover a,
+        .navigation ul li.hovered a {
+        color: var(--blue);
+        }
+
+        .navigation ul li a .icon {
+        position: relative;
+        display: block;
+        min-width: 60px;
+        height: 60px;
+        line-height: 75px;
+        text-align: center;
+        }
+        .navigation ul li a .icon ion-icon {
+        font-size: 1.75rem;
+        }
+
+        .navigation ul li a .title {
+        position: relative;
+        display: block;
+        padding: 0 10px;
+        height: 60px;
+        line-height: 60px;
+        text-align: start;
+        white-space: nowrap;
+        }
+
+        /* --------- curve outside ---------- */
+        .navigation ul li:hover a::before,
+        .navigation ul li.hovered a::before {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: -50px;
+        width: 50px;
+        height: 50px;
+        background-color: transparent;
+        border-radius: 50%;
+        box-shadow: 35px 35px 0 10px var(--white);
+        pointer-events: none;
+        }
+        .navigation ul li:hover a::after,
+        .navigation ul li.hovered a::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        bottom: -50px;
+        width: 50px;
+        height: 50px;
+        background-color: transparent;
+        border-radius: 50%;
+        box-shadow: 35px -35px 0 10px var(--white);
+        pointer-events: none;
+        }
+
+        /* ===================== Main ===================== */
+        .main {
+        position: absolute;
+        width: calc(100% - 300px);
+        left: 300px;
+        min-height: 100vh;
+        background: var(--white);
+        transition: 0.5s;
+        }
+        .main.active {
+        width: calc(100% - 80px);
+        left: 80px;
+        }
+
+        .topbar {
+        width: 100%;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        padding: 0 10px;
+        justify-content:space-between;
+        }
+
+        .toggle {
+        position: relative;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2.5rem;
+        cursor: pointer;
+        }
+
+        /* =============== Search Icon ================ */
+        .search-container {
+        position: relative;
+        width: 800px;
+        margin: 0 10px;
+        }
+
+        .search-container label {
+        display: flex; 
+        align-items: center; 
+        width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 15px;
+        overflow: hidden;
+        }
+
+        #search-input {
+        flex-grow: 1; 
+        padding: 10px;
+        border: none;
+        outline: none;
+        font-size: 16px;
+        box-sizing: border-box; 
+        margin-right: 5px;
+        }
+
+        .search-container label ion-icon {
+        padding-right: 10px;
+        font-size: 20px; 
+        color: #777;
+        }
+
+        #search-results {
+        position: absolute;
+        top: calc(100% + 2px); 
+        left: 0;
+        right: 0;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        margin-top: 2px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        z-index: 10;
+        display: none;
+        overflow: hidden;
+        }
+
+        #search-results ul {
+        list-style: none;
+        padding: 8px 0;
+        margin: 0;
+        }
+
+        #search-results li {
+        padding: 12px 16px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        font-size: 1.0em;
+        color: #333;
+        }
+
+        #search-results li:hover {
+        background-color: #f5f5f5;
+        color: #222;
+        }
+
+        #search-results li:active {
+        background-color: #eee;
+        }
+
+
+        #search-results li span.highlight {
+        font-weight: bold;
+        color: #007bff; 
+        }
+
+        /* =============== Mail Icon ================ */
+        .mail-container {
+        position: relative;
+        display: inline-block;
+        }
+
+        #mail-icon-inbox {
+        font-size: 25px;
+        color: #203A93;
+        cursor: pointer;
+        }
+
+        #mail-icon-inbox:hover {
+        opacity: 0.8;
+        }
+
+        #unread-notification {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background-color: red;
+        color: white;
+        font-size: 12px;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        text-align: center;
+        line-height: 18px;
+        display: none; 
+        }
+
+        #inbox-preview {
+        position: absolute;
+        top: calc(100% + 5px);
+        right: -10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        width: 250px;
+        padding: 15px;
+        display: none; 
+        z-index: 10;
+        text-align: left;
+        }
+
+        #inbox-preview strong {
+        display: block;
+        margin-bottom: 5px;
+        }
+
+        .email-item {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 3px 0; 
+        }
+
+        .email-item.sender {
+        font-weight: bold;
+        }
+
+        .email-item.subject {
+        color: #555;
+        font-size: 0.9em; 
+        }
+
+        #inbox-preview hr {
+        margin-top: 8px;
+        margin-bottom: 8px;
+        }
+
+        #inbox-preview a {
+        display: block;
+        margin-top: 10px;
+        font-size: 0.8em;
+        text-align: right;
+        color: #007bff;
+        text-decoration: none;
+        }
+
+        /* =============== Notification ================ */
+        .notification-container {
+        position: relative;
+        display: inline-block;
+        }
+
+        #notification-icon {
+        font-size: 25px;
+        color: #203A93;
+        cursor: pointer;
+        }
+
+        #notification-icon:hover {
+        opacity: 0.8;
+        }
+
+        #notification-badge {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background-color: orange;
+        color: white;
+        font-size: 12px;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        text-align: center;
+        line-height: 18px;
+        display: block; 
+        }
+
+        #notifications-dropdown {
+        position: absolute;
+        top: calc(100% + 5px);
+        right: -10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        width: 250px;
+        padding: 15px;
+        display: none;
+        z-index: 10;
+        text-align: left;
+        }
+
+        #notifications-dropdown strong {
+        display: block;
+        margin-bottom: 5px;
+        }
+
+        .notification-item {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 3px 0;
+        }
+
+        .notification-item.title {
+        font-weight: bold;
+        margin-top: 5px;
+        }
+
+        .notification-item.message {
+        color: #555;
+        font-size: 0.9em;
+        }
+
+        #notifications-dropdown hr {
+        margin-top: 8px;
+        margin-bottom: 8px;
+        }
+
+        #notifications-dropdown a {
+        display: block;
+        margin-top: 10px;
+        font-size: 0.8em;
+        text-align: right;
+        color: #007bff;
+        text-decoration: none;
+        }
+
+        /* ======================= User ====================== */
+        .user {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        overflow: hidden;
+        cursor: pointer;
+        }
+
+
+        .user img {
+        position: absolute;
+        justify-items: end;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        }
+
+        /* ======================= Payments ====================== */
+
+        .container {
+        width: 100%;
+        max-width: 100%;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+        color: #484848;
+        margin: 20px 30px;
+        text-align: start;
+        }
+
+        #filter-container {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        margin-bottom: 20px;
+        margin-left: 30px;
+        }
+
+        #subscription-filter {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+        color: #555;
+        }
+
+        .filter-button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+        }
+
+        .filter-button:hover {
+        background-color: #0056b3;
+        }
+
+        table {
+        justify-self: center;
+        width: 95%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        border-radius: 6px;
+        overflow: hidden;
+        }
+
+        th, td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+        }
+
+        th {
+        background-color: #f9f9f9;
+        color: #333;
+        font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+        background-color: #f2f2f2;
+        }
+
+        tr:hover {
+        background-color: #e0f7fa;
+        transition: background-color 0.3s ease;
+        }
+
+        .status-paid {
+        color: #28a745;
+        font-weight: bold;
+        }
+
+        .status-due {
+        color: #dc3545;
+        font-weight: bold;
+        }
+
+        /* Modal Styles for Sign out*/
+        .modal {
+        display: none; 
+        position: fixed; 
+        z-index: 1000; 
+        left: 0;
+        top: 0;
+        width: 100%; 
+        height: 100%; 
+        overflow: auto; 
+        background-color: rgba(0,0,0,0.4); 
+        backdrop-filter: blur(5px);
+        justify-content: center;
+        align-items: center;
+        }
+
+        .modal.show {
+        display: flex; 
+        }
+
+        .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto; 
+        padding: 30px;
+        border: 1px solid #888;
+        width: 600px; 
+        max-width: 400px; 
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        position: relative;
+        }
+
+        .modal-header {
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 20px;
+        }
+
+        .modal-title {
+        font-size: 1.5em;
+        color: #333;
+        font-weight: bold;
+        }
+
+        .modal-body {
+        font-size: 1.1em;
+        color: #555;
+        margin-bottom: 20px;
+        }
+
+        .modal-footer.sign-out-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        }
+
+        .modal-button {
+        background-color: #007bff; 
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+        }
+
+        .modal-button:hover {
+        background-color: #0056b3;
+        }
+
+        .modal-button.yes-button {
+        background-color: #203A93;
+        }
+
+        .modal-button.yes-button:hover {
+        background-color: #c82333;
+        }
+
+        .modal-button.no-button {
+        background-color: #F1D27C;
+        }
+
+        .modal-button.no-button:hover {
+        background-color: #5a6268;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- =============== Navigation ================ -->
+    <div class="container">
+        <div class="navigation">
+            <ul>
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="barbell"></ion-icon>
+                        </span>
+                        <span class="title">ENERGIZE</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="testadmin.html">
+                        <span class="icon">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="adminclients.html">
+                        <span class="icon">
+                            <ion-icon name="people-outline"></ion-icon>
+                        </span>
+                        <span class="title">Manage Clients</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="admincoaches.html">
+                        <span class="icon">
+                            <ion-icon name="people-outline"></ion-icon>
+                        </span>
+                        <span class="title">Manage Coaches</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="admincomplaint.html">
+                        <span class="icon">
+                            <ion-icon name="chatbubble-outline"></ion-icon>
+                        </span>
+                        <span class="title">Complaints</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="adminpayments.html">
+                        <span class="icon">
+                            <ion-icon name="card-outline"></ion-icon>
+                        </span>
+                        <span class="title"> Clients Payments</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="adminsettings.html">
+                        <span class="icon">
+                            <ion-icon name="settings-outline"></ion-icon>
+                        </span>
+                        <span class="title">Settings</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ========================= Main ==================== -->
+        <div class="main">
+            <div class="topbar">
+                <div class="toggle">
+                    <ion-icon name="menu-outline"></ion-icon>
+                </div>
+
+                <div class="search-container">
+                    <label>
+                      <input type="text" id="search-input" placeholder="Search what you're looking for">
+                      <ion-icon name="search-outline"></ion-icon>
+                    </label>
+                    <div id="search-results">
+                    </div>
+                  </div>
+
+                  
+                <div class="mail-container">
+                    <ion-icon name="mail" id="mail-icon-inbox"></ion-icon>
+                    <div id="unread-notification">1</div>
+                    <div id="inbox-preview">
+                    <strong>Inbox</strong>
+                    <hr>
+                    <div id="unread-messages">
+                        <div class="email-item sender">Clients</div>
+                        <div class="email-item subject">3 complaints were submitted</div>
+                        <hr>
+                    </div>
+                    <div id="read-messages">
+                        <div class="email-item sender">Coach</div>
+                        <div class="email-item subject">Can I ask?</div>
+                    </div>
+                    <a href="#">See All</a>
+                    </div>
+                </div>
+
+                <div class="notification-container">
+                    <ion-icon name="notifications" id="notification-icon"></ion-icon>
+                    <div id="notification-badge">1</div>
+                    <div id="notifications-dropdown">
+                      <strong>Notifications</strong>
+                      <hr>
+                      <div id="notification-list">
+                        <div class="notification-item title">Today, 1:00 PM</div>
+                        <div class="notification-item message">New clients added.</div>
+                        <hr>
+                        <div class="notification-item title">Sales Update</div>
+                        <div class="notification-item message">It increased by 25%</div>
+                      </div>
+                      <a href="#">See All</a>
+                    </div>
+                  </div>
+            
+                <div class="name">
+                    <p>Peter Pan</p>
+                </div>
+    
+                <div class="user">
+                    <img src="customer01.jpg" alt="">
+                </div>                
+            </div>
+
+            <!-- Payments -->
+            <div class="container">
+                <h2>CLIENTS PAYMENTS</h2>
+              
+                <div id="filter-container">
+                  <label for="subscription-filter">Filter by Subscription:</label>
+                  <select id="subscription-filter">
+                    <option value="">All Subscriptions</option>
+                    <option value="Starter Access">Starter Access</option>
+                    <option value="Coach Connect">Coach Connect</option>
+                    <option value="Elite Coaching">Elite Coaching</option>
+                  </select>
+                  <button class="filter-button" onclick="filterBySubscription()">Filter</button>
+                </div>
+              
+                <table id="payments-table">
+                  <thead>
+                    <tr>
+                      <th>Client Name</th>
+                      <th>Payment Status</th>
+                      <th>Plan Subscribed</th>
+                      <th>Monthly Fee (PHP)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="table-body">
+                    </tbody>
+                </table>
+
+                <div id="signOutModal" class="modal">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h2 class="modal-title">Sign Out</h2>
+                      </div>
+                      <div class="modal-body">
+                        <p>Are you sure you want to sign out?</p>
+                      </div>
+                      <div class="modal-footer sign-out-actions">
+                        <button class="modal-button no-button" id="signOutNo">No</button>
+                        <button class="modal-button yes-button" id="signOutYes">Yes</button>
+                      </div>
+                    </div>
+                  </div>
+
+              </div>
+
+            <script>
+            let list = document.querySelectorAll(".navigation li");
+
+            function activeLink() {
+            list.forEach((item) => {
+                item.classList.remove("hovered");
+            });
+            this.classList.add("hovered");
+            }
+
+            list.forEach((item) => item.addEventListener("click", activeLink));
+
+            // Menu Toggle (remains the same)
+            let toggle = document.querySelector(".toggle");
+            let navigation = document.querySelector(".navigation");
+            let main = document.querySelector(".main");
+
+            toggle.onclick = function () {
+            navigation.classList.toggle("active");
+            main.classList.toggle("active");
+            };
+
+            //Search Function
+            const searchInput = document.getElementById('search-input');
+            const searchResultsDiv = document.getElementById('search-results');
+
+            const searchData = [
+            "Total Sales",
+            "Total Clients",
+            "Settings",
+            "Total Coaches",
+            "Payments",
+            "Recent Complaints",
+            "Admin Dashboard",
+            "Updates",
+            "Database Updates",
+            "Added Admins"
+            ];
+
+            searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const filteredResults = searchData.filter(item =>
+                item.toLowerCase().includes(searchTerm)
+            );
+
+            displayResults(filteredResults);
+            });
+
+            function displayResults(results) {
+            searchResultsDiv.innerHTML = '';
+
+            if (results.length > 0 && searchInput.value.trim() !== '') {
+                const ul = document.createElement('ul');
+                results.forEach(result => {
+                const li = document.createElement('li');
+                li.textContent = result;
+                li.addEventListener('click', function() {
+                    searchInput.value = this.textContent;
+                    searchResultsDiv.style.display = 'none'; 
+                });
+                ul.appendChild(li);
+                });
+                searchResultsDiv.appendChild(ul);
+                searchResultsDiv.style.display = 'block'; 
+            } else {
+                searchResultsDiv.style.display = 'none';
+            }
+            }
+
+            document.addEventListener('click', function(event) {
+            if (!event.target.closest('.search-container')) {
+                searchResultsDiv.style.display = 'none';
+            }
+            });
+
+            //Mail Function
+            const mailIconInbox = document.getElementById('mail-icon-inbox');
+            const unreadNotification = document.getElementById('unread-notification');
+            const inboxPreview = document.getElementById('inbox-preview');
+            let hasUnread = true; 
+
+            function updateUnreadIndicator() {
+            unreadNotification.style.display = hasUnread ? 'block' : 'none';
+            }
+
+            updateUnreadIndicator();
+
+            mailIconInbox.addEventListener('click', function() {
+            inboxPreview.style.display = (inboxPreview.style.display === 'block' ? 'none' : 'block');
+
+            if (hasUnread && inboxPreview.style.display === 'block') {
+                hasUnread = false;
+                updateUnreadIndicator();
+            ad
+                console.log('Mail icon clicked - marking as read');
+            }
+            });
+
+
+            document.addEventListener('click', function(event) {
+            if (!event.target.closest('.mail-container')) {
+                inboxPreview.style.display = 'none';
+            }
+            });
+
+
+            //Notification Function
+            const notificationIcon = document.getElementById('notification-icon');
+            const notificationBadge = document.getElementById('notification-badge');
+            const notificationsDropdown = document.getElementById('notifications-dropdown');
+
+            notificationIcon.addEventListener('click', function() {
+            notificationsDropdown.style.display = (notificationsDropdown.style.display === 'block' ? 'none' : 'block');
+            
+            notificationBadge.style.display = 'none';
+            });
+
+
+            document.addEventListener('click', function(event) {
+            if (!event.target.closest('.notification-container')) {
+                notificationsDropdown.style.display = 'none';
+            }
+            });
+
+            //Payments Function
+            const paymentsData = [
+                { name: "Alice Smith", status: "Paid", plan: "Starter Access", fee: 499 },
+                { name: "Bob Johnson", status: "Due", plan: "Elite Coaching", fee: 3599 },
+                { name: "Charlie Brown", status: "Paid", plan: "Coach Connect", fee: 1799 },
+                { name: "Diana Lee", status: "Paid", plan: "Starter Access", fee: 499 },
+                { name: "Eve Williams", status: "Due", plan: "Coach Connect", fee: 1799 },
+                { name: "Frank Miller", status: "Paid", plan: "Elite Coaching", fee: 3599 },
+                { name: "Grace Davis", status: "Paid", plan: "Starter Access", fee: 499 },
+                { name: "Henry Wilson", status: "Due", plan: "Coach Connect", fee: 1799 },
+                { name: "Ivy Moore", status: "Paid", plan: "Elite Coaching", fee: 3599 },
+                { name: "Jack Taylor", status: "Paid", plan: "Starter Access", fee: 499 },
+                { name: "Kelly Adams", status: "Due", plan: "Coach Connect", fee: 1799 },
+                { name: "Liam Baker", status: "Paid", plan: "Elite Coaching", fee: 3599 },
+                { name: "Mia Clark", status: "Paid", plan: "Starter Access", fee: 499 },
+                { name: "Noah Lewis", status: "Due", plan: "Coach Connect", fee: 1799 },
+                { name: "Olivia Hall", status: "Paid", plan: "Elite Coaching", fee: 3599 },
+                { name: "Peter Young", status: "Paid", plan: "Starter Access", fee: 499 },
+                { name: "Quinn Allen", status: "Due", plan: "Coach Connect", fee: 1799 },
+                { name: "Ryan King", status: "Paid", plan: "Elite Coaching", fee: 3599 },
+                { name: "Sophia Wright", status: "Paid", plan: "Starter Access", fee: 499 },
+                { name: "Thomas Green", status: "Due", plan: "Coach Connect", fee: 1799 },
+                { name: "Ursula Hill", status: "Paid", plan: "Elite Coaching", fee: 3599 },
+                { name: "Victor Scott", status: "Paid", plan: "Starter Access", fee: 499 },
+                { name: "Wendy White", status: "Due", plan: "Coach Connect", fee: 1799 },
+                { name: "Xavier Baker", status: "Paid", plan: "Elite Coaching", fee: 3599 },
+                { name: "Yara Adams", status: "Paid", plan: "Starter Access", fee: 499 },
+                { name: "Zane Clark", status: "Due", plan: "Coach Connect", fee: 1799 },
+                { name: "Bella Lewis", status: "Paid", plan: "Elite Coaching", fee: 3599 },
+                { name: "Caleb Hall", status: "Paid", plan: "Starter Access", fee: 499 },
+                { name: "Daisy Young", status: "Due", plan: "Coach Connect", fee: 1799 },
+                { name: "Ethan Allen", status: "Paid", plan: "Elite Coaching", fee: 3599 },
+            ];
+
+            const tableBody = document.getElementById("table-body");
+            const subscriptionFilter = document.getElementById("subscription-filter");
+
+            function renderTable(data) {
+                tableBody.innerHTML = ""; 
+                data.forEach(client => {
+                const row = tableBody.insertRow();
+                const nameCell = row.insertCell();
+                const statusCell = row.insertCell();
+                const planCell = row.insertCell();
+                const feeCell = row.insertCell();
+
+                nameCell.textContent = client.name;
+                statusCell.textContent = client.status;
+                statusCell.classList.add(client.status === "Paid" ? "status-paid" : "status-due");
+                planCell.textContent = client.plan;
+                feeCell.textContent = client.fee;
+                });
+            }
+
+            function filterBySubscription() {
+                const selectedSubscription = subscriptionFilter.value;
+                let filteredData;
+
+                if (selectedSubscription === "") {
+                filteredData = paymentsData;
+                } else {
+                filteredData = paymentsData.filter(client => client.plan === selectedSubscription);
+                }
+
+                renderTable(filteredData);
+            }
+
+            renderTable(paymentsData);
+
+            //Sign out
+            document.addEventListener('DOMContentLoaded', function() {
+                    const signOutLink = document.querySelector('.navigation ul li:last-child a');
+                    const signOutModal = document.getElementById('signOutModal');
+                    const signOutYesButton = document.getElementById('signOutYes');
+                    const signOutNoButton = document.getElementById('signOutNo');
+
+                    if (signOutLink) {
+                    signOutLink.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        showModal(signOutModal);
+                    });
+                    } else {
+                    console.error("Sign Out link not found!");
+                    }
+
+                    signOutYesButton.addEventListener('click', function() {
+                    window.location.href = 'index.html';
+                    });
+
+                    signOutNoButton.addEventListener('click', function() {
+                    hideModal(signOutModal);
+                    });
+
+                    window.addEventListener('click', function(event) {
+                    if (event.target == signOutModal) {
+                        hideModal(signOutModal);
+                    }
+                    });
+
+                    // Helper functions for showing and hiding the modal
+                    function showModal(modalElement) {
+                    modalElement.classList.add('show');
+                    }
+
+                    function hideModal(modalElement) {
+                    modalElement.classList.remove('show');
+                    }
+                });
+            </script>
+
+<!-- ====== ionicons ======= -->
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+
+</html>
