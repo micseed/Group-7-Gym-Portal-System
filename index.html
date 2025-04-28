@@ -20,17 +20,37 @@
                 <li class="items"><a href="#home">Home</a></li>
                 <li class="items"><a href="#features">Features</a></li>
                 <li class="items"><a href="#plans">Plans</a></li>
-                <li class="items"><a href="#co">Coaches</a></li>
+                <li class="items"><a href="#coaches">Coaches</a></li>
                 <li class="items"><a href="#contact">Contact</a></li>
             </ul>
 
             <div class="buttons">
-                <button class="log/reg"><a href="register.html">Register</a></button>
                 <button class="log/reg"><a href="login.html">Log In</a></button>
             </div>
            
         </nav>
     </header>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="login-modal">
+      <div class="login-modal-content">
+        <span class="login-modal-close">&times;</span>
+        <h2>Login Required</h2>
+        <p>Please log in to select this plan</p>
+        
+        <div class="login-form">
+          <label for="username">Username:</label>
+          <input type="text" id="username" placeholder="Enter your username">
+          
+          <label for="password">Password:</label>
+          <input type="password" id="password" placeholder="Enter your password">
+        </div>
+        
+        <button class="login-btn">Login</button>
+        
+        <a href="#" class="forgot-password">Forgot Password?</a>
+      </div>
+    </div>
 
     <!-- Banner Image -->
     <div class="image-container" id="home">
@@ -43,9 +63,34 @@
             <br>
             <p>Connect with expert coaches, follow personalized plans, <span></span> and  book your sessions with ease.</p>
             <br>
-            <button class="getstarted"><a href="register.html">Get Started</a></button>
+            <button class="getstarted"><a href="">Get Started</a></button>
         </div>
     </div>
+
+     <!-- Get Started Modal -->
+     <div id="getStartedModal" class="get-started-modal">
+      <div class="get-started-modal-content">
+          <span class="get-started-close">&times;</span>
+          <h2>Choose Your Journey</h2>
+          <p>How would you like to experience Energize Gym Center?</p>
+          
+          <div class="get-started-choice-container">
+              <div class="get-started-choice" data-type="guest">
+                  <img src="assets/img/guests.png" alt="Guest">
+                  <h3>Guest</h3>
+                  <p>Try our facilities with a day pass</p>
+              </div>
+              
+              <div class="get-started-choice" data-type="member">
+                  <img src="assets/img/member.png" alt="Member">
+                  <h3>Member</h3>
+                  <p>Join our fitness community</p>
+              </div>
+          </div>
+          
+          <button id="continueBtn" class="get-started-continue-btn">Continue</button>
+      </div>
+  </div>
 
     <!-- Feature Section -->
     <section class="features-cards" id="features">
@@ -101,15 +146,22 @@
                     <div class="plan-content">
                         <p>Start strong with guided workouts and gym access at your pace.</p>
                         <br>
-                        <ul>
-                            <li>Limited gym access (off-peak hours)</li>
-                            <li>Monthly workout plan from coach</li>
-                            <li>Progress tracking dashboard</li>
-                            <li>Group sessions access</li>
+                        <ul class="plan-features">
+                          <li>
+                            <ion-icon name="checkmark-outline"></ion-icon>
+                            <span>2 Personal Training Sessions</span>
+                          </li>
+                          <li>
+                            <ion-icon name="checkmark-outline"></ion-icon>
+                            <span>Basic workout plan</span>
+                          </li>
+                          <li>
+                            <ion-icon name="checkmark-outline"></ion-icon>
+                            <span>Tracking progress plan</span>
+                          </li>
                         </ul>
-                        <br>
-                        <br>
-                        <br>
+                        
+                        <br><br><br>
                         <a href="#" class="plan-button-1">Get Plan</a>
                     </div>
                 </div>
@@ -127,14 +179,25 @@
                     <div class="plan-content">
                         <p>Your coach, your plan, your progress - stay connected every week.</p>
                         <br>
-                        <ul>
-                            <li>Full gym access</li>
-                            <li>Weekly personal check-ins with coach</li>
-                            <li>Customized workout</li>
-                            <li>Booking private sessions</li>
-                            <li>Progress reports</li>
-                            <li>Motivational tips</li>
+                        <ul class="plan-features">
+                          <li>
+                            <ion-icon name="checkmark-outline"></ion-icon>
+                            <span>4 Personal Training Sessions</span>
+                          </li>
+                          <li>
+                            <ion-icon name="checkmark-outline"></ion-icon>
+                            <span>Custom workout plan</span>
+                          </li>
+                          <li>
+                            <ion-icon name="checkmark-outline"></ion-icon>
+                            <span>Custom nutrition plan</span>
+                          </li>
+                          <li>
+                            <ion-icon name="checkmark-outline"></ion-icon>
+                            <span>24/7 coach messaging</span>
+                          </li>
                         </ul>
+                        <br><br>
                         <a href="#" class="plan-button-2">Get Plan</a>
                     </div>
                 </div>
@@ -152,13 +215,27 @@
                     <div class="plan-content">
                         <p>For those who want it all: unlimited access, expert coaching, and faster results.</p>
                         <br>
-                        <ul>
-                            <li>Unlimited gym access</li>
-                            <li>Unlimited 1-on-1 coaching</li>
-                            <li>Priority session booking</li>
-                            <li>Personalized nutrition coaching</li>
-                            <li>Monthly fitness assessment</li>
-                            <li>Exclusive online content</li>
+                        <ul class="plan-features">
+                          <li>
+                            <ion-icon name="checkmark-outline"></ion-icon>
+                            <span>8 Personal Training Sessions</span>
+                          </li>
+                          <li>
+                            <ion-icon name="checkmark-outline"></ion-icon>
+                            <span>Advanced personalized plans</span>
+                          </li>
+                          <li>
+                            <ion-icon name="checkmark-outline"></ion-icon>
+                            <span>Priority scheduling</span>
+                          </li>
+                          <li>
+                            <ion-icon name="checkmark-outline"></ion-icon>
+                            <span>In-home sessions available</span>
+                          </li>
+                          <li>
+                            <ion-icon name="checkmark-outline"></ion-icon>
+                            <span>24/7 dedicated coach</span>
+                          </li>
                         </ul>
                         
                         <a href="#" class="plan-button-3">Get Plan</a>
@@ -169,7 +246,7 @@
     </section>
 
     <!-- Meet our Coaches -->
-    <h2 style="text-align: center; margin-top: 60px; font-size: 2rem; color: #203A93;">Meet Our Expert Coaches</h2>
+    <h2 style="text-align: center; margin-top: 60px; font-size: 2rem; color: #203A93;" id="coaches">Meet Our Expert Coaches</h2>
 
 
     <div id="coachModal" class="modal">
@@ -415,6 +492,118 @@
         modal.style.display = "none";
       }
     };
+
+    //Modal for Get Started
+    document.addEventListener('DOMContentLoaded', function() {
+            // Get modal elements
+            const getStartedModal = document.getElementById("getStartedModal");
+            const getStartedBtn = document.querySelector(".getstarted");
+            const closeBtn = document.querySelector(".get-started-close");
+            const continueBtn = document.getElementById("continueBtn");
+            const choiceOptions = document.querySelectorAll(".get-started-choice");
+            
+            let selectedOption = null;
+            
+            // Modify the Get Started button to open modal instead of redirecting
+            if (getStartedBtn) {
+                // Remove the existing anchor if present
+                if (getStartedBtn.querySelector('a')) {
+                    const btnText = getStartedBtn.querySelector('a').textContent;
+                    getStartedBtn.innerHTML = btnText;
+                }
+                
+                // Add click event to open modal
+                getStartedBtn.addEventListener("click", function(e) {
+                    e.preventDefault(); // Prevent any default action
+                    getStartedModal.style.display = "block";
+                });
+            }
+            
+            // Close modal when X is clicked
+            closeBtn.addEventListener("click", function() {
+                getStartedModal.style.display = "none";
+            });
+            
+            // Close modal when clicking outside the modal
+            window.addEventListener("click", function(event) {
+                if (event.target === getStartedModal) {
+                    getStartedModal.style.display = "none";
+                }
+            });
+            
+            // Handle choice selection
+            choiceOptions.forEach(choice => {
+                choice.addEventListener("click", function() {
+                    // Remove selected class from all choices
+                    choiceOptions.forEach(option => {
+                        option.classList.remove("selected");
+                    });
+                    
+                    // Add selected class to the clicked choice
+                    this.classList.add("selected");
+                    selectedOption = this.getAttribute("data-type");
+                });
+            });
+            
+            // Handle continue button click
+            continueBtn.addEventListener("click", function() {
+                if (selectedOption) {
+                    if (selectedOption === "member") {
+                        // Redirect to register page
+                        window.location.href = "register.html";
+                    } else if (selectedOption === "guest") {
+                        // Redirect to guest registration page (also using register.html)
+                        window.location.href = "register.html?type=guest";
+                    }
+                } else {
+                    alert("Please select an option to continue");
+                }
+            });
+        });
+
+        //Modal for login
+        document.addEventListener('DOMContentLoaded', function() {
+    // Get modal elements
+    const loginModal = document.getElementById("loginModal");
+    const closeBtn = document.querySelector(".login-modal-close");
+    
+    // Get all "Get Plan" buttons
+    const getPlanButtons = document.querySelectorAll(".plan-button-1, .plan-button-2, .plan-button-3");
+    
+    // Add click event to all "Get Plan" buttons
+    getPlanButtons.forEach(button => {
+      button.addEventListener("click", function(e) {
+        e.preventDefault(); // Prevent default action
+        loginModal.style.display = "block";
+      });
+    });
+    
+    // Close modal when X is clicked
+    closeBtn.addEventListener("click", function() {
+      loginModal.style.display = "none";
+    });
+    
+    // Close modal when clicking outside the modal
+    window.addEventListener("click", function(event) {
+      if (event.target === loginModal) {
+        loginModal.style.display = "none";
+      }
+    });
+    
+    // Handle login button
+    const loginBtn = document.querySelector(".login-btn");
+    loginBtn.addEventListener("click", function() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      
+      if (username && password) {
+        // Redirect to client dashboard
+        window.location.href = "client.html";
+      } else {
+        alert("Please enter both username and password");
+      }
+    });
+  });
     </script>
     
 </body>

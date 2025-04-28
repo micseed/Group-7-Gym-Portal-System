@@ -461,265 +461,7 @@ margin-right: 5px;
   text-decoration: none;
 }
 
-/* ======================= Cards ====================== */
-.greetings {
-  padding: 0 30px;
-  margin-top: 2%;
-
-}
-
-.welcome h1 {
-  color: #484848;
-  font-weight: 200;
-  font-size: 2.5rem;
-}
-
-.cardBox {
-  position: relative;
-  width: 100%;
-  padding: 20px;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 30px;
-}
-
-.cardBox .card {
-  position: relative;
-  background: var(--white);
-  padding: 30px;
-  border-radius: 20px;
-  display: flex;
-  justify-content: space-between;
-  cursor: pointer;
-  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
-}
-
-.cardBox .card .numbers {
-  position: relative;
-  font-weight: 500;
-  font-size: 2.5rem;
-  color: var(--blue);
-}
-
-.cardBox .card .cardName {
-  color: var(--black2);
-  font-size: 1.1rem;
-  margin-top: 5px;
-}
-
-.cardBox .card .iconBx {
-  font-size: 3.5rem;
-  color: var(--black2);
-}
-
-.cardBox .card:hover {
-  background: var(--blue);
-}
-.cardBox .card:hover .numbers,
-.cardBox .card:hover .cardName,
-.cardBox .card:hover .iconBx {
-  color: var(--white);
-}
-
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    width: 95%;
-    justify-self: center;
-    margin-bottom: 5%;
-}
-
-.widget {
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.widget h3 {
-    color: #203a93;
-    font-size: 1.5em;
-    margin-bottom: 15px;
-}
-
-.workout-plan-section p {
-    color: #484848;
-    margin-bottom: 10px;
-}
-
-.workout-plan-section strong {
-    font-weight: bold;
-}
-
-.workout-plan-section .button {
-    margin-top: 15px;
-}
-
-.next-session-section p {
-    color: #484848;
-    margin-bottom: 10px;
-}
-
-.next-session-section strong {
-    font-weight: bold;
-}
-
-.book-session-section p {
-    color: #484848;
-    margin-bottom: 15px;
-}
-
-.goals-section .goals-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.goals-section .goals-list li {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-    color: #484848;
-}
-
-.goals-section .goal-icon {
-    font-size: 1em;
-    color: #203a93;
-}
-
-.button {
-    background-color: #F1D27C;
-    color: #404141;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s ease;
-}
-
-.button:hover {
-    background-color: #e0c36b;
-}
-
-.button.primary {
-    background-color: #203a93;
-    color: #fff;
-}
-
-.button.primary:hover {
-    background-color: #18267a;
-}
-
-.payment-container {
-            max-width: 600px;
-            padding: 30px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            justify-self: center;
-        }
-
-        h1 {
-            color: #203a93;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        h2 {
-            color: #444;
-            font-size: 1.5em;
-            margin-top: 20px;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-            text-align: left;
-        }
-
-        .subscription-selection label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #555;
-        }
-
-        #subscription-tier {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1em;
-        }
-
-        .payment-details {
-            margin-top: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background-color: #f9f9f9;
-        }
-
-        .payment-details h2 {
-            text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #555;
-        }
-
-        .form-group input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1em;
-            box-sizing: border-box;
-        }
-
-        .error-message {
-            color: red;
-            font-size: 0.9em;
-            margin-top: 5px;
-        }
-
-        button.primary,
-        .button-link {
-            background-color: #203a93;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            display: block;
-            width: 100%;
-            text-align: center;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-        }
-
-        .home {
-            text-align:center;
-        }
-
-        button.primary:hover,
-        .button-link:hover {
-            background-color: #18267a;
-        }
+ 
 
         /* Modal Styles for Sign out*/
  .modal {
@@ -808,6 +550,619 @@ margin-right: 5px;
         background-color: #5a6268;
         }
 
+        h2, h3 {
+      margin-bottom: 15px;
+      color: #2c3e50;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      color: #1a73e8;
+    }
+
+    .header p {
+      font-size: 1.2rem;
+      color: #5f6368;
+    }
+
+    /* Widget Styles */
+    .widget {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+      margin-bottom: 30px;
+    }
+
+    /* Current Plan Details */
+    .plan-details-section h3 {
+      color: #1a73e8;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+
+    .plan-details-section p {
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+    }
+
+    .plan-details-section{
+     width: 90%;
+     margin-top: 4%;
+     justify-self: center; 
+    }
+
+    .plan-benefits {
+      margin: 20px 0;
+    }
+
+    .plan-benefits li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .plan-benefits ion-icon {
+      color: #34a853;
+      font-size: 20px;
+      margin-right: 10px;
+    }
+
+    .plan-change-button {
+      background-color: #1a73e8;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 12px 25px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .plan-change-button:hover {
+      background-color: #155db9;
+    }
+
+    /* Available Plans */
+    .available-plans-section {
+      display: none;
+    }
+
+    .available-plans-section h3 {
+      color: #1a73e8;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+
+    .plans-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      gap: 20px;
+    }
+
+    .blue-box {
+      flex: 1;
+      min-width: 300px;
+      max-width: 380px;
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .blue-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .plan {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .plan-header {
+      padding: 20px;
+      text-align: center;
+      background-color: #f8f9fa;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .line, .line-2, .line-3 {
+      height: 5px;
+      width: 50px;
+      margin: 0 auto 15px;
+      border-radius: 5px;
+    }
+
+    .line {
+      background-color: #4285f4;
+    }
+
+    .line-2 {
+      background-color: #34a853;
+    }
+
+    .line-3 {
+      background-color: #ea4335;
+    }
+
+    .small-line {
+      height: 2px;
+      width: 30px;
+      background-color: #e0e0e0;
+      margin: 10px auto;
+    }
+
+    .plan-header h2 {
+      font-size: 1.5rem;
+      margin-bottom: 5px;
+    }
+
+    .plan-header p {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .price {
+      font-size: 2rem;
+      font-weight: bold;
+      margin: 0 5px;
+    }
+
+    .plan-content {
+      padding: 25px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .plan-content p {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #5f6368;
+    }
+
+    .plan-features li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .plan-features ion-icon {
+      margin-right: 10px;
+      font-size: 18px;
+    }
+
+    .plan-button-1, .plan-button-2, .plan-button-3 {
+      display: block;
+      text-align: center;
+      padding: 12px 0;
+      border-radius: 5px;
+      font-weight: 500;
+      margin-top: auto;
+      transition: background-color 0.3s;
+    }
+
+    .plan-button-1 {
+      background-color: #4285f4;
+      color: white;
+    }
+
+    .plan-button-2 {
+      background-color: #34a853;
+      color: white;
+    }
+
+    .plan-button-3 {
+      background-color: #ea4335;
+      color: white;
+    }
+
+    .plan-button-1:hover {
+      background-color: #3367d6;
+    }
+
+    .plan-button-2:hover {
+      background-color: #2a8843;
+    }
+
+    .plan-button-3:hover {
+      background-color: #d33426;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      max-width: 50%;
+      max-height: 120%;
+    }
+
+    .modal h3 {
+      margin-bottom: 10px;
+    }
+
+    .plan-options {
+      margin-bottom: 20px;
+    }
+
+    .plan-option {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      border: 1px solid #e0e0e0;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: border-color 0.3s;
+    }
+
+    .plan-option:hover {
+      border-color: #1a73e8;
+    }
+
+    .plan-option input {
+      margin-right: 15px;
+    }
+
+    .plan-option-details {
+      flex-grow: 1;
+    }
+
+    .plan-option-price {
+      font-weight: bold;
+      color: #1a73e8;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .modal-button {
+      padding: 12px 25px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .cancel-button {
+      background-color: #f1f3f4;
+      border: none;
+      color: #5f6368;
+    }
+
+    .confirm-button {
+      background-color: #1a73e8;
+      border: none;
+      color: white;
+    }
+
+    .success-message {
+      display: none;
+      background-color: #e6f4ea;
+      border-left: 4px solid #34a853;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 5px;
+    }
+
+    /* Payment Section Styles */
+    .payment-section {
+      display: none;
+      margin-top: 5px;
+    }
+
+    .payment-section h3 {
+      color: #1a73e8;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 5px;
+      margin-bottom: 5px;
+    }
+
+    .payment-info {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .payment-method {
+      margin-bottom: 10px;
+    }
+
+    .payment-method h4 {
+      margin-bottom: 5px;
+      color: #2c3e50;
+    }
+
+    .payment-options {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .payment-option {
+      display: flex;
+      align-items: center;
+      padding: 5px 5px;
+      border: 1px solid #e0e0e0;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: border-color 0.3s;
+    }
+
+    .payment-option:hover {
+      border-color: #1a73e8;
+    }
+
+    .payment-option.selected {
+      border-color: #1a73e8;
+      background-color: #f0f7ff;
+    }
+
+    .payment-option input {
+      margin-right: 10px;
+    }
+
+    .payment-option img {
+      height: 20px;
+      margin-left: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 5px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 5px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .payment-summary {
+      background-color: #f8f9fa;
+      border-radius: 5px;
+      padding: 10px;
+      margin-top: 5px;
+    }
+
+    .payment-summary h4 {
+      margin-bottom: 8px;
+      color: #2c3e50;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+
+    .summary-total {
+      font-weight: bold;
+      border-top: 1px solid #ddd;
+      padding-top: 10px;
+      margin-top: 10px;
+    }
+
+    .payment-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+    }
+
+    .payment-back-button {
+      background-color: #f1f3f4;
+      border: none;
+      color: #5f6368;
+      padding: 10px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .payment-confirm-button {
+      background-color: #34a853;
+      border: none;
+      color: white;
+      padding: 10px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .payment-success {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .payment-success ion-icon {
+      font-size: 60px;
+      color: #34a853;
+      margin-bottom: 20px;
+    }
+
+    .payment-success h3 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+
+    .payment-success p {
+      color: #5f6368;
+      margin-bottom: 20px;
+    }
+
+    .payment-success .continue-button {
+      background-color: #1a73e8;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+     /* Modal Styles for Sign out*/
+ .modal {
+        display: none; 
+        position: fixed; 
+        z-index: 1000; 
+        left: 0;
+        top: 0;
+        width: 100%; 
+        height: 100%; 
+        overflow: auto; 
+        background-color: rgba(0,0,0,0.4); 
+        backdrop-filter: blur(5px);
+        justify-content: center;
+        align-items: center;
+        }
+
+        .modal.show {
+        display: flex; 
+        }
+
+        .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto; 
+        padding: 30px;
+        border: 1px solid #888;
+        width: 600px; 
+        max-width: 400px; 
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        position: relative;
+        }
+
+        .modal-header {
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 20px;
+        }
+
+        .modal-title {
+        font-size: 1.5em;
+        color: #333;
+        font-weight: bold;
+        }
+
+        .modal-body {
+        font-size: 1.1em;
+        color: #555;
+        margin-bottom: 20px;
+        }
+
+        .modal-footer.sign-out-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        }
+
+        .modal-button {
+        background-color: #007bff; 
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+        }
+
+        .modal-button:hover {
+        background-color: #0056b3;
+        }
+
+        .modal-button.yes-button {
+        background-color: #203A93;
+        }
+
+        .modal-button.yes-button:hover {
+        background-color: #c82333;
+        }
+
+        .modal-button.no-button {
+        background-color: #F1D27C;
+        }
+
+        .modal-button.no-button:hover {
+        background-color: #5a6268;
+        }
+
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .plans-container {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .blue-box {
+        width: 100%;
+        max-width: 400px;
+        margin-bottom: 20px;
+      }
+
+      .form-row {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+
+    
+
     </style>
 </head>
 
@@ -835,6 +1190,15 @@ margin-right: 5px;
                 </li>
 
                 <li>
+                  <a href="clientmessage.html">
+                      <span class="icon">
+                          <ion-icon name="chatbubble-outline"></ion-icon>
+                      </span>
+                      <span class="title">Message</span>
+                  </a>
+              </li>
+
+                <li>
                     <a href="profile.html">
                         <span class="icon">
                             <ion-icon name="person-circle-outline"></ion-icon>
@@ -848,7 +1212,7 @@ margin-right: 5px;
                         <span class="icon">
                             <ion-icon name="calendar-outline"></ion-icon>
                         </span>
-                        <span class="title">Sessions</span>
+                        <span class="title">Workout Plan</span>
                     </a>
                 </li>
 
@@ -857,7 +1221,7 @@ margin-right: 5px;
                         <span class="icon">
                             <ion-icon name="card-outline"></ion-icon>
                         </span>
-                        <span class="title">Payments</span>
+                        <span class="title">Membership Plan</span>
                     </a>
                 </li>
 
@@ -939,66 +1303,287 @@ margin-right: 5px;
                 </div>
     
                 <div class="user">
-                    <img src="esnyr.jpg" alt="">
+                    <img src="assets/img/esnyr.jpg" alt="">
                 </div>                
             </div>
 
-            <div class="payment-container">
-                <h1>ENERGIZE Gym Subscription Renewal</h1>
-        
-                <section class="subscription-selection">
-                    <h2>Select Subscription Tier</h2>
-                    <label for="subscription-tier">Subscription:</label>
-                    <select id="subscription-tier">
-                        <option value="starter">Starter Access - ₱499</option>
-                        <option value="coach">Coach Connect - ₱1799</option>
-                        <option value="elite">Elite Coaching - ₱3599</option>
-                    </select>
-                </section>
-        
-                <section class="payment-details">
-                    <h2>Credit Card Details</h2>
-                    <div class="form-group">
-                        <label for="card-number">Card Number:</label>
-                        <input type="text" id="card-number" name="card-number" placeholder="XXXX-XXXX-XXXX-XXXX">
-                        <div class="error-message" id="card-number-error"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="expiry-date">Expiration Date (MM/YYYY):</label>
-                        <input type="text" id="expiry-date" name="expiry-date" placeholder="MM/YYYY">
-                        <div class="error-message" id="expiry-date-error"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="cvv">CVV:</label>
-                        <input type="text" id="cvv" name="cvv" placeholder="XXX">
-                        <div class="error-message" id="cvv-error"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="cardholder-name">Cardholder Name:</label>
-                        <input type="text" id="cardholder-name" name="cardholder-name" placeholder="Full Name">
-                        <div class="error-message" id="cardholder-name-error"></div>
-                    </div>
-                </section>
-        
-                <button id="submit-payment" class="button primary">Submit Payment</button>
-                <a href="schedule.html" class="home">Back to Sessions</a>
+            <!-- Current Plan Details -->
+    <div class="widget plan-details-section">
+      <h3>Current Plan Details</h3>
+      <p><strong>Elite Coaching</strong> Php 1,799/month</p>
+      <p>Renews on May 15, 2025</p>
+      <ul class="plan-benefits">
+        <li>
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+          <span>4 Personal Training Sessions per month</span>
+        </li>
+        <li>
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+          <span>Custom workout plan</span>
+        </li>
+        <li>
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+          <span>Custom nutrition plan</span>
+        </li>
+        <li>
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+          <span>24/7 coach messaging</span>
+        </li>
+        <li>
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+          <span>Weekly progress tracking</span>
+        </li>
+      </ul>
+      <button class="button plan-change-button" id="changePlanButton">Change Plan</button>
+    </div>
+
+    <!-- Available Plans -->
+    <div class="widget available-plans-section" id="availablePlansSection">
+      <h3>Available Plans</h3>
+      <div class="plans-container">
+        <div class="blue-box">
+          <div class="plan">
+            <div class="plan-header">
+              <div class="line"></div>
+              <h2>Starter Access</h2>
+              <div class="small-line"></div>
+              <p><sup>Php</sup><span class="price">499</span><sub>/mo</sub></p>
+              <div class="small-line"></div>
             </div>
+            <div class="plan-content">
+              <p>Start strong with guided workouts and gym access at your pace.</p>
+              <br>
+              <ul class="plan-features">
+                <li>
+                  <ion-icon name="checkmark-outline"></ion-icon>
+                  <span>2 Personal Training Sessions</span>
+                </li>
+                <li>
+                  <ion-icon name="checkmark-outline"></ion-icon>
+                  <span>Basic workout plan</span>
+                </li>
+                <li>
+                  <ion-icon name="checkmark-outline"></ion-icon>
+                  <span>Tracking progress plan</span>
+                </li>
+              </ul>
+              
+              <br><br><br>
+              <a href="#" class="plan-button-1" data-plan="starter" data-price="499">Get Plan</a>
+            </div>
+          </div>
+        </div>
 
-            <div id="signOutModal" class="modal">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h2 class="modal-title">Sign Out</h2>
-                  </div>
-                  <div class="modal-body">
-                    <p>Are you sure you want to sign out?</p>
-                  </div>
-                  <div class="modal-footer sign-out-actions">
-                    <button class="modal-button no-button" id="signOutNo">No</button>
-                    <button class="modal-button yes-button" id="signOutYes">Yes</button>
-                  </div>
-                </div>
+        <div class="blue-box">
+          <div class="plan">
+            <div class="plan-header">
+              <div class="line-2"></div>
+              <h2>Coach Connect</h2>
+              <div class="small-line"></div>
+              <p><sup>Php</sup><span class="price">1,799</span><sub>/mo</sub></p>
+              <div class="small-line"></div>
+            </div>
+            <div class="plan-content">
+              <p>Your coach, your plan, your progress - stay connected every week.</p>
+              <br>
+              <ul class="plan-features">
+                <li>
+                  <ion-icon name="checkmark-outline"></ion-icon>
+                  <span>4 Personal Training Sessions</span>
+                </li>
+                <li>
+                  <ion-icon name="checkmark-outline"></ion-icon>
+                  <span>Custom workout plan</span>
+                </li>
+                <li>
+                  <ion-icon name="checkmark-outline"></ion-icon>
+                  <span>Custom nutrition plan</span>
+                </li>
+                <li>
+                  <ion-icon name="checkmark-outline"></ion-icon>
+                  <span>24/7 coach messaging</span>
+                </li>
+              </ul>
+              <br><br>
+              <a href="#" class="plan-button-2" data-plan="connect" data-price="1799">Get Plan</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="blue-box">
+          <div class="plan">
+            <div class="plan-header">
+              <div class="line-3"></div>
+              <h2>Elite Coaching</h2>
+              <div class="small-line"></div>
+              <p><sup>Php</sup><span class="price">3,599</span><sub>/mo</sub></p>
+              <div class="small-line"></div>
+            </div>
+            <div class="plan-content">
+              <p>For those who want it all: unlimited access, expert coaching, and faster results.</p>
+              <br>
+              <ul class="plan-features">
+                <li>
+                  <ion-icon name="checkmark-outline"></ion-icon>
+                  <span>8 Personal Training Sessions</span>
+                </li>
+                <li>
+                  <ion-icon name="checkmark-outline"></ion-icon>
+                  <span>Advanced personalized plans</span>
+                </li>
+                <li>
+                  <ion-icon name="checkmark-outline"></ion-icon>
+                  <span>Priority scheduling</span>
+                </li>
+                <li>
+                  <ion-icon name="checkmark-outline"></ion-icon>
+                  <span>In-home sessions available</span>
+                </li>
+                <li>
+                  <ion-icon name="checkmark-outline"></ion-icon>
+                  <span>24/7 dedicated coach</span>
+                </li>
+              </ul>
+              
+              <a href="#" class="plan-button-3" data-plan="elite" data-price="3599">Get Plan</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plan Change Modal -->
+  <div class="modal" id="planModal">
+    <div class="modal-content">
+      <h3>Change Your Plan</h3>
+      
+      <!-- Plan Selection Section -->
+      <div id="planSelectionSection">
+        <div class="plan-options">
+          <div class="plan-option">
+            <input type="radio" name="plan" id="starterPlan" value="starter" data-price="499">
+            <div class="plan-option-details">
+              <h4>Starter Access</h4>
+              <p>2 Personal Training Sessions</p>
+            </div>
+            <span class="plan-option-price">Php 499/mo</span>
+          </div>
+          <div class="plan-option">
+            <input type="radio" name="plan" id="connectPlan" value="connect" data-price="1799">
+            <div class="plan-option-details">
+              <h4>Coach Connect</h4>
+              <p>4 Personal Training Sessions</p>
+            </div>
+            <span class="plan-option-price">Php 1,799/mo</span>
+          </div>
+          <div class="plan-option">
+            <input type="radio" name="plan" id="elitePlan" value="elite" data-price="3599">
+            <div class="plan-option-details">
+              <h4>Elite Coaching</h4>
+              <p>8 Personal Training Sessions</p>
+            </div>
+            <span class="plan-option-price">Php 3,599/mo</span>
+          </div>
+        </div>
+        <div class="success-message" id="successMessage">
+          <p>Your plan has been successfully updated!</p>
+        </div>
+        <div class="modal-buttons">
+          <button class="modal-button cancel-button" id="cancelButton">Cancel</button>
+          <button class="modal-button confirm-button" id="confirmButton">Continue to Payment</button>
+        </div>
+      </div>
+
+      <!-- Payment Section -->
+      <div id="paymentSection" class="payment-section">
+        <h3>Payment Details</h3>
+        <div class="payment-info">
+          <div class="payment-method">
+            <h4>Select Payment Method</h4>
+            <div class="payment-options">
+              <div class="payment-option" data-method="credit-card">
+                <input type="radio" name="payment" id="creditCard" checked>
+                <label for="creditCard">Credit Card</label>
               </div>
+              <div class="payment-option" data-method="paypal">
+                <input type="radio" name="payment" id="paypal">
+                <label for="paypal">PayPal</label>
+              </div>
+              <div class="payment-option" data-method="bank-transfer">
+                <input type="radio" name="payment" id="bankTransfer">
+                <label for="bankTransfer">Bank Transfer</label>
+              </div>
+            </div>
+          </div>
 
+          <div id="creditCardForm">
+            <div class="form-group">
+              <label for="cardName">Name on Card</label>
+              <input type="text" id="cardName" placeholder="John Doe">
+            </div>
+            <div class="form-group">
+              <label for="cardNumber">Card Number</label>
+              <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="expiryDate">Expiry Date</label>
+                <input type="text" id="expiryDate" placeholder="MM/YY">
+              </div>
+              <div class="form-group">
+                <label for="cvv">CVV</label>
+                <input type="text" id="cvv" placeholder="123">
+              </div>
+            </div>
+          </div>
+
+          <div class="payment-summary">
+            <h4>Order Summary</h4>
+            <div class="summary-item">
+              <span id="planName">Plan Name</span>
+              <span id="planPrice">Php 0.00</span>
+            </div>
+            <div class="summary-item">
+              <span>Processing Fee</span>
+              <span>Php 0.00</span>
+            </div>
+            <div class="summary-item summary-total">
+              <span>Total</span>
+              <span id="totalPrice">Php 0.00</span>
+            </div>
+          </div>
+
+          <div class="payment-buttons">
+            <button class="payment-back-button" id="backToPlansButton">Back to Plans</button>
+            <button class="payment-confirm-button" id="processPaymentButton">Process Payment</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Success Section -->
+      <div id="paymentSuccessSection" class="payment-success">
+        <ion-icon name="checkmark-circle"></ion-icon>
+        <h3>Payment Successful!</h3>
+        <p>Your plan has been successfully updated and your payment has been processed.</p>
+        <p>A confirmation email has been sent to your registered email address.</p>
+        <button class="continue-button" id="continueButton">Continue</button>
+      </div>
+    </div>
+  
+    <div id="signOutModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Sign Out</h2>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to sign out?</p>
+        </div>
+        <div class="modal-footer sign-out-actions">
+          <button class="modal-button no-button" id="signOutNo">No</button>
+          <button class="modal-button yes-button" id="signOutYes">Yes</button>
+        </div>
+      </div>
     </div>
 
     <script>
@@ -1162,8 +1747,356 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        //Sign out
         document.addEventListener('DOMContentLoaded', function() {
+      // Elements
+      const changePlanButton = document.getElementById('changePlanButton');
+      const availablePlansSection = document.getElementById('availablePlansSection');
+      const planModal = document.getElementById('planModal');
+      const cancelButton = document.getElementById('cancelButton');
+      const confirmButton = document.getElementById('confirmButton');
+      const successMessage = document.getElementById('successMessage');
+      const planOptions = document.querySelectorAll('.plan-option');
+      const getPlanButtons = document.querySelectorAll('.plan-button-1, .plan-button-2, .plan-button-3');
+      
+      // Payment Elements
+      const planSelectionSection = document.getElementById('planSelectionSection');
+      const paymentSection = document.getElementById('paymentSection');
+      const paymentSuccessSection = document.getElementById('paymentSuccessSection');
+      const backToPlansButton = document.getElementById('backToPlansButton');
+      const processPaymentButton = document.getElementById('processPaymentButton');
+      const continueButton = document.getElementById('continueButton');
+      const paymentOptions = document.querySelectorAll('.payment-option');
+      const planName = document.getElementById('planName');
+      const planPrice = document.getElementById('planPrice');
+      const totalPrice = document.getElementById('totalPrice');
+      
+      // Show available plans when "Change Plan" button is clicked
+      changePlanButton.addEventListener('click', function() {
+        if (availablePlansSection.style.display === 'block') {
+          availablePlansSection.style.display = 'none';
+        } else {
+          availablePlansSection.style.display = 'block';
+          // Smooth scroll to the plans section
+          availablePlansSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+      
+      // Plan option selection functionality
+      planOptions.forEach(option => {
+        option.addEventListener('click', function() {
+          const radio = this.querySelector('input[type="radio"]');
+          radio.checked = true;
+        });
+      });
+      
+      // Show modal when "Get Plan" button is clicked
+      getPlanButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+          e.preventDefault();
+          const planType = this.getAttribute('data-plan');
+          const price = this.getAttribute('data-price');
+          
+          // Set the corresponding radio button in the modal
+          document.getElementById(planType + 'Plan').checked = true;
+          
+          // Update payment summary
+          updatePaymentSummary(planType, price);
+          
+          // Show the modal with plan selection section
+          planModal.style.display = 'flex';
+          planSelectionSection.style.display = 'block';
+          paymentSection.style.display = 'none';
+          paymentSuccessSection.style.display = 'none';
+        });
+      });
+      
+      // Hide modal when Cancel button is clicked
+      cancelButton.addEventListener('click', function() {
+        planModal.style.display = 'none';
+        successMessage.style.display = 'none';
+      });
+      
+      // Continue to payment section
+      confirmButton.addEventListener('click', function() {
+        const selectedPlan = document.querySelector('input[name="plan"]:checked');
+        
+        if (selectedPlan) {
+          const planType = selectedPlan.value;
+          const price = selectedPlan.getAttribute('data-price');
+          
+          // Update payment summary
+          updatePaymentSummary(planType, price);
+          
+          // Show payment section
+          planSelectionSection.style.display = 'none';
+          paymentSection.style.display = 'block';
+        }
+      });
+      
+      // Back to plan selection
+      backToPlansButton.addEventListener('click', function() {
+        planSelectionSection.style.display = 'block';
+        paymentSection.style.display = 'none';
+      });
+      
+      // Process payment
+      processPaymentButton.addEventListener('click', function() {
+        // Show loading state
+        processPaymentButton.textContent = 'Processing...';
+        processPaymentButton.disabled = true;
+        
+        // Simulate payment processing
+        setTimeout(function() {
+          // Show payment success section
+          planSelectionSection.style.display = 'none';
+          paymentSection.style.display = 'none';
+          paymentSuccessSection.style.display = 'block';
+          
+          // Reset button state
+          processPaymentButton.textContent = 'Process Payment';
+          processPaymentButton.disabled = false;
+          
+          // Update the current plan details
+          const selectedPlan = document.querySelector('input[name="plan"]:checked');
+          if (selectedPlan) {
+            updateCurrentPlan(selectedPlan.value);
+          }
+        }, 2000);
+      });
+      
+      // Continue after payment success
+      continueButton.addEventListener('click', function() {
+        planModal.style.display = 'none';
+        
+        // Reset modal sections
+        planSelectionSection.style.display = 'block';
+        paymentSection.style.display = 'none';
+        paymentSuccessSection.style.display = 'none';
+      });
+      
+      // Payment option selection
+      paymentOptions.forEach(option => {
+        option.addEventListener('click', function() {
+          const radio = this.querySelector('input[type="radio"]');
+          radio.checked = true;
+          
+          // Remove selected class from all options
+          paymentOptions.forEach(opt => opt.classList.remove('selected'));
+          
+          // Add selected class to clicked option
+          this.classList.add('selected');
+        });
+      });
+      
+      // Close modal if clicked outside
+      window.addEventListener('click', function(e) {
+        if (e.target === planModal) {
+          planModal.style.display = 'none';
+          successMessage.style.display = 'none';
+        }
+      });
+      
+      // Helper function to update payment summary
+      function updatePaymentSummary(planType, price) {
+        let planNameText = '';
+        
+        switch(planType) {
+          case 'basic':
+            planNameText = 'Basic Plan';
+            break;
+          case 'pro':
+            planNameText = 'Pro Plan';
+            break;
+          case 'premium':
+            planNameText = 'Premium Plan';
+            break;
+          default:
+            planNameText = 'Selected Plan';
+        }
+        
+        // Update payment summary details
+        planName.textContent = planNameText;
+        planPrice.textContent = `$${price}`;
+        totalPrice.textContent = `$${price}`;
+      }
+      
+      // Function to update current plan details on the main page
+      function updateCurrentPlan(planType) {
+        const currentPlanName = document.getElementById('currentPlanName');
+        const currentPlanPrice = document.getElementById('currentPlanPrice');
+        const currentPlanBilling = document.getElementById('currentPlanBilling');
+        
+        let planNameText = '';
+        let planPriceText = '';
+        
+        switch(planType) {
+          case 'basic':
+            planNameText = 'Basic Plan';
+            planPriceText = '$9.99';
+            break;
+          case 'pro':
+            planNameText = 'Pro Plan';
+            planPriceText = '$19.99';
+            break;
+          case 'premium':
+            planNameText = 'Premium Plan';
+            planPriceText = '$29.99';
+            break;
+          default:
+            planNameText = 'Free Plan';
+            planPriceText = '$0.00';
+        }
+        
+        // Update current plan details
+        currentPlanName.textContent = planNameText;
+        currentPlanPrice.textContent = planPriceText;
+        currentPlanBilling.textContent = 'Monthly';
+        
+        // Show success message
+        successMessage.style.display = 'block';
+        successMessage.textContent = `Successfully changed to ${planNameText}!`;
+        
+        // Hide after 3 seconds
+        setTimeout(function() {
+          successMessage.style.display = 'none';
+        }, 3000);
+      }
+      
+      // Form validation for payment details
+      const paymentForm = document.getElementById('paymentForm');
+      const cardNumber = document.getElementById('cardNumber');
+      const cardName = document.getElementById('cardName');
+      const expDate = document.getElementById('expDate');
+      const cvv = document.getElementById('cvv');
+      
+      paymentForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Simple validation
+        let isValid = true;
+        
+        if (!cardNumber.value.trim() || cardNumber.value.trim().length < 16) {
+          markInvalid(cardNumber, 'Please enter a valid card number');
+          isValid = false;
+        } else {
+          markValid(cardNumber);
+        }
+        
+        if (!cardName.value.trim()) {
+          markInvalid(cardName, 'Please enter the cardholder name');
+          isValid = false;
+        } else {
+          markValid(cardName);
+        }
+        
+        if (!expDate.value.trim() || !isValidExpDate(expDate.value)) {
+          markInvalid(expDate, 'Please enter a valid expiration date (MM/YY)');
+          isValid = false;
+        } else {
+          markValid(expDate);
+        }
+        
+        if (!cvv.value.trim() || cvv.value.trim().length < 3) {
+          markInvalid(cvv, 'Please enter a valid CVV');
+          isValid = false;
+        } else {
+          markValid(cvv);
+        }
+        
+        if (isValid) {
+          // If all fields are valid, process the payment
+          processPaymentButton.click();
+        }
+      });
+      
+      // Helper function to validate expiration date
+      function isValidExpDate(value) {
+        const regex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
+        if (!regex.test(value)) return false;
+        
+        const [month, year] = value.split('/');
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear() % 100;
+        const currentMonth = currentDate.getMonth() + 1;
+        
+        // Convert to numbers
+        const expMonth = parseInt(month, 10);
+        const expYear = parseInt(year, 10);
+        
+        // Check if the card is expired
+        if (expYear < currentYear || (expYear === currentYear && expMonth < currentMonth)) {
+          return false;
+        }
+        
+        return true;
+      }
+      
+      // Helper functions for form validation
+      function markInvalid(element, message) {
+        element.classList.add('invalid');
+        
+        // Find or create error message element
+        let errorElement = element.nextElementSibling;
+        if (!errorElement || !errorElement.classList.contains('error-message')) {
+          errorElement = document.createElement('div');
+          errorElement.className = 'error-message';
+          element.parentNode.insertBefore(errorElement, element.nextSibling);
+        }
+        
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+      }
+      
+      function markValid(element) {
+        element.classList.remove('invalid');
+        
+        // Hide error message if exists
+        const errorElement = element.nextElementSibling;
+        if (errorElement && errorElement.classList.contains('error-message')) {
+          errorElement.style.display = 'none';
+        }
+      }
+      
+      // Format card number as user types
+      cardNumber.addEventListener('input', function(e) {
+        // Remove non-digits
+        let value = this.value.replace(/\D/g, '');
+        
+        // Add space after every 4 digits
+        value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+        
+        // Limit to 19 characters (16 digits + 3 spaces)
+        value = value.substring(0, 19);
+        
+        this.value = value;
+      });
+      
+      // Format expiration date as user types
+      expDate.addEventListener('input', function(e) {
+        let value = this.value.replace(/\D/g, '');
+        
+        if (value.length > 2) {
+          value = value.substring(0, 2) + '/' + value.substring(2, 4);
+        }
+        
+        this.value = value;
+      });
+      
+      // Initialize the page
+      window.onload = function() {
+        // Hide available plans section initially
+        availablePlansSection.style.display = 'none';
+        
+        // Hide modal
+        planModal.style.display = 'none';
+        
+        // Hide success message
+        successMessage.style.display = 'none';
+      };
+    });
+
+    //Sign out
+    document.addEventListener('DOMContentLoaded', function() {
                     const signOutLink = document.querySelector('.navigation ul li:last-child a');
                     const signOutModal = document.getElementById('signOutModal');
                     const signOutYesButton = document.getElementById('signOutYes');
@@ -1201,7 +2134,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     modalElement.classList.remove('show');
                     }
                 });
-
     </script>
 
     <!-- ====== ionicons ======= -->
