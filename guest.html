@@ -896,6 +896,18 @@
         .form-row .form-group {
             flex: 1;
         }
+
+        .greetings {
+  padding: 0 30px;
+  margin-top: 2%;
+
+}
+
+.welcome h1 {
+  color: #484848;
+  font-weight: 200;
+  font-size: 2.5rem;
+}
     </style>
     
 </head>
@@ -915,7 +927,7 @@
                 </li>
 
                 <li class="hovered">
-                    <a href="#">
+                    <a href="guest.html">
                         <span class="icon">
                             <ion-icon name="home-outline"></ion-icon>
                         </span>
@@ -924,16 +936,7 @@
                 </li>
 
                 <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="calendar-outline"></ion-icon>
-                        </span>
-                        <span class="title">Workout Plan</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#">
+                    <a href="guestsplan.html">
                         <span class="icon">
                             <ion-icon name="card-outline"></ion-icon>
                         </span>
@@ -942,7 +945,7 @@
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="guestsprofile.html">
                         <span class="icon">
                             <ion-icon name="person-outline"></ion-icon>
                         </span>
@@ -951,7 +954,7 @@
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="guestssettings.html">
                         <span class="icon">
                             <ion-icon name="settings-outline"></ion-icon>
                         </span>
@@ -1023,12 +1026,18 @@
                 </div>
             
                 <div class="name">
-                    <p>Guest User</p>
+                    <p>Guest User 01</p>
                 </div>
     
                 <div class="user">
-                    <img src="assets/img/guests.png" alt="User profile">
+                    <img src="assets/img/esnyr.jpg" alt="User profile">
                 </div>                
+            </div>
+
+            <div class="greetings">
+                <div class="welcome">
+                    <h1>Welcome, Guest!</h1>
+                </div>
             </div>
             
             <!-- Promo Banner -->
@@ -1037,7 +1046,7 @@
                     <h2>Upgrade Your Fitness Journey</h2>
                     <p>Get personalized workout plans and coaching from certified professionals</p>
                 </div>
-                <button class="promo-button" id="viewPlansBtn">View Plans</button>
+                <button class="promo-button" id="viewPlansBtn"><a href="guestsplan.html" style="text-decoration: none; color: #484848;">View Plans</a></button>
             </div>
             
             <!-- Dashboard Cards -->

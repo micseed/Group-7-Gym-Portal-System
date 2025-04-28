@@ -441,7 +441,7 @@ h2 {
     border-collapse: collapse;
     margin-top: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-    border-radius: 8px;
+    border-radius: 20px;
     overflow: hidden;
     background-color: #fff;
 }
@@ -714,6 +714,271 @@ h3 {
   .modal-button.no-button:hover {
   background-color: #5a6268;
   }
+
+  /* Form Styling */
+.form-section {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.form-section h3 {
+  margin-bottom: 20px;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.form-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #444;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.btn-submit {
+  background: #287bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.btn-submit:hover {
+  background: #0d6efd;
+}
+
+/* Table Styling */
+.view-clients-container,
+.view-guests-container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.view-clients-container h2,
+.view-guests-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table thead {
+  background-color: #203A93;
+  color: #fff;
+}
+
+table th {
+  padding: 12px 15px;
+  text-align: left;
+}
+
+table td {
+  padding: 10px 15px;
+  border-bottom: 1px solid #eee;
+}
+
+table tbody tr:hover {
+  background: #f4f4f4;
+}
+
+.status {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #fff;
+  text-transform: capitalize;
+}
+
+.status.active {
+  background: #3cb043;
+}
+
+.status.inactive {
+  background: #ff4757;
+}
+
+.view-btn {
+  background: #287bff;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.view-btn:hover {
+  background: #0d6efd;
+}
+
+/* Adding border radius to guest table */
+.view-guests-container table {
+  border-radius: 15px;
+  overflow: hidden; /* This ensures the border-radius is applied properly */
+}
+
+/* Ensuring the table header corners are rounded */
+.view-guests-container table thead tr:first-child th:first-child {
+  border-top-left-radius: 8px;
+}
+
+.view-guests-container table thead tr:first-child th:last-child {
+  border-top-right-radius: 8px;
+}
+
+/* Ensuring the table footer corners are rounded */
+.view-guests-container table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 8px;
+}
+
+.view-guests-container table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 8px;
+}
+
+/* You can also add a subtle border to the entire table for better visual definition */
+.view-guests-container table {
+  border: 1px solid #e0e0e0;
+}
+
+/* Modal Styling */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  overflow: auto;
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 5% auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 700px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  animation: modalFadeIn 0.3s;
+}
+
+@keyframes modalFadeIn {
+  from {opacity: 0; transform: translateY(-20px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+.close-button {
+  float: right;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #888;
+}
+
+.close-button:hover {
+  color: #333;
+}
+
+.modal h3 {
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.save-button {
+  background: #287bff;
+  color: #fff;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-button {
+  background: #ff4757;
+  color: #fff;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.save-button:hover {
+  background: #0d6efd;
+}
+
+.delete-button:hover {
+  background: #e03347;
+}
+
+/* Responsive Fixes */
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .modal-content {
+    width: 95%;
+    margin: 10% auto;
+  }
+}
 
 /* ====================== Responsive Design ========================== */
 @media (max-width: 991px) {

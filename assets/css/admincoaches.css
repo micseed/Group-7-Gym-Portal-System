@@ -423,383 +423,286 @@ margin-right: 5px;
 }
 
   
-/* =============== Coaches ================ */
+/* Form Styling */
+.form-section {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
 
+.form-section h3 {
+  margin-bottom: 20px;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.form-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #444;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.btn-submit {
+  background: #287bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.btn-submit:hover {
+  background: #0d6efd;
+}
+
+/* Table Styling */
 .view-coaches-container {
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    margin-bottom: 30px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 }
 
-h2 {
-    color: #484848;
-    margin-bottom: 25px;
-    text-align: start;
+.view-coaches-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
 }
 
-#coachesTable {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-    border-radius: 8px;
-    overflow: hidden;
-    background-color: #fff;
+.view-coaches-container table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden; /* This ensures the border-radius is applied properly */
+  border: 1px solid #e0e0e0;
 }
 
-#coachesTable thead {
-    background-color: #203A93;
-    color: #fff;
-    font-weight: bold;
-    text-align: left;
+/* Ensuring the table header corners are rounded */
+.view-coaches-container table thead tr:first-child th:first-child {
+  border-top-left-radius: 8px;
 }
 
-#coachesTable th,
-#coachesTable td {
-    padding: 12px 15px;
-    border-bottom: 1px solid #e0e0e0;
+.view-coaches-container table thead tr:first-child th:last-child {
+  border-top-right-radius: 8px;
 }
 
-#coachesTable tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
+/* Ensuring the table footer corners are rounded */
+.view-coaches-container table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 8px;
 }
 
-#coachesTable tbody tr:hover {
-    background-color: #f0f0f0;
+.view-coaches-container table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 8px;
 }
 
-#coachesTable th:first-child,
-#coachesTable td:first-child {
-    padding-left: 20px;
+table thead {
+  background-color: #203A93;
+  color: #fff;
 }
 
-#coachesTable th:last-child,
-#coachesTable td:last-child {
-    padding-right: 20px;
-    text-align: center;
+table th {
+  padding: 12px 15px;
+  text-align: left;
 }
 
-.coach-name-link {
-    color: #3498db;
-    text-decoration: none;
-    transition: color 0.3s ease;
+table td {
+  padding: 10px 15px;
+  border-bottom: 1px solid #eee;
 }
 
-.coach-name-link:hover {
-    color: #2980b9;
+table tbody tr:hover {
+  background: #f4f4f4;
 }
 
-.action-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
+.status {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #fff;
+  text-transform: capitalize;
 }
 
-.action-buttons button {
-    background-color: #e74c3c; 
-    color: #fff;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease;
+.status.available {
+  background: #3cb043;
 }
 
-.action-buttons button:hover {
-    background-color: #c0392b;
+.status.unavailable {
+  background: #ff4757;
 }
 
-#addCoachRow input[type="text"],
-#addCoachRow input[type="email"],
-#addCoachRow input[type="tel"],
-#addCoachRow input[type="text"][placeholder="Client"], 
-#addCoachRow input[type="text"][placeholder="Sessions"], 
-#addCoachRow select {
-    padding: 10px;
-    border: 1px solid #bdc3c7;
-    border-radius: 6px;
-    box-sizing: border-box;
-    width: 100%;
-    margin-bottom: 8px;
-    font-size: 0.9em;
+.view-btn {
+  background: #287bff;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-#addCoachRow button {
-    background-color: #27ae60; 
-    color: #fff;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease;
+.view-btn:hover {
+  background: #0d6efd;
 }
 
-#addCoachRow button:hover {
-    background-color: #219653;
-}
-
-#emptyCoachesMessage {
-    color: #7f8c8d;
-    font-style: italic;
-    margin-top: 20px;
-    text-align: center;
-}
-
-  
-/* =============== Modal Styles ================ */
-#coachProfileModal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.6);
-}
-
-#coachProfileModal .modal-content {
-    background-color: #fff;
-    margin: 10% auto; 
-    padding: 30px;
-    border: none;
-    border-radius: 12px;
-    width: 80%;
-    max-width: 600px;
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
-    position: relative;
-}
-
-#coachProfileModal .close-button {
-    color: #aaa;
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 30px;
-    font-weight: bold;
-    text-decoration: none;
-    cursor: pointer;
-    transition: color 0.3s ease;
-}
-
-#coachProfileModal .close-button:hover,
-#coachProfileModal .close-button:focus {
-    color: #555;
-}
-
-#coachProfileModal h3 {
-    color: #2c3e50;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-#coachProfileModal .modal-profile-info {
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #eee;
-    font-size: 1em;
-    color: #555;
-}
-
-#coachProfileModal .modal-profile-info strong {
-    font-weight: bold;
-    margin-right: 8px;
-    color: #333;
-}
-
-#coachProfileModal .modal-actions {
-    text-align: right;
-    margin-top: 30px;
-}
-
-#coachProfileModal .modal-actions button {
-    background-color: #e74c3c;
-    color: #fff;
-    padding: 10px 18px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s ease;
-    margin-left: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-#coachProfileModal .modal-actions button:hover {
-    background-color: #c0392b;
-}
-
+/* Modal Styling */
 .modal {
-    display: none; 
-    position: fixed;
-    z-index: 1; 
-    left: 0;
-    top: 0;
-    width: 100%; 
-    height: 100%;
-    overflow: auto; 
-    background-color: rgba(0,0,0,0.6); 
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  overflow: auto;
 }
 
 .modal-content {
-    background-color: #fefefe;
-    margin: 10% auto; 
-    padding: 30px;
-    border: none;
-    border-radius: 12px;
-    width: 80%;
-    max-width: 600px;
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
-    position: relative;
+  background-color: #fff;
+  margin: 5% auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 700px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  animation: modalFadeIn 0.3s;
+}
+
+@keyframes modalFadeIn {
+  from {opacity: 0; transform: translateY(-20px);}
+  to {opacity: 1; transform: translateY(0);}
 }
 
 .close-button {
-    color: #aaa;
-    float: right;
-    font-size: 30px;
-    font-weight: bold;
-    text-decoration: none;
-    cursor: pointer;
-    transition: color 0.3s ease;
+  float: right;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #888;
 }
 
-.close-button:hover,
-.close-button:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+.close-button:hover {
+  color: #333;
 }
 
-h3 {
-    color: #2c3e50;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.modal-profile-info {
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #eee;
-    font-size: 1em;
-    color: #555;
-}
-
-.modal-profile-info strong {
-    font-weight: bold;
-    margin-right: 8px;
-    color: #333;
+.modal h3 {
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  color: #333;
 }
 
 .modal-actions {
-    text-align: right;
-    margin-top: 30px;
-}
-
-.modal-actions button {
-    background-color: #e74c3c;
-    color: #fff;
-    padding: 10px 18px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s ease;
-    margin-left: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.modal-actions button:hover {
-    background-color: #c0392b;
-}
-
-/* Modal Styles for Sign out*/
-.modal {
-  display: none; 
-  position: fixed; 
-  z-index: 1000; 
-  left: 0;
-  top: 0;
-  width: 100%; 
-  height: 100%; 
-  overflow: auto; 
-  background-color: rgba(0,0,0,0.4); 
-  backdrop-filter: blur(5px);
-  justify-content: center;
-  align-items: center;
-  }
-
-  .modal.show {
-  display: flex; 
-  }
-
-  .modal-content {
-  background-color: #fefefe;
-  margin: 15% auto; 
-  padding: 30px;
-  border: 1px solid #888;
-  width: 600px; 
-  max-width: 400px; 
-  border-radius: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  position: relative;
-  }
-
-  .modal-header {
-  padding-bottom: 20px;
-  border-bottom: 1px solid #eee;
-  margin-bottom: 20px;
-  }
-
-  .modal-title {
-  font-size: 1.5em;
-  color: #333;
-  font-weight: bold;
-  }
-
-  .modal-body {
-  font-size: 1.1em;
-  color: #555;
-  margin-bottom: 20px;
-  }
-
-  .modal-footer.sign-out-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 15px;
-  }
+  gap: 10px;
+  margin-top: 20px;
+}
 
-  .modal-button {
-  background-color: #007bff; 
-  color: white;
+.save-button {
+  background: #287bff;
+  color: #fff;
   border: none;
-  padding: 10px 20px;
+  padding: 8px 15px;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-  }
+}
 
-  .modal-button:hover {
-  background-color: #0056b3;
-  }
+.delete-button {
+  background: #ff4757;
+  color: #fff;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
 
-  .modal-button.yes-button {
-  background-color: #203A93;
-  }
+.save-button:hover {
+  background: #0d6efd;
+}
 
-  .modal-button.yes-button:hover {
-  background-color: #c82333;
-  }
+.delete-button:hover {
+  background: #e03347;
+}
 
-  .modal-button.no-button {
-  background-color: #F1D27C;
-  }
+/* Search Results */
+.search-container {
+  position: relative;
+}
 
-  .modal-button.no-button:hover {
-  background-color: #5a6268;
+#search-results {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: white;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-radius: 5px;
+  z-index: 100;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.search-item {
+  padding: 10px 15px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+.search-item:hover {
+  background: #f5f5f5;
+}
+
+/* Responsive Fixes */
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+    gap: 10px;
   }
+  
+  .modal-content {
+    width: 95%;
+    margin: 10% auto;
+  }
+}

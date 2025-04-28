@@ -53,11 +53,20 @@
                 </li>
 
                 <li>
+                  <a href="adminguests.html">
+                      <span class="icon">
+                          <ion-icon name="person-add-outline"></ion-icon>
+                      </span>
+                      <span class="title">Manage Guests</span>
+                  </a>
+              </li>
+
+                <li>
                     <a href="admincomplaint.html">
                         <span class="icon">
                             <ion-icon name="chatbubble-outline"></ion-icon>
                         </span>
-                        <span class="title">Complaints</span>
+                        <span class="title">Complaints/Requests</span>
                     </a>
                 </li>
 
@@ -152,69 +161,204 @@
                 </div>                
             </div>
 
-            <!-- Clients -->
-            <div class="view-clients-container">
-                <h2>ENERGIZE GYM CENTER CLIENTS</h2>
-                <table id="clientsTable">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Assigned Coach</th>
-                            <th>Fitness Goal</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="clientsTableBody">
-                        <tr id="addClientRow">
-                            <td><input type="text" id="addName" placeholder="Name"></td>
-                            <td><input type="email" id="addEmail" placeholder="Email"></td>
-                            <td><input type="tel" id="addPhone" placeholder="Phone"></td>
-                            <td><input type="text" id="addAssignedCoach" placeholder="Coach"></td>
-                            <td><input type="text" id="addFitnessGoal" placeholder="Goal"></td>
-                            <td>
-                                <select id="addStatus">
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
-                                </select>
-                            </td>
-                            <td><button onclick="addNewClient()">Add</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <p id="emptyClientsMessage" style="display:none;">No clients registered yet.</p>
-            </div>
-        
-            <div id="clientProfileModal" class="modal">
-                <div class="modal-content">
-                    <span class="close-button">&times;</span>
-                    <h3>Client Details</h3>
-                    <div id="modalProfileDetails">
-                        </div>
-                    <div class="modal-actions">
-                        <button class="delete-button">Delete Client</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div id="signOutModal" class="modal">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h2 class="modal-title">Sign Out</h2>
-                  </div>
-                  <div class="modal-body">
-                    <p>Are you sure you want to sign out?</p>
-                  </div>
-                  <div class="modal-footer sign-out-actions">
-                    <button class="modal-button no-button" id="signOutNo">No</button>
-                    <button class="modal-button yes-button" id="signOutYes">Yes</button>
-                  </div>
-                </div>
-              </div>
-
+            <!-- Client Form Section -->
+<div class="form-section">
+    <h3>Add New Client</h3>
+    <form id="addClientForm" class="add-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="clientName">Name</label>
+          <input type="text" id="clientName" required>
+        </div>
+        <div class="form-group">
+          <label for="clientEmail">Email</label>
+          <input type="email" id="clientEmail" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="clientPhone">Phone</label>
+          <input type="tel" id="clientPhone" required>
+        </div>
+        <div class="form-group">
+          <label for="clientCoach">Assigned Coach</label>
+          <input type="text" id="clientCoach" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="clientGoal">Fitness Goal</label>
+          <input type="text" id="clientGoal" required>
+        </div>
+        <div class="form-group">
+          <label for="clientStatus">Status</label>
+          <select id="clientStatus" required>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="clientMembership">Membership Type</label>
+          <select id="clientMembership" required>
+            <option value="starter">Starter Access</option>
+            <option value="coach">Coach Connect</option>
+            <option value="elite">Elite Coaching</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn-submit">Add Client</button>
+      </div>
+    </form>
+  </div>
+  
+  <!-- Clients Table Section -->
+  <div class="view-clients-container">
+    <h2>ENERGIZE GYM CENTER CLIENTS</h2>
+    <table id="clientsTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Assigned Coach</th>
+          <th>Fitness Goal</th>
+          <th>Membership</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="clientsTableBody">
+        <!-- Client rows will be populated here -->
+      </tbody>
+    </table>
+    <p id="emptyClientsMessage" style="display:none;">No clients registered yet.</p>
+  </div>
+  
+  <!-- Guest Form Section -->
+  <div class="form-section">
+    <h3>Add New Guest</h3>
+    <form id="addGuestForm" class="add-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="guestName">Name</label>
+          <input type="text" id="guestName" required>
+        </div>
+        <div class="form-group">
+          <label for="guestEmail">Email</label>
+          <input type="email" id="guestEmail" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="guestPhone">Phone</label>
+          <input type="tel" id="guestPhone" required>
+        </div>
+        <div class="form-group">
+          <label for="guestPurpose">Visit Purpose</label>
+          <input type="text" id="guestPurpose" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="guestStatus">Status</label>
+          <select id="guestStatus" required>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn-submit">Add Guest</button>
+      </div>
+    </form>
+  </div>
+  
+  <!-- Guests Table Section -->
+  <div class="view-guests-container" >
+    <h2>ENERGIZE GYM CENTER GUESTS</h2>
+    <table id="guestsTable">
+      <thead >
+        <tr  >
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Visit Purpose</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="guestsTableBody" >
+        <!-- Guest rows will be populated here -->
+      </tbody>
+    </table>
+    <p id="emptyGuestsMessage" style="display:none;">No guests registered yet.</p>
+  </div>
+  
+  <!-- Client/Guest Details Modal -->
+  <div id="detailsModal" class="modal">
+    <div class="modal-content">
+      <span class="close-button">&times;</span>
+      <h3 id="modalTitle">Details</h3>
+      <form id="editForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editName">Name</label>
+            <input type="text" id="editName" required>
+          </div>
+          <div class="form-group">
+            <label for="editEmail">Email</label>
+            <input type="email" id="editEmail" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editPhone">Phone</label>
+            <input type="tel" id="editPhone" required>
+          </div>
+          <div class="form-group" id="editCoachGroup">
+            <label for="editCoach">Assigned Coach</label>
+            <input type="text" id="editCoach">
+          </div>
+          <div class="form-group" id="editPurposeGroup" style="display:none;">
+            <label for="editPurpose">Visit Purpose</label>
+            <input type="text" id="editPurpose">
+          </div>
+        </div>
+        <div class="form-row" id="clientSpecificFields">
+          <div class="form-group">
+            <label for="editGoal">Fitness Goal</label>
+            <input type="text" id="editGoal">
+          </div>
+          <div class="form-group">
+            <label for="editMembership">Membership</label>
+            <select id="editMembership">
+              <option value="starter">Starter Access</option>
+              <option value="coach">Coach Connect</option>
+              <option value="elite">Elite Coaching</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editStatus">Status</label>
+            <select id="editStatus" required>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+        </div>
+        <input type="hidden" id="editId">
+        <input type="hidden" id="editType">
+        <div class="modal-actions">
+          <button type="submit" class="save-button">Save Changes</button>
+          <button type="button" class="delete-button">Delete</button>
+        </div>
+      </form>
     </div>
+  </div>
 
 
  <!-- =========== Scripts =========  -->

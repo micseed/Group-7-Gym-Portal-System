@@ -121,161 +121,287 @@ document.addEventListener('click', function(event) {
   }
 });
 
-//Coaches
-let coachesData = loadCoaches(); 
-    let currentProfileId = null; 
+// Sample data - replace with your actual data loading mechanism
+let coaches = JSON.parse(localStorage.getItem('coaches')) || [];
 
-    renderCoachesTable(coachesData);
+// DOM elements
+const coachForm = document.getElementById('addCoachForm');
+const coachesTableBody = document.getElementById('coachesTableBody');
+const coachProfileModal = document.getElementById('coachProfileModal');
+const editCoachForm = document.getElementById('editCoachForm');
+const closeButton = document.querySelector(".close-button");
+const emptyCoachesMessage = document.getElementById('emptyCoachesMessage');
 
-    function addNewCoach() {
-        const nameInput = document.getElementById('addName');
-        const emailInput = document.getElementById('addEmail');
-        const phoneInput = document.getElementById('addPhone');
-        const assignedClientInput = document.getElementById('addAssignedClient');
-        const sessionsInput = document.getElementById('addSessions');
-        const availabilityInput = document.getElementById('addAvailability');
+// Initialize table
+document.addEventListener('DOMContentLoaded', () => {
+  renderCoachesTable();
+  setupEventListeners();
+});
 
-        if (!nameInput.value.trim()) {
-            alert('Coach name is required.');
-            return;
-        }
+function setupEventListeners() {
+  // Add coach form submission
+  coachForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    addCoach();
+  });
 
-        const newCoach = {
-            id: Date.now(),
-            name: nameInput.value.trim(),
-            email: emailInput.value.trim(),
-            phone: phoneInput.value.trim(),
-            assignedClient: assignedClientInput.value.trim(),
-            sessions: sessionsInput.value.trim(),
-            availability: availabilityInput.value
-        };
+  // Edit form submission
+  editCoachForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    saveCoachChanges();
+  });
 
-        coachesData.unshift(newCoach);
-        saveCoaches();
-        renderCoachesTable(coachesData);
-        nameInput.value = '';
-        emailInput.value = '';
-        phoneInput.value = '';
-        assignedClientInput.value = '';
-        sessionsInput.value = '';
-        availabilityInput.value = 'available'; 
+  // Close modal when clicking the X
+  closeButton.addEventListener('click', () => {
+    coachProfileModal.style.display = 'none';
+  });
+
+  // Close modal when clicking outside
+  window.addEventListener('click', (e) => {
+    if (e.target === coachProfileModal) {
+      coachProfileModal.style.display = 'none';
     }
+  });
 
-    function renderCoachesTable(coaches) {
-        const tableBody = document.getElementById('coachesTableBody');
-        const addRow = document.getElementById('addCoachRow');
-        const existingDataRows = tableBody.querySelectorAll('tr:not(#addCoachRow)');
-        existingDataRows.forEach(row => row.remove());
-        tableBody.appendChild(addRow);
+  // Handle delete button in modal
+  document.querySelector('.delete-button').addEventListener('click', () => {
+    deleteCoach();
+  });
+  
+  // Sign out functionality (from your original code)
+  const signOutLinks = document.querySelectorAll('.navigation li:last-child a');
+  const signOutModal = document.getElementById('signOutModal');
+  const signOutNo = document.getElementById('signOutNo');
+  const signOutYes = document.getElementById('signOutYes');
 
-        if (coaches.length === 0) {
-            document.getElementById('emptyCoachesMessage').style.display = 'block';
-        } else {
-            document.getElementById('emptyCoachesMessage').style.display = 'none';
-            coaches.forEach(coach => {
-                const row = tableBody.insertRow();
-                const nameCell = row.insertCell();
-                const emailCell = row.insertCell();
-                const phoneCell = row.insertCell();
-                const assignedClientCell = row.insertCell();
-                const sessionsCell = row.insertCell();
-                const availabilityCell = row.insertCell();
-                const actionsCell = row.insertCell();
-                actionsCell.classList.add('action-buttons'); 
-
-                nameCell.innerHTML = `<a href="#" class="coach-name-link" data-coach-id="${coach.id}">${coach.name}</a>`;
-                emailCell.textContent = coach.email || '-';
-                phoneCell.textContent = coach.phone || '-';
-                assignedClientCell.textContent = coach.assignedClient || '-';
-                sessionsCell.textContent = coach.sessions || '-';
-
-                availabilityCell.textContent = coach.availability.toUpperCase();
-                availabilityCell.classList.add(coach.availability); 
-
-                const deleteButton = document.createElement('button');
-                deleteButton.textContent = 'Delete';
-                deleteButton.onclick = () => deleteCoach(coach.id);
-                actionsCell.appendChild(deleteButton);
-            });
-        }
-    }
-
-    function deleteCoach(coachId) {
-        if (confirm('Are you sure you want to delete this coach?')) {
-            coachesData = coachesData.filter(coach => coach.id !== coachId);
-            saveCoaches();
-            renderCoachesTable(coachesData);
-            if (currentProfileId === coachId) {
-                document.getElementById('coachProfileModal').style.display = 'none';
-                currentProfileId = null;
-            }
-        }
-    }
-
-    function showCoachProfileModal(coachId) {
-        const coach = coachesData.find(c => c.id === parseInt(coachId));
-        if (coach) {
-            currentProfileId = coachId;
-            document.getElementById('modalProfileDetails').innerHTML = `
-                <div class="modal-profile-info"><strong>Name:</strong> ${coach.name}</div>
-                <div class="modal-profile-info"><strong>Email:</strong> ${coach.email || 'N/A'}</div>
-                <div class="modal-profile-info"><strong>Phone:</strong> ${coach.phone || 'N/A'}</div>
-                <div class="modal-profile-info"><strong>Assigned Client:</strong> ${coach.assignedClient || 'N/A'}</div>
-                <div class="modal-profile-info"><strong>Sessions:</strong> ${coach.sessions || 'N/A'}</div>
-                <div class="modal-profile-info"><strong>Availability:</strong> <span style="font-weight: bold; color: ${coach.availability === 'available' ? 'green' : 'red'};">${coach.availability.toUpperCase()}</span></div>
-            `;
-            document.getElementById('coachProfileModal').style.display = 'block';
-        } else {
-            document.getElementById('modalProfileDetails').innerHTML = '<p style="color: #7f8c8d; font-style: italic;">Coach details not found.</p>';
-            document.getElementById('coachProfileModal').style.display = 'block';
-        }
-    }
-
-    document.getElementById('coachesTableBody').addEventListener('click', (event) => {
-        if (event.target.classList.contains('coach-name-link')) {
-            const coachId = event.target.dataset.coachId;
-            showCoachProfileModal(coachId);
-            event.preventDefault(); 
-        } else if (event.target.classList.contains('delete-button')) {
-            const coachIdToDelete = parseInt(event.target.dataset.coachId);
-            deleteCoach(coachIdToDelete);
-        }
+  signOutLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      signOutModal.style.display = 'block';
     });
+  });
 
-    // Modal close functionality
-    const coachProfileModal = document.getElementById('coachProfileModal');
-    const closeButton = document.querySelector('#coachProfileModal .close-button');
-    window.addEventListener('click', (event) => {
-        if (event.target == coachProfileModal) {
-            coachProfileModal.style.display = 'none';
-            currentProfileId = null;
-        }
+  if (signOutNo) {
+    signOutNo.addEventListener('click', () => {
+      signOutModal.style.display = 'none';
     });
-    if (closeButton) {
-        closeButton.addEventListener('click', () => {
-            coachProfileModal.style.display = 'none';
-            currentProfileId = null;
-        });
-    }
-    const modalDeleteButton = document.querySelector('#coachProfileModal .delete-button');
-    if (modalDeleteButton) {
-        modalDeleteButton.addEventListener('click', () => {
-            if (currentProfileId) {
-                deleteCoach(parseInt(currentProfileId));
-            }
-        });
-    }
+  }
 
+  if (signOutYes) {
+    signOutYes.addEventListener('click', () => {
+      window.location.href = 'index.html'; // Change to your desired logout page
+    });
+  }
+  
+  // Menu toggle functionality (from your original code)
+  let toggle = document.querySelector('.toggle');
+  let navigation = document.querySelector('.navigation');
+  let main = document.querySelector('.main');
 
-    function saveCoaches() {
-        localStorage.setItem('coaches', JSON.stringify(coachesData));
-    }
+  toggle.onclick = function() {
+    navigation.classList.toggle('active');
+    main.classList.toggle('active');
+  }
+}
 
-    function loadCoaches() {
-        const storedCoaches = localStorage.getItem('coaches');
-        return storedCoaches ? JSON.parse(storedCoaches) : [];
+// Add coach function
+function addCoach() {
+  const newCoach = {
+    id: generateId(),
+    name: document.getElementById('coachName').value,
+    email: document.getElementById('coachEmail').value,
+    phone: document.getElementById('coachPhone').value,
+    client: document.getElementById('coachClient').value,
+    sessions: document.getElementById('coachSessions').value,
+    specialty: document.getElementById('coachSpecialty').value,
+    availability: document.getElementById('coachAvailability').value
+  };
+  
+  coaches.push(newCoach);
+  saveCoaches();
+  renderCoachesTable();
+  coachForm.reset();
+}
+
+// Generate unique ID
+function generateId() {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+}
+
+// Display coaches in table
+function renderCoachesTable() {
+  coachesTableBody.innerHTML = '';
+  
+  if (coaches.length === 0) {
+    emptyCoachesMessage.style.display = 'block';
+  } else {
+    emptyCoachesMessage.style.display = 'none';
+    
+    coaches.forEach(coach => {
+      const row = document.createElement('tr');
+      
+      row.innerHTML = `
+        <td>${coach.name}</td>
+        <td>${coach.email}</td>
+        <td>${coach.phone}</td>
+        <td>${coach.client || 'None'}</td>
+        <td>${coach.sessions}</td>
+        <td>${coach.specialty}</td>
+        <td><span class="status ${coach.availability}">${coach.availability}</span></td>
+        <td>
+          <button class="view-btn" data-id="${coach.id}">View</button>
+        </td>
+      `;
+      
+      coachesTableBody.appendChild(row);
+      
+      // Add event listener to view button
+      row.querySelector('.view-btn').addEventListener('click', () => {
+        openCoachDetailsModal(coach);
+      });
+    });
+  }
+}
+
+// Open details modal
+function openCoachDetailsModal(coach) {
+  // Set form fields
+  document.getElementById('editCoachName').value = coach.name;
+  document.getElementById('editCoachEmail').value = coach.email;
+  document.getElementById('editCoachPhone').value = coach.phone;
+  document.getElementById('editCoachClient').value = coach.client || '';
+  document.getElementById('editCoachSessions').value = coach.sessions;
+  document.getElementById('editCoachSpecialty').value = coach.specialty;
+  document.getElementById('editCoachAvailability').value = coach.availability;
+  document.getElementById('editCoachId').value = coach.id;
+  
+  // Display modal
+  coachProfileModal.style.display = 'block';
+}
+
+// Save changes from modal
+function saveCoachChanges() {
+  const id = document.getElementById('editCoachId').value;
+  const index = coaches.findIndex(coach => coach.id === id);
+  
+  if (index !== -1) {
+    coaches[index] = {
+      id: id,
+      name: document.getElementById('editCoachName').value,
+      email: document.getElementById('editCoachEmail').value,
+      phone: document.getElementById('editCoachPhone').value,
+      client: document.getElementById('editCoachClient').value,
+      sessions: document.getElementById('editCoachSessions').value,
+      specialty: document.getElementById('editCoachSpecialty').value,
+      availability: document.getElementById('editCoachAvailability').value
+    };
+    saveCoaches();
+    renderCoachesTable();
+  }
+  
+  coachProfileModal.style.display = 'none';
+}
+
+// Delete coach
+function deleteCoach() {
+  const id = document.getElementById('editCoachId').value;
+  coaches = coaches.filter(coach => coach.id !== id);
+  saveCoaches();
+  renderCoachesTable();
+  coachProfileModal.style.display = 'none';
+}
+
+// Save to localStorage
+function saveCoaches() {
+  localStorage.setItem('coaches', JSON.stringify(coaches));
+}
+
+// Email and notification dropdowns (from your original code)
+document.addEventListener('DOMContentLoaded', function() {
+  const mailIcon = document.getElementById('mail-icon-inbox');
+  const inboxPreview = document.getElementById('inbox-preview');
+  const notificationIcon = document.getElementById('notification-icon');
+  const notificationsDropdown = document.getElementById('notifications-dropdown');
+
+  mailIcon.addEventListener('click', function() {
+    inboxPreview.style.display = inboxPreview.style.display === 'block' ? 'none' : 'block';
+    // Close notifications if open
+    notificationsDropdown.style.display = 'none';
+  });
+
+  notificationIcon.addEventListener('click', function() {
+    notificationsDropdown.style.display = notificationsDropdown.style.display === 'block' ? 'none' : 'block';
+    // Close inbox if open
+    inboxPreview.style.display = 'none';
+  });
+
+  // Close dropdowns when clicking elsewhere
+  document.addEventListener('click', function(event) {
+    if (!event.target.closest('.mail-container') && !event.target.closest('#inbox-preview')) {
+      inboxPreview.style.display = 'none';
     }
-    renderCoachesTable(coachesData);
+    if (!event.target.closest('.notification-container') && !event.target.closest('#notifications-dropdown')) {
+      notificationsDropdown.style.display = 'none';
+    }
+  });
+});
+
+// Search functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+
+  searchInput.addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    
+    if (searchTerm.length === 0) {
+      searchResults.style.display = 'none';
+      return;
+    }
+    
+    // Search coaches
+    const filteredCoaches = coaches.filter(coach => 
+      coach.name.toLowerCase().includes(searchTerm) || 
+      coach.email.toLowerCase().includes(searchTerm) ||
+      coach.specialty.toLowerCase().includes(searchTerm)
+    );
+    
+    displaySearchResults(filteredCoaches);
+  });
+
+  function displaySearchResults(results) {
+    searchResults.innerHTML = '';
+    
+    if (results.length === 0) {
+      searchResults.innerHTML = '<div class="search-item">No results found</div>';
+      searchResults.style.display = 'block';
+      return;
+    }
+    
+    results.forEach(result => {
+      const resultItem = document.createElement('div');
+      resultItem.classList.add('search-item');
+      resultItem.textContent = `${result.name} - ${result.specialty}`;
+      
+      resultItem.addEventListener('click', () => {
+        openCoachDetailsModal(result);
+        searchInput.value = '';
+        searchResults.style.display = 'none';
+      });
+      
+      searchResults.appendChild(resultItem);
+    });
+    
+    searchResults.style.display = 'block';
+  }
+  
+  // Close search results when clicking elsewhere
+  document.addEventListener('click', function(event) {
+    if (!event.target.closest('.search-container')) {
+      searchResults.style.display = 'none';
+    }
+  });
+});
 
 //Sign out
 document.addEventListener('DOMContentLoaded', function() {

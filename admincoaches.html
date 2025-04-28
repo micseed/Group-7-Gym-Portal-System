@@ -55,11 +55,20 @@
                 </li>
 
                 <li>
+                  <a href="adminguests.html">
+                      <span class="icon">
+                          <ion-icon name="person-add-outline"></ion-icon>
+                      </span>
+                      <span class="title">Manage Guests</span>
+                  </a>
+              </li>
+
+                <li>
                     <a href="admincomplaint.html">
                         <span class="icon">
                             <ion-icon name="chatbubble-outline"></ion-icon>
                         </span>
-                        <span class="title">Complaints</span>
+                        <span class="title">Complaints/Requests</span>
                     </a>
                 </li>
 
@@ -154,52 +163,131 @@
                 </div>                
             </div>
 
-            <!-- Coaches -->
-            <div class="view-coaches-container">
-                <h2>ENERGIZE GYM CENTER COACHES</h2>
-                <table id="coachesTable">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Assigned Client</th>
-                            <th>Sessions</th>
-                            <th>Availability</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="coachesTableBody">
-                        <tr id="addCoachRow">
-                            <td><input type="text" id="addName" placeholder="Name"></td>
-                            <td><input type="email" id="addEmail" placeholder="Email"></td>
-                            <td><input type="tel" id="addPhone" placeholder="Phone"></td>
-                            <td><input type="text" id="addAssignedClient" placeholder="Client"></td>
-                            <td><input type="text" id="addSessions" placeholder="Sessions"></td>
-                            <td>
-                                <select id="addAvailability">
-                                    <option value="available">Available</option>
-                                    <option value="unavailable">Unavailable</option>
-                                </select>
-                            </td>
-                            <td class="action-buttons"><button onclick="addNewCoach()">Add</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <p id="emptyCoachesMessage" style="display:none;">No coaches registered yet.</p>
-            </div>
-            
-            <div id="coachProfileModal" class="modal">
-                <div class="modal-content">
-                    <span class="close-button">&times;</span>
-                    <h3>Coach Details</h3>
-                    <div id="modalProfileDetails">
-                    </div>
-                    <div class="modal-actions">
-                        <button class="delete-button">Delete Coach</button>
-                    </div>
-                </div>
-            </div>
+           <!-- Coach Form Section -->
+<div class="form-section">
+    <h3>Add New Coach</h3>
+    <form id="addCoachForm" class="add-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="coachName">Name</label>
+          <input type="text" id="coachName" required>
+        </div>
+        <div class="form-group">
+          <label for="coachEmail">Email</label>
+          <input type="email" id="coachEmail" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="coachPhone">Phone</label>
+          <input type="tel" id="coachPhone" required>
+        </div>
+        <div class="form-group">
+          <label for="coachClient">Assigned Client</label>
+          <input type="text" id="coachClient">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="coachSessions">Sessions</label>
+          <input type="text" id="coachSessions" required>
+        </div>
+        <div class="form-group">
+          <label for="coachSpecialty">Specialty</label>
+          <input type="text" id="coachSpecialty" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="coachAvailability">Availability</label>
+          <select id="coachAvailability" required>
+            <option value="available">Available</option>
+            <option value="unavailable">Unavailable</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn-submit">Add Coach</button>
+      </div>
+    </form>
+  </div>
+  
+  <!-- Coaches Table Section -->
+  <div class="view-coaches-container">
+    <h2>ENERGIZE GYM CENTER COACHES</h2>
+    <table id="coachesTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Assigned Client</th>
+          <th>Sessions</th>
+          <th>Specialty</th>
+          <th>Availability</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="coachesTableBody">
+        <!-- Coach rows will be populated here -->
+      </tbody>
+    </table>
+    <p id="emptyCoachesMessage" style="display:none;">No coaches registered yet.</p>
+  </div>
+  
+  <!-- Coach Details Modal -->
+  <div id="coachProfileModal" class="modal">
+    <div class="modal-content">
+      <span class="close-button">&times;</span>
+      <h3>Coach Details</h3>
+      <form id="editCoachForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editCoachName">Name</label>
+            <input type="text" id="editCoachName" required>
+          </div>
+          <div class="form-group">
+            <label for="editCoachEmail">Email</label>
+            <input type="email" id="editCoachEmail" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editCoachPhone">Phone</label>
+            <input type="tel" id="editCoachPhone" required>
+          </div>
+          <div class="form-group">
+            <label for="editCoachClient">Assigned Client</label>
+            <input type="text" id="editCoachClient">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editCoachSessions">Sessions</label>
+            <input type="text" id="editCoachSessions" required>
+          </div>
+          <div class="form-group">
+            <label for="editCoachSpecialty">Specialty</label>
+            <input type="text" id="editCoachSpecialty" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editCoachAvailability">Availability</label>
+            <select id="editCoachAvailability" required>
+              <option value="available">Available</option>
+              <option value="unavailable">Unavailable</option>
+            </select>
+          </div>
+        </div>
+        <input type="hidden" id="editCoachId">
+        <div class="modal-actions">
+          <button type="submit" class="save-button">Save Changes</button>
+          <button type="button" class="delete-button">Delete Coach</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
             <div id="signOutModal" class="modal">
                 <div class="modal-content">

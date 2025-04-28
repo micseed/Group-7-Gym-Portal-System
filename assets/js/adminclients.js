@@ -309,3 +309,284 @@ document.addEventListener('DOMContentLoaded', function() {
   modalElement.classList.remove('show');
   }
 });
+
+// Sample data - replace with your actual data loading mechanism
+let clients = JSON.parse(localStorage.getItem('clients')) || [];
+let guests = JSON.parse(localStorage.getItem('guests')) || [];
+
+// DOM elements
+const clientForm = document.getElementById('addClientForm');
+const guestForm = document.getElementById('addGuestForm');
+const clientsTableBody = document.getElementById('clientsTableBody');
+const guestsTableBody = document.getElementById('guestsTableBody');
+const detailsModal = document.getElementById('detailsModal');
+const editForm = document.getElementById('editForm');
+const closeButton = document.querySelector(".close-button");
+const emptyClientsMessage = document.getElementById('emptyClientsMessage');
+const emptyGuestsMessage = document.getElementById('emptyGuestsMessage');
+
+// Initialize tables
+document.addEventListener('DOMContentLoaded', () => {
+  renderClientsTable();
+  renderGuestsTable();
+  setupEventListeners();
+});
+
+function setupEventListeners() {
+  // Add client form submission
+  clientForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    addClient();
+  });
+
+  // Add guest form submission
+  guestForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    addGuest();
+  });
+
+  // Edit form submission
+  editForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    saveChanges();
+  });
+
+  // Close modal when clicking the X
+  closeButton.addEventListener('click', () => {
+    detailsModal.style.display = 'none';
+  });
+
+  // Close modal when clicking outside
+  window.addEventListener('click', (e) => {
+    if (e.target === detailsModal) {
+      detailsModal.style.display = 'none';
+    }
+  });
+
+  // Handle delete button in modal
+  document.querySelector('.delete-button').addEventListener('click', () => {
+    deleteRecord();
+  });
+}
+
+// Add client function
+function addClient() {
+  const newClient = {
+    id: generateId(),
+    name: document.getElementById('clientName').value,
+    email: document.getElementById('clientEmail').value,
+    phone: document.getElementById('clientPhone').value,
+    coach: document.getElementById('clientCoach').value,
+    goal: document.getElementById('clientGoal').value,
+    status: document.getElementById('clientStatus').value,
+    membership: document.getElementById('clientMembership').value
+  };
+  
+  clients.push(newClient);
+  saveClients();
+  renderClientsTable();
+  clientForm.reset();
+}
+
+// Add guest function
+function addGuest() {
+  const newGuest = {
+    id: generateId(),
+    name: document.getElementById('guestName').value,
+    email: document.getElementById('guestEmail').value,
+    phone: document.getElementById('guestPhone').value,
+    purpose: document.getElementById('guestPurpose').value,
+    status: document.getElementById('guestStatus').value
+  };
+  
+  guests.push(newGuest);
+  saveGuests();
+  renderGuestsTable();
+  guestForm.reset();
+}
+
+// Generate unique ID
+function generateId() {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+}
+
+// Display clients in table
+function renderClientsTable() {
+  clientsTableBody.innerHTML = '';
+  
+  if (clients.length === 0) {
+    emptyClientsMessage.style.display = 'block';
+  } else {
+    emptyClientsMessage.style.display = 'none';
+    
+    clients.forEach(client => {
+      const row = document.createElement('tr');
+      
+      // Format membership text for display
+      let membershipText = 'Unknown';
+      switch(client.membership) {
+        case 'starter': membershipText = 'Starter Access'; break;
+        case 'coach': membershipText = 'Coach Connect'; break;
+        case 'elite': membershipText = 'Elite Coaching'; break;
+      }
+      
+      row.innerHTML = `
+        <td>${client.name}</td>
+        <td>${client.email}</td>
+        <td>${client.phone}</td>
+        <td>${client.coach}</td>
+        <td>${client.goal}</td>
+        <td>${membershipText}</td>
+        <td><span class="status ${client.status}">${client.status}</span></td>
+        <td>
+          <button class="view-btn" data-id="${client.id}" data-type="client">View</button>
+        </td>
+      `;
+      
+      clientsTableBody.appendChild(row);
+      
+      // Add event listener to view button
+      row.querySelector('.view-btn').addEventListener('click', () => {
+        openDetailsModal(client, 'client');
+      });
+    });
+  }
+}
+
+// Display guests in table
+function renderGuestsTable() {
+  guestsTableBody.innerHTML = '';
+  
+  if (guests.length === 0) {
+    emptyGuestsMessage.style.display = 'block';
+  } else {
+    emptyGuestsMessage.style.display = 'none';
+    
+    guests.forEach(guest => {
+      const row = document.createElement('tr');
+      
+      row.innerHTML = `
+        <td>${guest.name}</td>
+        <td>${guest.email}</td>
+        <td>${guest.phone}</td>
+        <td>${guest.purpose}</td>
+        <td><span class="status ${guest.status}">${guest.status}</span></td>
+        <td>
+          <button class="view-btn" data-id="${guest.id}" data-type="guest">View</button>
+        </td>
+      `;
+      
+      guestsTableBody.appendChild(row);
+      
+      // Add event listener to view button
+      row.querySelector('.view-btn').addEventListener('click', () => {
+        openDetailsModal(guest, 'guest');
+      });
+    });
+  }
+}
+
+// Open details modal
+function openDetailsModal(record, type) {
+  // Set modal title
+  document.getElementById('modalTitle').textContent = type === 'client' ? 'Client Details' : 'Guest Details';
+  
+  // Set form fields
+  document.getElementById('editName').value = record.name;
+  document.getElementById('editEmail').value = record.email;
+  document.getElementById('editPhone').value = record.phone;
+  document.getElementById('editStatus').value = record.status;
+  document.getElementById('editId').value = record.id;
+  document.getElementById('editType').value = type;
+  
+  // Show/hide fields based on type
+  if (type === 'client') {
+    document.getElementById('clientSpecificFields').style.display = 'flex';
+    document.getElementById('editCoachGroup').style.display = 'block';
+    document.getElementById('editPurposeGroup').style.display = 'none';
+    document.getElementById('editCoach').value = record.coach;
+    document.getElementById('editGoal').value = record.goal;
+    document.getElementById('editMembership').value = record.membership;
+  } else {
+    document.getElementById('clientSpecificFields').style.display = 'none';
+    document.getElementById('editCoachGroup').style.display = 'none';
+    document.getElementById('editPurposeGroup').style.display = 'block';
+    document.getElementById('editPurpose').value = record.purpose;
+  }
+  
+  // Display modal
+  detailsModal.style.display = 'block';
+}
+
+// Save changes from modal
+function saveChanges() {
+  const id = document.getElementById('editId').value;
+  const type = document.getElementById('editType').value;
+  
+  if (type === 'client') {
+    const index = clients.findIndex(client => client.id === id);
+    if (index !== -1) {
+      clients[index] = {
+        id: id,
+        name: document.getElementById('editName').value,
+        email: document.getElementById('editEmail').value,
+        phone: document.getElementById('editPhone').value,
+        coach: document.getElementById('editCoach').value,
+        goal: document.getElementById('editGoal').value,
+        membership: document.getElementById('editMembership').value,
+        status: document.getElementById('editStatus').value
+      };
+      saveClients();
+      renderClientsTable();
+    }
+  } else {
+    const index = guests.findIndex(guest => guest.id === id);
+    if (index !== -1) {
+      guests[index] = {
+        id: id,
+        name: document.getElementById('editName').value,
+        email: document.getElementById('editEmail').value,
+        phone: document.getElementById('editPhone').value,
+        purpose: document.getElementById('editPurpose').value,
+        status: document.getElementById('editStatus').value
+      };
+      saveGuests();
+      renderGuestsTable();
+    }
+  }
+  
+  detailsModal.style.display = 'none';
+}
+
+// Delete record
+function deleteRecord() {
+  const id = document.getElementById('editId').value;
+  const type = document.getElementById('editType').value;
+  
+  if (type === 'client') {
+    clients = clients.filter(client => client.id !== id);
+    saveClients();
+    renderClientsTable();
+  } else {
+    guests = guests.filter(guest => guest.id !== id);
+    saveGuests();
+    renderGuestsTable();
+  }
+  
+  detailsModal.style.display = 'none';
+}
+
+// Save to localStorage
+function saveClients() {
+  localStorage.setItem('clients', JSON.stringify(clients));
+}
+
+function saveGuests() {
+  localStorage.setItem('guests', JSON.stringify(guests));
+}
+
+
+toggle.onclick = function() {
+  navigation.classList.toggle('active');
+  main.classList.toggle('active');
+}

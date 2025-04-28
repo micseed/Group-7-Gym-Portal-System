@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <title>Guest Dashboard</title>
+    <!-- ======= Styles ====== -->
+  <style>
+    /* =============== Globals ============== */
+* {
+    font-family: "Poppins", sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  :root {
+    --blue: #203A93;
+    --white: #fff;
+    --gray: #f5f5f5;
+    --black1: #222;
+    --black2: #999;
+  }
+  
+  body {
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  
+  .container {
+    position: relative;
+    width: 100%;
+  }
+  
+  /* =============== Navigation ================ */
+  .navigation {
+    position: fixed;
+    width: 300px;
+    height: 100%;
+    background: var(--blue);
+    border-left: 10px solid var(--blue);
+    transition: 0.5s;
+    overflow: hidden;
+  }
+  .navigation.active {
+    width: 80px;
+  }
+  
+  .navigation ul {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+  
+  .navigation ul li {
+    position: relative;
+    width: 100%;
+    list-style: none;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+  }
+  
+  .navigation ul li:hover,
+  .navigation ul li.hovered {
+    background-color: var(--white);
+  }
+  
+  .navigation ul li:nth-child(1) {
+    margin-bottom: 40px;
+    pointer-events: none;
+  }
+  
+  .navigation ul li a {
+    position: relative;
+    display: block;
+    width: 100%;
+    display: flex;
+    text-decoration: none;
+    color: var(--white);
+  }
+  .navigation ul li:hover a,
+  .navigation ul li.hovered a {
+    color: var(--blue);
+  }
+  
+  .navigation ul li a .icon {
+    position: relative;
+    display: block;
+    min-width: 60px;
+    height: 60px;
+    line-height: 75px;
+    text-align: center;
+  }
+  .navigation ul li a .icon ion-icon {
+    font-size: 1.75rem;
+  }
+  
+  .navigation ul li a .title {
+    position: relative;
+    display: block;
+    padding: 0 10px;
+    height: 60px;
+    line-height: 60px;
+    text-align: start;
+    white-space: nowrap;
+  }
+  
+  /* --------- Curve Outside ---------- */
+  .navigation ul li:hover a::before,
+  .navigation ul li.hovered a::before {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: -50px;
+    width: 50px;
+    height: 50px;
+    background-color: transparent;
+    border-radius: 50%;
+    box-shadow: 35px 35px 0 10px var(--white);
+    pointer-events: none;
+  }
+  .navigation ul li:hover a::after,
+  .navigation ul li.hovered a::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: -50px;
+    width: 50px;
+    height: 50px;
+    background-color: transparent;
+    border-radius: 50%;
+    box-shadow: 35px -35px 0 10px var(--white);
+    pointer-events: none;
+  }
+  
+  
+  /* ===================== Main ===================== */
+  .main {
+    position: absolute;
+    width: calc(100% - 300px);
+    left: 300px;
+    min-height: 100vh;
+    background: var(--white);
+    transition: 0.5s;
+  }
+  .main.active {
+    width: calc(100% - 80px);
+    left: 80px;
+  }
+  
+  .topbar {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    justify-content:space-between;
+  }
+  
+  .toggle {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5rem;
+    cursor: pointer;
+  }
+  
+/* =============== Search ============== */
+.search-container {
+  position: relative;
+  width: 800px;
+  margin: 0 10px;
+}
+
+.search-container label {
+  display: flex;
+align-items: center; 
+width: 100%;
+border: 1px solid #ccc;
+border-radius: 15px;
+overflow: hidden; 
+}
+
+#search-input {
+  flex-grow: 1; 
+padding: 10px;
+border: none;
+outline: none;
+font-size: 16px;
+box-sizing: border-box; 
+margin-right: 5px; 
+}
+
+.search-container label ion-icon {
+  padding-right: 10px;
+  font-size: 20px; 
+  color: #777;
+}
+
+#search-results {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-top: 2px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  display: none;
+  overflow: hidden; 
+}
+
+#search-results ul {
+  list-style: none;
+  padding: 8px 0;
+  margin: 0;
+}
+
+#search-results li {
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 1.0em;
+  color: #333;
+}
+
+#search-results li:hover {
+  background-color: #f5f5f5;
+  color: #222;
+}
+
+#search-results li:active {
+  background-color: #eee;
+}
+
+
+#search-results li span.highlight {
+  font-weight: bold;
+  color: #007bff; 
+}
+
+/* =============== Mail Icon ============== */
+.mail-container {
+  position: relative;
+  display: inline-block;
+}
+
+#mail-icon-inbox {
+  font-size: 25px;
+  color: #203A93;
+  cursor: pointer;
+}
+
+#mail-icon-inbox:hover {
+  opacity: 0.8;
+}
+
+#unread-notification {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: red;
+  color: white;
+  font-size: 12px;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  text-align: center;
+  line-height: 18px;
+  display: none; 
+}
+
+#inbox-preview {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: -10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 250px;
+  padding: 15px;
+  display: none;
+  z-index: 10;
+  text-align: left;
+}
+
+#inbox-preview strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.email-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 3px 0; 
+}
+
+.email-item.sender {
+  font-weight: bold;
+}
+
+.email-item.subject {
+  color: #555;
+  font-size: 0.9em; 
+}
+
+#inbox-preview hr {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+#inbox-preview a {
+  display: block;
+  margin-top: 10px;
+  font-size: 0.8em;
+  text-align: right;
+  color: #007bff;
+  text-decoration: none;
+}
+
+/* =============== Notification Icon ============== */
+.notification-container {
+  position: relative;
+  display: inline-block;
+}
+
+#notification-icon {
+  font-size: 25px;
+  color: #203A93;
+  cursor: pointer;
+}
+
+#notification-icon:hover {
+  opacity: 0.8;
+}
+
+#notification-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: orange;
+  color: white;
+  font-size: 12px;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  text-align: center;
+  line-height: 18px;
+  display: block; 
+}
+
+#notifications-dropdown {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: -10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 250px;
+  padding: 15px;
+  display: none;
+  z-index: 10;
+  text-align: left;
+}
+
+#notifications-dropdown strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.notification-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 3px 0;
+}
+
+.notification-item.title {
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.notification-item.message {
+  color: #555;
+  font-size: 0.9em;
+}
+
+#notifications-dropdown hr {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+#notifications-dropdown a {
+  display: block;
+  margin-top: 10px;
+  font-size: 0.8em;
+  text-align: right;
+  color: #007bff;
+  text-decoration: none;
+}
+
+/* =============== Clients Section ============== */
+.user {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+
+.user img {
+  position: absolute;
+  justify-items: end;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.settings-container {
+    position: relative;
+    width: 100%;
+    padding: 20px;
+    display: grid;
+    grid-gap: 20px;
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cardHeader h2 {
+    font-weight: 600;
+    color: var(--blue);
+}
+
+.settings-form {
+    position: relative;
+    background: var(--white);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--black1);
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="tel"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: border 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: var(--blue);
+    outline: none;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--blue);
+}
+
+.checkbox-group label {
+    margin-bottom: 0;
+    font-weight: normal;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn.save {
+    background: var(--blue);
+    color: var(--white);
+}
+
+.btn.save:hover {
+    background: #1a2f75;
+}
+
+.btn.cancel {
+    background: #f1f1f1;
+    color: var(--black1);
+}
+
+.btn.cancel:hover {
+    background: #e1e1e1;
+}
+
+@media (max-width: 768px) {
+    .form-buttons {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+}
+
+/* Modal Styles for Sign out*/
+        /* Modal Overlay */
+        .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Slightly darker for better contrast */
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+    transition: all 0.3s ease; /* Smooth fade-in transition */
+    backdrop-filter: blur(3px); /* Subtle blur effect */
+}
+
+.modal-overlay.show {
+    display: flex;
+    animation: fadeIn 0.3s ease; /* Animation for show effect */
+}
+
+/* Modal Container */
+.modal {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    width: 90%;
+    max-width: 440px;
+    margin: auto;
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+    overflow: hidden; /* Ensures content doesn't break the rounded corners */
+}
+
+.modal.show {
+    transform: scale(1);
+}
+
+/* Modal Header */
+.modal-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #eaeaea;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8f9fa;
+}
+
+.modal-title {
+    font-size: 1.35rem;
+    font-weight: 600;
+    margin: 0;
+    color: #333;
+}
+
+/* Modal Body */
+.modal-body {
+    padding: 1.5rem;
+    font-size: 1.1rem;
+    color: #555;
+    line-height: 1.5;
+}
+
+/* Modal Footer */
+.modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #eaeaea;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* Close Button */
+.modal-close-button {
+    cursor: pointer;
+    font-size: 1.6rem;
+    color: #999;
+    border: none;
+    background: none;
+    padding: 0;
+    height: 32px;
+    width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.modal-close-button:hover {
+    color: #555;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Action Buttons */
+.modal-button {
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.no-button {
+    background-color: #f1f3f5;
+    color: #495057;
+}
+
+.no-button:hover {
+    background-color: #e9ecef;
+}
+
+.yes-button {
+    background-color: #4263eb;
+    color: white;
+}
+
+.yes-button:hover {
+    background-color: #3b5bdb;
+    box-shadow: 0 2px 8px rgba(66, 99, 235, 0.3);
+}
+
+/* Animation Keyframes */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 576px) {
+    .modal {
+        width: 95%;
+        max-width: none;
+    }
+    
+    .modal-footer {
+        flex-direction: row;
+    }
+    
+    .modal-button {
+        flex: 1;
+    }
+}
+   
+  </style>
+</head>
+
+<body>
+    <!-- =============== Navigation ================ -->
+    <div class="container">
+        <div class="navigation">
+            <ul>
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="barbell-outline"></ion-icon>
+                        </span>
+                        <span class="title">ENERGIZE</span>
+                    </a>
+                </li>
+
+                <li class="hovered">
+                    <a href="guest.html">
+                        <span class="icon">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="guestsplan.html">
+                        <span class="icon">
+                            <ion-icon name="card-outline"></ion-icon>
+                        </span>
+                        <span class="title">Plans</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="guestsprofile.html">
+                        <span class="icon">
+                            <ion-icon name="person-outline"></ion-icon>
+                        </span>
+                        <span class="title">Profile</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="guestssettings.html">
+                        <span class="icon">
+                            <ion-icon name="settings-outline"></ion-icon>
+                        </span>
+                        <span class="title">Settings</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" id="signOutLink">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ========================= Main ==================== -->
+        <div class="main">
+            <div class="topbar">
+                <div class="toggle">
+                    <ion-icon name="menu-outline"></ion-icon>
+                </div>
+
+                <div class="search-container">
+                    <label>
+                      <input type="text" id="search-input" placeholder="Search what you're looking for">
+                      <ion-icon name="search-outline"></ion-icon>
+                    </label>
+                    <div id="search-results">
+                    </div>
+                  </div>
+
+                  
+                <div class="mail-container">
+                    <ion-icon name="mail" id="mail-icon-inbox"></ion-icon>
+                    <div id="unread-notification">1</div>
+                    <div id="inbox-preview">
+                    <strong>Inbox</strong>
+                    <hr>
+                    <div id="unread-messages">
+                        <div class="email-item sender">Coach</div>
+                        <div class="email-item subject">Can you help me?</div>
+                        <hr>
+                    </div>
+                    <div id="read-messages">
+                        <div class="email-item sender">User 1</div>
+                        <div class="email-item subject">Previous message...</div>
+                    </div>
+                    <a href="#">See All</a>
+                    </div>
+                </div>
+
+                <div class="notification-container">
+                    <ion-icon name="notifications" id="notification-icon"></ion-icon>
+                    <div id="notification-badge">1</div>
+                    <div id="notifications-dropdown">
+                      <strong>Notifications</strong>
+                      <hr>
+                      <div id="notification-list">
+                        <div class="notification-item title">Today, 5:00 PM</div>
+                        <div class="notification-item message">You have a session scheduled.</div>
+                        <hr>
+                        <div class="notification-item title">New Request</div>
+                        <div class="notification-item message">Veronica has requested a session with you.</div>
+                      </div>
+                      <a href="#">See All</a>
+                    </div>
+                  </div>
+            
+                <div class="name">
+                    <p>Edward Linkin</p>
+                </div>
+    
+                <div class="user">
+                    <img src="assets/img/customer01.jpg" alt="">
+                </div>                
+            </div>
+
+            <div class="settings-container">
+                <div class="cardHeader">
+                    <h2>Account Settings</h2>
+                </div>
+                
+                <div class="settings-form">
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" value="Edward Linkin">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" value="edward.linkin@example.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" value="+1 (555) 123-4567">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Change Password</label>
+                        <input type="password" id="password" placeholder="New Password">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" id="confirmPassword" placeholder="Confirm New Password">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Notification Preferences</label>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="emailNotif" checked>
+                            <label for="emailNotif">Email notifications</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="smsNotif" checked>
+                            <label for="smsNotif">SMS notifications</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="appNotif" checked>
+                            <label for="appNotif">In-app notifications</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Privacy Settings</label>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="profileVisibility" checked>
+                            <label for="profileVisibility">Make profile visible to other members</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="shareActivity">
+                            <label for="shareActivity">Share workout activity</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-buttons">
+                        <button type="button" class="btn save">Save Changes</button>
+                        <button type="button" class="btn cancel">Cancel</button>
+                    </div>
+                </div>
+            </div>
+           
+            <div id="signOutModal" class="modal-overlay">
+                <div class="modal">
+                    <div class="modal-header">
+                        <h2 class="modal-title">Sign Out</h2>
+                        <button type="button" class="modal-close-button">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to sign out?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="modal-button no-button" id="signOutNo">Cancel</button>
+                        <button type="button" class="modal-button yes-button" id="signOutYes">Sign Out</button>
+                    </div>
+                </div>
+            </div>
+            
+
+            
+
+ <!-- =========== Scripts =========  -->
+ <script>
+    // Add hovered class to selected list item
+let list = document.querySelectorAll(".navigation li");
+
+function activeLink() {
+  list.forEach((item) => {
+    item.classList.remove("hovered");
+  });
+  this.classList.add("hovered");
+}
+
+list.forEach((item) => item.addEventListener("mouseover", activeLink));
+
+// Menu Toggle
+let toggle = document.querySelector(".toggle");
+let navigation = document.querySelector(".navigation");
+let main = document.querySelector(".main");
+
+toggle.onclick = function () {
+  navigation.classList.toggle("active");
+  main.classList.toggle("active");
+};
+
+//Search Button
+const searchInput = document.getElementById('search-input');
+const searchResultsDiv = document.getElementById('search-results');
+
+const searchData = [
+  "Sessions with Client",
+  "Workout Plan",
+  "My Clients",
+  "Session Today",
+  "Bookings",
+  "Requested Sessions",
+  "Plans",
+  "Messages",
+  "Settings",
+  "Profile"
+];
+
+searchInput.addEventListener('input', function() {
+  const searchTerm = this.value.toLowerCase();
+  const filteredResults = searchData.filter(item =>
+    item.toLowerCase().includes(searchTerm)
+  );
+
+  displayResults(filteredResults);
+});
+
+function displayResults(results) {
+  searchResultsDiv.innerHTML = '';
+
+  if (results.length > 0 && searchInput.value.trim() !== '') {
+    const ul = document.createElement('ul');
+    results.forEach(result => {
+      const li = document.createElement('li');
+      li.textContent = result;
+      li.addEventListener('click', function() {
+        searchInput.value = this.textContent;
+        searchResultsDiv.style.display = 'none'; 
+      });
+      ul.appendChild(li);
+    });
+    searchResultsDiv.appendChild(ul);
+    searchResultsDiv.style.display = 'block'; 
+  } else {
+    searchResultsDiv.style.display = 'none'; 
+  }
+}
+
+
+document.addEventListener('click', function(event) {
+  if (!event.target.closest('.search-container')) {
+    searchResultsDiv.style.display = 'none';
+  }
+});
+
+//Mail Button
+const mailIconInbox = document.getElementById('mail-icon-inbox');
+const unreadNotification = document.getElementById('unread-notification');
+const inboxPreview = document.getElementById('inbox-preview');
+let hasUnread = true; 
+
+function updateUnreadIndicator() {
+  unreadNotification.style.display = hasUnread ? 'block' : 'none';
+}
+
+updateUnreadIndicator();
+
+mailIconInbox.addEventListener('click', function() {
+  inboxPreview.style.display = (inboxPreview.style.display === 'block' ? 'none' : 'block');
+  
+  if (hasUnread && inboxPreview.style.display === 'block') {
+    hasUnread = false;
+    updateUnreadIndicator();
+   
+    console.log('Mail icon clicked - marking as read');
+  }
+});
+
+
+document.addEventListener('click', function(event) {
+  if (!event.target.closest('.mail-container')) {
+    inboxPreview.style.display = 'none';
+  }
+});
+
+
+//Notification Icon
+const notificationIcon = document.getElementById('notification-icon');
+const notificationBadge = document.getElementById('notification-badge');
+const notificationsDropdown = document.getElementById('notifications-dropdown');
+
+notificationIcon.addEventListener('click', function() {
+  notificationsDropdown.style.display = (notificationsDropdown.style.display === 'block' ? 'none' : 'block');
+  
+  notificationBadge.style.display = 'none';
+});
+
+
+document.addEventListener('click', function(event) {
+  if (!event.target.closest('.notification-container')) {
+    notificationsDropdown.style.display = 'none';
+  }
+});
+
+document.querySelector('.btn.save').addEventListener('click', function() {
+    // Here you would normally save the data to a database
+    alert('Settings saved successfully!');
+});
+
+document.querySelector('.btn.cancel').addEventListener('click', function() {
+    // Reset form or navigate away
+    if(confirm('Discard changes?')) {
+        // Reset form or redirect
+        document.querySelectorAll('.settings-form input').forEach(input => {
+            if(input.type === 'checkbox') {
+                input.checked = input.defaultChecked;
+            } else {
+                input.value = input.defaultValue;
+            }
+        });
+    }
+});
+
+//  Sign Out Modal Logic (Add to both files)
+    const signOutLink = document.getElementById('signOutLink');
+    const signOutModal = document.getElementById('signOutModal');
+    const signOutNoButton = document.getElementById('signOutNo');
+    const signOutYesButton = document.getElementById('signOutYes');
+    const modalOverlay = document.querySelector('.modal-overlay'); //  Get the overlay
+
+    signOutLink.addEventListener('click', (event) => {
+        event.preventDefault();
+        modalOverlay.classList.add('show'); //  Show the overlay
+        signOutModal.classList.add('show'); //  Show the modal
+    });
+
+    signOutNoButton.addEventListener('click', () => {
+        modalOverlay.classList.remove('show');
+        signOutModal.classList.remove('show');
+    });
+
+    signOutYesButton.addEventListener('click', () => {
+        window.location.href = 'index.html'; //  Or your sign-out URL
+    });
+
+    //  Close modal on overlay click
+    modalOverlay.addEventListener('click', (event) => {
+        if (event.target === modalOverlay) {
+            modalOverlay.classList.remove('show');
+            document.querySelectorAll('.modal.show').forEach(modal => modal.classList.remove('show'));
+        }
+    });
+
+    //  Close modal on close button click (IMPORTANT:  For ALL modals)
+    document.querySelectorAll('.modal-close-button').forEach(button => {
+        button.addEventListener('click', () => {
+            modalOverlay.classList.remove('show');
+            button.closest('.modal').classList.remove('show');
+        });
+    });
+
+    //  Close modal on Escape key
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            modalOverlay.classList.remove('show');
+            document.querySelectorAll('.modal.show').forEach(modal => modal.classList.remove('show'));
+        }
+    });
+ </script>
+
+<!-- ====== ionicons ======= -->
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+</body>
+
+</html>
