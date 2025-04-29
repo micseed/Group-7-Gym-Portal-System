@@ -1,0 +1,2089 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <link rel="stylesheet" href="assets/css/client.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Client Dashboard</title>
+   
+    <style>
+      /* =============== Globals ============== */
+        /* =============== Globals ============== */
+* {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --blue: #203A93;
+  --white: #fff;
+  --gray: #f5f5f5;
+  --black1: #222;
+  --black2: #999;
+  --gold: #F1D27C;
+  --light-blue: #eaefff; /* Consistent naming */
+  --red: #dc3545; /* Added for potential use */
+  --green: #28a745; /* Added for potential use */
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden; /* Prevent horizontal scroll on body */
+}
+
+.container {
+  position: relative;
+  width: 100%;
+}
+
+/* =============== Navigation ================ */
+.navigation {
+  position: fixed;
+  width: 300px;
+  height: 100%;
+  background: var(--blue);
+  border-left: 10px solid var(--blue);
+  transition: width 0.5s, left 0.5s; /* Added left transition */
+  overflow-y: auto; /* Allow scrolling if content overflows */
+  overflow-x: hidden;
+  z-index: 1001; /* Above backdrop */
+}
+.navigation.active {
+  /* Desktop collapsed state */
+  width: 80px;
+}
+
+.navigation ul {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding-left: 0; /* Remove default padding */
+}
+
+.navigation ul li {
+  position: relative;
+  width: 100%;
+  list-style: none;
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
+}
+/* Remove hover effect for title */
+.navigation ul li:nth-child(1):hover {
+   background-color: var(--blue);
+}
+.navigation ul li:nth-child(1) a:hover {
+   color: var(--white);
+}
+
+.navigation ul li:hover,
+.navigation ul li.hovered {
+  background-color: var(--white);
+}
+
+.navigation ul li:nth-child(1) {
+  margin-bottom: 40px;
+  pointer-events: none;
+  border-radius: 0; /* No curve for title */
+}
+.navigation ul li:nth-child(1) a::before,
+.navigation ul li:nth-child(1) a::after {
+    display: none; /* No curve for title */
+}
+
+
+.navigation ul li a {
+  position: relative;
+  display: block;
+  width: 100%;
+  display: flex;
+  text-decoration: none;
+  color: var(--white);
+}
+.navigation ul li:hover a,
+.navigation ul li.hovered a {
+  color: var(--blue);
+}
+
+.navigation ul li a .icon {
+  position: relative;
+  display: block;
+  min-width: 60px;
+  height: 60px;
+  line-height: 75px;
+  text-align: center;
+}
+.navigation ul li a .icon ion-icon {
+  font-size: 1.75rem;
+  vertical-align: middle; /* Better alignment */
+}
+
+.navigation ul li a .title {
+  position: relative;
+  display: block;
+  padding: 0 10px;
+  height: 60px;
+  line-height: 60px;
+  text-align: start;
+  white-space: nowrap;
+}
+
+/* --------- Curve Outside ---------- */
+/* Ensure curves don't show when collapsed */
+.navigation.active ul li a::before,
+.navigation.active ul li a::after {
+    display: none;
+}
+
+.navigation ul li:hover a::before,
+.navigation ul li.hovered a::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: -50px;
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  border-radius: 50%;
+  box-shadow: 35px 35px 0 10px var(--white);
+  pointer-events: none;
+  z-index: -1; /* Ensure it's behind content */
+}
+
+.navigation ul li:hover a::after,
+.navigation ul li.hovered a::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -50px;
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  border-radius: 50%;
+  box-shadow: 35px -35px 0 10px var(--white);
+  pointer-events: none;
+   z-index: -1; /* Ensure it's behind content */
+}
+
+/* ===================== Main ===================== */
+.main {
+  position: absolute;
+  width: calc(100% - 300px);
+  left: 300px;
+  min-height: 100vh;
+  background: var(--white);
+  transition: width 0.5s, left 0.5s;
+}
+.main.active {
+  /* Desktop collapsed state */
+  width: calc(100% - 80px);
+  left: 80px;
+}
+
+.topbar {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  justify-content: space-between; /* Ensure space between */
+  align-items: center;
+  padding: 0 20px; /* Increased padding */
+  position: sticky; /* Keep topbar visible */
+  top: 0;
+  background: var(--white);
+  z-index: 998; /* Below nav backdrop and nav */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+}
+
+/* Group icons/user on the right */
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Space between items */
+}
+
+
+.toggle {
+  position: relative;
+  /* width: 60px;  Removed fixed width */
+  height: 60px;
+  display: flex; /* Use flex for alignment */
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
+  cursor: pointer;
+  color: var(--black1); /* Ensure visibility */
+  margin-right: 10px; /* Space between toggle and search */
+}
+
+/* Removed old .search style */
+
+.user {
+  position: relative;
+  min-width: 40px; /* Ensure it doesn't shrink too much */
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.user img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* =============== Search ============== */
+.search-container {
+  position: relative; /* Needed for absolute positioning of results */
+  /* width: 800px; Max width better */
+  max-width: 600px; /* Adjust as needed */
+  flex-grow: 1; /* Allow shrinking/growing */
+  margin: 0 15px; /* Adjust spacing */
+}
+
+.search-container label {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 20px; /* Match input border-radius */
+  overflow: hidden;
+  background-color: var(--white); /* Ensure background */
+  height: 40px; /* Match input height */
+}
+
+#search-input {
+  flex-grow: 1;
+  padding: 5px 15px 5px 15px; /* Adjust padding */
+  border: none;
+  outline: none;
+  font-size: 16px;
+  height: 100%; /* Fill label height */
+  background: transparent;
+}
+
+.search-container label ion-icon {
+  /* position: absolute; No longer needed with flex */
+  padding: 0 15px; /* Adjust padding */
+  font-size: 1.2rem; /* Match old style */
+  color: #777;
+  cursor: pointer; /* Indicate it might be clickable */
+  line-height: 40px; /* Center vertically */
+}
+
+#search-results {
+  position: absolute;
+  top: calc(100% + 5px); /* Position below input */
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-top: 2px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000; /* Above other content */
+  display: none;
+  max-height: 300px; /* Prevent excessive height */
+  overflow-y: auto;
+}
+
+#search-results ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#search-results li {
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 0.95em;
+  color: #333;
+  border-bottom: 1px solid #eee;
+}
+#search-results li:last-child {
+    border-bottom: none;
+}
+
+#search-results li:hover {
+  background-color: #f5f5f5;
+}
+
+#search-results li .highlight { /* Direct descendant */
+  font-weight: bold;
+  color: var(--blue);
+}
+
+/* =============== Mail & Notification Icons ============== */
+.mail-container,
+.notification-container {
+  position: relative;
+  display: flex; /* Use flex for alignment */
+  align-items: center;
+}
+
+#mail-icon-inbox,
+#notification-icon {
+  font-size: 25px;
+  color: var(--blue);
+  cursor: pointer;
+  padding: 5px; /* Add padding for easier clicking */
+}
+
+#mail-icon-inbox:hover,
+#notification-icon:hover {
+  opacity: 0.8;
+}
+
+#unread-notification,
+#notification-badge {
+  position: absolute;
+  top: 0px; /* Adjust position */
+  right: 0px; /* Adjust position */
+  background-color: var(--red); /* Use variable */
+  color: white;
+  font-size: 11px; /* Slightly smaller */
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  text-align: center;
+  line-height: 16px; /* Match height */
+  display: none; /* Controlled by JS */
+  font-weight: bold;
+}
+#notification-badge {
+    background-color: orange; /* Keep orange for notifications */
+}
+
+#inbox-preview,
+#notifications-dropdown {
+  position: absolute;
+  top: calc(100% + 10px); /* More space */
+  right: 0; /* Align to the right of the container */
+  background-color: #fff; /* Brighter background */
+  border: 1px solid #ddd; /* Softer border */
+  border-radius: 8px; /* More rounded */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Softer shadow */
+  width: 300px; /* Wider */
+  padding: 0; /* Remove padding, handle inside */
+  display: none;
+  z-index: 1000;
+  text-align: left;
+  overflow: hidden; /* Clip content */
+}
+
+#inbox-preview .dropdown-header, /* Added common header class */
+#notifications-dropdown .dropdown-header {
+  padding: 10px 15px;
+  font-weight: bold;
+  border-bottom: 1px solid #eee;
+  font-size: 1.1em;
+}
+
+#inbox-preview .dropdown-content, /* Added common content class */
+#notifications-dropdown .dropdown-content {
+    max-height: 300px; /* Limit height */
+    overflow-y: auto;
+}
+
+#inbox-preview .dropdown-footer, /* Added common footer class */
+#notifications-dropdown .dropdown-footer {
+  padding: 10px 15px;
+  border-top: 1px solid #eee;
+  text-align: center;
+}
+#inbox-preview .dropdown-footer a,
+#notifications-dropdown .dropdown-footer a {
+    font-size: 0.9em;
+    color: var(--blue);
+    text-decoration: none;
+}
+
+
+.email-item,
+.notification-item {
+  padding: 10px 15px; /* Consistent padding */
+  border-bottom: 1px solid #eee;
+  white-space: normal; /* Allow wrapping */
+}
+.email-item:last-child,
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.email-item.sender,
+.notification-item.title { /* Combined styles */
+  font-weight: bold;
+  margin-bottom: 3px; /* Space below title/sender */
+  color: var(--black1);
+}
+
+.email-item.subject,
+.notification-item.message {
+  color: #555;
+  font-size: 0.9em;
+  line-height: 1.3; /* Improve readability */
+}
+
+/* Removed hr styles */
+
+/* ======================= Greetings ====================== */
+.greetings {
+  padding: 20px 30px; /* Consistent padding */
+  margin-top: 20px; /* Space from topbar */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* Allow wrapping on small screens */
+  gap: 15px; /* Space between items when wrapped */
+}
+
+.welcome h1 {
+  color: #484848;
+  font-weight: 500; /* Slightly bolder */
+  font-size: 2rem; /* Adjusted size */
+  line-height: 1.2;
+}
+
+.current-plan {
+  background-color: var(--blue);
+  color: white;
+  padding: 8px 15px; /* Adjusted padding */
+  border-radius: 20px; /* Pill shape */
+  display: inline-flex; /* Use inline-flex */
+  align-items: center;
+  gap: 8px;
+}
+
+.current-plan ion-icon {
+  font-size: 1.2rem; /* Adjusted size */
+}
+
+.current-plan span {
+  font-size: 1rem; /* Adjusted size */
+  font-weight: 600;
+}
+
+/* ======================= Cards ====================== */
+.cardBox {
+  position: relative;
+  width: 100%;
+  padding: 20px 30px; /* Match greetings padding */
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 25px; /* Adjusted gap */
+}
+
+.cardBox .card {
+  position: relative;
+  background: var(--white);
+  padding: 25px; /* Adjusted padding */
+  border-radius: 15px; /* Softer radius */
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Center items vertically */
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); /* Softer shadow */
+  transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease; /* Add transition */
+}
+
+.cardBox .card .card-content {
+   /* Container for text */
+}
+
+.cardBox .card .numbers {
+  position: relative;
+  font-weight: 600; /* Bolder */
+  font-size: 2rem; /* Adjusted size */
+  color: var(--blue);
+  line-height: 1.1;
+}
+
+.cardBox .card .cardName {
+  color: var(--black2);
+  font-size: 1rem; /* Adjusted size */
+  margin-top: 5px;
+}
+
+.cardBox .card .iconBx {
+  font-size: 2.8rem; /* Adjusted size */
+  color: var(--black2);
+  transition: color 0.3s ease; /* Add transition */
+}
+
+.cardBox .card:hover {
+  background: var(--blue);
+  transform: translateY(-5px); /* Lift effect */
+}
+.cardBox .card:hover .numbers,
+.cardBox .card:hover .cardName,
+.cardBox .card:hover .iconBx {
+  color: var(--white);
+}
+
+/* ======================= Dashboard Grid ======================== */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Start with 3 columns */
+  /* Using auto-fit can cause unpredictable wrapping with spans */
+  /* grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); */
+  gap: 25px; /* Match card gap */
+  width: auto; /* Let padding define width */
+  margin: 0 30px 30px 30px; /* Match greetings/card padding */
+  padding: 0; /* Remove grid padding */
+}
+
+.widget {
+  background-color: #fff;
+  border-radius: 15px; /* Match card radius */
+  padding: 25px; /* Match card padding */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); /* Match card shadow */
+  /* Default span */
+  grid-column: span 1;
+}
+
+.widget h3 {
+  color: var(--blue);
+  font-size: 1.3em; /* Adjusted size */
+  margin-bottom: 20px; /* More space */
+  padding-bottom: 10px; /* Add padding */
+  border-bottom: 1px solid #eee; /* Add separator */
+}
+
+.widget p {
+  color: #484848;
+  margin-bottom: 12px; /* Consistent spacing */
+  line-height: 1.5; /* Improve readability */
+}
+
+.widget strong {
+  font-weight: 600; /* Use number */
+  color: var(--black1);
+}
+
+/* Generic button style */
+.button {
+  background-color: var(--gold);
+  color: var(--black1); /* Better contrast */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px; /* Slightly more rounded */
+  cursor: pointer;
+  font-size: 0.95em;
+  font-weight: 600; /* Bolder */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-decoration: none; /* Remove underline from links inside buttons */
+  display: inline-block; /* Ensure padding works */
+}
+.button a { /* Style links inside buttons */
+    text-decoration: none;
+    color: inherit; /* Inherit color */
+}
+
+
+.button:hover {
+  background-color: #e0c36b;
+  transform: translateY(-2px); /* Slight lift */
+}
+
+.button.primary {
+  background-color: var(--blue);
+  color: #fff;
+}
+
+.button.primary:hover {
+  background-color: #18267a;
+}
+
+.button.success { /* Added success style */
+  background-color: var(--green);
+  color: var(--white);
+}
+.button.success:hover {
+    background-color: #218838;
+}
+
+
+.next-session-section .button-group { /* Group buttons */
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap; /* Allow wrapping */
+}
+
+.goals-section .goals-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.goals-section .goals-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px; /* Consistent spacing */
+  color: #484848;
+}
+
+.goals-section .goal-icon {
+  font-size: 1.2em; /* Slightly larger */
+  color: var(--green); /* Use green for completed */
+  flex-shrink: 0; /* Prevent icon shrinking */
+}
+/* Add style for incomplete goals if needed */
+.goals-section .goal-icon.incomplete {
+    color: var(--black2);
+}
+
+.goals-section .button {
+    margin-top: 20px; /* Space above button */
+}
+
+/* ============== Weekly Workout Schedule ============= */
+.weekly-schedule {
+  grid-column: span 2; /* Span 2 columns on desktop */
+}
+
+/* Wrapper for horizontal scrolling */
+.schedule-grid-wrapper {
+    margin-top: 15px;
+    overflow-x: auto;
+    padding-bottom: 10px; /* Space for scrollbar */
+    -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+}
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(100px, 1fr)); /* Min width for days */
+  gap: 10px;
+  /* margin-top: 15px; Moved to wrapper */
+  min-width: 770px; /* Ensure it triggers scroll if needed */
+}
+
+.day-column {
+  text-align: center;
+}
+
+.day-header {
+  font-weight: 600;
+  padding: 8px 5px; /* Adjust padding */
+  background-color: var(--light-blue);
+  border-radius: 5px;
+  margin-bottom: 10px;
+  font-size: 0.9em; /* Adjust size */
+}
+
+.workout-item {
+  background-color: var(--gray);
+  padding: 10px 8px; /* Adjust padding */
+  border-radius: 5px;
+  margin-bottom: 8px;
+  font-size: 0.85em; /* Adjust size */
+  text-align: left; /* Align text left */
+  border-left: 3px solid transparent; /* Base border */
+  transition: background-color 0.3s ease;
+}
+
+.workout-item.scheduled {
+  background-color: #e6f4ff;
+  border-left-color: var(--blue);
+}
+
+.workout-item.completed {
+  background-color: #e6ffea;
+  border-left-color: var(--green);
+}
+
+.workout-time {
+  font-size: 0.8em;
+  color: var(--black2);
+  margin-top: 4px; /* Adjust spacing */
+  display: block; /* Ensure it takes full width */
+}
+
+/* ============== Todo List ============= */
+.todo-list-section {
+  grid-column: span 1; /* Takes 1 column */
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 0; /* Vertical padding only */
+  border-bottom: 1px solid #eee;
+}
+.todo-item:last-child {
+    border-bottom: none;
+}
+
+.todo-checkbox {
+  margin-right: 12px; /* More space */
+  width: 18px;
+  height: 18px;
+  accent-color: var(--blue); /* Color the check */
+  flex-shrink: 0; /* Prevent shrinking */
+  cursor: pointer;
+}
+
+.todo-text {
+  flex-grow: 1;
+  color: var(--black1);
+  font-size: 0.95em;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.todo-checkbox:checked + .todo-text {
+  text-decoration: line-through;
+  color: var(--black2);
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 12px; /* Thinner bar */
+  background-color: #eee;
+  border-radius: 6px; /* Match height/2 */
+  margin: 20px 0 10px 0; /* Adjust margin */
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: var(--blue);
+  width: 0%; /* Start at 0, update with JS */
+  border-radius: 6px;
+  transition: width 0.5s ease;
+}
+
+.progress-label {
+  text-align: right;
+  font-size: 0.9em;
+  color: var(--black2);
+  margin-top: 5px;
+}
+
+/* ============== Coach Information ============= */
+.coach-info-section {
+  grid-column: span 2; /* Span 2 columns */
+}
+
+.coach-profile {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  align-items: flex-start; /* Align items to top */
+}
+
+.coach-avatar {
+  width: 80px; /* Smaller avatar */
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+.coach-details h4 {
+  margin: 0 0 5px 0;
+  font-size: 1.2em;
+  color: var(--black1);
+}
+
+.coach-details p {
+  margin: 5px 0;
+  color: var(--black2);
+  line-height: 1.4;
+  font-size: 0.95em;
+}
+
+.coach-specialties { /* Container for tags */
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.coach-specialty {
+  display: inline-block;
+  background-color: var(--light-blue);
+  color: var(--blue);
+  padding: 4px 12px; /* Adjust padding */
+  border-radius: 20px;
+  font-size: 0.8em;
+  font-weight: 500;
+}
+
+.coach-actions {
+  display: flex;
+  justify-content: flex-start; /* Align left */
+  gap: 10px;
+  margin-top: 20px; /* More space */
+  flex-wrap: wrap; /* Allow button wrapping */
+}
+
+/* Plan Details & Available Plans removed as they are not in the current HTML */
+
+/* ============== Modals ============= */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1050; /* Higher z-index */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden; /* Prevent horiz scroll */
+  overflow-y: auto; /* Allow vert scroll */
+  background-color: rgba(0,0,0,0.5); /* Darker overlay */
+  backdrop-filter: blur(3px);
+  /* Use flex for centering */
+  /* justify-content: center; Don't center vertically */
+  align-items: center;
+  padding: 30px 15px; /* Add padding for scroll */
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: auto; /* Center horizontally */
+  padding: 0; /* Remove padding, handle internally */
+  border: none; /* Remove border */
+  width: 100%; /* Full width initially */
+  max-width: 600px; /* Max width */
+  border-radius: 10px; /* Softer radius */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Clip content */
+}
+
+.modal-header {
+  padding: 15px 25px; /* Adjust padding */
+  border-bottom: 1px solid #eee;
+  display: flex; /* Use flex */
+  justify-content: space-between; /* Space title and close button */
+  align-items: center;
+}
+
+.modal-title {
+  font-size: 1.4em; /* Adjust size */
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 0; /* Remove margin */
+}
+/* Optional close button in header
+.modal-header .close-button {
+    font-size: 1.5rem;
+    color: #aaa;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+}
+.modal-header .close-button:hover {
+    color: #333;
+}
+*/
+
+.modal-body {
+  font-size: 1rem; /* Adjust size */
+  color: #555;
+  padding: 25px; /* Consistent padding */
+  line-height: 1.6; /* Improve readability */
+  overflow-y: auto; /* Allow body scroll if needed */
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px; /* Reduced gap */
+  padding: 15px 25px; /* Match header padding */
+  border-top: 1px solid #eee;
+  background-color: #f9f9f9; /* Slight background */
+}
+
+.modal-button {
+  /* Inherits general .button style, add specifics */
+  padding: 8px 18px; /* Adjust padding */
+  font-size: 0.9em;
+}
+
+/* Specific overrides for modal buttons if needed */
+.modal-button.yes-button {
+  /* background-color: var(--blue); */
+}
+.modal-button.no-button {
+ /* background-color: var(--gold); */
+}
+.modal-button.ok-button { /* Style for OK buttons */
+    background-color: var(--blue);
+    color: var(--white);
+}
+.modal-button.ok-button:hover {
+    background-color: #18267a;
+}
+
+
+.coach-select-container {
+  margin: 15px 0; /* Adjust margin */
+}
+
+.coach-select-container label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    font-size: 0.95em;
+}
+
+.coach-select-container select,
+.coach-select-container input[type="date"],
+.coach-select-container textarea {
+  width: 100%;
+  padding: 12px; /* More padding */
+  border-radius: 8px; /* Match button */
+  border: 1px solid #ddd;
+  margin-bottom: 15px; /* Space below */
+  font-size: 1rem;
+  background-color: var(--white); /* Ensure background */
+}
+
+.reason-textarea {
+  resize: vertical;
+  min-height: 80px; /* Adjust height */
+}
+
+/* Removed payment form styles as not in HTML */
+
+/* Style for sign-out modal footer specifically if needed */
+.modal-footer.sign-out-actions {
+ /* No specific styles needed currently */
+}
+
+/* Highlight class for search */
+.highlight {
+    font-weight: bold;
+    background-color: #fff3cd; /* Light yellow highlight */
+    padding: 0 2px;
+    border-radius: 3px;
+}
+
+/* Backdrop for Mobile Navigation */
+.navigation-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* Darker */
+  z-index: 1000; /* Below nav, above main */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+
+.navigation-backdrop.active {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease;
+}
+
+
+/* =============== Responsive Design ============== */
+
+/* ~~~~~~~~~~ Tablet ~~~~~~~~~~ */
+@media (max-width: 991px) {
+  .navigation {
+    left: -300px; /* Start hidden */
+    width: 300px; /* Keep width when open */
+    border-left: none; /* Remove border */
+  }
+  .navigation.active {
+    left: 0; /* Slide in */
+    width: 300px; /* Keep width */
+  }
+  /* Remove desktop collapsed state */
+  .navigation:not(.active) {
+      width: 300px;
+  }
+
+  .main {
+    width: 100%;
+    left: 0;
+  }
+  .main.active {
+    /* Overlay behavior - main doesn't move */
+    width: 100%;
+    left: 0;
+  }
+
+  .topbar {
+     /* Main doesn't move, so topbar doesn't need left */
+     padding: 0 15px; /* Adjust padding */
+  }
+
+  .search-container {
+      max-width: 400px; /* Reduce search width */
+      margin: 0 10px;
+  }
+
+  .cardBox {
+    grid-template-columns: repeat(2, 1fr); /* 2 cards per row */
+    padding: 20px; /* Reduce padding */
+    grid-gap: 20px;
+  }
+
+  .dashboard-grid {
+      grid-template-columns: repeat(2, 1fr); /* 2 widgets per row */
+      margin: 0 20px 20px 20px; /* Reduce margin */
+      gap: 20px;
+  }
+  /* Reset spans for tablet if needed, or let them flow */
+  .widget.weekly-schedule,
+  .widget.coach-info-section {
+      grid-column: span 2; /* Keep span on 2-col layout */
+  }
+  /* Ensure others don't span if they did */
+  /* .widget.plan-details-section, */
+  /* .widget.available-plans-section { grid-column: span 2; } */
+
+  .greetings {
+      padding: 20px;
+  }
+  .welcome h1 {
+      font-size: 1.8rem;
+  }
+
+}
+
+/* ~~~~~~~~~~ Mobile ~~~~~~~~~~ */
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr; /* Single column */
+    margin: 0 15px 15px 15px; /* Further reduce margin */
+    gap: 15px;
+  }
+  /* Reset all spans to 1 column */
+  .widget,
+  .widget.weekly-schedule,
+  .widget.coach-info-section {
+      grid-column: span 1;
+  }
+
+  .cardBox {
+    grid-template-columns: 1fr; /* Single card column */
+    padding: 15px;
+    grid-gap: 15px;
+  }
+  .cardBox .card {
+      padding: 20px;
+  }
+  .cardBox .card .numbers { font-size: 1.8rem;}
+  .cardBox .card .cardName { font-size: 0.9rem;}
+  .cardBox .card .iconBx { font-size: 2.5rem;}
+
+
+  .topbar {
+      padding: 0 10px; /* Further reduce padding */
+      gap: 5px; /* Reduce gap between elements */
+  }
+  .topbar-right {
+      gap: 10px; /* Reduce gap */
+  }
+  .search-container {
+      max-width: 180px; /* Significantly smaller */
+      margin: 0 5px;
+      order: -1; /* Move search before icons if needed */
+  }
+  #search-input {
+      font-size: 14px;
+      padding: 5px 10px;
+  }
+  .search-container label ion-icon {
+      padding: 0 10px;
+      font-size: 1rem;
+  }
+  #mail-icon-inbox, #notification-icon { font-size: 22px;}
+  #unread-notification, #notification-badge { width: 15px; height: 15px; line-height: 15px; font-size: 10px; top: 2px; right: 2px;}
+  .user { width: 35px; height: 35px; min-width: 35px;}
+  .toggle { font-size: 2rem;}
+
+  /* Hide user name if it exists */
+  .topbar .name { display: none;}
+
+  .greetings {
+      padding: 15px;
+      margin-top: 10px;
+      flex-direction: column; /* Stack */
+      align-items: flex-start; /* Align left */
+  }
+  .welcome h1 { font-size: 1.6rem;}
+
+  .widget { padding: 20px;}
+  .widget h3 { font-size: 1.2em; margin-bottom: 15px;}
+
+  .schedule-grid {
+      gap: 5px; /* Reduce gap */
+      grid-template-columns: repeat(7, minmax(90px, 1fr)); /* Slightly smaller min */
+      min-width: auto; /* Let wrapper handle scroll */
+  }
+  .workout-item { font-size: 0.8em; padding: 8px 5px;}
+
+   .coach-profile {
+        flex-direction: column; /* Stack avatar and details */
+        align-items: center;
+        text-align: center;
+   }
+   .coach-avatar { width: 70px; height: 70px; margin-bottom: 10px;}
+   .coach-details h4 { font-size: 1.1em;}
+   .coach-specialties { justify-content: center;}
+   .coach-actions { justify-content: center;}
+
+  /* Modal adjustments */
+  .modal { padding: 20px 10px; }
+  .modal-content { max-width: 95%; margin: auto;}
+  .modal-header { padding: 15px 20px;}
+  .modal-body { padding: 20px; font-size: 0.95rem;}
+  .modal-footer { padding: 15px 20px; gap: 8px; flex-wrap: wrap; justify-content: center;}
+  .modal-button { padding: 8px 15px; font-size: 0.85em;}
+
+}
+
+/* ~~~~~~~~~~ Small Mobile ~~~~~~~~~~ */
+@media (max-width: 480px) {
+  .navigation {
+      width: 280px; /* Slightly narrower than full width */
+      left: -280px;
+  }
+  .navigation.active {
+      width: 280px;
+      left: 0;
+  }
+  .navigation ul li a .title {
+      font-size: 0.95em;
+  }
+
+  .topbar { padding: 0 5px; }
+  .topbar-right { gap: 5px; }
+  .search-container { max-width: 150px;}
+
+  .cardBox { padding: 10px; gap: 10px;}
+  .cardBox .card { padding: 15px;}
+
+  .dashboard-grid { margin: 0 10px 10px 10px; gap: 10px;}
+  .widget { padding: 15px;}
+  .widget h3 { font-size: 1.1em;}
+
+  .button { padding: 8px 15px; font-size: 0.9em;}
+  .next-session-section .button-group { justify-content: center;}
+
+  .modal-content { max-width: 98%;}
+  .modal-header { padding: 10px 15px;}
+  .modal-title { font-size: 1.2em;}
+  .modal-body { padding: 15px; font-size: 0.9rem;}
+  .modal-footer { padding: 10px 15px;}
+
+}
+
+    </style>
+    
+</head>
+
+<body>
+    <!-- =============== Navigation ================ -->
+    <div class="container">
+        <div class="navigation">
+            <ul>
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="barbell"></ion-icon>
+                        </span>
+                        <span class="title">ENERGIZE</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="testclient.html">
+                        <span class="icon">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+
+                <li>
+                  <a href="clientmessage.html">
+                      <span class="icon">
+                          <ion-icon name="chatbubble-outline"></ion-icon>
+                      </span>
+                      <span class="title">Message</span>
+                  </a>
+              </li>
+
+                <li>
+                    <a href="profile.html">
+                        <span class="icon">
+                            <ion-icon name="person-circle-outline"></ion-icon>
+                        </span>
+                        <span class="title">Profile</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="schedule.html">
+                        <span class="icon">
+                            <ion-icon name="calendar-outline"></ion-icon>
+                        </span>
+                        <span class="title">Workout Plan</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="payment.html">
+                        <span class="icon">
+                            <ion-icon name="card-outline"></ion-icon>
+                        </span>
+                        <span class="title">Membership Plan</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="settings.html">
+                        <span class="icon">
+                            <ion-icon name="settings-outline"></ion-icon>
+                        </span>
+                        <span class="title">Settings</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ========================= Main ==================== -->
+        <div class="main">
+            <div class="topbar">
+                <div class="toggle">
+                    <ion-icon name="menu-outline"></ion-icon>
+                </div>
+
+                <div class="search-container">
+                    <label>
+                      <input type="text" id="search-input" placeholder="Search what you're looking for">
+                      <ion-icon name="search-outline"></ion-icon>
+                    </label>
+                    <div id="search-results">
+                    </div>
+                  </div>
+
+                  
+                  <div class="mail-container">
+                    <ion-icon name="mail" id="mail-icon-inbox"></ion-icon>
+                    <div id="unread-notification">1</div>
+                    <div id="inbox-preview">
+                    <strong>Inbox</strong>
+                    <hr>
+                    <div id="unread-messages">
+                        <div class="email-item sender">Coaches</div>
+                        <div class="email-item subject">Session today!</div>
+                        <hr>
+                    </div>
+                    <div id="read-messages">
+                        <div class="email-item sender">Coach</div>
+                        <div class="email-item subject">Can I ask?</div>
+                    </div>
+                    <a href="#">See All</a>
+                    </div>
+                </div>
+
+                <div class="notification-container">
+                    <ion-icon name="notifications" id="notification-icon"></ion-icon>
+                    <div id="notification-badge">1</div>
+                    <div id="notifications-dropdown">
+                      <strong>Notifications</strong>
+                      <hr>
+                      <div id="notification-list">
+                        <div class="notification-item title">Today, 1:00</div>
+
+                        <div class="notification-item message">Your session with Coach Sarah has been confirmed!</div>
+                        <hr>
+                        <div class="notification-item title">Yesterday, 3:45 PM</div>
+                        <div class="notification-item message">Workout plan for this week has been updated.</div>
+                      </div>
+                      <a href="#">See All</a>
+                    </div>
+                  </div>
+                
+                  <div class="user">
+                    <img src="assets/img/esnyr.jpg" alt="">
+                  </div>
+                </div>
+                
+                <!-- ======================= Greetings and Main Content ======================== -->
+                <div class="greetings">
+                  <div class="welcome">
+                    <h1>Welcome, Sarah</h1>
+                  </div>
+                  <div class="current-plan">
+                    <ion-icon name="star"></ion-icon>
+                    <span>Elite Coaching</span>
+                  </div>
+                </div>
+                
+                <!-- ======================= Cards ======================== -->
+                <div class="cardBox">
+                  <div class="card">
+                    <div>
+                      <div class="numbers">12</div>
+                      <div class="cardName">Sessions Completed</div>
+                    </div>
+                    <div class="iconBx">
+                      <ion-icon name="checkmark-circle-outline"></ion-icon>
+                    </div>
+                  </div>
+                
+                  <div class="card">
+                    <div>
+                      <div class="numbers">3</div>
+                      <div class="cardName">Sessions Remaining</div>
+                    </div>
+                    <div class="iconBx">
+                      <ion-icon name="calendar-outline"></ion-icon>
+                    </div>
+                  </div>
+                
+                  <div class="card">
+                    <div>
+                      <div class="numbers">65%</div>
+                      <div class="cardName">Goal Progress</div>
+                    </div>
+                    <div class="iconBx">
+                      <ion-icon name="trending-up-outline"></ion-icon>
+                    </div>
+                  </div>
+                
+                  <div class="card">
+                    <div>
+                      <div class="numbers">28</div>
+                      <div class="cardName">Days Active</div>
+                    </div>
+                    <div class="iconBx">
+                      <ion-icon name="fitness-outline"></ion-icon>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- ======================= Dashboard Grid ======================== -->
+                <div class="dashboard-grid">
+                  <!-- Current Workout Plan -->
+                  <div class="widget workout-plan-section">
+                    <h3>Current Workout Plan</h3>
+                    <p><strong>Plan:</strong> Weight Loss & Strength Training</p>
+                    <p><strong>Started:</strong> April 15, 2025</p>
+                    <p><strong>Duration:</strong> 12 weeks</p>
+                    <p><strong>Progress:</strong> Week 2</p>
+                    <button class="button"><a href="schedule.html" style="text-decoration: none; color:#484848">View Full Plan</a></button>
+                  </div>
+                
+                  <!-- Next Session -->
+                  <div class="widget next-session-section">
+                    <h3>Next Session</h3>
+                    <p><strong>Date:</strong> April 30, 2025</p>
+                    <p><strong>Time:</strong> 4:00 PM - 5:00 PM</p>
+                    <p><strong>Coach:</strong> Michael Rodriguez</p>
+                    <p><strong>Location:</strong> ENERGIZE GYM CENTER</p>
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                      <button class="button primary" id="okayButton">Okay</button>
+                      <button class="button" id="rescheduleButton">Reschedule</button>
+                    </div>
+                  </div>
+                
+                  <!-- Book New Session -->
+                  <div class="widget book-session-section">
+                    <h3>Book New Session</h3>
+                    <p>You have 3 sessions remaining in your current plan. Book your next session with your preferred coach.</p>
+                    <button class="button primary" id="bookSessionButton">Book a Session</button>
+                  </div>
+                
+                  <!-- Fitness Goals -->
+                  <div class="widget goals-section">
+                    <h3>Fitness Goals</h3>
+                    <ul class="goals-list">
+                      <li>
+                        <ion-icon name="checkmark-circle" class="goal-icon"></ion-icon>
+                        <span>Lose 15 pounds (5/15 lbs)</span>
+                      </li>
+                      <li>
+                        <ion-icon name="checkmark-circle" class="goal-icon"></ion-icon>
+                        <span>Run 5k without stopping</span>
+                      </li>
+                      <li>
+                        <ion-icon name="checkmark-circle" class="goal-icon"></ion-icon>
+                        <span>Bench press 150 lbs (current: 125 lbs)</span>
+                      </li>
+                      <li>
+                        <ion-icon name="checkmark-circle" class="goal-icon"></ion-icon>
+                        <span>Improve flexibility - touch toes</span>
+                      </li>
+                    </ul>
+                    <button class="button" style="margin-top: 15px;">Update Goals</button>
+                  </div>
+                
+                  <!-- Weekly Workout Schedule -->
+                  <div class="widget weekly-schedule">
+                    <h3>Weekly Schedule</h3>
+                    <div class="schedule-grid">
+                      <div class="day-column">
+                        <div class="day-header">Mon</div>
+                        <div class="workout-item completed">
+                          Upper Body
+                          <div class="workout-time">7:00 AM</div>
+                        </div>
+                        <div class="workout-item completed">
+                          Cardio
+                          <div class="workout-time">6:00 PM</div>
+                        </div>
+                      </div>
+                      <div class="day-column">
+                        <div class="day-header">Tue</div>
+                        <div class="workout-item completed">
+                          Rest Day
+                          <div class="workout-time">All Day</div>
+                        </div>
+                      </div>
+                      <div class="day-column">
+                        <div class="day-header">Wed</div>
+                        <div class="workout-item completed">
+                          Lower Body
+                          <div class="workout-time">7:00 AM</div>
+                        </div>
+                        <div class="workout-item scheduled">
+                          Yoga
+                          <div class="workout-time">6:00 PM</div>
+                        </div>
+                      </div>
+                      <div class="day-column">
+                        <div class="day-header">Thu</div>
+                        <div class="workout-item scheduled">
+                          Cardio
+                          <div class="workout-time">7:00 AM</div>
+                        </div>
+                      </div>
+                      <div class="day-column">
+                        <div class="day-header">Fri</div>
+                        <div class="workout-item scheduled">
+                          Full Body
+                          <div class="workout-time">7:00 AM</div>
+                        </div>
+                        <div class="workout-item scheduled">
+                          Coach Session
+                          <div class="workout-time">4:00 PM</div>
+                        </div>
+                      </div>
+                      <div class="day-column">
+                        <div class="day-header">Sat</div>
+                        <div class="workout-item scheduled">
+                          Outdoor Run
+                          <div class="workout-time">9:00 AM</div>
+                        </div>
+                      </div>
+                      <div class="day-column">
+                        <div class="day-header">Sun</div>
+                        <div class="workout-item scheduled">
+                          Rest Day
+                          <div class="workout-time">All Day</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                
+                  <!-- Todo List -->
+                  <div class="widget todo-list-section">
+                    <h3>Today's Tasks</h3>
+                    <div class="todo-item">
+                      <input type="checkbox" class="todo-checkbox" checked>
+                      <span class="todo-text">Morning workout - 30 min cardio</span>
+                    </div>
+                    <div class="todo-item">
+                      <input type="checkbox" class="todo-checkbox" checked>
+                      <span class="todo-text">Drink 2L of water</span>
+                    </div>
+                    <div class="todo-item">
+                      <input type="checkbox" class="todo-checkbox">
+                      <span class="todo-text">Evening stretch routine</span>
+                    </div>
+                    <div class="todo-item">
+                      <input type="checkbox" class="todo-checkbox">
+                      <span class="todo-text">Review workout plan for tomorrow</span>
+                    </div>
+                    <div class="todo-item">
+                      <input type="checkbox" class="todo-checkbox">
+                      <span class="todo-text">Log today's meals</span>
+                    </div>
+                    <div class="progress-bar-container">
+                      <div class="progress-bar"></div>
+                    </div>
+                    <div class="progress-label">2/5 completed</div>
+                  </div>
+                
+                  <!-- Coach Information -->
+                  <div class="widget coach-info-section">
+                    <h3>Your Coach</h3>
+                    <div class="coach-profile">
+                      <img src="assets/img/customer01.jpg" alt="Coach Michael" class="coach-avatar">
+                      <div class="coach-details">
+                        <h4>Michael Rodriguez</h4>
+                        <p>Certified Personal Trainer</p>
+                        <span class="coach-specialty">Strength & Conditioning</span>
+                        <span class="coach-specialty">Weight Loss</span>
+                        <p style="margin-top: 10px;">Working with you for 3 weeks</p>
+                      </div>
+                    </div>
+                    <div class="coach-actions">
+                      <button class="button" id="changeCoachButton">Change Coach</button>
+                      <button class="button primary">Contact Coach</button>
+                    </div>
+                  </div>
+                
+                  
+                </div>
+                
+                <!-- ======================= Modals ======================== -->
+                <!-- Reschedule Session Modal -->
+                <div class="modal" id="rescheduleModal">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h2 class="modal-title">Reschedule Session</h2>
+                    </div>
+                    <div class="modal-body">
+                      <p>Would you like to reschedule your upcoming session on <strong>April 30, 2025 at 4:00 PM</strong> with Coach Michael Rodriguez?</p>
+                      <div class="coach-select-container">
+                        <label for="reschedule-reason">Please provide a reason (optional):</label>
+                        <textarea class="reason-textarea" id="reschedule-reason" placeholder="I need to reschedule because..."></textarea>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button class="modal-button no-button" id="closeRescheduleModal">Cancel</button>
+                      <button class="modal-button yes-button" id="confirmReschedule">Yes, Reschedule</button>
+                    </div>
+                  </div>
+                </div>
+                
+                <div id="rescheduleNotificationModal" class="modal">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h2 class="modal-title">Reschedule Request Sent</h2>
+                    </div>
+                    <div class="modal-body">
+                      <p>Your reschedule request will be sent to Coach Michael Rodriguez for approval. You will receive a notification once the new schedule is confirmed.</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button class="modal-button ok-button" id="closeNotificationModal">OK</button>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Book Session Modal -->
+                <div class="modal" id="bookSessionModal">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h2 class="modal-title">Book a New Session</h2>
+                    </div>
+                    <div class="modal-body">
+                      <p>You have <strong>3 sessions</strong> remaining in your current plan.</p>
+                      <div class="coach-select-container">
+                        <label for="coach-select">Select your coach:</label>
+                        <select id="coach-select">
+                          <option value="michael">Michael Rodriguez (Your Current Coach)</option>
+                          <option value="sarah">Sarah Johnson</option>
+                          <option value="james">James Wilson</option>
+                          <option value="emma">Emma Thompson</option>
+                        </select>
+                        <label for="date-select">Select a date:</label>
+                        <input type="date" id="date-select" min="2023-01-01">
+                        <label for="time-select">Select a time:</label>
+                        <select id="time-select">
+                          <option value="9">9:00 AM</option>
+                          <option value="10">10:00 AM</option>
+                          <option value="11">11:00 AM</option>
+                          <option value="13">1:00 PM</option>
+                          <option value="14">2:00 PM</option>
+                          <option value="15">3:00 PM</option>
+                          <option value="16">4:00 PM</option>
+                          <option value="17">5:00 PM</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button class="modal-button no-button" id="closeBookSessionModal">Cancel</button>
+                      <button class="modal-button yes-button" id="confirmBookSession">Book Session</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="modal" id="bookSessionConfirmationModal">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h2 class="modal-title">Session Booked!</h2>
+                    </div>
+                    <div class="modal-body">
+                      <p>Your session has been booked successfully. Please wait for the coach's feedback.</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button class="modal-button ok-button" id="closeBookSessionConfirmationModal">OK</button>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Change Coach Modal -->
+                <div class="modal" id="changeCoachModal">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h2 class="modal-title">Change Your Coach</h2>
+                    </div>
+                    <div class="modal-body">
+                      <p>Are you sure you want to change your coach? You will be assigned to a new coach.</p>
+                      <div class="coach-select-container">
+                        <label for="new-coach-select">Select a new coach:</label>
+                        <select id="new-coach-select">
+                          <option value="sarah">Sarah Johnson</option>
+                          <option value="james">James Wilson</option>
+                          <option value="emma">Emma Thompson</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button class="modal-button no-button" id="closeChangeCoachModal">Cancel</button>
+                      <button class="modal-button yes-button" id="confirmChangeCoach">Confirm Change</button>
+                    </div>
+                  </div>
+                </div>
+        
+                <div class="modal" id="changeCoachConfirmationModal">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h2 class="modal-title">Request Submitted</h2>
+                    </div>
+                    <div class="modal-body">
+                      <p>Your request has been successfully submitted. Please wait for the admin's response.</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button class="modal-button ok-button" id="closeChangeCoachConfirmationModal">OK</button>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Change Plan Modal -->
+                <div class="modal" id="changePlanModal">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h2 class="modal-title">Change Your Plan</h2>
+                    </div>
+                    <div class="modal-body">
+                      <p>You are currently on the <strong>Premium Plan - $149/month</strong>. Would you like to switch to a different plan?</p>
+                      <div class="coach-select-container">
+                        <label for="new-plan-select">Select your new plan:</label>
+                        <select id="new-plan-select">
+                          <option value="basic">Basic Plan - $79/month</option>
+                          <option value="premium" selected>Premium Plan - $149/month (Current)</option>
+                          <option value="elite">Elite Plan - $249/month</option>
+                        </select>
+                      </div>
+                      <p style="margin-top: 20px; color: #777;">Note: Your new plan will take effect at your next billing cycle on May 15, 2025. You will continue to have access to your current plan's benefits until that date.</p>
+                      <div class="payment-form">
+                        <h3>Payment Information</h3>
+                        <div class="card-details">
+                          <div class="payment-row">
+                            <div class="payment-col">
+                              <label for="card-name">Name on Card</label>
+                              <input type="text" id="card-name" value="Sarah Johnson">
+                            </div>
+                          </div>
+                          <div class="payment-row">
+                            <div class="payment-col">
+                              <label for="card-number">Card Number</label>
+                              <input type="text" id="card-number" value="**** **** **** 4242">
+                            </div>
+                          </div>
+                          <div class="payment-row">
+                            <div class="payment-col">
+                              <label for="card-expiry">Expiry Date</label>
+                              <input type="text" id="card-expiry" value="12/26">
+                            </div>
+                            <div class="payment-col">
+                              <label for="card-cvv">CVV</label>
+                              <input type="password" id="card-cvv" value="***">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button class="modal-button no-button" id="closeChangePlanModal">Cancel</button>
+                      <button class="modal-button yes-button">Confirm Change</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="signOutModal" class="modal">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h2 class="modal-title">Sign Out</h2>
+                    </div>
+                    <div class="modal-body">
+                      <p>Are you sure you want to sign out?</p>
+                    </div>
+                    <div class="modal-footer sign-out-actions">
+                      <button class="modal-button no-button" id="signOutNo">No</button>
+                      <button class="modal-button yes-button" id="signOutYes">Yes</button>
+                    </div>
+                  </div>
+                </div>
+  
+                
+                <!-- =========== Scripts =========== -->
+                <script>
+                 // Wait for DOM to be fully loaded before attaching event listeners
+document.addEventListener('DOMContentLoaded', function() {
+  // =============== Navigation Toggle ===============
+  const toggle = document.querySelector('.toggle');
+  const navigation = document.querySelector('.navigation');
+  const main = document.querySelector('.main');
+
+  toggle.addEventListener('click', function() {
+    navigation.classList.toggle('active');
+    main.classList.toggle('active');
+  });
+
+  // =============== Modal Management ===============
+  const modals = {
+    // Reschedule Modal
+    reschedule: {
+      modal: document.getElementById('rescheduleModal'),
+      openButton: document.getElementById('rescheduleButton'),
+      closeButton: document.getElementById('closeRescheduleModal'),
+      confirmButton: document.getElementById('confirmReschedule')
+    },
+    // Reschedule Notification Modal
+    rescheduleNotification: {
+      modal: document.getElementById('rescheduleNotificationModal'),
+      closeButton: document.getElementById('closeNotificationModal')
+    },
+    // Book Session Modal
+    bookSession: {
+      modal: document.getElementById('bookSessionModal'),
+      openButton: document.getElementById('bookSessionButton'),
+      closeButton: document.getElementById('closeBookSessionModal'),
+      confirmButton: document.getElementById('confirmBookSession') // Changed selector
+    },
+    // Book Session Confirmation Modal
+    bookSessionConfirmation: {
+      modal: document.getElementById('bookSessionConfirmationModal'),
+      closeButton: document.getElementById('closeBookSessionConfirmationModal')
+    },
+    
+    // Change Coach Modal
+    changeCoach: {
+      modal: document.getElementById('changeCoachModal'),
+      openButton: document.getElementById('changeCoachButton'),
+      closeButton: document.getElementById('closeChangeCoachModal'),
+      confirmButton: document.querySelector('#changeCoachModal .yes-button')
+    },
+    // Change Coach Confirmation Modal
+    changeCoachConfirmation: {
+      modal: document.getElementById('changeCoachConfirmationModal'),
+      closeButton: document.getElementById('closeChangeCoachConfirmationModal')
+    },
+    // Change Plan Modal
+    changePlan: {
+      modal: document.getElementById('changePlanModal'),
+      openButton: document.getElementById('changePlanButton'),
+      closeButton: document.getElementById('closeChangePlanModal'),
+      confirmButton: document.querySelector('#changePlanModal .yes-button')
+    }
+  };
+
+  // Setup modal event listeners
+  Object.keys(modals).forEach(modalKey => {
+    const modal = modals[modalKey];
+
+    // Open modal button
+    if (modal.openButton) {
+      modal.openButton.addEventListener('click', () => {
+        modal.modal.classList.add('show');
+      });
+    }
+
+    // Close modal button
+    if (modal.closeButton) {
+      modal.closeButton.addEventListener('click', () => {
+        modal.modal.classList.remove('show');
+      });
+    }
+
+      // Confirm button (special handling for reschedule)
+      if (modal.confirmButton && modalKey === 'reschedule') {
+      modal.confirmButton.addEventListener('click', () => {
+        modal.modal.classList.remove('show');
+        modals.rescheduleNotification.modal.classList.add('show');
+      });
+    } else if (modal.confirmButton && modalKey === 'bookSession') {
+      modal.confirmButton.addEventListener('click', () => {
+        modal.modal.classList.remove('show');
+        modals.bookSessionConfirmation.modal.classList.add('show');
+      });
+    } else if (modal.confirmButton && modalKey === 'changeCoach') { // Added changeCoach
+      modal.confirmButton.addEventListener('click', () => {
+        modal.modal.classList.remove('show');
+        modals.changeCoachConfirmation.modal.classList.add('show');
+      });
+    }
+
+    else if (modal.confirmButton) {
+      modal.confirmButton.addEventListener('click', () => {
+        modal.modal.classList.remove('show');
+        // You can add specific actions for each confirmation button here
+      });
+    }
+  });
+
+  // Close modals when clicking outside
+  window.addEventListener('click', (event) => {
+    if (event.target.classList.contains('modal')) {
+      event.target.classList.remove('show');
+    }
+  });
+  
+ // =============== Button Color Changes ===============
+  // Okay button - changes to green when clicked
+  const okayButton = document.getElementById('okayButton');
+  if (okayButton) {
+    okayButton.addEventListener('click', function() {
+      this.style.backgroundColor = 'green';
+      this.style.color = 'white';
+    });
+  }
+
+  // Update Goals button - changes to green when clicked
+  const updateGoalsButton = document.querySelector('.goals-section .button');
+  if (updateGoalsButton) {
+    updateGoalsButton.addEventListener('click', function() {
+      this.style.backgroundColor = 'green';
+      this.style.color = 'white';
+
+      // Remove the setTimeout - we want the change to be permanent!
+      // Optional: Revert back after 2 seconds
+      // setTimeout(() => {
+      //   this.style.backgroundColor = '';
+      //   this.style.color = '';
+      // }, 2000);
+    });
+  }
+
+  // =============== Mail Notification ===============
+  const mailIcon = document.getElementById('mail-icon-inbox');
+  const inboxPreview = document.getElementById('inbox-preview');
+  const unreadNotification = document.getElementById('unread-notification');
+
+  if (mailIcon && inboxPreview) {
+    // Show inbox preview when mail icon is clicked
+    mailIcon.addEventListener('click', () => {
+      inboxPreview.style.display = inboxPreview.style.display === 'block' ? 'none' : 'block';
+      unreadNotification.style.display = 'none'; // Hide notification when checking mail
+    });
+
+    // Hide inbox preview when clicking outside
+    document.addEventListener('click', (event) => {
+      if (!mailIcon.contains(event.target) && !inboxPreview.contains(event.target)) {
+        inboxPreview.style.display = 'none';
+      }
+    });
+
+    // Show unread notification on load
+    if (unreadNotification) {
+      unreadNotification.style.display = 'block';
+    }
+  }
+
+  // =============== Notifications ===============
+  const notificationIcon = document.getElementById('notification-icon');
+  const notificationsDropdown = document.getElementById('notifications-dropdown');
+  const notificationBadge = document.getElementById('notification-badge');
+
+  if (notificationIcon && notificationsDropdown) {
+    // Show notifications dropdown when notification icon is clicked
+    notificationIcon.addEventListener('click', () => {
+      notificationsDropdown.style.display = notificationsDropdown.style.display === 'block' ? 'none' : 'block';
+      notificationBadge.style.display = 'none'; // Hide badge when checking notifications
+    });
+
+    // Hide notifications dropdown when clicking outside
+    document.addEventListener('click', (event) => {
+      if (!notificationIcon.contains(event.target) && !notificationsDropdown.contains(event.target)) {
+        notificationsDropdown.style.display = 'none';
+      }
+    });
+
+    // Show notification badge on load
+    if (notificationBadge) {
+      notificationBadge.style.display = 'block';
+    }
+  }
+
+  // =============== Search Functionality ===============
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+
+  if (searchInput && searchResults) {
+    const searchData = [
+      'Workout Plans',
+      'Schedule a Session',
+      'Change Coach',
+      'Billing Information',
+      'Account Settings',
+      'Nutrition Plans',
+      'Progress Tracking',
+      'Contact Support'
+    ];
+
+    // Show search results as user types
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase();
+      if (query.length < 2) {
+        searchResults.style.display = 'none';
+        return;
+      }
+
+      const filteredResults = searchData.filter(item =>
+        item.toLowerCase().includes(query)
+      );
+
+      if (filteredResults.length) {
+        const resultHTML = `
+          <ul>
+            ${filteredResults.map(result => {
+              const highlightedText = result.replace(
+                new RegExp(query, 'gi'),
+                match => `<span class="highlight">${match}</span>`
+              );
+              return `<li>${highlightedText}</li>`;
+            }).join('')}
+          </ul>
+        `;
+        searchResults.innerHTML = resultHTML;
+        searchResults.style.display = 'block';
+      } else {
+        searchResults.innerHTML = '<ul><li>No results found</li></ul>';
+        searchResults.style.display = 'block';
+      }
+    });
+
+    // Hide search results when clicking outside
+    document.addEventListener('click', (event) => {
+      if (!searchInput.contains(event.target) && !searchResults.contains(event.target)) {
+        searchResults.style.display = 'none';
+      }
+    });
+
+    // Add click event to search results
+    searchResults.addEventListener('click', (event) => {
+      if (event.target.tagName === 'LI' || event.target.parentElement.tagName === 'LI') {
+        const selected = event.target.textContent || event.target.parentElement.textContent;
+        searchInput.value = selected.replace(/\s+/g, ' ').trim();
+        searchResults.style.display = 'none';
+      }
+    });
+  }
+
+  // =============== Todo List Functionality ===============
+  const todoCheckboxes = document.querySelectorAll('.todo-checkbox');
+  const progressBar = document.querySelector('.progress-bar');
+  const progressLabel = document.querySelector('.progress-label');
+
+  if (todoCheckboxes.length) {
+    // Update progress bar when checkboxes are clicked
+    todoCheckboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', () => {
+        const total = todoCheckboxes.length;
+        const checked = document.querySelectorAll('.todo-checkbox:checked').length;
+
+        // Update progress bar
+        if (progressBar) {
+          progressBar.style.width = `${(checked / total) * 100}%`;
+        }
+
+        // Update progress label
+        if (progressLabel) {
+          progressLabel.textContent = `${checked}/${total} completed`;
+        }
+      });
+    });
+  }
+});
+
+//Sign out
+document.addEventListener('DOMContentLoaded', function() {
+                    const signOutLink = document.querySelector('.navigation ul li:last-child a');
+                    const signOutModal = document.getElementById('signOutModal');
+                    const signOutYesButton = document.getElementById('signOutYes');
+                    const signOutNoButton = document.getElementById('signOutNo');
+
+                    if (signOutLink) {
+                    signOutLink.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        showModal(signOutModal);
+                    });
+                    } else {
+                    console.error("Sign Out link not found!");
+                    }
+
+                    signOutYesButton.addEventListener('click', function() {
+                    window.location.href = 'index.html';
+                    });
+
+                    signOutNoButton.addEventListener('click', function() {
+                    hideModal(signOutModal);
+                    });
+
+                    window.addEventListener('click', function(event) {
+                    if (event.target == signOutModal) {
+                        hideModal(signOutModal);
+                    }
+                    });
+
+                    // Helper functions for showing and hiding the modal
+                    function showModal(modalElement) {
+                    modalElement.classList.add('show');
+                    }
+
+                    function hideModal(modalElement) {
+                    modalElement.classList.remove('show');
+                    }
+                });
+                  
+                </script>
+                
+                <!-- ====== ionicons ======= -->
+                <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+                <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+                </body>
+                </html>

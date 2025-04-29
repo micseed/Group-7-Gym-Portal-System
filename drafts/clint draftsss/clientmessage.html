@@ -2332,344 +2332,463 @@ body {
    
 
     <script>
-        let list = document.querySelectorAll(".navigation li");
-        
-        function activeLink() {
-        list.forEach((item) => {
+       document.addEventListener('DOMContentLoaded', function() {
+
+// ===== Navigation Link Activation =====
+let list = document.querySelectorAll(".navigation li");
+
+function activeLink() {
+    list.forEach((item) => {
         item.classList.remove("hovered");
-        });
-        this.classList.add("hovered");
-        }
-        
-        list.forEach((item) => item.addEventListener("click", activeLink));
-        
-        // Menu Toggle (remains the same)
-        let toggle = document.querySelector(".toggle");
-        let navigation = document.querySelector(".navigation");
-        let main = document.querySelector(".main");
-        
-        toggle.onclick = function () {
+    });
+    this.classList.add("hovered");
+}
+
+list.forEach((item) => item.addEventListener("click", activeLink));
+
+// ===== Menu Toggle (Navigation Sidebar) =====
+let toggle = document.querySelector(".toggle");
+let navigation = document.querySelector(".navigation");
+let main = document.querySelector(".main");
+let topbar = document.querySelector('.topbar'); // Assuming topbar needs adjustment
+
+if (toggle && navigation && main && topbar) {
+    toggle.onclick = function () {
         navigation.classList.toggle("active");
         main.classList.toggle("active");
-        };
+        topbar.classList.toggle('active'); // Toggle active class on topbar too
 
-        // Search Function
-        const searchInput = document.getElementById('search-input');
-        const searchResultsDiv = document.getElementById('search-results');
-
-        const searchData = [
-            "How to diet",
-            "Paano makapasa sa webdev",
-            "Effective workout plan",
-            "Effective sleep",
-            "Gulay effective diet",
-            "Recent Sessions",
-            "Overall well being",
-            "Updates",
-            "Coaches",
-            "Plans"
-        ];
-
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const filteredResults = searchData.filter(item =>
-                item.toLowerCase().includes(searchTerm)
-            );
-
-            displayResults(filteredResults);
-        });
-
-        function displayResults(results) {
-            searchResultsDiv.innerHTML = '';
-
-            if (results.length > 0 && searchInput.value.trim() !== '') {
-                const ul = document.createElement('ul');
-                results.forEach(result => {
-                    const li = document.createElement('li');
-                    li.textContent = result;
-                    li.addEventListener('click', function() {
-                        searchInput.value = this.textContent;
-                        searchResultsDiv.style.display = 'none'; 
-                    });
-                    ul.appendChild(li);
-                });
-                searchResultsDiv.appendChild(ul);
-                searchResultsDiv.style.display = 'block'; 
-            } else {
-                searchResultsDiv.style.display = 'none';
-            }
-        }
-
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.search-container')) {
-                searchResultsDiv.style.display = 'none';
-            }
-        });
-
-        // Mail Function
-        const mailIconInbox = document.getElementById('mail-icon-inbox');
-        const unreadNotification = document.getElementById('unread-notification');
-        const inboxPreview = document.getElementById('inbox-preview');
-        let hasUnread = true; 
-
-        function updateUnreadIndicator() {
-            unreadNotification.style.display = hasUnread ? 'block' : 'none';
-        }
-
-        updateUnreadIndicator();
-
-        mailIconInbox.addEventListener('click', function() {
-            inboxPreview.style.display = (inboxPreview.style.display === 'block' ? 'none' : 'block');
-
-            if (hasUnread && inboxPreview.style.display === 'block') {
-                hasUnread = false;
-                updateUnreadIndicator();
-                console.log('Mail icon clicked - marking as read');
-            }
-        });
-
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.mail-container')) {
-                inboxPreview.style.display = 'none';
-            }
-        });
-
-        // Notification Function
-        const notificationIcon = document.getElementById('notification-icon');
-        const notificationBadge = document.getElementById('notification-badge');
-        const notificationsDropdown = document.getElementById('notifications-dropdown');
-
-        notificationIcon.addEventListener('click', function() {
-            notificationsDropdown.style.display = (notificationsDropdown.style.display === 'block' ? 'none' : 'block');
-            
-            notificationBadge.style.display = 'none';
-        });
-
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.notification-container')) {
-                notificationsDropdown.style.display = 'none';
-            }
-        });
-
-         // Message Functionality
-         const messageInput = document.querySelector('.message-input');
-        const sendButton = document.querySelector('.message-action');
-        const messagesContainer = document.querySelector('.messages-container');
-        const typingIndicator = document.querySelector('.typing-indicator');
-
-        // Function to add a new message
-        function addMessage(content, isSent = true) {
-            // Hide typing indicator when sending a message
-            typingIndicator.style.display = 'none';
-            
-            const messageDiv = document.createElement('div');
-            messageDiv.className = isSent ? 'message sent' : 'message received';
-            
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'message-content';
-            contentDiv.textContent = content;
-            
-            const timeDiv = document.createElement('div');
-            timeDiv.className = 'message-time';
-            
-            const now = new Date();
-            const hours = now.getHours();
-            const minutes = now.getMinutes();
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            const formattedHours = hours % 12 || 12;
-            const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
-            
-            timeDiv.textContent = `${formattedHours}:${formattedMinutes} ${ampm}`;
-            
-            messageDiv.appendChild(contentDiv);
-            messageDiv.appendChild(timeDiv);
-            
-            if (isSent) {
-                const statusDiv = document.createElement('div');
-                statusDiv.className = 'message-status';
-                statusDiv.textContent = 'Sent';
-                messageDiv.appendChild(statusDiv);
-            }
-            
-            messagesContainer.appendChild(messageDiv);
-            
-            // Scroll to bottom
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            
-            return messageDiv;
-        }
-
-        // Function to simulate coach response
-        function simulateCoachResponse() {
-            // Show typing indicator
-            typingIndicator.style.display = 'flex';
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            
-            const responses = [
-                "That's a great question about your nutrition plan. If you're feeling hungry after dinner, try adding more protein and fiber to your meals. Also, you could include a small healthy snack before bed like Greek yogurt or a protein shake.",
-                "Let's adjust your meal plan. Try increasing your portion sizes slightly for your protein and vegetables. Also, make sure you're drinking enough water throughout the day.",
-                "I understand the hunger issue. Let's add a light evening snack to your plan - perhaps some cottage cheese with berries or a small handful of nuts. How does that sound?",
-                "Looking forward to our session today! About your nutrition plan, I've noticed you might be missing some healthy fats which help with satiety. Try adding some avocado or nuts to your dinner."
-            ];
-            
-            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-            
-            // Simulate typing delay
-            setTimeout(() => {
-                addMessage(randomResponse, false);
-                
-                // Change sent to read
-                const sentMessages = document.querySelectorAll('.message.sent');
-                if (sentMessages.length > 0) {
-                    const lastSentMessage = sentMessages[sentMessages.length - 1];
-                    const statusDiv = lastSentMessage.querySelector('.message-status');
-                    if (statusDiv) {
-                        statusDiv.textContent = 'Read';
-                    }
-                }
-            }, 3000);
-        }
-
-        // Send message on button click
-        sendButton.addEventListener('click', () => {
-            const message = messageInput.value.trim();
-            if (message) {
-                addMessage(message);
-                messageInput.value = '';
-                
-                // Auto-resize textarea
-                messageInput.style.height = 'auto';
-                
-                // Simulate coach response
-                simulateCoachResponse();
-            }
-        });
-
-        // Send message on Enter key
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendButton.click();
-            }
-        });
-
-        // Auto-resize textarea
-        messageInput.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 100) + 'px';
-        });
-
-        // Contact item click
-        const contactItems = document.querySelectorAll('.contact-item');
-        contactItems.forEach(item => {
-            item.addEventListener('click', function() {
-                contactItems.forEach(i => i.classList.remove('active'));
-                this.classList.add('active');
-                
-                // Here you would normally load the conversation with this contact
-                // For demo purposes, we're just showing the current conversation
-            });
-        });
-
-        // Sign Out Modal
-        const signOutLink = document.getElementById('signOutLink');
-        const signOutModal = document.getElementById('signOutModal');
-        const signOutYesButton = document.getElementById('signOutYes');
-        const signOutNoButton = document.getElementById('signOutNo');
-
-        signOutLink.addEventListener('click', function(event) {
-            event.preventDefault();
-            showModal(signOutModal);
-        });
-
-        signOutYesButton.addEventListener('click', function() {
-            window.location.href = 'index.html';
-        });
-
-        signOutNoButton.addEventListener('click', function() {
-            hideModal(signOutModal);
-        });
-
-
-        // Mobile contacts toggle functionality
-document.addEventListener('DOMContentLoaded', function() {
-    // Toggle navigation menu
-    let toggle = document.querySelector('.toggle');
-    let navigation = document.querySelector('.navigation');
-    let main = document.querySelector('.main');
-    let topbar = document.querySelector('.topbar');
-    
-    toggle.onclick = function() {
-        navigation.classList.toggle('active');
-        main.classList.toggle('active');
-        topbar.classList.toggle('active');
-        
         // Create or remove backdrop for navigation
         if (navigation.classList.contains('active') && window.innerWidth <= 991) {
-            let backdrop = document.querySelector('.navigation-backdrop');
-            if (!backdrop) {
-                backdrop = document.createElement('div');
-                backdrop.className = 'navigation-backdrop active';
-                document.body.appendChild(backdrop);
-                
-                backdrop.addEventListener('click', function() {
-                    navigation.classList.remove('active');
-                    main.classList.remove('active');
-                    topbar.classList.remove('active');
-                    this.remove();
-                });
-            }
+            createBackdrop('navigation-backdrop', () => {
+                navigation.classList.remove('active');
+                main.classList.remove('active');
+                topbar.classList.remove('active');
+            });
         } else {
-            let backdrop = document.querySelector('.navigation-backdrop');
-            if (backdrop) backdrop.remove();
+            removeBackdrop('navigation-backdrop');
         }
     };
-    
-    // Mobile contacts toggle
+} else {
+    console.error("Navigation toggle elements not found.");
+}
+
+// ===== Search Function =====
+const searchInput = document.getElementById('search-input');
+const searchResultsDiv = document.getElementById('search-results');
+const searchContainer = document.querySelector('.search-container'); // Need container for click outside
+
+const searchData = [
+    "How to diet",
+    "Paano makapasa sa webdev",
+    "Effective workout plan",
+    "Effective sleep",
+    "Gulay effective diet",
+    "Recent Sessions",
+    "Overall well being",
+    "Updates",
+    "Coaches",
+    "Plans"
+];
+
+if (searchInput && searchResultsDiv && searchContainer) {
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase().trim();
+        if (searchTerm === '') {
+            searchResultsDiv.style.display = 'none';
+            searchResultsDiv.innerHTML = '';
+            return;
+        }
+
+        const filteredResults = searchData.filter(item =>
+            item.toLowerCase().includes(searchTerm)
+        );
+        displayResults(filteredResults);
+    });
+
+    function displayResults(results) {
+        searchResultsDiv.innerHTML = '';
+
+        if (results.length > 0) {
+            const ul = document.createElement('ul');
+            results.forEach(result => {
+                const li = document.createElement('li');
+                li.textContent = result;
+                li.addEventListener('click', function() {
+                    searchInput.value = this.textContent;
+                    searchResultsDiv.style.display = 'none';
+                    searchResultsDiv.innerHTML = ''; // Clear results after selection
+                });
+                ul.appendChild(li);
+            });
+            searchResultsDiv.appendChild(ul);
+            searchResultsDiv.style.display = 'block';
+        } else {
+            searchResultsDiv.style.display = 'none';
+        }
+    }
+
+    // Close search results when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!searchContainer.contains(event.target)) {
+            searchResultsDiv.style.display = 'none';
+        }
+    });
+} else {
+     console.error("Search elements not found.");
+}
+
+// ===== Mail Function =====
+const mailIconInbox = document.getElementById('mail-icon-inbox');
+const unreadNotification = document.getElementById('unread-notification');
+const inboxPreview = document.getElementById('inbox-preview');
+const mailContainer = document.querySelector('.mail-container'); // Need container for click outside
+let hasUnread = true; // Example state
+
+if (mailIconInbox && unreadNotification && inboxPreview && mailContainer) {
+    function updateUnreadIndicator() {
+        unreadNotification.style.display = hasUnread ? 'block' : 'none';
+    }
+
+    updateUnreadIndicator(); // Initial check
+
+    mailIconInbox.addEventListener('click', function(event) {
+        event.stopPropagation(); // Prevent click from immediately closing via document listener
+        const isVisible = inboxPreview.style.display === 'block';
+        inboxPreview.style.display = isVisible ? 'none' : 'block';
+
+        if (hasUnread && !isVisible) { // Only mark as read when opening
+            hasUnread = false;
+            updateUnreadIndicator();
+            console.log('Mail icon clicked - marking as read');
+        }
+    });
+
+    // Close inbox preview when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!mailContainer.contains(event.target) && inboxPreview.style.display === 'block') {
+             inboxPreview.style.display = 'none';
+        }
+    });
+} else {
+    console.error("Mail elements not found.");
+}
+
+// ===== Notification Function =====
+const notificationIcon = document.getElementById('notification-icon');
+const notificationBadge = document.getElementById('notification-badge');
+const notificationsDropdown = document.getElementById('notifications-dropdown');
+const notificationContainer = document.querySelector('.notification-container'); // Need container for click outside
+
+if (notificationIcon && notificationBadge && notificationsDropdown && notificationContainer) {
+    notificationIcon.addEventListener('click', function(event) {
+        event.stopPropagation(); // Prevent click from immediately closing via document listener
+        const isVisible = notificationsDropdown.style.display === 'block';
+        notificationsDropdown.style.display = isVisible ? 'none' : 'block';
+
+        if (!isVisible) { // Only hide badge when opening
+             notificationBadge.style.display = 'none';
+        }
+    });
+
+    // Close notifications dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!notificationContainer.contains(event.target) && notificationsDropdown.style.display === 'block') {
+            notificationsDropdown.style.display = 'none';
+        }
+    });
+} else {
+    console.error("Notification elements not found.");
+}
+
+// ===== Message Functionality =====
+const messageInput = document.querySelector('.message-input');
+const sendButton = document.querySelector('.message-action');
+const messagesContainer = document.querySelector('.messages-container');
+const typingIndicator = document.querySelector('.typing-indicator');
+const contactItems = document.querySelectorAll('.contact-item');
+const chatArea = document.querySelector('.chat-area'); // Parent for mobile toggle
+const contactsSidebar = document.querySelector('.contacts-sidebar');
+
+if (messageInput && sendButton && messagesContainer && typingIndicator && chatArea && contactsSidebar) {
+    // Function to add a new message
+    function addMessage(content, isSent = true) {
+        if (typingIndicator) typingIndicator.style.display = 'none'; // Hide typing indicator
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        contentDiv.textContent = content;
+
+        const timeDiv = document.createElement('div');
+        timeDiv.className = 'message-time';
+
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const formattedHours = hours % 12 || 12;
+        const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+
+        timeDiv.textContent = `${formattedHours}:${formattedMinutes} ${ampm}`;
+
+        messageDiv.appendChild(contentDiv);
+        messageDiv.appendChild(timeDiv);
+
+        if (isSent) {
+            const statusDiv = document.createElement('div');
+            statusDiv.className = 'message-status';
+            statusDiv.textContent = 'Sent'; // Initial status
+            messageDiv.appendChild(statusDiv);
+        }
+
+        messagesContainer.appendChild(messageDiv);
+
+        // Scroll to bottom smoothly
+        messagesContainer.scrollTo({
+            top: messagesContainer.scrollHeight,
+            behavior: 'smooth'
+         });
+
+
+        return messageDiv;
+    }
+
+    // Function to simulate coach response
+    function simulateCoachResponse(sentMessageElement) {
+        if (typingIndicator) {
+             typingIndicator.style.display = 'flex';
+             messagesContainer.scrollTop = messagesContainer.scrollHeight; // Scroll to show typing
+        }
+
+        const responses = [
+            "That's a great question about your nutrition plan. If you're feeling hungry after dinner, try adding more protein and fiber to your meals. Also, you could include a small healthy snack before bed like Greek yogurt or a protein shake.",
+            "Let's adjust your meal plan. Try increasing your portion sizes slightly for your protein and vegetables. Also, make sure you're drinking enough water throughout the day.",
+            "I understand the hunger issue. Let's add a light evening snack to your plan - perhaps some cottage cheese with berries or a small handful of nuts. How does that sound?",
+            "Looking forward to our session today! About your nutrition plan, I've noticed you might be missing some healthy fats which help with satiety. Try adding some avocado or nuts to your dinner."
+        ];
+
+        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+
+        // Simulate typing delay
+        setTimeout(() => {
+            addMessage(randomResponse, false); // Add received message
+
+            // Change status of the *specific* sent message to 'Read'
+            if (sentMessageElement) {
+                const statusDiv = sentMessageElement.querySelector('.message-status');
+                if (statusDiv) {
+                    statusDiv.textContent = 'Read';
+                }
+            }
+             // Hide typing indicator after response
+             if (typingIndicator) typingIndicator.style.display = 'none';
+
+        }, 2000 + Math.random() * 2000); // Random delay between 2-4 seconds
+    }
+
+    // Send message on button click
+    sendButton.addEventListener('click', () => {
+        const message = messageInput.value.trim();
+        if (message) {
+            const sentMessageElement = addMessage(message, true); // Get the element
+            messageInput.value = '';
+
+            // Auto-resize textarea back to default
+            messageInput.style.height = 'auto';
+            messageInput.dispatchEvent(new Event('input')); // Trigger resize calculation
+
+            // Simulate coach response after a short delay
+            setTimeout(() => simulateCoachResponse(sentMessageElement), 500);
+        }
+    });
+
+    // Send message on Enter key (without Shift)
+    messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault(); // Prevent newline
+            sendButton.click();
+        }
+    });
+
+    // Auto-resize textarea
+    messageInput.addEventListener('input', function() {
+        this.style.height = 'auto'; // Reset height
+        // Set height capped at 100px (or adjust as needed)
+        this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+    });
+
+    // Contact item click handling
+    contactItems.forEach(item => {
+        item.addEventListener('click', function() {
+            contactItems.forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
+
+            // Close contacts sidebar on mobile after selection
+            if (window.innerWidth <= 768 && contactsSidebar.classList.contains('active')) {
+                contactsSidebar.classList.remove('active');
+                removeBackdrop('contacts-backdrop');
+            }
+
+            // **Placeholder:** Here you would load the actual conversation
+            // for the selected contact. For demo, clear existing messages
+            // and maybe add a placeholder message.
+            messagesContainer.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">Conversation history would load here.</div>';
+             if (typingIndicator) typingIndicator.style.display = 'none'; // Hide typing indicator
+            console.log(`Selected contact: ${this.querySelector('.contact-name').textContent}`);
+        });
+    });
+
+    // --- Mobile Contacts Toggle ---
     const mobileToggle = document.createElement('button');
     mobileToggle.className = 'mobile-contacts-toggle';
-    mobileToggle.innerHTML = '<ion-icon name="people-outline"></ion-icon>';
-    document.querySelector('.chat-area').appendChild(mobileToggle);
-    
-    const contactsSidebar = document.querySelector('.contacts-sidebar');
-    
+    // Use an appropriate icon library or text
+    mobileToggle.innerHTML = '<ion-icon name="people-outline" aria-label="Toggle Contacts"></ion-icon>'; // Example using Ionicons
+    // Or: mobileToggle.textContent = 'Contacts';
+    chatArea.appendChild(mobileToggle); // Add button to the chat area
+
     mobileToggle.addEventListener('click', function() {
         contactsSidebar.classList.toggle('active');
-        
+
         // Create or remove backdrop for contacts sidebar
         if (contactsSidebar.classList.contains('active')) {
-            let backdrop = document.querySelector('.contacts-backdrop');
-            if (!backdrop) {
-                backdrop = document.createElement('div');
-                backdrop.className = 'contacts-backdrop active';
-                document.body.appendChild(backdrop);
-                
-                backdrop.addEventListener('click', function() {
-                    contactsSidebar.classList.remove('active');
-                    this.remove();
-                });
-            }
+            createBackdrop('contacts-backdrop', () => {
+                 contactsSidebar.classList.remove('active');
+            });
         } else {
-            let backdrop = document.querySelector('.contacts-backdrop');
-            if (backdrop) backdrop.remove();
+            removeBackdrop('contacts-backdrop');
         }
     });
-    
-    // Handle window resize to adjust UI
-    window.addEventListener('resize', function() {
-        if (window.innerWidth > 768) {
-            let contactsBackdrop = document.querySelector('.contacts-backdrop');
-            if (contactsBackdrop) contactsBackdrop.remove();
-            
-            contactsSidebar.classList.remove('active');
-        }
-        
-        if (window.innerWidth > 991) {
-            let navBackdrop = document.querySelector('.navigation-backdrop');
-            if (navBackdrop) navBackdrop.remove();
-        }
+
+} else {
+    console.error("Chat or contacts elements not found.");
+}
+
+
+// ===== Sign Out Modal =====
+const signOutLink = document.getElementById('signOutLink');
+const signOutModal = document.getElementById('signOutModal');
+const signOutYesButton = document.getElementById('signOutYes');
+const signOutNoButton = document.getElementById('signOutNo');
+const modalOverlay = document.getElementById('modalOverlay'); // Assuming an overlay div exists
+
+function showModal(modalElement) {
+    if (modalOverlay) modalOverlay.style.display = 'block';
+    modalElement.style.display = 'block';
+     // Add class for animation/transition if desired
+    requestAnimationFrame(() => {
+         if (modalOverlay) modalOverlay.classList.add('active');
+         modalElement.classList.add('active');
     });
+}
+
+function hideModal(modalElement) {
+     if (modalOverlay) modalOverlay.classList.remove('active');
+     modalElement.classList.remove('active');
+     // Wait for transition before hiding
+     modalElement.addEventListener('transitionend', () => {
+        if (modalOverlay) modalOverlay.style.display = 'none';
+        modalElement.style.display = 'none';
+     }, { once: true }); // Remove listener after it runs once
+
+     // Fallback if no transition
+     setTimeout(() => {
+         if (!modalElement.classList.contains('active')) { // Check if still meant to be hidden
+             if (modalOverlay) modalOverlay.style.display = 'none';
+             modalElement.style.display = 'none';
+         }
+     }, 300); // Match transition duration
+}
+
+
+if (signOutLink && signOutModal && signOutYesButton && signOutNoButton && modalOverlay) {
+    signOutLink.addEventListener('click', function(event) {
+        event.preventDefault();
+        showModal(signOutModal);
+    });
+
+    signOutYesButton.addEventListener('click', function() {
+        // Add sign-out logic here if needed (e.g., clearing tokens)
+        window.location.href = 'index.html'; // Redirect
+    });
+
+    signOutNoButton.addEventListener('click', function() {
+        hideModal(signOutModal);
+    });
+
+     // Optional: Close modal if overlay is clicked
+     modalOverlay.addEventListener('click', function() {
+         hideModal(signOutModal);
+     });
+
+} else {
+    console.error("Sign out modal elements not found.");
+}
+
+
+// ===== General Helper Functions =====
+
+// Function to create a backdrop
+function createBackdrop(id, onClickCallback) {
+    let backdrop = document.getElementById(id);
+    if (!backdrop) {
+        backdrop = document.createElement('div');
+        backdrop.id = id;
+        backdrop.className = 'sidebar-backdrop'; // Use a general class for styling
+        document.body.appendChild(backdrop);
+
+        // Add transition class slightly after adding to DOM
+         requestAnimationFrame(() => {
+              requestAnimationFrame(() => { // Double requestAnimationFrame ensures it applies after display: block
+                  backdrop.classList.add('active');
+              });
+         });
+
+
+        backdrop.onclick = function() {
+            onClickCallback(); // Execute the specific close action
+            removeBackdrop(id); // Remove this backdrop
+        };
+    }
+    return backdrop;
+}
+
+// Function to remove a backdrop
+function removeBackdrop(id) {
+    let backdrop = document.getElementById(id);
+    if (backdrop) {
+        backdrop.classList.remove('active');
+         // Wait for transition before removing
+         backdrop.addEventListener('transitionend', () => {
+             if (backdrop) backdrop.remove();
+         }, { once: true });
+         // Fallback removal
+         setTimeout(() => { if (backdrop) backdrop.remove(); }, 300); // Match CSS transition duration
+    }
+}
+
+
+// ===== Window Resize Listener =====
+window.addEventListener('resize', function() {
+    // If window is wider than mobile breakpoint for contacts, ensure sidebar is not forced active and remove backdrop
+    if (window.innerWidth > 768) { // Adjust breakpoint as needed (matches mobile contacts CSS)
+        if (contactsSidebar && contactsSidebar.classList.contains('active')) {
+             // Optionally decide if it should close or stay open based on desktop design
+             // contactsSidebar.classList.remove('active'); // Example: close it
+        }
+        removeBackdrop('contacts-backdrop');
+    }
+
+    // If window is wider than mobile breakpoint for navigation, remove nav backdrop
+    if (window.innerWidth > 991) { // Adjust breakpoint as needed (matches navigation CSS)
+        // Navigation state (.active) is usually handled by CSS media queries on desktop
+        removeBackdrop('navigation-backdrop');
+    }
 });
+
+}); // End DOMContentLoaded
 
         
     </script>

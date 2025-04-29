@@ -1,0 +1,2064 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <link rel="stylesheet" href="assets/css/client.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Guest Dashboard</title>
+   
+    <style>
+      /* =============== Globals ============== */
+        * {
+        font-family: "Poppins", sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        }
+
+        :root {
+        --blue: #203A93;
+        --white: #fff;
+        --gray: #f5f5f5;
+        --black1: #222;
+        --black2: #999;
+        --yellow: #F1D27C;
+        --light-blue: #e8eeff;
+        --red: #ff6b6b;
+        --green: #4caf50;
+        }
+
+        body {
+        min-height: 100vh;
+        overflow-x: hidden;
+        }
+
+        .container {
+        position: relative;
+        width: 100%;
+        }
+
+        /* =============== Navigation ================ */
+        .navigation {
+        position: fixed;
+        width: 300px;
+        height: 100%;
+        background: var(--blue);
+        border-left: 10px solid var(--blue);
+        transition: 0.5s;
+        overflow: hidden;
+        }
+        .navigation.active {
+        width: 80px;
+        }
+
+        .navigation ul {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        }
+
+        .navigation ul li {
+        position: relative;
+        width: 100%;
+        list-style: none;
+        border-top-left-radius: 30px;
+        border-bottom-left-radius: 30px;
+        }
+
+        .navigation ul li:hover,
+        .navigation ul li.hovered {
+        background-color: var(--white);
+        }
+
+        .navigation ul li:nth-child(1) {
+        margin-bottom: 40px;
+        pointer-events: none;
+        }
+
+        .navigation ul li a {
+        position: relative;
+        display: block;
+        width: 100%;
+        display: flex;
+        text-decoration: none;
+        color: var(--white);
+        }
+        .navigation ul li:hover a,
+        .navigation ul li.hovered a {
+        color: var(--blue);
+        }
+
+        .navigation ul li a .icon {
+        position: relative;
+        display: block;
+        min-width: 60px;
+        height: 60px;
+        line-height: 75px;
+        text-align: center;
+        }
+        .navigation ul li a .icon ion-icon {
+        font-size: 1.75rem;
+        }
+
+        .navigation ul li a .title {
+        position: relative;
+        display: block;
+        padding: 0 10px;
+        height: 60px;
+        line-height: 60px;
+        text-align: start;
+        white-space: nowrap;
+        }
+
+        /* --------- Curve Outside ---------- */
+        .navigation ul li:hover a::before,
+        .navigation ul li.hovered a::before {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: -50px;
+        width: 50px;
+        height: 50px;
+        background-color: transparent;
+        border-radius: 50%;
+        box-shadow: 35px 35px 0 10px var(--white);
+        pointer-events: none;
+        }
+
+        .navigation ul li:hover a::after,
+        .navigation ul li.hovered a::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        bottom: -50px;
+        width: 50px;
+        height: 50px;
+        background-color: transparent;
+        border-radius: 50%;
+        box-shadow: 35px -35px 0 10px var(--white);
+        pointer-events: none;
+        }
+
+        /* ===================== Main ===================== */
+        .main {
+        position: absolute;
+        width: calc(100% - 300px);
+        left: 300px;
+        min-height: 100vh;
+        background: var(--white);
+        transition: 0.5s;
+        }
+        .main.active {
+        width: calc(100% - 80px);
+        left: 80px;
+        }
+
+        .topbar {
+        width: 100%;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        padding: 0 10px;
+        justify-content:space-between;
+        }
+
+        .toggle {
+        position: relative;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2.5rem;
+        cursor: pointer;
+        }
+
+        .search {
+        position: relative;
+        width: 800px;
+        margin: 0 10px;
+        }
+
+        .search label {
+        position: relative;
+        width: 100%;
+        }
+
+        .search label input {
+        width: 100%;
+        height: 40px;
+        border-radius: 40px;
+        padding: 5px 20px;
+        padding-left: 35px;
+        font-size: 18px;
+        outline: none;
+        border: 1px solid var(--black2);
+        }
+
+        .search label ion-icon {
+        position: absolute;
+        top: 0;
+        left: 10px;
+        font-size: 1.2rem;
+        }
+
+        .user {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        overflow: hidden;
+        cursor: pointer;
+        }
+
+
+        .user img {
+        position: absolute;
+        justify-items: end;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        }
+
+        /* =============== Search ============== */
+        .search-container {
+        position: relative;
+        width: 800px;
+        margin: 0 10px;
+        }
+
+        .search-container label {
+        display: flex;
+        align-items: center; 
+        width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 15px;
+        overflow: hidden; 
+        }
+
+        #search-input {
+        flex-grow: 1; 
+        padding: 10px;
+        border: none;
+        outline: none;
+        font-size: 16px;
+        box-sizing: border-box; 
+        margin-right: 5px; 
+        }
+
+        .search-container label ion-icon {
+        padding-right: 10px;
+        font-size: 20px; 
+        color: #777;
+        }
+
+        #search-results {
+        position: absolute;
+        top: calc(100% + 2px);
+        left: 0;
+        right: 0;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        margin-top: 2px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        z-index: 10;
+        display: none;
+        overflow: hidden; 
+        }
+
+        #search-results ul {
+        list-style: none;
+        padding: 8px 0;
+        margin: 0;
+        }
+
+        #search-results li {
+        padding: 12px 16px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        font-size: 1.0em;
+        color: #333;
+        }
+
+        #search-results li:hover {
+        background-color: #f5f5f5;
+        color: #222;
+        }
+
+        #search-results li:active {
+        background-color: #eee;
+        }
+
+
+        #search-results li span.highlight {
+        font-weight: bold;
+        color: #007bff; 
+        }
+
+        /* =============== Mail Icon ============== */
+        .mail-container {
+        position: relative;
+        display: inline-block;
+        }
+
+        #mail-icon-inbox {
+        font-size: 25px;
+        color: #203A93;
+        cursor: pointer;
+        }
+
+        #mail-icon-inbox:hover {
+        opacity: 0.8;
+        }
+
+        #unread-notification {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background-color: red;
+        color: white;
+        font-size: 12px;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        text-align: center;
+        line-height: 18px;
+        display: none; 
+        }
+
+        #inbox-preview {
+        position: absolute;
+        top: calc(100% + 5px);
+        right: -10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        width: 250px;
+        padding: 15px;
+        display: none;
+        z-index: 10;
+        text-align: left;
+        }
+
+        #inbox-preview strong {
+        display: block;
+        margin-bottom: 5px;
+        }
+
+        .email-item {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 3px 0; 
+        }
+
+        .email-item.sender {
+        font-weight: bold;
+        }
+
+        .email-item.subject {
+        color: #555;
+        font-size: 0.9em; 
+        }
+
+        #inbox-preview hr {
+        margin-top: 8px;
+        margin-bottom: 8px;
+        }
+
+        #inbox-preview a {
+        display: block;
+        margin-top: 10px;
+        font-size: 0.8em;
+        text-align: right;
+        color: #007bff;
+        text-decoration: none;
+        }
+
+        /* =============== Notification Icon ============== */
+        .notification-container {
+        position: relative;
+        display: inline-block;
+        }
+
+        #notification-icon {
+        font-size: 25px;
+        color: #203A93;
+        cursor: pointer;
+        }
+
+        #notification-icon:hover {
+        opacity: 0.8;
+        }
+
+        #notification-badge {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background-color: orange;
+        color: white;
+        font-size: 12px;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        text-align: center;
+        line-height: 18px;
+        display: block; 
+        }
+
+        #notifications-dropdown {
+        position: absolute;
+        top: calc(100% + 5px);
+        right: -10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        width: 250px;
+        padding: 15px;
+        display: none;
+        z-index: 10;
+        text-align: left;
+        }
+
+        #notifications-dropdown strong {
+        display: block;
+        margin-bottom: 5px;
+        }
+
+        .notification-item {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 3px 0;
+        }
+
+        .notification-item.title {
+        font-weight: bold;
+        margin-top: 5px;
+        }
+
+        .notification-item.message {
+        color: #555;
+        font-size: 0.9em;
+        }
+
+        #notifications-dropdown hr {
+        margin-top: 8px;
+        margin-bottom: 8px;
+        }
+
+        #notifications-dropdown a {
+        display: block;
+        margin-top: 10px;
+        font-size: 0.8em;
+        text-align: right;
+        color: #007bff;
+        text-decoration: none;
+        }
+
+        /* Modal Styles for Sign out*/
+        .modal {
+        display: none; 
+        position: fixed; 
+        z-index: 1000; 
+        left: 0;
+        top: 0;
+        width: 100%; 
+        height: 100%; 
+        overflow: auto; 
+        background-color: rgba(0,0,0,0.4); 
+        backdrop-filter: blur(5px);
+        justify-content: center;
+        align-items: center;
+        }
+
+        .modal.show {
+        display: flex; 
+        }
+
+        .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto; 
+        padding: 30px;
+        border: 1px solid #888;
+        width: 600px; 
+        max-width: 400px; 
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        position: relative;
+        }
+
+        .modal-header {
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 20px;
+        }
+
+        .modal-title {
+        font-size: 1.5em;
+        color: #333;
+        font-weight: bold;
+        }
+
+        .modal-body {
+        font-size: 1.1em;
+        color: #555;
+        margin-bottom: 20px;
+        }
+
+        .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        }
+
+        .modal-button {
+        background-color: #007bff; 
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+        }
+
+        .modal-button:hover {
+        background-color: #0056b3;
+        }
+
+        .modal-button.yes-button {
+        background-color: #203A93;
+        }
+
+        .modal-button.yes-button:hover {
+        background-color: #162b6e;
+        }
+
+        .modal-button.no-button {
+        background-color: #F1D27C;
+        }
+
+        .modal-button.no-button:hover {
+        background-color: #d9ba5f;
+        }
+
+        /* =============== NEW STYLES ============== */
+        
+        /* Promo Banner */
+        .promo-banner {
+            background: linear-gradient(to right, var(--blue), #5272db);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .promo-banner-content {
+            flex: 1;
+        }
+        
+        .promo-banner h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .promo-banner p {
+            margin: 5px 0 0;
+        }
+        
+        .promo-button {
+            background-color: var(--yellow);
+            color: var(--blue);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .promo-button:hover {
+            background-color: #e0c265;
+            transform: scale(1.05);
+        }
+        
+        /* Dashboard Cards */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 20px;
+        }
+        
+        .dashboard-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .dashboard-card h3 {
+            margin-top: 0;
+            color: var(--blue);
+            font-size: 1.2rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        
+        /* Goal Progress */
+        .goal-card {
+            position: relative;
+        }
+        
+        .goal-progress {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .progress-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            position: relative;
+            margin-right: 20px;
+        }
+        
+        .progress-circle-inner {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--blue);
+        }
+        
+        .progress-details {
+            flex: 1;
+        }
+        
+        .progress-details h4 {
+            margin: 0 0 5px;
+            font-size: 1rem;
+        }
+        
+        .progress-details p {
+            margin: 0;
+            color: var(--black2);
+        }
+        
+        /* Streak Card */
+        .streak-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--blue);
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .streak-label {
+            text-align: center;
+            color: var(--black2);
+            margin-bottom: 10px;
+        }
+        
+        .streak-calendar {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        
+        .streak-day {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .streak-day.active {
+            background-color: var(--green);
+            color: white;
+        }
+        
+        .streak-day.inactive {
+            background-color: #f0f0f0;
+            color: var(--black2);
+        }
+        
+        /* Todo List */
+        .todo-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .todo-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .todo-item:last-child {
+            border-bottom: none;
+        }
+        
+        .todo-checkbox {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .todo-checkbox.checked {
+            background-color: var(--blue);
+            color: white;
+        }
+        
+        .todo-text {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+        
+        .todo-text.completed {
+            text-decoration: line-through;
+            color: var(--black2);
+        }
+        
+        .todo-delete {
+            color: var(--red);
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        
+        .todo-input-container {
+            display: flex;
+            margin-top: 15px;
+        }
+        
+        .todo-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px 0 0 5px;
+            outline: none;
+        }
+        
+        .todo-add-btn {
+            background-color: var(--blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+        }
+        
+        /* Workout Plan */
+        .workout-plan-container {
+            padding: 20px;
+        }
+        
+        .workout-plan-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        
+        .workout-plan-title {
+            color: var(--blue);
+            font-size: 1.5rem;
+            margin: 0;
+        }
+        
+        .add-exercise-btn {
+            background-color: var(--blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        
+        .add-exercise-btn ion-icon {
+            margin-right: 5px;
+        }
+        
+        .workout-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .workout-table th, .workout-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .workout-table th {
+            background-color: var(--light-blue);
+            color: var(--blue);
+            font-weight: 600;
+        }
+        
+        .workout-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .workout-table tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .workout-action {
+            color: var(--blue);
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        
+        .workout-action:hover {
+            color: var(--red);
+        }
+        
+        /* Exercise Form Modal */
+        .exercise-form {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        /* =============== Responsive Design ============== */
+
+/* Styles for Tablets and Smaller Laptops */
+@media (max-width: 991px) {
+    .navigation {
+        left: -300px; /* Start hidden */
+        z-index: 1000; /* Ensure it's above main content */
+    }
+    .navigation.active {
+        width: 300px; /* Keep full width when active */
+        left: 0;
+    }
+    .main {
+        width: 100%;
+        left: 0;
+    }
+    .main.active {
+        /* No change needed here as nav overlays */
+        /* If you wanted main to push over:
+           left: 300px;
+           width: calc(100% - 300px);
+        */
+    }
+    .topbar {
+       /* If you push main content, adjust topbar too:
+          width: calc(100% - 300px);
+          left: 300px;
+       */
+       width: 100%;
+       left: 0;
+    }
+    .topbar.active {
+        /* No change needed if nav overlays */
+    }
+
+    /* Adjust grid for tablets */
+    .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+     /* Make search slightly smaller if needed */
+    .search-container {
+        width: 60%; /* Adjust as needed */
+    }
+}
+
+
+/* Styles for Mobile Devices */
+@media (max-width: 768px) {
+    /* Adjust grid to single column */
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        padding: 10px; /* Reduce padding */
+    }
+
+    .promo-banner {
+        flex-direction: column; /* Stack content */
+        text-align: center;
+        margin: 10px; /* Reduce margin */
+        padding: 15px;
+    }
+    .promo-banner-content {
+        margin-bottom: 15px;
+    }
+
+    .topbar {
+        padding: 0 10px; /* Maintain padding */
+    }
+
+    /* Make search much smaller or use icon toggle approach */
+    .search-container {
+        width: auto;      /* Allow it to shrink */
+        flex-grow: 1;     /* Allow it to take available space */
+        margin: 0 5px;   /* Reduce margin */
+        max-width: 250px; /* Limit max size */
+    }
+    #search-input {
+        font-size: 14px; /* Smaller font */
+        padding: 8px 15px 8px 30px; /* Adjust padding */
+        height: 36px;
+    }
+     .search-container label ion-icon {
+        font-size: 1rem;
+        line-height: 36px; /* Align icon vertically */
+    }
+
+
+    .user { /* Ensure user icon is visible */
+        min-width: 40px;
+    }
+    .name {
+        display: none; /* Hide user name text */
+    }
+    .mail-container, .notification-container {
+         margin: 0 5px; /* Add slight spacing if needed */
+    }
+     #mail-icon-inbox, #notification-icon {
+         font-size: 22px; /* Slightly smaller icons */
+     }
+     #unread-notification, #notification-badge {
+         width: 16px;
+         height: 16px;
+         font-size: 10px;
+         line-height: 16px;
+         top: -6px;
+         right: -6px;
+     }
+    .toggle {
+        font-size: 2rem; /* Slightly smaller toggle */
+    }
+
+    /* Make table horizontally scrollable */
+    .workout-plan-container {
+        padding: 10px;
+    }
+    .workout-table-wrapper { /* Add this wrapper div in HTML */
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        margin-bottom: 15px;
+    }
+    .workout-table th, .workout-table td {
+        white-space: nowrap; /* Prevent wrapping within cells */
+        padding: 8px 10px; /* Reduce padding */
+    }
+    .workout-plan-header {
+        flex-direction: column; /* Stack title and button */
+        align-items: flex-start;
+    }
+    .add-exercise-btn {
+        margin-top: 10px;
+    }
+
+     /* Modal adjustments */
+    .modal-content {
+        width: 90vw; /* Use viewport width */
+        margin: 10% auto; /* Adjust margin */
+        padding: 20px;
+        max-width: 500px; /* Keep a max width */
+    }
+     .modal-title {
+         font-size: 1.3em;
+     }
+     .modal-body {
+         font-size: 1em;
+     }
+     .modal-footer {
+         gap: 10px;
+     }
+     .modal-button {
+         padding: 8px 16px;
+         font-size: 14px;
+     }
+     .form-row {
+         flex-direction: column; /* Stack form row elements */
+         gap: 0;
+     }
+     .form-row .form-group {
+         margin-bottom: 15px; /* Add margin back */
+     }
+     .form-row .form-group:last-child {
+         margin-bottom: 0; /* Remove margin from last item */
+     }
+}
+
+
+/* Styles for Very Small Mobile Devices */
+@media (max-width: 480px) {
+    .navigation {
+        width: 100%; /* Make nav full width when open */
+        left: -100%;
+        border-left: none; /* Remove border */
+    }
+    .navigation.active {
+        width: 100%;
+        left: 0;
+    }
+    .navigation ul li a .title {
+        font-size: 0.9em; /* Slightly smaller text */
+    }
+
+    .topbar {
+        /* Further adjustments if needed, e.g. reduce padding */
+    }
+     .search-container {
+        max-width: 180px; /* Even smaller search */
+    }
+
+    .dashboard-card {
+        padding: 15px; /* Reduce card padding */
+    }
+    .dashboard-card h3 {
+        font-size: 1.1rem;
+    }
+    .goal-progress {
+        flex-direction: column; /* Stack progress circle and text */
+        align-items: center;
+    }
+    .progress-circle {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+    .progress-details {
+        text-align: center;
+    }
+
+    .streak-day {
+        width: 24px;
+        height: 24px;
+        font-size: 0.7rem;
+    }
+
+    /* Modal on very small screens */
+     .modal-content {
+        width: 95vw;
+        padding: 15px;
+     }
+}
+
+/* Backdrop for Mobile Navigation */
+.navigation-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999; /* Below navigation (1000), above main */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+
+.navigation-backdrop.active {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease;
+}
+    </style>
+    
+</head>
+
+<body>
+    <!-- =============== Navigation ================ -->
+    <div class="container">
+        <div class="navigation">
+            <ul>
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="barbell-outline"></ion-icon>
+                        </span>
+                        <span class="title">ENERGIZE</span>
+                    </a>
+                </li>
+
+                <li class="hovered">
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="calendar-outline"></ion-icon>
+                        </span>
+                        <span class="title">Workout Plan</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="card-outline"></ion-icon>
+                        </span>
+                        <span class="title">Plans</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="person-outline"></ion-icon>
+                        </span>
+                        <span class="title">Profile</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="settings-outline"></ion-icon>
+                        </span>
+                        <span class="title">Settings</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" id="signOutLink">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ========================= Main ==================== -->
+        <div class="main">
+            <div class="topbar">
+                <div class="toggle">
+                    <ion-icon name="menu-outline"></ion-icon>
+                </div>
+
+                <div class="search-container">
+                    <label>
+                      <input type="text" id="search-input" placeholder="Search what you're looking for">
+                      <ion-icon name="search-outline"></ion-icon>
+                    </label>
+                    <div id="search-results">
+                    </div>
+                </div>
+
+                <div class="mail-container">
+                    <ion-icon name="mail" id="mail-icon-inbox"></ion-icon>
+                    <div id="unread-notification">1</div>
+                    <div id="inbox-preview">
+                    <strong>Inbox</strong>
+                    <hr>
+                    <div id="unread-messages">
+                        <div class="email-item sender">Coaches</div>
+                        <div class="email-item subject">Session today!</div>
+                        <hr>
+                    </div>
+                    <div id="read-messages">
+                        <div class="email-item sender">Coach</div>
+                        <div class="email-item subject">Can I ask?</div>
+                    </div>
+                    <a href="#">See All</a>
+                    </div>
+                </div>
+
+                <div class="notification-container">
+                    <ion-icon name="notifications" id="notification-icon"></ion-icon>
+                    <div id="notification-badge">1</div>
+                    <div id="notifications-dropdown">
+                      <strong>Notifications</strong>
+                      <hr>
+                      <div id="notification-list">
+                        <div class="notification-item title">Today, 1:00 PM</div>
+                        <div class="notification-item message">Your schedule is today.</div>
+                        <hr>
+                        <div class="notification-item title">Coach John Cena</div>
+                        <div class="notification-item message">Cancelled the session</div>
+                      </div>
+                      <a href="#">See All</a>
+                    </div>
+                </div>
+            
+                <div class="name">
+                    <p>Guest User</p>
+                </div>
+    
+                <div class="user">
+                    <img src="assets/img/guests.png" alt="User profile">
+                </div>                
+            </div>
+            
+            <!-- Promo Banner -->
+            <div class="promo-banner">
+                <div class="promo-banner-content">
+                    <h2>Upgrade Your Fitness Journey</h2>
+                    <p>Get personalized workout plans and coaching from certified professionals</p>
+                </div>
+                <button class="promo-button" id="viewPlansBtn">View Plans</button>
+            </div>
+            
+            <!-- Dashboard Cards -->
+            <div class="dashboard-grid">
+                <!-- Goal Progress Card -->
+                <div class="dashboard-card goal-card">
+                    <h3>Goal Progress</h3>
+                    <div class="goal-progress">
+                        <div class="progress-circle">
+                            <div class="progress-circle-inner">75%</div>
+                        </div>
+                        <div class="progress-details">
+                            <h4>Weight Loss Goal</h4>
+                            <p>Target: 15 lbs</p>
+                            <p>Current: 11.2 lbs</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Streak Card -->
+                <div class="dashboard-card">
+                    <h3>Workout Streak</h3>
+                    <div class="streak-number">5</div>
+                    <div class="streak-label">Days in a row!</div>
+                    <div class="streak-calendar">
+                        <div class="streak-day active">M</div>
+                        <div class="streak-day active">T</div>
+                        <div class="streak-day active">W</div>
+                        <div class="streak-day active">T</div>
+                        <div class="streak-day active">F</div>
+                        <div class="streak-day inactive">S</div>
+                        <div class="streak-day inactive">S</div>
+                    </div>
+                </div>
+                
+                <!-- Todo List Card -->
+                <div class="dashboard-card">
+                    <h3>Fitness To-Do</h3>
+                    <ul class="todo-list" id="todoList">
+                        <li class="todo-item">
+                            <div class="todo-checkbox checked">
+                                <ion-icon name="checkmark-outline"></ion-icon>
+
+                            </div>
+                            <span class="todo-text completed">Morning cardio - 30 mins</span>
+                            <span class="todo-delete">
+                                <ion-icon name="close-outline"></ion-icon>
+                            </span>
+                        </li>
+                        <li class="todo-item">
+                            <div class="todo-checkbox">
+                                <ion-icon name="checkmark-outline"></ion-icon>
+                            </div>
+                            <span class="todo-text">Drink 2L of water</span>
+                            <span class="todo-delete">
+                                <ion-icon name="close-outline"></ion-icon>
+                            </span>
+                        </li>
+                        <li class="todo-item">
+                            <div class="todo-checkbox">
+                                <ion-icon name="checkmark-outline"></ion-icon>
+                            </div>
+                            <span class="todo-text">Stretch for 10 minutes</span>
+                            <span class="todo-delete">
+                                <ion-icon name="close-outline"></ion-icon>
+                            </span>
+                        </li>
+                    </ul>
+                    <div class="todo-input-container">
+                        <input type="text" class="todo-input" id="todoInput" placeholder="Add new task">
+                        <button class="todo-add-btn" id="addTodoBtn">
+                            <ion-icon name="add-outline"></ion-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Workout Plan Section -->
+            <div class="workout-plan-container">
+                <div class="workout-plan-header">
+                    <h2 class="workout-plan-title">Weekly Workout Plan</h2>
+                    <button class="add-exercise-btn" id="addExerciseBtn">
+                        <ion-icon name="add-outline"></ion-icon>
+                        Add Exercise
+                    </button>
+                </div>
+                
+                <table class="workout-table">
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>Exercise</th>
+                            <th>Sets</th>
+                            <th>Reps</th>
+                            <th>Weight</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="workoutTableBody">
+                        <tr>
+                            <td>Monday</td>
+                            <td>Bench Press</td>
+                            <td>4</td>
+                            <td>10</td>
+                            <td>135 lbs</td>
+                            <td>
+                                <span class="workout-action">
+                                    <ion-icon name="trash-outline"></ion-icon>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Monday</td>
+                            <td>Barbell Squat</td>
+                            <td>3</td>
+                            <td>12</td>
+                            <td>185 lbs</td>
+                            <td>
+                                <span class="workout-action">
+                                    <ion-icon name="trash-outline"></ion-icon>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Wednesday</td>
+                            <td>Deadlift</td>
+                            <td>5</td>
+                            <td>5</td>
+                            <td>225 lbs</td>
+                            <td>
+                                <span class="workout-action">
+                                    <ion-icon name="trash-outline"></ion-icon>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Friday</td>
+                            <td>Pull-ups</td>
+                            <td>3</td>
+                            <td>10</td>
+                            <td>Bodyweight</td>
+                            <td>
+                                <span class="workout-action">
+                                    <ion-icon name="trash-outline"></ion-icon>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sign Out Modal -->
+    <div id="signOutModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Sign Out</h3>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to sign out?
+            </div>
+            <div class="modal-footer">
+                <button id="signOutNo" class="modal-button no-button">No</button>
+                <button id="signOutYes" class="modal-button yes-button">Yes</button>
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- Workout Plan Section -->
+<div class="workout-plan-container">
+    <div class="workout-plan-header">
+        <h2 class="workout-plan-title">Weekly Workout Plan</h2>
+        <button class="add-exercise-btn" id="addExerciseBtn">
+            <ion-icon name="add-outline"></ion-icon>
+            Add Exercise
+        </button>
+    </div>
+
+    <!-- ADD THIS WRAPPER -->
+    <div class="workout-table-wrapper">
+        <table class="workout-table">
+            <thead>
+                <tr>
+                    <th>Day</th>
+                    <th>Exercise</th>
+                    <th>Sets</th>
+                    <th>Reps</th>
+                    <th>Weight</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="workoutTableBody">
+                <!-- ... existing table rows ... -->
+            </tbody>
+        </table>
+    </div>
+     <!-- END WRAPPER -->
+
+</div>
+
+    <!-- Add Exercise Modal -->
+    <div id="addExerciseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Exercise</h3>
+            </div>
+            <div class="modal-body">
+                <form class="exercise-form" id="exerciseForm">
+                    <div class="form-group">
+                        <label for="exerciseDay">Day</label>
+                        <select class="form-select" id="exerciseDay" required>
+                            <option value="">Select day</option>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                            <option value="Saturday">Saturday</option>
+                            <option value="Sunday">Sunday</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exerciseName">Exercise Name</label>
+                        <input type="text" class="form-control" id="exerciseName" placeholder="Enter exercise name" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="exerciseSets">Sets</label>
+                            <input type="number" class="form-control" id="exerciseSets" min="1" max="10" value="3" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="exerciseReps">Reps</label>
+                            <input type="number" class="form-control" id="exerciseReps" min="1" max="100" value="10" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="exerciseWeight">Weight</label>
+                        <input type="text" class="form-control" id="exerciseWeight" placeholder="Enter weight (e.g. 50 lbs, Bodyweight)">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelExerciseBtn" class="modal-button no-button">Cancel</button>
+                <button id="saveExerciseBtn" class="modal-button yes-button">Save Exercise</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation Active Link
+        document.addEventListener('DOMContentLoaded', function() {
+
+// ===== Navigation Link Activation =====
+let list = document.querySelectorAll(".navigation li");
+
+function activeLink() {
+    // Don't remove hover from the first item (logo) or signout
+    if (!this.querySelector('.title') || this.querySelector('.title').textContent === 'ENERGIZE' || this.querySelector('.title').textContent === 'Sign Out') {
+         // If it's sign out, just trigger its specific action (handled later)
+         if (this.querySelector('.title') && this.querySelector('.title').textContent === 'Sign Out') {
+             // The click event on #signOutLink handles the modal
+         }
+         return; // Don't visually change hover state for logo/signout link itself
+    }
+
+    list.forEach((item) => {
+        // Only remove hovered from actual navigation items
+         if (item.querySelector('.title') && item.querySelector('.title').textContent !== 'ENERGIZE') {
+            item.classList.remove("hovered");
+         }
+    });
+    this.classList.add("hovered");
+
+    // Close navigation on mobile after clicking a link (optional)
+    if (window.innerWidth <= 991 && navigation && navigation.classList.contains('active')) {
+        closeNavigation();
+    }
+}
+
+list.forEach((item) => item.addEventListener("click", activeLink));
+
+// ===== Menu Toggle (Navigation Sidebar) =====
+const toggle = document.querySelector(".toggle");
+const navigation = document.querySelector(".navigation");
+const main = document.querySelector(".main");
+const topbar = document.querySelector('.topbar'); // Topbar might need adjustment if layout pushes
+
+function openNavigation() {
+    if (navigation) navigation.classList.add("active");
+    // If main/topbar push instead of overlay, add active class here too
+    // if (main) main.classList.add("active");
+    // if (topbar) topbar.classList.add("active");
+    createBackdrop('navigation-backdrop', closeNavigation);
+}
+
+function closeNavigation() {
+    if (navigation) navigation.classList.remove("active");
+    // If main/topbar push instead of overlay, remove active class here too
+    // if (main) main.classList.remove("active");
+    // if (topbar) topbar.classList.remove("active");
+    removeBackdrop('navigation-backdrop');
+}
+
+if (toggle && navigation && main && topbar) {
+    toggle.onclick = function () {
+        if (navigation.classList.contains('active')) {
+            closeNavigation();
+        } else {
+            openNavigation();
+        }
+    };
+} else {
+    console.error("Core navigation toggle elements not found.");
+}
+
+// ===== Search Function =====
+const searchInput = document.getElementById('search-input');
+const searchResultsDiv = document.getElementById('search-results');
+const searchContainer = document.querySelector('.search-container'); // Get the container
+
+const searchData = [
+    "How to diet",
+    "Paano makapasa sa webdev",
+    "Effective workout plan",
+    "Effective sleep",
+    "Gulay effective diet",
+    "Recent Sessions",
+    "Overall well being",
+    "Updates",
+    "Coaches",
+    "Plans"
+];
+
+if (searchInput && searchResultsDiv && searchContainer) {
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase().trim();
+        if (searchTerm === '') {
+            searchResultsDiv.style.display = 'none';
+            searchResultsDiv.innerHTML = '';
+            return;
+        }
+        const filteredResults = searchData.filter(item =>
+            item.toLowerCase().includes(searchTerm)
+        );
+        displayResults(filteredResults);
+    });
+
+    function displayResults(results) {
+        searchResultsDiv.innerHTML = '';
+        if (results.length > 0) {
+            const ul = document.createElement('ul');
+            results.forEach(result => {
+                const li = document.createElement('li');
+                li.textContent = result;
+                li.addEventListener('click', function() {
+                    searchInput.value = this.textContent;
+                    searchResultsDiv.style.display = 'none';
+                    searchResultsDiv.innerHTML = ''; // Clear after selection
+                });
+                ul.appendChild(li);
+            });
+            searchResultsDiv.appendChild(ul);
+            searchResultsDiv.style.display = 'block';
+        } else {
+            searchResultsDiv.style.display = 'none';
+        }
+    }
+
+    // Close search results when clicking outside the search container
+    document.addEventListener('click', function(event) {
+        if (!searchContainer.contains(event.target)) {
+            searchResultsDiv.style.display = 'none';
+        }
+    });
+} else {
+     console.error("Search elements not found.");
+}
+
+// ===== Mail Function =====
+const mailIconInbox = document.getElementById('mail-icon-inbox');
+const unreadIndicator = document.getElementById('unread-notification'); // Renamed for clarity
+const inboxPreview = document.getElementById('inbox-preview');
+const mailContainer = document.querySelector('.mail-container'); // Get the container
+let hasUnread = true; // Example state
+
+if (mailIconInbox && unreadIndicator && inboxPreview && mailContainer) {
+    function updateUnreadIndicator() {
+        unreadIndicator.style.display = hasUnread ? 'block' : 'none';
+        // Update the count if needed, e.g.:
+        // unreadIndicator.textContent = hasUnread ? '1' : '0'; // Or actual count
+    }
+
+    updateUnreadIndicator(); // Initial state
+
+    mailIconInbox.addEventListener('click', function(event) {
+        event.stopPropagation(); // Prevent document click listener from firing immediately
+        const isVisible = inboxPreview.style.display === 'block';
+        inboxPreview.style.display = isVisible ? 'none' : 'block';
+
+        // Mark as read only when opening
+        if (hasUnread && !isVisible) {
+            hasUnread = false;
+            updateUnreadIndicator();
+            console.log('Mail icon clicked - marking as read');
+            // You might want to visually remove the 'unread' style from messages inside the preview here
+        }
+    });
+
+    // Close inbox preview when clicking outside the mail container
+    document.addEventListener('click', function(event) {
+        if (!mailContainer.contains(event.target) && inboxPreview.style.display === 'block') {
+             inboxPreview.style.display = 'none';
+        }
+    });
+} else {
+    console.error("Mail elements not found.");
+}
+
+// ===== Notification Function =====
+const notificationIcon = document.getElementById('notification-icon');
+const notificationBadge = document.getElementById('notification-badge');
+const notificationsDropdown = document.getElementById('notifications-dropdown');
+const notificationContainer = document.querySelector('.notification-container'); // Get the container
+
+if (notificationIcon && notificationBadge && notificationsDropdown && notificationContainer) {
+    notificationIcon.addEventListener('click', function(event) {
+        event.stopPropagation(); // Prevent document click listener from firing immediately
+        const isVisible = notificationsDropdown.style.display === 'block';
+        notificationsDropdown.style.display = isVisible ? 'none' : 'block';
+
+        // Hide badge only when opening
+        if (!isVisible) {
+            notificationBadge.style.display = 'none';
+             // You might want to add logic here to mark notifications as 'read' in your backend/state
+        }
+    });
+
+    // Close notification dropdown when clicking outside the notification container
+    document.addEventListener('click', function(event) {
+        if (!notificationContainer.contains(event.target) && notificationsDropdown.style.display === 'block') {
+            notificationsDropdown.style.display = 'none';
+        }
+    });
+} else {
+    console.error("Notification elements not found.");
+}
+
+// ===== Modal Handling =====
+const allModals = document.querySelectorAll('.modal'); // Get all modals
+
+// General function to show a modal
+function showModal(modalElement) {
+    if (modalElement) {
+        modalElement.classList.add('show');
+         // Focus on the first focusable element within the modal (accessibility)
+         const focusable = modalElement.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+         if (focusable) {
+             setTimeout(() => focusable.focus(), 50); // Timeout ensures transition is started
+         }
+    } else {
+        console.error("Attempted to show a non-existent modal.");
+    }
+}
+
+// General function to hide a modal
+function hideModal(modalElement) {
+    if (modalElement) {
+        modalElement.classList.remove('show');
+    } else {
+         console.error("Attempted to hide a non-existent modal.");
+    }
+}
+
+// Close modals when clicking the overlay (the modal background itself)
+allModals.forEach(modal => {
+    modal.addEventListener('click', function(event) {
+        if (event.target === modal) { // Check if the click was directly on the modal background
+            hideModal(modal);
+        }
+    });
+});
+
+// Optional: Close modals with the Escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        allModals.forEach(modal => {
+            if (modal.classList.contains('show')) {
+                hideModal(modal);
+            }
+        });
+    }
+});
+
+// ===== Sign Out Modal Specific Logic =====
+const signOutLink = document.getElementById('signOutLink');
+const signOutModal = document.getElementById('signOutModal');
+const signOutYesButton = document.getElementById('signOutYes');
+const signOutNoButton = document.getElementById('signOutNo');
+
+if (signOutLink && signOutModal && signOutYesButton && signOutNoButton) {
+    signOutLink.addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent default link behavior
+        // Ensure navigation is closed if open on mobile before showing modal
+         if (window.innerWidth <= 991 && navigation && navigation.classList.contains('active')) {
+            closeNavigation();
+         }
+        showModal(signOutModal);
+    });
+
+    signOutYesButton.addEventListener('click', function() {
+        // Add any actual sign-out logic here (e.g., clear session/local storage)
+        console.log("Signing out...");
+        window.location.href = 'index.html'; // Redirect
+    });
+
+    signOutNoButton.addEventListener('click', function() {
+        hideModal(signOutModal);
+    });
+} else {
+    console.error("Sign out modal elements not found.");
+}
+
+
+// ===== To-Do List Functionality =====
+const todoList = document.getElementById('todoList');
+const todoInput = document.getElementById('todoInput');
+const addTodoBtn = document.getElementById('addTodoBtn');
+
+if (todoList && todoInput && addTodoBtn) {
+    // Function to add event listeners to a todo item
+    function addTodoEventListeners(li) {
+        const checkbox = li.querySelector('.todo-checkbox');
+        const text = li.querySelector('.todo-text');
+        const deleteBtn = li.querySelector('.todo-delete');
+        const checkIcon = checkbox.querySelector('ion-icon'); // Get the icon itself
+
+         // Initial state check (important if loading saved todos)
+         if (checkbox.classList.contains('checked')) {
+             text.classList.add('completed');
+             if(checkIcon) checkIcon.style.display = 'block'; // Show checkmark
+         } else {
+             if(checkIcon) checkIcon.style.display = 'none'; // Hide checkmark
+         }
+
+
+        checkbox.addEventListener('click', function() {
+            this.classList.toggle('checked');
+            text.classList.toggle('completed');
+             if (this.classList.contains('checked')) {
+                 if(checkIcon) checkIcon.style.display = 'block';
+             } else {
+                 if(checkIcon) checkIcon.style.display = 'none';
+             }
+            // Add logic here to save todo state if needed
+        });
+
+        deleteBtn.addEventListener('click', function() {
+            li.remove();
+            // Add logic here to remove todo from saved state if needed
+        });
+    }
+
+    // Function to add a new todo item to the list
+    function addTodoItem() {
+        const todoText = todoInput.value.trim();
+        if (todoText !== '') {
+            const li = document.createElement('li');
+            li.className = 'todo-item';
+            // Ensure the checkmark icon is initially hidden
+            li.innerHTML = `
+                <div class="todo-checkbox">
+                    <ion-icon name="checkmark-outline" style="display: none;"></ion-icon>
+                </div>
+                <span class="todo-text">${todoText.replace(/</g, "<").replace(/>/g, ">")}</span>
+                <span class="todo-delete">
+                    <ion-icon name="close-outline"></ion-icon>
+                </span>
+            `;
+            todoList.appendChild(li);
+            addTodoEventListeners(li); // Add listeners to the new item
+            todoInput.value = '';
+            todoInput.focus(); // Keep focus on input
+            // Add logic here to save the new todo if needed
+        }
+    }
+
+    // Event listeners for adding todos
+    addTodoBtn.addEventListener('click', addTodoItem);
+    todoInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // Prevent potential form submission
+            addTodoItem();
+        }
+    });
+
+    // Add event listeners to existing todo items on page load
+    todoList.querySelectorAll('.todo-item').forEach(addTodoEventListeners);
+
+} else {
+    console.warn("Todo list elements not found."); // Use warn as it might be optional
+}
+
+
+// ===== Add Exercise Modal Specific Logic =====
+const addExerciseBtn = document.getElementById('addExerciseBtn');
+const addExerciseModal = document.getElementById('addExerciseModal');
+const cancelExerciseBtn = document.getElementById('cancelExerciseBtn');
+const saveExerciseBtn = document.getElementById('saveExerciseBtn');
+const exerciseForm = document.getElementById('exerciseForm');
+const workoutTableBody = document.getElementById('workoutTableBody');
+
+if (addExerciseBtn && addExerciseModal && cancelExerciseBtn && saveExerciseBtn && exerciseForm && workoutTableBody) {
+
+    // Function to add delete listener to a workout row action button
+    function addWorkoutDeleteListener(actionButton) {
+         actionButton.addEventListener('click', function() {
+            const row = this.closest('tr');
+            if (row) {
+                row.remove();
+                // Add logic here to save the updated workout plan state if needed
+            }
+        });
+    }
+
+    addExerciseBtn.addEventListener('click', function() {
+        exerciseForm.reset(); // Reset form when opening
+        showModal(addExerciseModal);
+    });
+
+    cancelExerciseBtn.addEventListener('click', function() {
+        hideModal(addExerciseModal);
+    });
+
+    saveExerciseBtn.addEventListener('click', function(event) {
+         event.preventDefault(); // Prevent default form submission
+
+        // Simple native form validation check
+        if (!exerciseForm.checkValidity()) {
+            // Optionally provide more specific feedback or just let the browser handle it
+            exerciseForm.reportValidity();
+            return;
+        }
+
+        // Get form values
+        const day = document.getElementById('exerciseDay').value;
+        const nameInput = document.getElementById('exerciseName');
+        const name = nameInput.value.trim().replace(/</g, "<").replace(/>/g, ">"); // Sanitize
+        const sets = document.getElementById('exerciseSets').value;
+        const reps = document.getElementById('exerciseReps').value;
+        const weightInput = document.getElementById('exerciseWeight');
+        const weight = weightInput.value.trim().replace(/</g, "<").replace(/>/g, ">") || 'Bodyweight'; // Sanitize
+
+        if (!name) {
+             // Handle empty exercise name if required wasn't sufficient
+             alert("Please enter an exercise name.");
+             nameInput.focus();
+             return;
+        }
+
+        // Create new row
+        const newRow = workoutTableBody.insertRow(); // More semantic way to add row
+        newRow.innerHTML = `
+            <td>${day}</td>
+            <td>${name}</td>
+            <td>${sets}</td>
+            <td>${reps}</td>
+            <td>${weight}</td>
+            <td>
+                <span class="workout-action">
+                    <ion-icon name="trash-outline"></ion-icon>
+                </span>
+            </td>
+        `;
+
+        // Add delete listener to the new row's action button
+        const newAction = newRow.querySelector('.workout-action');
+        if (newAction) {
+            addWorkoutDeleteListener(newAction);
+        }
+
+        // Reset form and close modal
+        exerciseForm.reset();
+        hideModal(addExerciseModal);
+        // Add logic here to save the new exercise to your state/backend
+    });
+
+    // Add delete listeners to existing workout rows on page load
+    workoutTableBody.querySelectorAll('.workout-action').forEach(addWorkoutDeleteListener);
+
+} else {
+    console.warn("Workout plan/modal elements not found."); // Use warn as it might be optional
+}
+
+
+// ===== Plans Redirect Button =====
+const viewPlansBtn = document.getElementById('viewPlansBtn');
+if (viewPlansBtn) {
+    viewPlansBtn.addEventListener('click', function() {
+        window.location.href = 'plans.html'; // Ensure plans.html exists
+    });
+}
+
+// ===== Initialize Progress Circle (Example) =====
+// This part remains largely visual CSS, but you might update the percentage via JS
+const progressCircle = document.querySelector('.progress-circle');
+const progressInner = document.querySelector('.progress-circle-inner');
+const progressPercentage = 75; // Example: Get this value from user data
+
+if (progressCircle && progressInner) {
+    progressCircle.style.background = `conic-gradient(var(--blue) ${progressPercentage}%, #f0f0f0 ${progressPercentage}%)`;
+    progressInner.textContent = `${progressPercentage}%`;
+}
+
+// ===== Helper Functions for Backdrops =====
+function createBackdrop(id, onClickCallback) {
+    let backdrop = document.getElementById(id);
+    if (!backdrop) {
+        backdrop = document.createElement('div');
+        backdrop.id = id;
+        // Use the specific class from CSS
+        backdrop.className = 'navigation-backdrop'; // Or a more general class if needed elsewhere
+        document.body.appendChild(backdrop);
+
+        // Force reflow before adding class for transition
+        void backdrop.offsetWidth;
+
+        backdrop.classList.add('active');
+        backdrop.onclick = function() {
+            // Don't remove backdrop here, let the callback handle it via removeBackdrop
+            if (onClickCallback) {
+                 onClickCallback();
+            }
+        };
+    }
+    return backdrop;
+}
+
+function removeBackdrop(id) {
+    let backdrop = document.getElementById(id);
+    if (backdrop) {
+        backdrop.classList.remove('active');
+        // Remove after transition ends
+        backdrop.addEventListener('transitionend', function handleTransitionEnd() {
+            if (backdrop && !backdrop.classList.contains('active')) { // Check if removal is still intended
+                backdrop.remove();
+            }
+            // Clean up listener
+            backdrop.removeEventListener('transitionend', handleTransitionEnd);
+        });
+
+         // Fallback removal in case transitionend doesn't fire (e.g., display: none)
+         setTimeout(() => {
+             if (backdrop && !backdrop.classList.contains('active')) {
+                  backdrop.remove();
+             }
+         }, 350); // Slightly longer than CSS transition (0.3s)
+    }
+}
+
+// ===== Window Resize Listener =====
+window.addEventListener('resize', function() {
+    // If window is wider than mobile nav breakpoint, ensure nav backdrop is removed
+    if (window.innerWidth > 991) {
+        removeBackdrop('navigation-backdrop');
+        // Also ensure nav is not stuck in 'active' state if resize happened while open
+        // The CSS media query for > 991px should handle the visual state,
+        // but cleaning up the class is good practice.
+        if (navigation && navigation.classList.contains('active')) {
+             // Depending on desktop design, you might want to remove 'active' or leave it
+             // navigation.classList.remove('active'); // If desktop nav is always visible
+        }
+    }
+});
+
+
+}); // End DOMContentLoaded
+    </script>
+
+    <!-- ====== ionicons ======= -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+
+</html>
