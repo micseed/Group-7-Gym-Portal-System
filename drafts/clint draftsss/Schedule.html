@@ -1,0 +1,1699 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Client Dashboard</title>
+    <!-- ======= Styles ====== -->
+    <style>
+        /* =============== Globals ============== */
+        * {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --blue: #203A93;
+  --white: #fff;
+  --gray: #f5f5f5;
+  --black1: #222;
+  --black2: #999;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.container {
+  position: relative;
+  width: 100%;
+}
+
+/* =============== Navigation ================ */
+.navigation {
+  position: fixed;
+  width: 300px;
+  height: 100%;
+  background: var(--blue);
+  border-left: 10px solid var(--blue);
+  transition: 0.5s;
+  overflow: hidden;
+  z-index: 100;
+}
+
+.navigation.active {
+  width: 80px;
+}
+
+.navigation ul {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding-left: 0;
+}
+
+.navigation ul li {
+  position: relative;
+  width: 100%;
+  list-style: none;
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
+}
+
+.navigation ul li:hover,
+.navigation ul li.hovered {
+  background-color: var(--white);
+}
+
+.navigation ul li:nth-child(1) {
+  margin-bottom: 40px;
+  pointer-events: none;
+}
+
+.navigation ul li a {
+  position: relative;
+  display: block;
+  width: 100%;
+  display: flex;
+  text-decoration: none;
+  color: var(--white);
+}
+
+.navigation ul li:hover a,
+.navigation ul li.hovered a {
+  color: var(--blue);
+}
+
+.navigation ul li a .icon {
+  position: relative;
+  display: block;
+  min-width: 60px;
+  height: 60px;
+  line-height: 75px;
+  text-align: center;
+}
+
+.navigation ul li a .icon ion-icon {
+  font-size: 1.75rem;
+}
+
+.navigation ul li a .title {
+  position: relative;
+  display: block;
+  padding: 0 10px;
+  height: 60px;
+  line-height: 60px;
+  text-align: start;
+  white-space: nowrap;
+}
+
+/* --------- Curve Outside ---------- */
+.navigation ul li:hover a::before,
+.navigation ul li.hovered a::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: -50px;
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  border-radius: 50%;
+  box-shadow: 35px 35px 0 10px var(--white);
+  pointer-events: none;
+}
+
+.navigation ul li:hover a::after,
+.navigation ul li.hovered a::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -50px;
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  border-radius: 50%;
+  box-shadow: 35px -35px 0 10px var(--white);
+  pointer-events: none;
+}
+
+/* ===================== Main ===================== */
+.main {
+  position: absolute;
+  width: calc(100% - 300px);
+  left: 300px;
+  min-height: 100vh;
+  background: var(--white);
+  transition: 0.5s;
+}
+
+.main.active {
+  width: calc(100% - 80px);
+  left: 80px;
+}
+
+.topbar {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.toggle {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
+  cursor: pointer;
+}
+
+/* Floating Menu Icon for Mobile View */
+@media (max-width: 768px) {
+  .toggle {
+    position: fixed; /* Make it float */
+    top: 20px; /* Position it at the top */
+    left: 20px; /* Position it at the left */
+    z-index: 1001; /* Ensure it stays above other elements */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    border-radius: 50%; /* Make it circular */
+    background-color: var(--blue); /* Use the primary blue color */
+    color: var(--white); /* White icon color */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .toggle:hover {
+    transform: scale(1.1); /* Slightly enlarge on hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Enhance shadow on hover */
+  }
+}
+
+.search {
+  position: relative;
+  width: 800px;
+  max-width: 100%;
+  margin: 0 10px;
+}
+
+.search label {
+  position: relative;
+  width: 100%;
+  display: block;
+}
+
+.search label input {
+  width: 100%;
+  height: 40px;
+  border-radius: 40px;
+  padding: 5px 20px;
+  padding-left: 35px;
+  font-size: 18px;
+  outline: none;
+  border: 1px solid var(--black2);
+}
+
+.search label ion-icon {
+  position: absolute;
+  top: 0;
+  left: 10px;
+  font-size: 1.2rem;
+}
+
+.user {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.user img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* =============== Search ============== */
+.search-container {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 10px;
+}
+
+.search-container label {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+#search-input {
+  flex-grow: 1;
+  padding: 10px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  box-sizing: border-box;
+  margin-right: 5px;
+}
+
+.search-container label ion-icon {
+  padding-right: 10px;
+  font-size: 20px;
+  color: #777;
+}
+
+#search-results {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-top: 2px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  display: none;
+  overflow: hidden;
+}
+
+#search-results ul {
+  list-style: none;
+  padding: 8px 0;
+  margin: 0;
+}
+
+#search-results li {
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 1.0em;
+  color: #333;
+}
+
+#search-results li:hover {
+  background-color: #f5f5f5;
+  color: #222;
+}
+
+#search-results li:active {
+  background-color: #eee;
+}
+
+#search-results li span.highlight {
+  font-weight: bold;
+  color: #007bff;
+}
+
+/* =============== Mail Icon ============== */
+.mail-container {
+  position: relative;
+  display: inline-block;
+}
+
+#mail-icon-inbox {
+  font-size: 25px;
+  color: #203A93;
+  cursor: pointer;
+}
+
+#mail-icon-inbox:hover {
+  opacity: 0.8;
+}
+
+#unread-notification {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: red;
+  color: white;
+  font-size: 12px;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  text-align: center;
+  line-height: 18px;
+  display: none;
+}
+
+#inbox-preview {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: -10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 250px;
+  padding: 15px;
+  display: none;
+  z-index: 10;
+  text-align: left;
+}
+
+#inbox-preview strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.email-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 3px 0;
+}
+
+.email-item.sender {
+  font-weight: bold;
+}
+
+.email-item.subject {
+  color: #555;
+  font-size: 0.9em;
+}
+
+#inbox-preview hr {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+#inbox-preview a {
+  display: block;
+  margin-top: 10px;
+  font-size: 0.8em;
+  text-align: right;
+  color: #007bff;
+  text-decoration: none;
+}
+
+/* =============== Notification Icon ============== */
+.notification-container {
+  position: relative;
+  display: inline-block;
+}
+
+#notification-icon {
+  font-size: 25px;
+  color: #203A93;
+  cursor: pointer;
+}
+
+#notification-icon:hover {
+  opacity: 0.8;
+}
+
+#notification-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: orange;
+  color: white;
+  font-size: 12px;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  text-align: center;
+  line-height: 18px;
+  display: block;
+}
+
+#notifications-dropdown {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: -10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 250px;
+  padding: 15px;
+  display: none;
+  z-index: 10;
+  text-align: left;
+}
+
+#notifications-dropdown strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.notification-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 3px 0;
+}
+
+.notification-item.title {
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.notification-item.message {
+  color: #555;
+  font-size: 0.9em;
+}
+
+#notifications-dropdown hr {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+#notifications-dropdown a {
+  display: block;
+  margin-top: 10px;
+  font-size: 0.8em;
+  text-align: right;
+  color: #007bff;
+  text-decoration: none;
+}
+
+/* ======================= Cards ====================== */
+.greetings {
+  padding: 0 30px;
+  margin-top: 2%;
+}
+
+.welcome h1 {
+  color: #484848;
+  font-weight: 200;
+  font-size: 2.5rem;
+}
+
+.cardBox {
+  position: relative;
+  width: 100%;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-gap: 20px;
+}
+
+.cardBox .card {
+  position: relative;
+  background: var(--white);
+  padding: 20px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
+}
+
+.cardBox .card .numbers {
+  position: relative;
+  font-weight: 500;
+  font-size: 2.5rem;
+  color: var(--blue);
+}
+
+.cardBox .card .cardName {
+  color: var(--black2);
+  font-size: 1.1rem;
+  margin-top: 5px;
+}
+
+.cardBox .card .iconBx {
+  font-size: 3.5rem;
+  color: var(--black2);
+}
+
+.cardBox .card:hover {
+  background: var(--blue);
+}
+
+.cardBox .card:hover .numbers,
+.cardBox .card:hover .cardName,
+.cardBox .card:hover .iconBx {
+  color: var(--white);
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  width: 95%;
+  margin: 0 auto 5%;
+}
+
+.header {
+  background-color: #203A93;
+  color: white;
+  padding: 20px;
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 95%;
+  margin: 0 auto;
+}
+
+.plan-info {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  width: 95%;
+  margin: 0 auto 20px;
+}
+
+.coach-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.coach-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #ddd;
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  color: #666;
+  flex-shrink: 0;
+}
+
+.change-coach {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: auto;
+  margin-top: 10px;
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.day {
+  background-color: white;
+  border-radius: 8px;
+  padding: 10px;
+  min-height: 100px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.day-header {
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.workout {
+  background-color: #e3f2fd;
+  border-left: 4px solid #2196f3;
+  padding: 8px;
+  margin-bottom: 5px;
+  font-size: 14px;
+  border-radius: 4px;
+}
+
+.rest-day {
+  background-color: #ffebee;
+  border-left: 4px solid #f44336;
+}
+
+.cardio-day {
+  background-color: #e8f5e9;
+  border-left: 4px solid #4caf50;
+}
+
+.strength-day {
+  background-color: #fff8e1;
+  border-left: 4px solid #ffc107;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  animation: modalopen 0.4s;
+}
+
+@keyframes modalopen {
+  from {
+    opacity: 0;
+    transform: translateY(-60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: black;
+}
+
+h2 {
+  margin-top: 0;
+}
+
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.coach-select {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.coach-card {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.coach-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.coach-card.selected {
+  border: 2px solid #2196f3;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-primary {
+  background-color: #2196f3;
+  color: white;
+}
+
+.btn-secondary {
+  background-color: #f5f5f5;
+  color: #333;
+  margin-right: 10px;
+}
+
+.success-modal {
+  text-align: center;
+  padding: 30px;
+}
+
+.success-icon {
+  font-size: 50px;
+  color: #4caf50;
+  margin-bottom: 20px;
+}
+
+.modal-header {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 20px;
+}
+
+.modal-title {
+  font-size: 1.5em;
+  color: #333;
+  font-weight: bold;
+}
+
+.modal-body {
+  font-size: 1.1em;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.modal-footer.sign-out-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.modal-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.modal-button:hover {
+  background-color: #0056b3;
+}
+
+.modal-button.yes-button {
+  background-color: #203A93;
+}
+
+.modal-button.yes-button:hover {
+  background-color: #c82333;
+}
+
+.modal-button.no-button {
+  background-color: #F1D27C;
+}
+
+.modal-button.no-button:hover {
+  background-color: #5a6268;
+}
+
+/* ======================= Media Queries for Responsiveness ====================== */
+
+/* For medium devices (tablets) */
+@media (max-width: 991px) {
+  .navigation {
+    width: 240px;
+  }
+  
+  .navigation.active {
+    width: 60px;
+  }
+  
+  .main {
+    width: calc(100% - 240px);
+    left: 240px;
+  }
+  
+  .main.active {
+    width: calc(100% - 60px);
+    left: 60px;
+  }
+  
+  .cardBox {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+  
+  .welcome h1 {
+    font-size: 2rem;
+  }
+  
+  .search-container {
+    max-width: 600px;
+  }
+}
+
+/* For small devices (landscape phones) */
+@media (max-width: 768px) {
+  .navigation {
+    width: 200px;
+  }
+  
+  .navigation.active {
+    left: -200px;
+  }
+  
+  .main {
+    width: 100%;
+    left: 0;
+  }
+  
+  .main.active {
+    width: 100%;
+    left: 200px;
+  }
+  
+  .cardBox {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    padding: 15px;
+  }
+  
+  .cardBox .card {
+    padding: 15px;
+  }
+  
+  .cardBox .card .numbers {
+    font-size: 2rem;
+  }
+  
+  .welcome h1 {
+    font-size: 1.8rem;
+  }
+  
+  .search-container {
+    max-width: 400px;
+  }
+  
+  .toggle {
+    z-index: 1001;
+  }
+  
+  .coach-select {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+}
+
+/* For extra small devices (portrait phones) */
+@media (max-width: 576px) {
+  .navigation {
+    width: 100%;
+    left: -100%;
+    z-index: 1000;
+  }
+  
+  .navigation.active {
+    width: 100%;
+    left: 0;
+  }
+  
+  .main {
+    width: 100%;
+    left: 0;
+  }
+  
+  .main.active {
+    left: 0;
+  }
+  
+  .cardBox {
+    grid-template-columns: 1fr;
+    padding: 10px;
+  }
+  
+  .welcome h1 {
+    font-size: 1.5rem;
+  }
+  
+  .search-container {
+    max-width: 100%;
+    margin: 10px 0;
+  }
+  
+  .topbar {
+    padding: 0 5px;
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .toggle {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1001;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+  }
+  
+  .calendar {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  }
+  
+  .modal-content {
+    width: 95%;
+    margin: 10% auto;
+  }
+  
+  .coach-select {
+    grid-template-columns: 1fr;
+  }
+  
+  .modal-footer.sign-out-actions {
+    flex-direction: column;
+  }
+  
+  .modal-button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  .coach-info {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .coach-image {
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+  
+  .change-coach {
+    margin: 15px auto 0;
+  }
+  
+  /* For better accessibility on mobile */
+  .navigation ul li a .icon {
+    min-width: 50px;
+    height: 50px;
+    line-height: 50px;
+  }
+  
+  .navigation ul li a .title {
+    height: 50px;
+    line-height: 50px;
+  }
+}
+
+
+
+
+
+    </style>
+</head>
+
+<body>
+    <!-- =============== Navigation ================ -->
+    <div class="container">
+        <div class="navigation">
+            <ul>
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="barbell"></ion-icon>
+                        </span>
+                        <span class="title">ENERGIZE</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="testclient.html">
+                        <span class="icon">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+
+                <li>
+                  <a href="clientmessage.html">
+                      <span class="icon">
+                          <ion-icon name="chatbubble-outline"></ion-icon>
+                      </span>
+                      <span class="title">Message</span>
+                  </a>
+              </li>
+
+                <li>
+                    <a href="profile.html">
+                        <span class="icon">
+                            <ion-icon name="person-circle-outline"></ion-icon>
+                        </span>
+                        <span class="title">Profile</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="schedule.html">
+                        <span class="icon">
+                            <ion-icon name="calendar-outline"></ion-icon>
+                        </span>
+                        <span class="title">Workout Plan</span>
+                    </a>
+                </li>
+
+                <li>
+                  <a href="payment.html">
+                      <span class="icon">
+                          <ion-icon name="card-outline"></ion-icon>
+                      </span>
+                      <span class="title">Membership Plan</span>
+                  </a>
+              </li>
+
+              <li>
+                  <a href="settings.html">
+                      <span class="icon">
+                          <ion-icon name="settings-outline"></ion-icon>
+                      </span>
+                      <span class="title">Settings</span>
+                  </a>
+              </li>
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ========================= Main ==================== -->
+        <div class="main">
+            <div class="topbar">
+                <div class="toggle">
+                    <ion-icon name="menu-outline"></ion-icon>
+                </div>
+
+                <div class="search-container">
+                    <label>
+                      <input type="text" id="search-input" placeholder="Search what you're looking for">
+                      <ion-icon name="search-outline"></ion-icon>
+                    </label>
+                    <div id="search-results"></div>
+                </div>
+
+                <div class="right-section">
+                    <div class="notification-container">
+                        <ion-icon name="notifications" id="notification-icon"></ion-icon>
+                        <div id="notification-badge">1</div>
+                    </div>
+
+                    <div class="mail-container">
+                        <ion-icon name="mail" id="mail-icon-inbox"></ion-icon>
+                        <div id="unread-notification">1</div>
+                    </div>
+
+                    <div class="user">
+                        <img src="assets/img/esnyr.jpg" alt="User Profile">
+                    </div>
+                </div>
+            </div>
+
+            <div>
+              <br>
+            </div>
+            <div class="header">
+              <h1>Your Workout Plan</h1>
+              <div>Elite Coaching</div>
+          </div>
+          
+          <div class="plan-info">
+              <div class="coach-info">
+                  <div class="coach-image">MR</div>
+                  <div>
+                      <h3>Your Coach: Michael Rodriguez</h3>
+                      <p>Specializations: Strength Training, HIIT, Body Transformation</p>
+                  </div>
+                  <button class="change-coach" onclick="openModal()">Change Coach</button>
+              </div>
+              
+              <h2>April 2025 Workout Schedule</h2>
+              
+              <div class="calendar">
+                  <div class="day">
+                      <div class="day-header">Mon, 28</div>
+                      <div class="workout strength-day">Upper Body Focus</div>
+                      <div class="workout">Bench Press: 4×10</div>
+                      <div class="workout">Pull-ups: 3×8</div>
+                  </div>
+                  <div class="day">
+                      <div class="day-header">Tue, 29</div>
+                      <div class="workout cardio-day">HIIT Session</div>
+                      <div class="workout">Sprint Intervals</div>
+                      <div class="workout">30 min total</div>
+                  </div>
+                  <div class="day">
+                      <div class="day-header">Wed, 30</div>
+                      <div class="workout strength-day">Lower Body</div>
+                      <div class="workout">Squats: 4×12</div>
+                      <div class="workout">Deadlifts: 3×8</div>
+                  </div>
+                  <div class="day">
+                      <div class="day-header">Thu, 1</div>
+                      <div class="workout rest-day">Active Recovery</div>
+                      <div class="workout">Light Stretching</div>
+                      <div class="workout">10min Foam Roll</div>
+                  </div>
+                  <div class="day">
+                      <div class="day-header">Fri, 2</div>
+                      <div class="workout strength-day">Full Body</div>
+                      <div class="workout">Circuit Training</div>
+                      <div class="workout">45 min session</div>
+                  </div>
+                  <div class="day">
+                      <div class="day-header">Sat, 3</div>
+                      <div class="workout cardio-day">Endurance</div>
+                      <div class="workout">5k Run</div>
+                      <div class="workout">Core Finisher</div>
+                  </div>
+                  <div class="day">
+                      <div class="day-header">Sun, 4</div>
+                      <div class="workout rest-day">Rest Day</div>
+                      <div class="workout">Complete Rest</div>
+                  </div>
+              </div>
+              
+              <div class="calendar">
+                  <div class="day">
+                      <div class="day-header">Mon, 5</div>
+                      <div class="workout strength-day">Push Day</div>
+                      <div class="workout">Overhead Press: 4×8</div>
+                      <div class="workout">Incline Press: 3×10</div>
+                  </div>
+                  <div class="day">
+                      <div class="day-header">Tue, 6</div>
+                      <div class="workout cardio-day">Speed Work</div>
+                      <div class="workout">Ladder Drills</div>
+                      <div class="workout">Box Jumps</div>
+                  </div>
+                  <div class="day">
+                      <div class="day-header">Wed, 7</div>
+                      <div class="workout strength-day">Pull Day</div>
+                      <div class="workout">Rows: 4×12</div>
+                      <div class="workout">Lat Pulldowns: 3×12</div>
+                  </div>
+                  <div class="day">
+                      <div class="day-header">Thu, 8</div>
+                      <div class="workout rest-day">Active Recovery</div>
+                      <div class="workout">Yoga Session</div>
+                      <div class="workout">30 min</div>
+                  </div>
+                  <div class="day">
+                      <div class="day-header">Fri, 9</div>
+                      <div class="workout strength-day">Leg Focus</div>
+                      <div class="workout">Front Squats: 4×10</div>
+                      <div class="workout">Romanian Deadlifts: 3×12</div>
+                  </div>
+                  <div class="day">
+                      <div class="day-header">Sat, 10</div>
+                      <div class="workout cardio-day">Cardio Mix</div>
+                      <div class="workout">Bike: 20 min</div>
+                      <div class="workout">Rowing: 10 min</div>
+                  </div>
+                  <div class="day">
+                      <div class="day-header">Sun, 11</div>
+                      <div class="workout rest-day">Rest Day</div>
+                      <div class="workout">Complete Rest</div>
+                  </div>
+              </div>
+          </div>
+
+            <div id="signOutModal" class="modal">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h2 class="modal-title">Sign Out</h2>
+                </div>
+                <div class="modal-body">
+                  <p>Are you sure you want to sign out?</p>
+                </div>
+                <div class="modal-footer sign-out-actions">
+                  <button class="modal-button no-button" id="signOutNo">No</button>
+                  <button class="modal-button yes-button" id="signOutYes">Yes</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Change Coach Modal -->
+    <div id="changeCoachModal" class="modal">
+      <div class="modal-content">
+          <span class="close" onclick="closeModal()">&times;</span>
+          <h2>Change Your Coach</h2>
+          <p>Please let us know why you'd like to change coaches:</p>
+          <textarea id="reasonInput" rows="4" placeholder="Your reason for changing coaches..."></textarea>
+          
+          <h3>Select a new coach:</h3>
+          <div class="coach-select">
+              <div class="coach-card" onclick="selectCoach(this, 'Sarah Johnson')">
+                  <div class="coach-image">SJ</div>
+                  <h4>Sarah Johnson</h4>
+                  <p>Specializes in weight loss and nutrition</p>
+              </div>
+              <div class="coach-card" onclick="selectCoach(this, 'David Kim')">
+                  <div class="coach-image">DK</div>
+                  <h4>David Kim</h4>
+                  <p>Specializes in bodybuilding and strength</p>
+              </div>
+              <div class="coach-card" onclick="selectCoach(this, 'Lisa Chen')">
+                  <div class="coach-image">LC</div>
+                  <h4>Lisa Chen</h4>
+                  <p>Specializes in mobility and functional fitness</p>
+              </div>
+          </div>
+          
+          <div style="text-align: right; margin-top: 20px;">
+              <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+              <button class="btn btn-primary" onclick="submitChange()">Submit Change</button>
+          </div>
+      </div>
+
+      <div id="signOutModal" class="modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title">Sign Out</h2>
+          </div>
+          <div class="modal-body">
+            <p>Are you sure you want to sign out?</p>
+          </div>
+          <div class="modal-footer sign-out-actions">
+            <button class="modal-button no-button" id="signOutNo">No</button>
+            <button class="modal-button yes-button" id="signOutYes">Yes</button>
+          </div>
+        </div>
+      </div>
+  </div>
+  
+  <!-- Success Modal -->
+  <div id="successModal" class="modal">
+      <div class="modal-content success-modal">
+          <span class="close" onclick="closeSuccessModal()">&times;</span>
+          <div class="success-icon">✓</div>
+          <h2>Coach Changed Successfully!</h2>
+          <p>Your new coach will be in touch within 24 hours to discuss your fitness goals and adjust your workout plan.</p>
+          <button class="btn btn-primary" onclick="closeSuccessModal()">Great!</button>
+      </div>
+  </div>
+        </main>
+    </div>
+    <script>
+         let list = document.querySelectorAll(".navigation li");
+
+function activeLink() {
+  list.forEach((item) => {
+    item.classList.remove("hovered");
+  });
+  this.classList.add("hovered");
+}
+
+list.forEach((item) => item.addEventListener("click", activeLink));
+
+// Menu Toggle (remains the same)
+let toggle = document.querySelector(".toggle");
+let navigation = document.querySelector(".navigation");
+let main = document.querySelector(".main");
+
+toggle.onclick = function () {
+  navigation.classList.toggle("active");
+  main.classList.toggle("active");
+};
+
+//Search Function
+const searchInput = document.getElementById('search-input');
+const searchResultsDiv = document.getElementById('search-results');
+
+const searchData = [
+  "How to diet",
+  "Paano makapasa sa webdev",
+  "Effective workout plan",
+  "Effective sleep",
+  "Gulay effective diet",
+  "Recent Sessions",
+  "Overall well being",
+  "Updates",
+  "Coaches",
+  "Plans"
+];
+
+searchInput.addEventListener('input', function() {
+  const searchTerm = this.value.toLowerCase();
+  const filteredResults = searchData.filter(item =>
+    item.toLowerCase().includes(searchTerm)
+  );
+
+  displayResults(filteredResults);
+});
+
+function displayResults(results) {
+  searchResultsDiv.innerHTML = '';
+
+  if (results.length > 0 && searchInput.value.trim() !== '') {
+    const ul = document.createElement('ul');
+    results.forEach(result => {
+      const li = document.createElement('li');
+      li.textContent = result;
+      li.addEventListener('click', function() {
+        searchInput.value = this.textContent;
+        searchResultsDiv.style.display = 'none'; 
+      });
+      ul.appendChild(li);
+    });
+    searchResultsDiv.appendChild(ul);
+    searchResultsDiv.style.display = 'block'; 
+  } else {
+    searchResultsDiv.style.display = 'none';
+  }
+}
+
+document.addEventListener('click', function(event) {
+  if (!event.target.closest('.search-container')) {
+    searchResultsDiv.style.display = 'none';
+  }
+});
+
+//Mail Function
+const mailIconInbox = document.getElementById('mail-icon-inbox');
+const unreadNotification = document.getElementById('unread-notification');
+const inboxPreview = document.getElementById('inbox-preview');
+let hasUnread = true; 
+
+function updateUnreadIndicator() {
+  unreadNotification.style.display = hasUnread ? 'block' : 'none';
+}
+
+updateUnreadIndicator();
+
+mailIconInbox.addEventListener('click', function() {
+  inboxPreview.style.display = (inboxPreview.style.display === 'block' ? 'none' : 'block');
+
+  if (hasUnread && inboxPreview.style.display === 'block') {
+    hasUnread = false;
+    updateUnreadIndicator();
+ad
+    console.log('Mail icon clicked - marking as read');
+  }
+});
+
+
+document.addEventListener('click', function(event) {
+  if (!event.target.closest('.mail-container')) {
+    inboxPreview.style.display = 'none';
+  }
+});
+
+
+//Notification Function
+const notificationIcon = document.getElementById('notification-icon');
+const notificationBadge = document.getElementById('notification-badge');
+const notificationsDropdown = document.getElementById('notifications-dropdown');
+
+notificationIcon.addEventListener('click', function() {
+  notificationsDropdown.style.display = (notificationsDropdown.style.display === 'block' ? 'none' : 'block');
+  
+  notificationBadge.style.display = 'none';
+});
+
+
+document.addEventListener('click', function(event) {
+  if (!event.target.closest('.notification-container')) {
+    notificationsDropdown.style.display = 'none';
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const classesData = [
+        { id: 1, name: "Yoga", day: "Monday", time: "9:00 AM", instructor: "Jane Doe", availableSlots: 10 },
+        { id: 2, name: "Zumba", day: "Monday", time: "6:00 PM", instructor: "Carlos Garcia", availableSlots: 15 },
+        { id: 3, name: "Strength Training", day: "Tuesday", time: "7:00 AM", instructor: "Mike Smith", availableSlots: 8 },
+        { id: 4, name: "Cardio Blast", day: "Tuesday", time: "5:00 PM", instructor: "Sarah Lee", availableSlots: 20 },
+        { id: 5, name: "Pilates", day: "Wednesday", time: "10:00 AM", instructor: "Jane Doe", availableSlots: 12 },
+        { id: 6, name: "Zumba", day: "Wednesday", time: "7:00 PM", instructor: "Carlos Garcia", availableSlots: 18 },
+        { id: 7, name: "Yoga", day: "Thursday", time: "6:00 PM", instructor: "Jane Doe", availableSlots: 9 },
+        { id: 8, name: "Strength Training", day: "Friday", time: "8:00 AM", instructor: "Mike Smith", availableSlots: 11 },
+        { id: 9, name: "Cardio Blast", day: "Saturday", time: "9:30 AM", instructor: "Sarah Lee", availableSlots: 25 },
+        { id: 10, name: "Pilates", day: "Sunday", time: "11:00 AM", instructor: "Jane Doe", availableSlots: 14 },
+        { id: 11, name: "Web Development 1", day: "Tuesday", time: "11:00 AM", instructor: "Sir Rham", availableSlots: 14 },
+
+    ];
+
+    const sidebar = document.querySelector('.sidebar');
+    const sidebarToggle = document.querySelector('.sidebar-toggle');
+    const classesListElement = document.getElementById('classes');
+    const filterDaySelect = document.getElementById('filter-day');
+    const filterClassSelect = document.getElementById('filter-class');
+    const bookingModal = document.getElementById('booking-modal');
+    const closeModalButton = bookingModal.querySelector('.close-button');
+    const modalClassName = document.getElementById('modal-class-name');
+    const modalClassDay = document.getElementById('modal-class-day');
+    const modalClassTime = document.getElementById('modal-class-time');
+    const confirmBookingButton = document.getElementById('confirm-booking-button');
+    const bookingMessage = document.getElementById('booking-message');
+
+    let selectedClassId = "Michael Rodriguez";
+
+    if (bookingModal) {
+        bookingModal.style.display = 'none';
+    }
+
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('expanded');
+        });
+    }
+
+    function displayClasses(classes) {
+        classesListElement.innerHTML = '';
+        if (classes.length === 0) {
+            classesListElement.innerHTML = '<p>No classes found matching your criteria.</p>';
+            return;
+        }
+        classes.forEach(cls => {
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `
+                <div class="class-info">
+                    <h3>${cls.name}</h3>
+                    <p>${cls.day} - ${cls.time} (${cls.instructor})</p>
+                    <p>Available Slots: ${cls.availableSlots}</p>
+                </div>
+                <button class="book-button" data-class-id="${cls.id}">Book Now</button>
+            `;
+            classesListElement.appendChild(listItem);
+        });
+
+        const bookButtons = classesListElement.querySelectorAll('.book-button');
+        bookButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                selectedClassId = parseInt(this.dataset.classId);
+                const selectedClass = classesData.find(cls => cls.id === selectedClassId);
+                if (selectedClass) {
+                    modalClassName.textContent = selectedClass.name;
+                    modalClassDay.textContent = selectedClass.day;
+                    modalClassTime.textContent = selectedClass.time;
+                    bookingMessage.textContent = '';
+                    bookingModal.style.display = "block";
+                }
+            });
+        });
+    }
+
+    function filterClasses() {
+        const selectedDay = filterDaySelect.value;
+        const selectedClassType = filterClassSelect.value;
+
+        const filteredClasses = classesData.filter(cls => {
+            const dayMatch = !selectedDay || cls.day === selectedDay;
+            const classMatch = !selectedClassType || cls.name === selectedClassType;
+            return dayMatch && classMatch;
+        });
+
+        displayClasses(filteredClasses);
+    }
+
+    filterDaySelect.addEventListener('change', filterClasses);
+    filterClassSelect.addEventListener('change', filterClasses);
+
+    closeModalButton.addEventListener('click', function() {
+        bookingModal.style.display = "none";
+    });
+
+    window.addEventListener('click', function(event) {
+        if (event.target === bookingModal) {
+            bookingModal.style.display = "none";
+        }
+    });
+
+    confirmBookingButton.addEventListener('click', function() {
+        if (selectedClassId) {
+            const bookedClass = classesData.find(cls => cls.id === selectedClassId);
+            if (bookedClass && bookedClass.availableSlots > 0) {
+                bookedClass.availableSlots--;
+                bookingMessage.textContent = `You have successfully booked ${bookedClass.name} on ${bookedClass.day} at ${bookedClass.time}.`;
+                bookingMessage.className = 'message success';
+                displayClasses(classesData);
+            } else {
+                bookingMessage.textContent = "Sorry, this class is full or no longer available.";
+                bookingMessage.className = 'message error';
+            }
+            selectedClassId = null;
+            setTimeout(() => {
+                bookingModal.style.display = "none";
+            }, 2000);
+        } else {
+            bookingMessage.textContent = "Please select a class to book.";
+            bookingMessage.className = 'message error';
+        }
+    });
+
+    displayClasses(classesData);
+});
+
+//Change coach modal
+let selectedCoach = null;
+        
+        function openModal() {
+            document.getElementById("changeCoachModal").style.display = "block";
+        }
+        
+        function closeModal() {
+            document.getElementById("changeCoachModal").style.display = "none";
+            // Reset selection
+            document.querySelectorAll('.coach-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.getElementById("reasonInput").value = "";
+            selectedCoach = null;
+        }
+        
+        function selectCoach(element, coachName) {
+            // Remove selected class from all coaches
+            document.querySelectorAll('.coach-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked coach
+            element.classList.add('selected');
+            selectedCoach = coachName;
+        }
+        
+        function submitChange() {
+            const reason = document.getElementById("reasonInput").value;
+            
+            if (reason.trim() === "") {
+                alert("Please provide a reason for changing coaches.");
+                return;
+            }
+            
+            if (!selectedCoach) {
+                alert("Please select a new coach.");
+                return;
+            }
+            
+            // Close the change coach modal
+            closeModal();
+            
+            // Show success modal
+            document.getElementById("successModal").style.display = "block";
+            
+            // In a real application, you would send this data to your server
+            console.log("Coach change requested:", {
+                newCoach: selectedCoach,
+                reason: reason
+            });
+        }
+        
+        function closeSuccessModal() {
+            document.getElementById("successModal").style.display = "none";
+            
+            // Update the coach info in the UI (this would normally happen after server confirmation)
+            const coachNameElement = document.querySelector(".coach-info h3");
+            coachNameElement.textContent = "Your Coach: " + selectedCoach;
+            
+            // Update coach initials
+            const initialsElement = document.querySelector(".coach-image");
+            const initials = selectedCoach.split(' ').map(name => name[0]).join('');
+            initialsElement.textContent = initials;
+            
+            // We'd also update specializations in a real app
+        }
+
+//Sign out
+document.addEventListener('DOMContentLoaded', function() {
+                    const signOutLink = document.querySelector('.navigation ul li:last-child a');
+                    const signOutModal = document.getElementById('signOutModal');
+                    const signOutYesButton = document.getElementById('signOutYes');
+                    const signOutNoButton = document.getElementById('signOutNo');
+
+                    if (signOutLink) {
+                    signOutLink.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        showModal(signOutModal);
+                    });
+                    } else {
+                    console.error("Sign Out link not found!");
+                    }
+
+                    signOutYesButton.addEventListener('click', function() {
+                    window.location.href = 'index.html';
+                    });
+
+                    signOutNoButton.addEventListener('click', function() {
+                    hideModal(signOutModal);
+                    });
+
+                    window.addEventListener('click', function(event) {
+                    if (event.target == signOutModal) {
+                        hideModal(signOutModal);
+                    }
+                    });
+
+                    // Helper functions for showing and hiding the modal
+                    function showModal(modalElement) {
+                    modalElement.classList.add('show');
+                    }
+
+                    function hideModal(modalElement) {
+                    modalElement.classList.remove('show');
+                    }
+                });
+
+                
+
+    </script>
+    <script src="schedule.js"></script>
+            <!-- ====== ionicons ======= -->
+            <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+            <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+            </body>
+            
+            </html>

@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <title>Client Profile</title>
+    <style>
+        /* =============== Globals ============== */
+        * {
+            font-family: "Poppins", sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --blue: #203A93;
+            --white: #fff;
+            --gray: #f5f5f5;
+            --black1: #222;
+            --black2: #999;
+            --shadow: 0 4px 10px rgba(0,0,0,0.1);
+            --border: 1px solid #eee;
+            --radius: 10px;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-color: #f7f7f7;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+        }
+
+        /* =============== Navigation ================ */
+        .navigation {
+            position: fixed;
+            width: 280px;
+            height: 100%;
+            background: var(--blue);
+            border-left: 10px solid var(--blue);
+            transition: 0.3s ease;
+            overflow: hidden;
+            z-index: 1000;
+        }
+
+        .navigation.active {
+            width: 80px;
+        }
+
+        .navigation ul {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding-top: 10px;
+        }
+
+        .navigation ul li {
+            position: relative;
+            width: 100%;
+            list-style: none;
+            border-top-left-radius: 30px;
+            border-bottom-left-radius: 30px;
+            margin-bottom: 5px;
+        }
+
+        .navigation ul li:hover,
+        .navigation ul li.hovered {
+            background-color: var(--white);
+        }
+
+        .navigation ul li:nth-child(1) {
+            margin-bottom: 30px;
+            pointer-events: none;
+        }
+
+        .navigation ul li a {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            text-decoration: none;
+            color: var(--white);
+            padding: 10px 15px;
+        }
+
+        .navigation ul li:hover a,
+        .navigation ul li.hovered a {
+            color: var(--blue);
+        }
+
+        .navigation ul li a .icon {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 60px;
+            height: 50px;
+            font-size: 1.5rem;
+        }
+
+        .navigation ul li a .title {
+            position: relative;
+            display: block;
+            padding-left: 10px;
+            height: 50px;
+            line-height: 50px;
+            white-space: nowrap;
+        }
+
+        /* --------- Curve Outside ---------- */
+        .navigation ul li:hover a::before,
+        .navigation ul li.hovered a::before {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: -50px;
+            width: 50px;
+            height: 50px;
+            background-color: transparent;
+            border-radius: 50%;
+            box-shadow: 35px 35px 0 10px var(--white);
+            pointer-events: none;
+        }
+
+        .navigation ul li:hover a::after,
+        .navigation ul li.hovered a::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            bottom: -50px;
+            width: 50px;
+            height: 50px;
+            background-color: transparent;
+            border-radius: 50%;
+            box-shadow: 35px -35px 0 10px var(--white);
+            pointer-events: none;
+        }
+
+        /* ===================== Main ===================== */
+        .main {
+            position: absolute;
+            width: calc(100% - 280px);
+            left: 280px;
+            min-height: 100vh;
+            background: var(--white);
+            transition: 0.3s ease;
+        }
+
+        .main.active {
+            width: calc(100% - 80px);
+            left: 80px;
+        }
+
+        /* ===================== Topbar ===================== */
+        .topbar {
+            width: 100%;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            background-color: #fff;
+        }
+
+        .toggle {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--blue);
+        }
+
+        .toggle:hover {
+            background-color: rgba(0,0,0,0.05);
+            border-radius: 50%;
+        }
+
+        /* ===================== Search ===================== */
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 500px;
+            margin: 0 20px;
+        }
+
+        .search-container label {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            overflow: hidden;
+            padding: 0 15px;
+            background-color: #f9f9f9;
+        }
+
+        #search-input {
+            flex-grow: 1;
+            padding: 10px 0;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            background-color: transparent;
+        }
+
+        .search-container label ion-icon {
+            font-size: 1.3rem;
+            color: #777;
+        }
+
+        #search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-top: 5px;
+            z-index: 10;
+            display: none;
+        }
+
+        #search-results ul {
+            list-style: none;
+            padding: 8px 0;
+            margin: 0;
+        }
+
+        #search-results li {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        #search-results li:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* ===================== User Section ===================== */
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* ===================== Mail & Notifications ===================== */
+        .mail-container, .notification-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+
+        #mail-icon-inbox, #notification-icon {
+            font-size: 1.5rem;
+            color: var(--blue);
+        }
+
+        #unread-notification, #notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: red;
+            color: white;
+            font-size: 12px;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #notification-badge {
+            background-color: orange;
+        }
+
+        #inbox-preview, #notifications-dropdown {
+            position: absolute;
+            top: 100%;
+            right: -10px;
+            background-color: #fff;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            width: 280px;
+            padding: 15px;
+            margin-top: 10px;
+            display: none;
+            z-index: 100;
+        }
+
+        #inbox-preview strong, #notifications-dropdown strong {
+            font-size: 1rem;
+            color: var(--black1);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .email-item, .notification-item {
+            padding: 5px 0;
+            word-break: break-word;
+        }
+
+        .email-item.sender, .notification-item.title {
+            font-weight: 600;
+            color: var(--black1);
+        }
+
+        .email-item.subject, .notification-item.message {
+            color: var(--black2);
+            font-size: 0.9rem;
+        }
+
+        #inbox-preview hr, #notifications-dropdown hr {
+            margin: 10px 0;
+            border: none;
+            border-top: 1px solid #eee;
+        }
+
+        #inbox-preview a, #notifications-dropdown a {
+            display: block;
+            text-align: right;
+            color: var(--blue);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .name {
+            font-size: 14px;
+            color: var(--black1);
+            font-weight: 500;
+        }
+
+        .user {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .user img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ===================== Profile Container ===================== */
+        .profile-container {
+            max-width: 1000px;
+            margin: 30px auto;
+            background-color: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            width: 90%;
+        }
+
+        .profile-header {
+            text-align: center;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            border-bottom: var(--border);
+        }
+
+        .profile-header h1 {
+            color: var(--blue);
+            font-size: clamp(1.8rem, 3vw, 2.2rem);
+            margin-bottom: 10px;
+        }
+
+        .profile-header p {
+            color: var(--black2);
+            font-size: clamp(0.9rem, 2vw, 1rem);
+        }
+
+        .profile-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        @media (min-width: 768px) {
+            .profile-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 992px) {
+            .profile-content {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .profile-section {
+            background-color: #f9f9f9;
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .profile-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .profile-section h2 {
+            color: var(--black1);
+            font-size: clamp(1.2rem, 2.5vw, 1.4rem);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: var(--border);
+            text-align: center;
+        }
+
+        /* Personal Info */
+        .info-item {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (min-width: 576px) {
+            .info-item {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+        }
+
+        .info-item label {
+            font-weight: 600;
+            color: var(--black1);
+            margin-bottom: 5px;
+            min-width: 120px;
+        }
+
+        @media (min-width: 576px) {
+            .info-item label {
+                margin-bottom: 0;
+                margin-right: 15px;
+            }
+        }
+
+        .info-item span {
+            color: var(--black2);
+            word-break: break-word;
+        }
+
+        /* Goals */
+        .goals-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .goals-list li {
+            margin-bottom: 12px;
+            padding-left: 25px;
+            position: relative;
+            color: var(--black2);
+        }
+
+        .goals-list li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--blue);
+            font-weight: bold;
+        }
+
+        /* Profile Actions */
+        .profile-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        @media (min-width: 576px) {
+            .profile-actions {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+
+        .profile-actions button {
+            flex: 1;
+            max-width: 200px;
+            background-color: var(--blue);
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            padding: 12px 15px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 0 auto;
+        }
+
+        .profile-actions button:hover {
+            background-color: #18267a;
+        }
+
+        @media (min-width: 576px) {
+            .profile-actions button {
+                margin: 0;
+            }
+        }
+
+        /* Profile Footer */
+        .profile-footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: var(--border);
+            color: var(--black2);
+            font-size: 0.9rem;
+        }
+
+        .profile-footer p {
+            margin: 5px 0;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            margin: auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {opacity: 0; transform: translateY(-20px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+        .modal-header {
+            padding-bottom: 15px;
+            border-bottom: var(--border);
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--black1);
+            font-weight: 600;
+        }
+
+        .modal-body {
+            font-size: 1.1rem;
+            color: var(--black2);
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+
+        .modal-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-button.yes-button {
+            background-color: var(--blue);
+            color: var(--white);
+        }
+
+        .modal-button.yes-button:hover {
+            background-color: #c82333;
+        }
+
+        .modal-button.no-button {
+            background-color: #F1D27C;
+            color: var(--black1);
+        }
+
+        .modal-button.no-button:hover {
+            background-color: #e0c36b;
+        }
+
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 991px) {
+            .navigation {
+                left: -280px;
+                width: 280px;
+                transition: 0.3s ease;
+            }
+            
+            .navigation.active {
+                width: 280px;
+                left: 0;
+            }
+            
+            .main {
+                width: 100%;
+                left: 0;
+            }
+            
+            .main.active {
+                left: 280px;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .topbar {
+                padding: 0 15px;
+            }
+            
+            .search-container {
+                margin: 0 10px;
+            }
+            
+            .profile-container {
+                padding: 20px;
+                margin: 15px auto;
+            }
+            
+            .profile-section {
+                padding: 20px;
+            }
+        }
+
+        @media screen and (max-width: 576px) {
+            .user-section {
+                gap: 15px;
+            }
+            
+            .topbar {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 10px;
+            }
+            
+            .search-container {
+                order: 3;
+                margin: 10px 0;
+                width: 100%;
+                max-width: none;
+            }
+            
+            .profile-actions button {
+                width: 100%;
+                max-width: none;
+            }
+            
+            .profile-section h2 {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media screen and (max-width: 450px) {
+            .modal-content {
+                padding: 20px;
+            }
+            
+            .modal-footer {
+                flex-direction: column;
+            }
+            
+            .modal-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- =============== Navigation ================ -->
+    <div class="container">
+        <div class="navigation">
+            <ul>
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="barbell"></ion-icon>
+                        </span>
+                        <span class="title">ENERGIZE</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="testclient.html">
+                        <span class="icon">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="clientmessage.html">
+                        <span class="icon">
+                            <ion-icon name="chatbubble-outline"></ion-icon>
+                        </span>
+                        <span class="title">Message</span>
+                    </a>
+                </li>
+
+                <li class="hovered">
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="person-circle-outline"></ion-icon>
+                        </span>
+                        <span class="title">Profile</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="schedule.html">
+                        <span class="icon">
+                            <ion-icon name="calendar-outline"></ion-icon>
+                        </span>
+                        <span class="title">Workout Plan</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="payment.html">
+                        <span class="icon">
+                            <ion-icon name="card-outline"></ion-icon>
+                        </span>
+                        <span class="title">Membership Plan</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="settings.html">
+                        <span class="icon">
+                            <ion-icon name="settings-outline"></ion-icon>
+                        </span>
+                        <span class="title">Settings</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ========================= Main ==================== -->
+        <div class="main">
+            <div class="topbar">
+                <div class="toggle">
+                    <ion-icon name="menu-outline"></ion-icon>
+                </div>
+
+                <div class="search-container">
+                    <label>
+                        <input type="text" id="search-input" placeholder="Search what you're looking for">
+                        <ion-icon name="search-outline"></ion-icon>
+                    </label>
+                    <div id="search-results">
+                    </div>
+                </div>
+
+                <div class="user-section">
+                    <div class="mail-container">
+                        <ion-icon name="mail" id="mail-icon-inbox"></ion-icon>
+                        <div id="unread-notification">1</div>
+                        <div id="inbox-preview">
+                            <strong>Inbox</strong>
+                            <hr>
+                            <div id="unread-messages">
+                                <div class="email-item sender">Coaches</div>
+                                <div class="email-item subject">Session today!</div>
+                                <hr>
+                            </div>
+                            <div id="read-messages">
+                                <div class="email-item sender">Coach</div>
+                                <div class="email-item subject">Can I ask?</div>
+                            </div>
+                            <a href="#">See All</a>
+                        </div>
+                    </div>
+
+                    <div class="notification-container">
+                        <ion-icon name="notifications" id="notification-icon"></ion-icon>
+                        <div id="notification-badge">1</div>
+                        <div id="notifications-dropdown">
+                            <strong>Notifications</strong>
+                            <hr>
+                            <div id="notification-list">
+                                <div class="notification-item title">Today, 1:00 PM</div>
+                                <div class="notification-item message">Your schedule is today.</div>
+                                <hr>
+                                <div class="notification-item title">Coach John Cena</div>
+                                <div class="notification-item message">Cancelled the session</div>
+                            </div>
+                            <a href="#">See All</a>
+                        </div>
+                    </div>
+
+                    <div class="name">
+                        <p>Micah Sedigo</p>
+                    </div>
+
+                    <div class="user">
+                        <img src="assets/img/esnyr.jpg" alt="User Avatar">
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-container">
+                <header class="profile-header">
+                    <h1>Your Profile</h1>
+                    <p>Manage your personal and fitness information.</p>
+                </header>
+                
+                <div class="profile-content">
+                    <section class="profile-section">
+                        <h2>Personal Information</h2>
+                        <div class="info-item">
+                            <label>Full Name:</label>
+                            <span>Micah Sedigo</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Email:</label>
+                            <span>micahsedigo@energize.com</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Phone:</label>
+                            <span>(123) 456-7890</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Date of Birth:</label>
+                            <span>September 12, 1994</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Gender:</label>
+                            <span>Female</span>
+                        </div>
+                    </section>
+
+                    <section class="profile-section">
+                        <h2>Fitness Goals</h2>
+                        <ul class="goals-list">
+                            <li>Stay Healthy</li>
+                            <li>Be Productive</li>
+                            <li>Be Buff</li>
+                            <li>Increase Strength</li>
+                            <li>Improve Flexibility</li>
+                        </ul>
+                    </section>
+
+                    <section class="profile-section">
+                        <h2>Membership Information</h2>
+                        <div class="info-item">
+                            <label>Membership Type:</label>
+                            <span>Premium</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Join Date:</label>
+                            <span>March 1, 2025</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Next Billing Date:</label>
+                            <span>May 1, 2025</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Status:</label>
+                            <span>Active</span>
+                        </div>
+                    </section>
+
+                    <div class="profile-actions">
+                        <button>Edit Profile</button>
+                        <button>Edit Goals</button>
+                        <button onclick="window.location.href='testclient.html'">Back to Home</button>
+                    </div>
+                </div>
+
+                <footer class="profile-footer">
+                    <p>&copy; 2025 ENERGIZE Gym Center</p>
+                    <p>Contact: info@energizegym.com</p>
+                </footer>
+            </div>
+
+            <div id="signOutModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title">Sign Out</h2>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to sign out?</p>
+                    </div>
+                    <div class="modal-footer sign-out-actions">
+                        <button class="modal-button no-button" id="signOutNo">No</button>
+                        <button class="modal-button yes-button" id="signOutYes">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    
+
+    <script>
+  // Wait for DOM to fully load before executing
+document.addEventListener('DOMContentLoaded', function() {
+    // =============== Toggle Menu ================ 
+    const toggle = document.querySelector('.toggle');
+    const navigation = document.querySelector('.navigation');
+    const main = document.querySelector('.main');
+    
+    toggle.addEventListener('click', function() {
+        navigation.classList.toggle('active');
+        main.classList.toggle('active');
+    });
+    
+    // Auto-hide menu on smaller screens when clicking outside
+    document.addEventListener('click', function(e) {
+        // Only apply this behavior on screens smaller than 992px
+        if (window.innerWidth < 992) {
+            // Check if navigation is active and click is outside navigation and toggle
+            if (navigation.classList.contains('active') && 
+                !navigation.contains(e.target) && 
+                e.target !== toggle && 
+                !toggle.contains(e.target)) {
+                navigation.classList.remove('active');
+                main.classList.remove('active');
+            }
+        }
+    });
+    
+    // =============== Inbox & Notifications Preview ================ 
+    const mailIcon = document.getElementById('mail-icon-inbox');
+    const inboxPreview = document.getElementById('inbox-preview');
+    const notificationIcon = document.getElementById('notification-icon');
+    const notificationsDropdown = document.getElementById('notifications-dropdown');
+    
+    mailIcon.addEventListener('click', function(e) {
+        e.stopPropagation();
+        inboxPreview.style.display = inboxPreview.style.display === 'block' ? 'none' : 'block';
+        notificationsDropdown.style.display = 'none';
+    });
+    
+    notificationIcon.addEventListener('click', function(e) {
+        e.stopPropagation();
+        notificationsDropdown.style.display = notificationsDropdown.style.display === 'block' ? 'none' : 'block';
+        inboxPreview.style.display = 'none';
+    });
+    
+    document.addEventListener('click', function() {
+        inboxPreview.style.display = 'none';
+        notificationsDropdown.style.display = 'none';
+    });
+    
+    inboxPreview.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+    
+    notificationsDropdown.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+    
+    // =============== Search Functionality ================ 
+    const searchInput = document.getElementById('search-input');
+    const searchResults = document.getElementById('search-results');
+    
+    // Sample search items
+    const searchItems = [
+        'Profile Settings', 'Workout Plan', 'Nutrition Advice',
+        'Personal Trainer', 'Class Schedule', 'Membership Info',
+        'Payment History', 'Fitness Goals', 'Exercise Library'
+    ];
+    
+    searchInput.addEventListener('focus', function() {
+        // Only show results if there's input
+        if (searchInput.value.length > 0) {
+            showSearchResults();
+        }
+    });
+    
+    searchInput.addEventListener('input', function() {
+        if (searchInput.value.length > 0) {
+            showSearchResults();
+        } else {
+            searchResults.style.display = 'none';
+        }
+    });
+    
+    document.addEventListener('click', function(e) {
+        if (e.target !== searchInput && !searchResults.contains(e.target)) {
+            searchResults.style.display = 'none';
+        }
+    });
+    
+    function showSearchResults() {
+        const query = searchInput.value.toLowerCase();
+        const filteredItems = searchItems.filter(item => 
+            item.toLowerCase().includes(query)
+        );
+        
+        if (filteredItems.length > 0) {
+            const resultsHTML = `
+                <ul>
+                    ${filteredItems.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            `;
+            searchResults.innerHTML = resultsHTML;
+            searchResults.style.display = 'block';
+            
+            // Add click event to results
+            const resultItems = searchResults.querySelectorAll('li');
+            resultItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    searchInput.value = item.textContent;
+                    searchResults.style.display = 'none';
+                });
+            });
+        } else {
+            searchResults.innerHTML = '<ul><li>No results found</li></ul>';
+            searchResults.style.display = 'block';
+        }
+    }
+    
+    // =============== Navigation Highlighting ================ 
+    const navItems = document.querySelectorAll('.navigation ul li');
+    
+    navItems.forEach(item => {
+        if (!item.classList.contains('hovered')) {
+            item.addEventListener('mouseover', function() {
+                this.classList.add('hovered');
+            });
+            
+            item.addEventListener('mouseout', function() {
+                this.classList.remove('hovered');
+            });
+        }
+    });
+    
+    // =============== Sign Out Modal ================ 
+    const signOutLink = document.querySelector('.navigation ul li:last-child a');
+    const signOutModal = document.getElementById('signOutModal');
+    const signOutNo = document.getElementById('signOutNo');
+    const signOutYes = document.getElementById('signOutYes');
+    
+    signOutLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        signOutModal.classList.add('show');
+    });
+    
+    signOutNo.addEventListener('click', function() {
+        signOutModal.classList.remove('show');
+    });
+    
+    signOutYes.addEventListener('click', function() {
+        // Here you would typically handle sign out logic
+        window.location.href = 'login.html'; // Redirect to login page
+    });
+    
+    window.addEventListener('click', function(e) {
+        if (e.target === signOutModal) {
+            signOutModal.classList.remove('show');
+        }
+    });
+
+    // =============== Responsive Behavior for Profile Sections ================ 
+    function adjustProfileLayout() {
+        const profileContent = document.querySelector('.profile-content');
+        const profileSections = document.querySelectorAll('.profile-section');
+        
+        if (window.innerWidth < 768) {
+            // For mobile: stack all sections vertically
+            profileContent.style.gridTemplateColumns = '1fr';
+        } else if (window.innerWidth < 992) {
+            // For tablets: two columns
+            profileContent.style.gridTemplateColumns = 'repeat(2, 1fr)';
+        } else {
+            // For desktop: three columns
+            profileContent.style.gridTemplateColumns = 'repeat(3, 1fr)';
+        }
+    }
+    
+    // Initial call and resize listener
+    adjustProfileLayout();
+    window.addEventListener('resize', adjustProfileLayout);
+    
+    // =============== Touch-friendly navigation for mobile ================ 
+    if ('ontouchstart' in window) {
+        // Add touch-specific behaviors for mobile devices
+        navItems.forEach(item => {
+            // Remove hover effects which can cause sticky states on touch devices
+            item.addEventListener('touchstart', function() {
+                // Remove 'hovered' class from all items
+                navItems.forEach(navItem => {
+                    if (navItem !== item && navItem.classList.contains('hovered')) {
+                        navItem.classList.remove('hovered');
+                    }
+                });
+                
+                // Add 'hovered' class to clicked item if it doesn't already have it
+                if (!item.classList.contains('hovered')) {
+                    item.classList.add('hovered');
+                }
+            });
+        });
+    }
+    
+    // =============== Smooth scrolling for profile sections on mobile ================ 
+    const profileButtons = document.querySelectorAll('.profile-actions button');
+    
+    profileButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // If it's the "Edit Profile" button
+            if (this.textContent === 'Edit Profile') {
+                const profileSection = document.querySelector('.profile-section');
+                if (profileSection) {
+                    // Smooth scroll to the profile section on mobile
+                    if (window.innerWidth < 768) {
+                        profileSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            }
+            // If it's the "Edit Goals" button
+            else if (this.textContent === 'Edit Goals') {
+                const goalsSection = document.querySelector('.profile-section:nth-child(2)');
+                if (goalsSection) {
+                    // Smooth scroll to the goals section on mobile
+                    if (window.innerWidth < 768) {
+                        goalsSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            }
+        });
+    });
+    
+    // =============== Better keyboard accessibility ================ 
+    navItems.forEach(item => {
+        const link = item.querySelector('a');
+        if (link) {
+            link.addEventListener('focus', function() {
+                // Remove 'hovered' class from all items
+                navItems.forEach(navItem => {
+                    navItem.classList.remove('hovered');
+                });
+                // Add 'hovered' class to focused item
+                item.classList.add('hovered');
+            });
+        }
+    });
+    
+    // =============== Orientation change handling ================ 
+    window.addEventListener('orientationchange', function() {
+        // Re-adjust layout after orientation change
+        setTimeout(adjustProfileLayout, 100);
+        
+        // Close navigation if it's open on orientation change
+        if (navigation.classList.contains('active') && window.innerWidth < 992) {
+            navigation.classList.remove('active');
+            main.classList.remove('active');
+        }
+    });
+});
+
+
+            </script>
+
+            <!-- ====== ionicons ======= -->
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+
+</html>
