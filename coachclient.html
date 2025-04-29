@@ -142,74 +142,129 @@
                 </div>                
             </div>
 
-            <!-- =============== Clients Table ================ -->
-            <div class="client-section">
-                <h2>My Clients</h2>
-                <table class="clients-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Current Plan</th>
-                            <th class="actions">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="clients-tbody">
-                        <tr id="add-client-row">
-                            <td><input type="text" id="newClientName" placeholder="Client's Name"></td>
-                            <td><input type="text" id="newClientPlan" placeholder="e.g., Weight Loss"></td>
-                            <td><button id="addClientBtn">Add Client</button></td>
-                        </tr>
-                        <tr class="client-row" data-client-id="1" data-workout-plan="Push-ups 10, Squats 12, Plank 60s">
-                            <td>John Doe</td>
-                            <td>Weight Loss</td>
-                            <td>
-                                <button class="view-progress-btn">View Progress</button>
-                                <button class="assign-workout-btn">Assign Workout</button>
-                                <button class="delete-client-btn">Delete</button>
-                            </td>
-                        </tr>
-                        <tr class="client-row" data-client-id="2" data-workout-plan="Running 30 mins, Lunges 10 each leg, Crunches 15">
-                            <td>Jane Smith</td>
-                            <td>Muscle Gain</td>
-                            <td>
-                                <button class="view-progress-btn">View Progress</button>
-                                <button class="assign-workout-btn">Assign Workout</button>
-                                <button class="delete-client-btn">Delete</button>
-                            </td>
-                        </tr>
-                        <tr class="client-row" data-client-id="3" data-workout-plan="Walking 45 mins, Bicep Curls 12, Triceps Extensions 12">
-                            <td>Peter Jones</td>
-                            <td>General Fitness</td>
-                            <td>
-                                <button class="view-progress-btn">View Progress</button>
-                                <button class="assign-workout-btn">Assign Workout</button>
-                                <button class="delete-client-btn">Delete</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            
-             <!-- =============== Modals ================ -->
-            <div id="workoutModal" class="modal">
-                <div class="modal-content">
-                    <span class="close-btn">&times;</span>
-                    <h2>Assign Workout for <span id="modal-client-name-assign"></span></h2>
-                    <label for="workoutInput">Workout Plan (e.g., Exercise 1 reps, Exercise 2 time):</label>
-                    <textarea id="workoutInput" rows="5" placeholder="e.g., Push-ups 10, Squats 12, Plank 60s"></textarea>
-                    <button id="submitWorkout" data-client-id="">Assign</button>
+            <div class="client-container">
+                <!-- Client Form Section -->
+                <div class="client-form-section">
+                    <h2>Add New Client</h2>
+                    <form id="clientForm" class="client-form">
+                        <div class="form-group">
+                            <label for="clientName">Client Name*</label>
+                            <input type="text" id="clientName" name="clientName" required placeholder="Full name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="clientEmail">Email</label>
+                            <input type="email" id="clientEmail" name="clientEmail" placeholder="Email address">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="clientPhone">Phone</label>
+                            <input type="tel" id="clientPhone" name="clientPhone" placeholder="Phone number">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="clientPlan">Fitness Plan</label>
+                            <select id="clientPlan" name="clientPlan">
+                                <option value="">Select a plan</option>
+                                <option value="Weight Loss">Weight Loss</option>
+                                <option value="Muscle Gain">Muscle Gain</option>
+                                <option value="General Fitness">General Fitness</option>
+                                <option value="Endurance Training">Endurance Training</option>
+                                <option value="Rehabilitation">Rehabilitation</option>
+                                <option value="Custom Plan">Custom Plan</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="clientGoal">Client Goal</label>
+                            <input type="text" id="clientGoal" name="clientGoal" placeholder="Client's primary goal">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="startDate">Start Date</label>
+                            <input type="date" id="startDate" name="startDate">
+                        </div>
+                        
+                        <div class="form-buttons">
+                            <button type="reset" class="reset-btn">Reset</button>
+                            <button type="submit" class="submit-btn">Add Client</button>
+                        </div>
+                    </form>
                 </div>
-            </div>
-            
-            <div id="progressModal" class="modal">
-                <div class="modal-content">
-                    <span class="close-progress-btn">&times;</span>
-                    <h2>Progress for <span id="modal-client-name-progress"></span></h2>
-                    <h3>Workout Plan:</h3>
-                    <ul id="workoutPlanItems">
-                    </ul>
-                    <h3>Progress: <span id="progressPercentage">0%</span></h3>
-                    <button id="saveProgressBtn">Save Progress</button>
+                
+                <!-- Client Table Section -->
+                <div class="client-table-section">
+                    <h2>My Clients</h2>
+                    <table class="clients-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Current Plan</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clientsTableBody">
+                            <!-- Initial client data -->
+                            <tr class="client-row" data-client-id="1" data-workout-plan="Push-ups 10, Squats 12, Plank 60s">
+                                <td data-label="Name">John Doe</td>
+                                <td data-label="Email">john.doe@example.com</td>
+                                <td data-label="Phone">(555) 123-4567</td>
+                                <td data-label="Current Plan">Weight Loss</td>
+                                <td data-label="Actions">
+                                    <button class="action-btn view-btn">View Progress</button>
+                                    <button class="action-btn assign-btn">Assign Workout</button>
+                                    <button class="action-btn delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr class="client-row" data-client-id="2" data-workout-plan="Running 30 mins, Lunges 10 each leg, Crunches 15">
+                                <td data-label="Name">Jane Smith</td>
+                                <td data-label="Email">jane.smith@example.com</td>
+                                <td data-label="Phone">(555) 987-6543</td>
+                                <td data-label="Current Plan">Muscle Gain</td>
+                                <td data-label="Actions">
+                                    <button class="action-btn view-btn">View Progress</button>
+                                    <button class="action-btn assign-btn">Assign Workout</button>
+                                    <button class="action-btn delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                            <tr class="client-row" data-client-id="3" data-workout-plan="Walking 45 mins, Bicep Curls 12, Triceps Extensions 12">
+                                <td data-label="Name">Peter Jones</td>
+                                <td data-label="Email">peter.jones@example.com</td>
+                                <td data-label="Phone">(555) 456-7890</td>
+                                <td data-label="Current Plan">General Fitness</td>
+                                <td data-label="Actions">
+                                    <button class="action-btn view-btn">View Progress</button>
+                                    <button class="action-btn assign-btn">Assign Workout</button>
+                                    <button class="action-btn delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Workout Assignment Modal -->
+                <div id="workoutModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close-btn">&times;</span>
+                        <h2>Assign Workout for <span id="modal-client-name-assign"></span></h2>
+                        <label for="workoutInput">Workout Plan (e.g., Exercise 1 reps, Exercise 2 time):</label>
+                        <textarea id="workoutInput" rows="5" placeholder="e.g., Push-ups 10, Squats 12, Plank 60s"></textarea>
+                        <button id="submitWorkout" data-client-id="">Assign</button>
+                    </div>
+                </div>
+                
+                <!-- Progress View Modal -->
+                <div id="progressModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close-btn">&times;</span>
+                        <h2>Progress for <span id="modal-client-name-progress"></span></h2>
+                        <h3>Workout Plan:</h3>
+                        <div id="workoutPlanItems"></div>
+                        <h3>Progress: <span id="progressPercentage">0%</span></h3>
+                        <button id="saveProgressBtn">Save Progress</button>
+                    </div>
                 </div>
             </div>
 

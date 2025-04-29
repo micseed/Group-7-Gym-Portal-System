@@ -124,189 +124,177 @@ document.addEventListener('click', function(event) {
 });
 
 
-//Modals
-const addClientBtn = document.getElementById("addClientBtn");
-const newClientNameInput = document.getElementById("newClientName");
-const newClientPlanInput = document.getElementById("newClientPlan");
-const clientsTbody = document.querySelector(".clients-tbody");
-const addClientRow = document.getElementById("add-client-row");
+// Initial client ID counter
+let nextClientId = 4;
+        
+// DOM Elements
+const clientForm = document.getElementById('clientForm');
+const clientsTableBody = document.getElementById('clientsTableBody');
+const workoutModal = document.getElementById('workoutModal');
+const progressModal = document.getElementById('progressModal');
+const modalClientNameAssign = document.getElementById('modal-client-name-assign');
+const modalClientNameProgress = document.getElementById('modal-client-name-progress');
+const workoutInput = document.getElementById('workoutInput');
+const submitWorkoutBtn = document.getElementById('submitWorkout');
+const workoutPlanItems = document.getElementById('workoutPlanItems');
+const progressPercentage = document.getElementById('progressPercentage');
+const saveProgressBtn = document.getElementById('saveProgressBtn');
 
-const modalAssign = document.getElementById("workoutModal");
-const closeAssignBtn = document.querySelector(".close-btn");
-const workoutInput = document.getElementById("workoutInput");
-const submitBtn = document.getElementById("submitWorkout");
-const modalClientNameAssign = document.getElementById("modal-client-name-assign");
-
-const viewProgressBtns = document.querySelectorAll('.view-progress-btn');
-const modalProgress = document.getElementById("progressModal");
-const closeProgressBtn = document.querySelector(".close-progress-btn");
-const modalClientNameProgress = document.getElementById("modal-client-name-progress");
-const workoutPlanItemsList = document.getElementById("workoutPlanItems");
-const progressPercentageDisplay = document.getElementById("progressPercentage");
-const saveProgressBtn = document.getElementById("saveProgressBtn");
-
-let nextClientId = 4; 
-const isCoach = true; 
-
-function updateProgress(list) {
-    const checkboxes = list.querySelectorAll('input[type="checkbox"]');
-    const totalItems = checkboxes.length;
-    const completedItems = Array.from(checkboxes).filter(checkbox => checkbox.checked).length;
-    const percentage = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
-    progressPercentageDisplay.textContent = `${percentage}%`;
-}
-
-function attachClientRowListeners(clientRow) {
-    const assignBtn = clientRow.querySelector('.assign-workout-btn');
-    if (assignBtn) {
-        assignBtn.addEventListener("click", (event) => {
-            const row = event.target.closest('.client-row');
-            const clientId = row.dataset.clientId;
-            const clientName = row.querySelector('td:first-child').textContent;
-
-            workoutInput.value = row.dataset.workoutPlan || "";
-            modalClientNameAssign.textContent = clientName;
-            submitBtn.dataset.clientId = clientId;
-            modalAssign.style.display = "block";
-        });
-    }
-
-    const viewProgressBtn = clientRow.querySelector('.view-progress-btn');
-    if (viewProgressBtn) {
-        viewProgressBtn.addEventListener("click", (event) => {
-            const row = event.target.closest('.client-row');
-            const clientName = row.querySelector('td:first-child').textContent;
-            const workoutPlan = row.dataset.workoutPlan;
-
+// Add event listeners to existing client action buttons
+function attachClientRowListeners(row) {
+    // View Progress button
+    const viewBtn = row.querySelector('.view-btn');
+    if (viewBtn) {
+        viewBtn.addEventListener('click', function() {
+            const clientRow = this.closest('.client-row');
+            const clientName = clientRow.querySelector('td[data-label="Name"]').textContent;
+            const workoutPlan = clientRow.dataset.workoutPlan;
+            
+            // Display client name in modal
             modalClientNameProgress.textContent = clientName;
-            workoutPlanItemsList.innerHTML = ''; 
-
-            if (isCoach) {
-                const exercises = workoutPlan ? workoutPlan.split(',').map(item => item.trim()).join('<br>') : 'No workout plan assigned yet.';
-                workoutPlanItemsList.innerHTML = `<p>${exercises}</p>`;
-                progressPercentageDisplay.textContent = '75%';
-                if (saveProgressBtn) {
-                    saveProgressBtn.style.display = 'none';
-                }
+            
+            // Display workout plan
+            workoutPlanItems.innerHTML = '';
+            if (workoutPlan) {
+                const exercises = workoutPlan.split(',').map(item => item.trim());
+                let html = '';
+                exercises.forEach(exercise => {
+                    html += `<div><input type="checkbox" id="${exercise.replace(/\s+/g, '-')}" checked>
+                            <label for="${exercise.replace(/\s+/g, '-')}">${exercise}</label></div>`;
+                });
+                workoutPlanItems.innerHTML = html;
+                progressPercentage.textContent = '75%';
             } else {
-                if (workoutPlan) {
-                    const exercises = workoutPlan.split(',').map(item => item.trim());
-                    exercises.forEach(exercise => {
-                        const listItem = document.createElement('li');
-                        const checkbox = document.createElement('input');
-                        checkbox.type = 'checkbox';
-                        const label = document.createElement('label');
-                        label.textContent = exercise;
-                        listItem.appendChild(checkbox);
-                        listItem.appendChild(label);
-                        workoutPlanItemsList.appendChild(listItem);
-                    });
-                    updateProgress(workoutPlanItemsList);
-                    workoutPlanItemsList.addEventListener('change', () => {
-                        updateProgress(workoutPlanItemsList);
-                    });
-                    if (saveProgressBtn) {
-                        saveProgressBtn.style.display = 'block'; 
-                    }
-                } else {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = 'No workout plan assigned yet.';
-                    workoutPlanItemsList.appendChild(listItem);
-                    progressPercentageDisplay.textContent = '0%';
-                    if (saveProgressBtn) {
-                        saveProgressBtn.style.display = 'none'; 
-                    }
-                }
+                workoutPlanItems.innerHTML = '<p>No workout plan assigned yet.</p>';
+                progressPercentage.textContent = '0%';
             }
-            modalProgress.style.display = "block";
+            
+            // Show the modal
+            progressModal.style.display = 'block';
         });
     }
-
-    const deleteBtn = clientRow.querySelector('.delete-client-btn');
+    
+    // Assign Workout button
+    const assignBtn = row.querySelector('.assign-btn');
+    if (assignBtn) {
+        assignBtn.addEventListener('click', function() {
+            const clientRow = this.closest('.client-row');
+            const clientName = clientRow.querySelector('td[data-label="Name"]').textContent;
+            const clientId = clientRow.dataset.clientId;
+            const currentWorkout = clientRow.dataset.workoutPlan || '';
+            
+            // Set values in the modal
+            modalClientNameAssign.textContent = clientName;
+            workoutInput.value = currentWorkout;
+            submitWorkoutBtn.dataset.clientId = clientId;
+            
+            // Show the modal
+            workoutModal.style.display = 'block';
+        });
+    }
+    
+    // Delete button
+    const deleteBtn = row.querySelector('.delete-btn');
     if (deleteBtn) {
-        deleteBtn.addEventListener("click", (event) => {
-            const rowToRemove = event.target.closest('.client-row');
-            if (rowToRemove) {
-                rowToRemove.remove();
+        deleteBtn.addEventListener('click', function() {
+            if (confirm('Are you sure you want to delete this client?')) {
+                this.closest('.client-row').remove();
             }
         });
     }
 }
 
+// Add event listeners to all existing client rows
 document.querySelectorAll('.client-row').forEach(attachClientRowListeners);
 
-// Add New Client 
-addClientBtn.addEventListener("click", () => {
-    const newName = newClientNameInput.value.trim();
-    const newPlan = newClientPlanInput.value.trim();
-
-    if (newName) {
-        const newClientRow = document.createElement('tr');
-        newClientRow.classList.add('client-row');
-        newClientRow.dataset.clientId = nextClientId++;
-        newClientRow.dataset.workoutPlan = "";
-        newClientRow.innerHTML = `
-            <td>${newName}</td>
-            <td>${newPlan || 'Not Assigned'}</td>
-            <td>
-                <button class="view-progress-btn">View Progress</button>
-                <button class="assign-workout-btn">Assign Workout</button>
-                <button class="delete-client-btn">Delete</button>
-            </td>
-        `;
-        clientsTbody.insertBefore(newClientRow, addClientRow.nextSibling); 
-        attachClientRowListeners(newClientRow);
-
-        newClientNameInput.value = "";
-        newClientPlanInput.value = "";
-    } else {
-        alert("Please enter the client's name.");
-    }
+// Form submission handling
+clientForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Get form values
+    const name = document.getElementById('clientName').value;
+    const email = document.getElementById('clientEmail').value;
+    const phone = document.getElementById('clientPhone').value;
+    const plan = document.getElementById('clientPlan').value;
+    
+    // Create new client row
+    const newRow = document.createElement('tr');
+    newRow.classList.add('client-row', 'highlight-row');
+    newRow.dataset.clientId = nextClientId++;
+    newRow.dataset.workoutPlan = '';
+    
+    // Add content to the row
+    newRow.innerHTML = `
+        <td data-label="Name">${name}</td>
+        <td data-label="Email">${email}</td>
+        <td data-label="Phone">${phone}</td>
+        <td data-label="Current Plan">${plan || 'Not Assigned'}</td>
+        <td data-label="Actions">
+            <button class="action-btn view-btn">View Progress</button>
+            <button class="action-btn assign-btn">Assign Workout</button>
+            <button class="action-btn delete-btn">Delete</button>
+        </td>
+    `;
+    
+    // Add to table
+    clientsTableBody.appendChild(newRow);
+    
+    // Attach event listeners to the new row
+    attachClientRowListeners(newRow);
+    
+    // Reset form
+    this.reset();
+    
+    // Show success message
+    alert('Client added successfully!');
 });
 
-closeAssignBtn.addEventListener("click", () => {
-    modalAssign.style.display = "none";
-});
-
-window.addEventListener("click", (e) => {
-    if (e.target === modalAssign) {
-        modalAssign.style.display = "none";
-    }
-    if (e.target === modalProgress) {
-        modalProgress.style.display = "none";
-    }
-});
-
-closeProgressBtn.addEventListener("click", () => {
-    modalProgress.style.display = "none";
-    const workoutPlanItemsList = document.getElementById("workoutPlanItems");
-    if (!isCoach && workoutPlanItemsList) {
-        workoutPlanItemsList.removeEventListener('change', updateProgress); 
-    }
-});
-
-submitBtn.addEventListener("click", () => {
-    const workout = workoutInput.value.trim();
-    const clientId = submitBtn.dataset.clientId;
-    const clientRow = document.querySelector(`.client-row[data-client-id="${clientId}"]`);
-
-    if (workout && clientId && clientRow) {
-        clientRow.dataset.workoutPlan = workout;
-        clientRow.querySelector('td:nth-child(2)').textContent = workout.split(',')[0] || 'Custom Plan'; 
-        console.log(`Workout "${workout}" assigned to client ID: ${clientId}`);
-        alert(`Workout assigned to client ID: ${clientId}`);
-        modalAssign.style.display = "none";
-    } else {
-        alert("Please enter a workout plan!");
-    }
-});
-
-if (saveProgressBtn) {
-    saveProgressBtn.addEventListener("click", () => {
-        alert('Progress saved for the client.');
-        modalProgress.style.display = "none";
+// Modal close buttons
+const closeButtons = document.querySelectorAll('.close-btn');
+closeButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        this.closest('.modal').style.display = 'none';
     });
-}
+});
+
+// Close modal when clicking outside
+window.addEventListener('click', function(e) {
+    if (e.target.classList.contains('modal')) {
+        e.target.style.display = 'none';
+    }
+});
+
+// Handle workout assignment submission
+submitWorkoutBtn.addEventListener('click', function() {
+    const clientId = this.dataset.clientId;
+    const workout = workoutInput.value.trim();
+    
+    if (clientId && workout) {
+        const clientRow = document.querySelector(`.client-row[data-client-id="${clientId}"]`);
+        if (clientRow) {
+            // Update the client's workout plan
+            clientRow.dataset.workoutPlan = workout;
+            
+            // Update plan display in table if needed
+            const displayName = workout.split(',')[0] || 'Custom Plan';
+            clientRow.querySelector('td[data-label="Current Plan"]').textContent = displayName;
+            
+            // Close modal
+            workoutModal.style.display = 'none';
+            
+            // Show success message
+            alert('Workout plan assigned successfully!');
+        }
+    } else {
+        alert('Please enter a workout plan!');
+    }
+});
+
+// Handle progress save
+saveProgressBtn.addEventListener('click', function() {
+    alert('Progress saved successfully!');
+    progressModal.style.display = 'none';
+});
 
  //Sign out
  document.addEventListener('DOMContentLoaded', function() {
