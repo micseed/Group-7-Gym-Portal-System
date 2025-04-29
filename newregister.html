@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <!-- Essential viewport tag for mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>ENERGIZE - Register</title> <!-- Title might be shown in some app contexts -->
+
+    <!-- Link to the mobile-focused CSS -->
+    <link rel="stylesheet" href="assets/css/stylesregister-mobile.css"> <!-- Renamed CSS for clarity -->
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Removed the inline <style> block -->
+</head>
+<body>
+
+    <!-- Removed the web-style back button. App navigation should handle this. -->
+    <!-- <a href="index.html" class="back-button">← Back</a> -->
+
+    <div class="page-container">
+
+        <!-- Header Section (Replaces the side quote panel) -->
+        <div class="register-header">
+            <div class="header-content">
+                <!-- Optional: Add logo here -->
+                <!-- <img src="assets/img/logo.png" alt="ENERGIZE Logo" class="logo"> -->
+                <h2>Welcome!</h2>
+                <p>Create your ENERGIZE account</p>
+            </div>
+        </div>
+
+        <!-- Form Section -->
+        <div class="register-form-container">
+            <form class="register-form" id="registerForm" novalidate> <!-- Use novalidate if using JS validation -->
+                <h2>New Member Registration</h2>
+
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required placeholder="Enter your full name">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email" inputmode="email">
+                </div>
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required placeholder="Choose a username">
+                </div>
+
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" name="age" required placeholder="Enter your age" inputmode="numeric">
+                    <p class="error-message" id="ageError"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Create a password (min. 8 chars)" minlength="8">
+                    <p class="error-message" id="passwordError"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" name="confirm-password" required placeholder="Confirm your password">
+                    <p class="error-message" id="confirmPasswordError"></p>
+                </div>
+
+                <button type="submit" class="register-button">Register</button>
+
+                <p class="login-link">Already have an account? <a href="login.html">Login here</a></p>
+                <!-- Note: Navigation to login.html might also need app-specific handling -->
+
+            </form>
+        </div>
+
+    </div> <!-- End page-container -->
+
+    <!-- Link to JS (ensure path is correct) -->
+    <script src="assets/js/register.js"></script>
+
+</body>
+</html>
