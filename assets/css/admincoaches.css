@@ -430,6 +430,9 @@ margin-right: 5px;
   border-radius: 10px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
+  width: 96%;
+  justify-self: center;
+  margin-top: 3%;
 }
 
 .form-section h3 {
@@ -500,6 +503,8 @@ margin-right: 5px;
   border-radius: 10px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
+  width: 96%;
+  justify-self: center;
 }
 
 .view-coaches-container h2 {
@@ -706,3 +711,90 @@ table tbody tr:hover {
     margin: 10% auto;
   }
 }
+
+/* Modal Styles for Sign out*/
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 1000; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgba(0,0,0,0.4); 
+  backdrop-filter: blur(5px);
+  justify-content: center;
+  align-items: center;
+  }
+
+  .modal.show {
+  display: flex; 
+  }
+
+  .modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; 
+  padding: 30px;
+  border: 1px solid #888;
+  width: 600px; 
+  max-width: 400px; 
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+  }
+
+  .modal-header {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 20px;
+  }
+
+  .modal-title {
+  font-size: 1.5em;
+  color: #333;
+  font-weight: bold;
+  }
+
+  .modal-body {
+  font-size: 1.1em;
+  color: #555;
+  margin-bottom: 20px;
+  }
+
+  .modal-footer.sign-out-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  }
+
+  .modal-button {
+  background-color: #007bff; 
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  }
+
+  .modal-button:hover {
+  background-color: #0056b3;
+  }
+
+  .modal-button.yes-button {
+  background-color: #203A93;
+  }
+
+  .modal-button.yes-button:hover {
+  background-color: #c82333;
+  }
+
+  .modal-button.no-button {
+  background-color: #F1D27C;
+  }
+
+  .modal-button.no-button:hover {
+  background-color: #5a6268;
+  }

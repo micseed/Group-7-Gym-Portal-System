@@ -6,75 +6,375 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
-    <title>Coach Dashboard</title>
+    <title>Coach Dashboard - Clients</title>
     <!-- ======= Styles ====== -->
-    <link rel="stylesheet" href="assets/css/coachclient.css">
+    <!-- <link rel="stylesheet" href="assets/css/coachclient.css"> --> <!-- Removed link -->
+    <style>
+        /* =============== Globals ============== */
+        * {
+            font-family: "Poppins", sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --blue: #203A93;
+            --white: #fff;
+            --gray: #f5f5f5;
+            --black1: #222;
+            --black2: #999;
+            --yellow: #F1D27C;
+            --light-blue: #e8eeff;
+            --red: #ff6b6b;
+            --green: #4caf50;
+            --orange: #ff9800;
+        }
+
+        body {
+            background-color: var(--gray);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+        }
+
+        /* =============== Navigation ================ */
+        .navigation {
+            position: fixed;
+            width: 300px;
+            height: 100%;
+            background: var(--blue);
+            border-left: 10px solid var(--blue);
+            transition: 0.5s;
+            overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 100;
+        }
+        .navigation.active { width: 80px; }
+        .navigation ul { position: absolute; top: 0; left: 0; width: 100%; padding-left: 0; }
+        .navigation ul li { position: relative; width: 100%; list-style: none; border-top-left-radius: 30px; border-bottom-left-radius: 30px; }
+        .navigation ul li:hover, .navigation ul li.hovered { background-color: var(--white); }
+        .navigation ul li:nth-child(1) { margin-bottom: 40px; pointer-events: none; }
+        .navigation ul li a { position: relative; display: block; width: 100%; display: flex; text-decoration: none; color: var(--white); transition: color 0.3s; }
+        .navigation ul li:hover a, .navigation ul li.hovered a { color: var(--blue); }
+        .navigation ul li a .icon { position: relative; display: block; min-width: 60px; height: 60px; line-height: 75px; text-align: center; }
+        .navigation ul li a .icon ion-icon { font-size: 1.75rem; }
+        .navigation ul li a .title { position: relative; display: block; padding: 0 10px; height: 60px; line-height: 60px; text-align: start; white-space: nowrap; }
+        .navigation ul li:hover a::before, .navigation ul li.hovered a::before { content: ""; position: absolute; right: 0; top: -50px; width: 50px; height: 50px; background-color: transparent; border-radius: 50%; box-shadow: 35px 35px 0 10px var(--white); pointer-events: none; }
+        .navigation ul li:hover a::after, .navigation ul li.hovered a::after { content: ""; position: absolute; right: 0; bottom: -50px; width: 50px; height: 50px; background-color: transparent; border-radius: 50%; box-shadow: 35px -35px 0 10px var(--white); pointer-events: none; }
+
+        /* ===================== Main ===================== */
+        .main {
+            position: absolute;
+            width: calc(100% - 300px);
+            left: 300px;
+            min-height: 100vh;
+            background: var(--white);
+            transition: 0.5s;
+            padding: 20px;
+        }
+        .main.active { width: calc(100% - 80px); left: 80px; }
+
+        /* ===================== Topbar ===================== */
+        .topbar {
+            width: 100%; height: 60px; display: flex; align-items: center; padding: 0 10px; justify-content: space-between;
+            background: var(--white); border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 90;
+        }
+        .toggle { position: relative; width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; font-size: 2.5rem; cursor: pointer; color: var(--black1); }
+
+        /* Search */
+        .search-container { position: relative; flex-grow: 1; max-width: 600px; margin: 0 15px; }
+        .search-container label { display: flex; align-items: center; width: 100%; border: 1px solid #ccc; border-radius: 15px; overflow: hidden; background-color: var(--white); }
+        #search-input { flex-grow: 1; padding: 8px 15px; border: none; outline: none; font-size: 1rem; box-sizing: border-box; }
+        .search-container label ion-icon { padding: 0 10px; font-size: 1.2rem; color: #777; }
+        #search-results { position: absolute; top: calc(100% + 5px); left: 0; right: 0; background-color: #fff; border: 1px solid #ccc; border-radius: 8px; margin-top: 2px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); z-index: 110; display: none; overflow: hidden; max-height: 300px; overflow-y: auto; }
+        #search-results ul { list-style: none; padding: 8px 0; margin: 0; }
+        #search-results li { padding: 10px 16px; cursor: pointer; transition: background-color 0.2s ease; font-size: 0.95em; color: #333; }
+        #search-results li:hover { background-color: #f5f5f5; color: #222; }
+        #search-results li:active { background-color: #eee; }
+        #search-results li span.highlight { font-weight: bold; color: #007bff; }
+
+        /* Topbar Icons & User */
+        .topbar-icons { display: flex; align-items: center; gap: 15px; }
+        .mail-container, .notification-container { position: relative; display: flex; align-items: center; }
+        #mail-icon-inbox, #notification-icon { font-size: 25px; color: var(--blue); cursor: pointer; transition: opacity 0.3s; }
+        #mail-icon-inbox:hover, #notification-icon:hover { opacity: 0.7; }
+        #unread-notification, #notification-badge { position: absolute; top: -5px; right: -5px; background-color: var(--red); color: white; font-size: 11px; border-radius: 50%; width: 16px; height: 16px; text-align: center; line-height: 16px; font-weight: bold; display: block; }
+        #notification-badge { background-color: orange; }
+        #inbox-preview, #notifications-dropdown { position: absolute; top: calc(100% + 10px); right: -10px; background-color: #f9f9f9; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); width: 280px; padding: 15px; display: none; z-index: 110; text-align: left; max-height: 350px; overflow-y: auto; }
+        #inbox-preview strong, #notifications-dropdown strong { display: block; margin-bottom: 8px; font-size: 1.1em; color: var(--black1); }
+        .email-item, .notification-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 4px 0; font-size: 0.9em; }
+        .email-item.sender, .notification-item.title { font-weight: bold; }
+        .email-item.subject, .notification-item.message { color: #555; font-size: 0.85em; }
+        .notification-item.title { margin-top: 5px; font-size: 0.8em; color: var(--black2); }
+        #inbox-preview hr, #notifications-dropdown hr { margin: 8px 0; border: 0; border-top: 1px solid #eee; }
+        #inbox-preview a, #notifications-dropdown a { display: block; margin-top: 10px; font-size: 0.85em; text-align: center; color: #007bff; text-decoration: none; padding-top: 5px; }
+        #inbox-preview a:hover, #notifications-dropdown a:hover { text-decoration: underline; }
+        .user-info { display: flex; align-items: center; gap: 10px; margin-left: 15px; }
+        .user-info .name { color: var(--black1); font-weight: 500; white-space: nowrap; }
+        .user { position: relative; min-width: 40px; width: 40px; height: 40px; border-radius: 50%; overflow: hidden; cursor: pointer; }
+        .user img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+
+        /* ============ Modal Styles (Consistent) ============ */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 1000; justify-content: center; align-items: center; overflow: auto; transition: opacity 0.3s ease; backdrop-filter: blur(3px); opacity: 0; pointer-events: none; }
+        .modal-overlay.active { display: flex; opacity: 1; pointer-events: auto; }
+        .modal { background-color: #fff; border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); width: 90%; max-width: 550px; /* Default modal width */ margin: auto; transform: scale(0.95) translateY(10px); transition: transform 0.3s ease, opacity 0.3s ease; overflow: hidden; opacity: 0; display: none; }
+        .modal-overlay.active .modal { display: block; transform: scale(1) translateY(0); opacity: 1; }
+        /* Specific Modal Sizes */
+        #signOutModal .modal { max-width: 440px; }
+        #addClientSuccessModal .modal { max-width: 450px; }
+        #deleteConfirmModal .modal { max-width: 450px; }
+        #progressModal .modal { max-width: 600px; }
+        .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid #eaeaea; display: flex; justify-content: space-between; align-items: center; background-color: #f8f9fa; }
+        .modal-title { font-size: 1.35rem; font-weight: 600; margin: 0; color: var(--blue); }
+        .modal-close { cursor: pointer; font-size: 1.8rem; color: #999; border: none; background: none; padding: 0; line-height: 1; transition: color 0.2s ease; }
+        .modal-close:hover { color: #555; }
+         /* Modal Body Styles */
+         .modal-body {
+            padding: 1.5rem;
+            font-size: 1rem;
+            color: #555;
+            line-height: 1.6;
+            max-height: 70vh;
+            overflow-y: auto;
+            /* Default text alignment (usually left) */
+            text-align: left;
+        }
+        #signOutModal .modal-body,
+        #deleteConfirmModal .modal-body,
+        #addClientSuccessModal .modal-body {
+            text-align: center; /* Center text and inline/inline-block elements */
+        }
+         #addClientSuccessModal .modal-body { text-align: center; }
+        .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid #eaeaea; display: flex; justify-content: flex-end; gap: 12px; background-color: #f8f9fa; }
+        .modal-button { padding: 0.6rem 1.2rem; border-radius: 6px; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease; border: none; }
+        .no-button { background-color: var(--yellow); color: var(--black1); }
+        .no-button:hover { background-color: #e4c370; }
+        .yes-button { background-color: var(--blue); color: white; }
+        .yes-button:hover { background-color: #182c7a; }
+         .delete-confirm-button { background-color: var(--red); color: white; } /* Delete confirm */
+         .delete-confirm-button:hover { background-color: #d32f2f; }
+         .ok-button { background-color: var(--green); color: white; } /* Success OK */
+         .ok-button:hover { background-color: #45a049; }
+
+        /* =============== COACH CLIENTS PAGE SPECIFIC STYLES ============== */
+        .client-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(96%, 1fr)); /* Responsive */
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .client-form-section,
+        .client-table-section {
+            background-color: var(--white);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            min-width: 0; /* Prevent grid blowout */
+        }
+
+        .client-form-section h2,
+        .client-table-section h2 {
+            color: var(--blue); margin-bottom: 20px; padding-bottom: 10px;
+            border-bottom: 1px solid #eee; font-size: 1.4rem; font-weight: 600;
+        }
+
+        /* Form Styles */
+        .client-form .form-group { margin-bottom: 15px; }
+        .client-form label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.95rem; color: var(--black1); }
+        .client-form input[type="text"], .client-form input[type="email"], .client-form input[type="tel"],
+        .client-form input[type="date"], .client-form select, .client-form textarea {
+            width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s; outline: none;
+        }
+        .client-form input:focus, .client-form select:focus, .client-form textarea:focus {
+            border-color: var(--blue); box-shadow: 0 0 0 2px rgba(32, 58, 147, 0.2);
+        }
+        .client-form select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23aaa'%3E%3Cpath fill-rule='evenodd' d='M8 11.5a.5.5 0 0 1-.354-.146l-4-4a.5.5 0 0 1 .708-.708L8 10.293l3.646-3.647a.5.5 0 0 1 .708.708l-4 4A.5.5 0 0 1 8 11.5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px 16px; padding-right: 35px; }
+        .form-buttons { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
+        .form-buttons button { padding: 10px 20px; border: none; border-radius: 6px; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: background-color 0.3s, box-shadow 0.3s; }
+        .reset-btn { background-color: var(--yellow); color: var(--black1); }
+        .reset-btn:hover { background-color: #e0c36b; }
+        .submit-btn { background-color: var(--blue); color: var(--white); }
+        .submit-btn:hover { background-color: #182c7a; box-shadow: 0 2px 5px rgba(0,0,0,0.15);}
+
+        /* Table Styles */
+        .client-table-section { grid-column: 1 / -1; } /* Span full width when possible */
+        .table-wrapper { overflow-x: auto; width: 100%; margin-top: 10px; }
+        .clients-table { width: 100%; border-collapse: collapse; min-width: 700px; } /* Increased min-width */
+        .clients-table thead { background-color: var(--light-blue); }
+        .clients-table th, .clients-table td { padding: 12px 10px; text-align: left; border-bottom: 1px solid #eee; font-size: 0.9rem; white-space: nowrap; /* Prevent wrapping */}
+        .clients-table th { color: var(--blue); font-weight: 600; }
+        .clients-table tbody tr:hover { background-color: #f9f9f9; }
+        .clients-table td[data-label="Actions"] { white-space: normal; } /* Allow actions to wrap if needed */
+
+        /* Action Buttons in Table */
+        .clients-table .action-btn {
+            padding: 5px 8px; /* Adjusted padding */ border: none; border-radius: 4px; cursor: pointer;
+            font-size: 1.1rem; /* Use icons size */ margin-right: 6px; transition: opacity 0.2s;
+            background: none; /* Make buttons transparent */ color: var(--black2); /* Default icon color */
+            line-height: 1; vertical-align: middle;
+        }
+         .clients-table .action-btn:hover { opacity: 0.7; }
+         .clients-table .action-btn:last-child { margin-right: 0; }
+        .view-btn:hover { color: var(--green); }
+        .assign-btn:hover { color: var(--orange); }
+        .delete-btn:hover { color: var(--red); }
+
+        /* Modal Content Specific */
+        /* Workout Assignment */
+        #workoutModal label, #progressModal h3 { display: block; margin-bottom: 8px; font-weight: 500; font-size: 1rem; }
+        #workoutModal textarea { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; resize: vertical; min-height: 100px; margin-bottom: 15px; font-size: 0.95rem;}
+        #workoutModal .modal-footer button, #progressModal .modal-footer button { width: auto; /* Allow natural button width */ } /* Override full width */
+        /* Progress View */
+        #workoutPlanItems { margin-bottom: 20px; font-size: 0.95rem; line-height: 1.6; text-align: left; max-height: 30vh; overflow-y: auto;}
+        #workoutPlanItems div { margin-bottom: 10px; display: flex; align-items: center;}
+        #workoutPlanItems input[type="checkbox"] { margin-right: 10px; width: 18px; height: 18px; accent-color: var(--blue); flex-shrink: 0;}
+        #workoutPlanItems label { display: inline; margin-left: 0; font-weight: normal; color: var(--black1); }
+        #progressPercentage { font-weight: bold; color: var(--blue); font-size: 1.1rem;}
+        #progressModal .modal-body h3 { margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;}
+         /* Success Modal Specific */
+        #addClientSuccessModal .modal-body, #deleteConfirmModal .modal-body { text-align: center;}
+        .success-icon {
+            display: block; /* Make the icon a block element */
+            margin: 0 auto 15px auto; /* Center the block element horizontally and add bottom margin */
+            font-size: 4rem;        /* Make icon larger */
+            color: var(--green);
+            line-height: 1;        /* Adjust line height for better spacing */
+        }
+        #addClientSuccessModal .modal-body {
+              padding-top: 2rem;
+              padding-bottom: 2rem;
+         }
+        #addClientSuccessModal .modal-body p {
+             margin-bottom: 0; /* Remove paragraph bottom margin if needed */
+        }
+
+
+        /* ================== Responsive Design Adjustments ================== */
+        @media (max-width: 991px) { /* Tablets */
+             .navigation { left: -300px; z-index: 1001; }
+             .navigation.active { width: 300px; left: 0; }
+             .main { width: 100%; left: 0; padding: 15px; }
+             .main.active { left: 0; width: 100%; }
+             .topbar { padding: 0 15px; width: 100%; left: 0; }
+             .topbar.active { width: 100%; left: 0; }
+             .search-container { max-width: 400px; margin: 0 10px; }
+             .user-info .name { display: none; }
+             .topbar-icons { gap: 12px; }
+             #mail-icon-inbox, #notification-icon { font-size: 23px; }
+
+             .client-container { grid-template-columns: 1fr; } /* Stack form and table */
+             .client-table-section { grid-column: auto; }
+        }
+
+        @media (max-width: 767px) { /* Small Tablets / Large Phones */
+             .modal-content { max-width: 90%; padding: 20px; }
+             .modal-footer { flex-direction: column; gap: 10px; }
+             .modal-button { width: 100%; } /* Full width modal buttons */
+             .topbar { padding: 0 10px; }
+             .search-container { max-width: 250px; }
+
+             .client-form-section, .client-table-section { padding: 20px; }
+             .client-form-section h2, .client-table-section h2 { font-size: 1.3rem; }
+             .form-buttons { flex-direction: column; } /* Stack form buttons */
+             .form-buttons button { width: 100%; }
+
+             /* Mobile Table Transformation */
+             .clients-table thead { display: none; }
+             .clients-table, .clients-table tbody, .clients-table tr, .clients-table td { display: block; width: 100%; }
+             .clients-table tr { margin-bottom: 15px; border: 1px solid #eee; border-radius: 8px; padding: 15px; background: var(--white); }
+             .clients-table tr:hover { background: var(--light-blue); }
+             .clients-table td {
+                 text-align: right; padding-left: 40%; position: relative; padding-top: 8px; padding-bottom: 8px;
+                 border: none; display: flex; justify-content: flex-end; align-items: center; min-height: 30px;
+                 white-space: normal; /* Allow wrapping in cells */
+             }
+             .clients-table td[data-label="Actions"] { padding-left: 0; justify-content: center; padding-top: 15px;}
+             .clients-table td::before {
+                 content: attr(data-label); position: absolute; left: 15px; width: calc(40% - 20px);
+                 padding-right: 10px; white-space: nowrap; text-align: left; font-weight: 600;
+                 color: var(--black1); font-size: 0.85rem;
+             }
+             .clients-table td[data-label="Actions"]::before { display: none; }
+             .clients-table .action-btn { margin-right: 8px; font-size: 1.2rem; /* Increase icon size slightly */ }
+        }
+
+        @media (max-width: 479px) { /* Phones */
+             .main { padding: 10px; }
+             .toggle { font-size: 2rem; }
+             .search-container { display: none; }
+             .topbar-icons { margin-left: auto; gap: 10px; }
+             .user-info { margin-left: 10px; }
+             .user { width: 35px; height: 35px; min-width: 35px; }
+             #inbox-preview, #notifications-dropdown { width: 250px; right: 0; }
+             .modal { max-width: 95%; padding: 15px; }
+             .modal-title { font-size: 1.2em; }
+             .modal-body { padding: 1rem; font-size: 0.95rem; }
+             .modal-footer { padding: 0.75rem 1rem; }
+
+             .client-container { gap: 15px; }
+             .client-form-section, .client-table-section { padding: 15px; }
+             .client-form-section h2, .client-table-section h2 { font-size: 1.2rem; }
+             .client-form input, .client-form select, .client-form textarea { font-size: 0.95rem; padding: 8px 10px; }
+             .form-buttons button { font-size: 0.9rem; padding: 8px 15px; }
+             .clients-table td { font-size: 0.9rem; padding-left: 45%;}
+             .clients-table td::before { width: calc(45% - 15px); font-size: 0.8rem;}
+             .clients-table .action-btn { font-size: 1.1rem; }
+        }
+    </style>
 </head>
 
 <body>
     <!-- =============== Navigation ================ -->
     <div class="container">
         <div class="navigation">
-            <ul>
+             <ul>
                 <li>
                     <a href="#">
-                        <span class="icon">
-                            <ion-icon name="barbell"></ion-icon>
-                        </span>
+                        <span class="icon"><ion-icon name="barbell"></ion-icon></span>
                         <span class="title">ENERGIZE</span>
                     </a>
                 </li>
-
                 <li>
                     <a href="coachmain.html">
-                        <span class="icon">
-                            <ion-icon name="home-outline"></ion-icon>
-                        </span>
+                        <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
                         <span class="title">Dashboard</span>
                     </a>
                 </li>
-
-                <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="people-outline"></ion-icon>
-                        </span>
+                <!-- Hovered Class -->
+                <li class="hovered">
+                    <a href="coachclient.html">
+                        <span class="icon"><ion-icon name="people-outline"></ion-icon></span>
                         <span class="title">Clients</span>
                     </a>
                 </li>
-
                 <li>
                     <a href="coachmessages.html">
-                        <span class="icon">
-                            <ion-icon name="chatbubble-outline"></ion-icon>
-                        </span>
+                        <span class="icon"><ion-icon name="chatbubble-outline"></ion-icon></span>
                         <span class="title">Messages</span>
                     </a>
                 </li>
-
                 <li>
                     <a href="coachschedule.html">
-                        <span class="icon">
-                            <ion-icon name="calendar-outline"></ion-icon>
-                        </span>
+                        <span class="icon"><ion-icon name="calendar-outline"></ion-icon></span>
                         <span class="title">Your Schedule</span>
                     </a>
                 </li>
-
                 <li>
                     <a href="coachsettings.html">
-                        <span class="icon">
-                            <ion-icon name="settings-outline"></ion-icon>
-                        </span>
+                        <span class="icon"><ion-icon name="settings-outline"></ion-icon></span>
                         <span class="title">Settings</span>
                     </a>
                 </li>
-
                 <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="log-out-outline"></ion-icon>
-                        </span>
+                    <a href="#" id="signOutLink"> <!-- ID for JS -->
+                        <span class="icon"><ion-icon name="log-out-outline"></ion-icon></span>
                         <span class="title">Sign Out</span>
                     </a>
                 </li>
@@ -84,64 +384,42 @@
         <!-- ========================= Main ==================== -->
         <div class="main">
             <div class="topbar">
-                <div class="toggle">
-                    <ion-icon name="menu-outline"></ion-icon>
-                </div>
-
-                <div class="search-container">
-                    <label>
-                      <input type="text" id="search-input" placeholder="Search what you're looking for">
-                      <ion-icon name="search-outline"></ion-icon>
-                    </label>
-                    <div id="search-results">
-                    </div>
-                  </div>
-                  
-                <div class="mail-container">
-                    <ion-icon name="mail" id="mail-icon-inbox"></ion-icon>
-                    <div id="unread-notification">1</div>
-                    <div id="inbox-preview">
-                    <strong>Inbox</strong>
-                    <hr>
-                    <div id="unread-messages">
-                        <div class="email-item sender">Coach</div>
-                        <div class="email-item subject">Can you help me?</div>
-                        <hr>
-                    </div>
-                    <div id="read-messages">
-                        <div class="email-item sender">Client 1</div>
-                        <div class="email-item subject">Previous message...</div>
-                    </div>
-                    <a href="#">See All</a>
-                    </div>
-                </div>
-
-                <div class="notification-container">
-                    <ion-icon name="notifications" id="notification-icon"></ion-icon>
-                    <div id="notification-badge">1</div>
-                    <div id="notifications-dropdown">
-                      <strong>Notifications</strong>
-                      <hr>
-                      <div id="notification-list">
-                        <div class="notification-item title">Today, 5:00 PM</div>
-                        <div class="notification-item message">You have a session scheduled.</div>
-                        <hr>
-                        <div class="notification-item title">New Request</div>
-                        <div class="notification-item message">Micah has requested a session with you.</div>
-                      </div>
-                      <a href="#">See All</a>
-                    </div>
-                  </div>
-            
-                <div class="name">
-                    <p>Edward Linkin</p>
-                </div>
-    
-                <div class="user">
-                    <img src="assets/img/customer01.jpg" alt="">
-                </div>                
+                 <div class="toggle"><ion-icon name="menu-outline"></ion-icon></div>
+                 <div class="search-container">
+                     <label>
+                       <input type="text" id="search-input" placeholder="Search clients...">
+                       <ion-icon name="search-outline"></ion-icon>
+                     </label>
+                     <div id="search-results"></div>
+                 </div>
+                 <div class="topbar-icons">
+                     <div class="mail-container">
+                         <ion-icon name="mail-outline" id="mail-icon-inbox"></ion-icon>
+                         <div id="unread-notification" style="display: block;">1</div>
+                         <div id="inbox-preview">
+                              <strong>Inbox</strong><hr>
+                              <div id="unread-messages"><div class="email-item sender">Coach</div><div class="email-item subject">Can you help me?</div><hr></div>
+                              <div id="read-messages"><div class="email-item sender">Client 1</div><div class="email-item subject">Previous message...</div></div>
+                              <a href="#">See All</a>
+                         </div>
+                     </div>
+                     <div class="notification-container">
+                         <ion-icon name="notifications-outline" id="notification-icon"></ion-icon>
+                         <div id="notification-badge" style="display: block;">1</div>
+                         <div id="notifications-dropdown">
+                              <strong>Notifications</strong><hr>
+                              <div id="notification-list"><div class="notification-item title">Today, 5:00 PM</div><div class="notification-item message">You have a session scheduled.</div><hr><div class="notification-item title">New Request</div><div class="notification-item message">Micah has requested a session.</div></div>
+                              <a href="#">See All</a>
+                         </div>
+                     </div>
+                 </div>
+                 <div class="user-info">
+                     <div class="name"><p>Edward Linkin</p></div>
+                     <div class="user"><img src="assets/img/customer01.jpg" alt="Coach Avatar"></div>
+                 </div>
             </div>
 
+            <!-- ================== Client Management Content ================== -->
             <div class="client-container">
                 <!-- Client Form Section -->
                 <div class="client-form-section">
@@ -151,17 +429,14 @@
                             <label for="clientName">Client Name*</label>
                             <input type="text" id="clientName" name="clientName" required placeholder="Full name">
                         </div>
-                        
                         <div class="form-group">
                             <label for="clientEmail">Email</label>
                             <input type="email" id="clientEmail" name="clientEmail" placeholder="Email address">
                         </div>
-                        
                         <div class="form-group">
                             <label for="clientPhone">Phone</label>
                             <input type="tel" id="clientPhone" name="clientPhone" placeholder="Phone number">
                         </div>
-                        
                         <div class="form-group">
                             <label for="clientPlan">Fitness Plan</label>
                             <select id="clientPlan" name="clientPlan">
@@ -174,121 +449,537 @@
                                 <option value="Custom Plan">Custom Plan</option>
                             </select>
                         </div>
-                        
                         <div class="form-group">
                             <label for="clientGoal">Client Goal</label>
                             <input type="text" id="clientGoal" name="clientGoal" placeholder="Client's primary goal">
                         </div>
-                        
                         <div class="form-group">
                             <label for="startDate">Start Date</label>
                             <input type="date" id="startDate" name="startDate">
                         </div>
-                        
                         <div class="form-buttons">
                             <button type="reset" class="reset-btn">Reset</button>
                             <button type="submit" class="submit-btn">Add Client</button>
                         </div>
                     </form>
                 </div>
-                
+
                 <!-- Client Table Section -->
                 <div class="client-table-section">
                     <h2>My Clients</h2>
-                    <table class="clients-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Current Plan</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="clientsTableBody">
-                            <!-- Initial client data -->
-                            <tr class="client-row" data-client-id="1" data-workout-plan="Push-ups 10, Squats 12, Plank 60s">
-                                <td data-label="Name">John Doe</td>
-                                <td data-label="Email">john.doe@example.com</td>
-                                <td data-label="Phone">(555) 123-4567</td>
-                                <td data-label="Current Plan">Weight Loss</td>
-                                <td data-label="Actions">
-                                    <button class="action-btn view-btn">View Progress</button>
-                                    <button class="action-btn assign-btn">Assign Workout</button>
-                                    <button class="action-btn delete-btn">Delete</button>
-                                </td>
-                            </tr>
-                            <tr class="client-row" data-client-id="2" data-workout-plan="Running 30 mins, Lunges 10 each leg, Crunches 15">
-                                <td data-label="Name">Jane Smith</td>
-                                <td data-label="Email">jane.smith@example.com</td>
-                                <td data-label="Phone">(555) 987-6543</td>
-                                <td data-label="Current Plan">Muscle Gain</td>
-                                <td data-label="Actions">
-                                    <button class="action-btn view-btn">View Progress</button>
-                                    <button class="action-btn assign-btn">Assign Workout</button>
-                                    <button class="action-btn delete-btn">Delete</button>
-                                </td>
-                            </tr>
-                            <tr class="client-row" data-client-id="3" data-workout-plan="Walking 45 mins, Bicep Curls 12, Triceps Extensions 12">
-                                <td data-label="Name">Peter Jones</td>
-                                <td data-label="Email">peter.jones@example.com</td>
-                                <td data-label="Phone">(555) 456-7890</td>
-                                <td data-label="Current Plan">General Fitness</td>
-                                <td data-label="Actions">
-                                    <button class="action-btn view-btn">View Progress</button>
-                                    <button class="action-btn assign-btn">Assign Workout</button>
-                                    <button class="action-btn delete-btn">Delete</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-wrapper"> <!-- Added Wrapper -->
+                        <table class="clients-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Current Plan</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clientsTableBody">
+                                <!-- Initial client data (data-label added by JS) -->
+                                <tr class="client-row" data-client-id="1" data-workout-plan="Push-ups 10, Squats 12, Plank 60s">
+                                    <td>John Doe</td>
+                                    <td>john.doe@example.com</td>
+                                    <td>(555) 123-4567</td>
+                                    <td>Weight Loss</td>
+                                    <td>
+                                        <button class="action-btn view-btn" title="View Progress"><ion-icon name="eye-outline"></ion-icon></button>
+                                        <button class="action-btn assign-btn" title="Assign Workout"><ion-icon name="clipboard-outline"></ion-icon></button>
+                                        <button class="action-btn delete-btn" title="Delete Client"><ion-icon name="trash-outline"></ion-icon></button>
+                                    </td>
+                                </tr>
+                                 <tr class="client-row" data-client-id="2" data-workout-plan="Running 30 mins, Lunges 10 each leg, Crunches 15">
+                                    <td>Jane Smith</td>
+                                    <td>jane.smith@example.com</td>
+                                    <td>(555) 987-6543</td>
+                                    <td>Muscle Gain</td>
+                                    <td>
+                                        <button class="action-btn view-btn" title="View Progress"><ion-icon name="eye-outline"></ion-icon></button>
+                                        <button class="action-btn assign-btn" title="Assign Workout"><ion-icon name="clipboard-outline"></ion-icon></button>
+                                        <button class="action-btn delete-btn" title="Delete Client"><ion-icon name="trash-outline"></ion-icon></button>
+                                    </td>
+                                </tr>
+                                <tr class="client-row" data-client-id="3" data-workout-plan="Walking 45 mins, Bicep Curls 12, Triceps Extensions 12">
+                                    <td>Peter Jones</td>
+                                    <td>peter.jones@example.com</td>
+                                    <td>(555) 456-7890</td>
+                                    <td>General Fitness</td>
+                                    <td>
+                                        <button class="action-btn view-btn" title="View Progress"><ion-icon name="eye-outline"></ion-icon></button>
+                                        <button class="action-btn assign-btn" title="Assign Workout"><ion-icon name="clipboard-outline"></ion-icon></button>
+                                        <button class="action-btn delete-btn" title="Delete Client"><ion-icon name="trash-outline"></ion-icon></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div> <!-- End Table Wrapper -->
                 </div>
-                
-                <!-- Workout Assignment Modal -->
-                <div id="workoutModal" class="modal">
-                    <div class="modal-content">
-                        <span class="close-btn">&times;</span>
-                        <h2>Assign Workout for <span id="modal-client-name-assign"></span></h2>
-                        <label for="workoutInput">Workout Plan (e.g., Exercise 1 reps, Exercise 2 time):</label>
-                        <textarea id="workoutInput" rows="5" placeholder="e.g., Push-ups 10, Squats 12, Plank 60s"></textarea>
-                        <button id="submitWorkout" data-client-id="">Assign</button>
-                    </div>
-                </div>
-                
-                <!-- Progress View Modal -->
-                <div id="progressModal" class="modal">
-                    <div class="modal-content">
-                        <span class="close-btn">&times;</span>
-                        <h2>Progress for <span id="modal-client-name-progress"></span></h2>
-                        <h3>Workout Plan:</h3>
-                        <div id="workoutPlanItems"></div>
-                        <h3>Progress: <span id="progressPercentage">0%</span></h3>
-                        <button id="saveProgressBtn">Save Progress</button>
-                    </div>
-                </div>
-            </div>
+            </div> <!-- End client-container -->
 
-            <div id="signOutModal" class="modal">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h2 class="modal-title">Sign Out</h2>
-                    </div>
-                    <div class="modal-body">
-                        <p>Are you sure you want to sign out?</p>
-                    </div>
-                    <div class="modal-footer sign-out-actions">
-                        <button class="modal-button no-button" id="signOutNo">No</button>
-                        <button class="modal-button yes-button" id="signOutYes">Yes</button>
-                    </div>
-                </div>
-            </div>
-            
-           
+        </div> <!-- End main -->
 
+        <!-- ============ Modals ============ -->
+        <!-- Sign Out Modal -->
+        <div class="modal-overlay" id="signOutModalOverlay">
+             <div class="modal" id="signOutModal">
+                 <div class="modal-header">
+                     <h3 class="modal-title">Sign Out</h3>
+                      <button type="button" class="modal-close" aria-label="Close modal"><ion-icon name="close-outline"></ion-icon></button>
+                 </div>
+                 <div class="modal-body">
+                     <p>Are you sure you want to sign out?</p>
+                 </div>
+                 <div class="modal-footer">
+                     <button type="button" class="modal-button no-button" id="signOutNo">Cancel</button>
+                     <button type="button" class="modal-button yes-button" id="signOutYes">Sign Out</button>
+                 </div>
+             </div>
+        </div>
+
+        <!-- Workout Assignment Modal -->
+        <div id="workoutModalOverlay" class="modal-overlay">
+            <div class="modal" id="workoutModal">
+                <div class="modal-header">
+                    <h2 class="modal-title">Assign Workout for <span id="modal-client-name-assign"></span></h2>
+                     <button type="button" class="modal-close" aria-label="Close modal"><ion-icon name="close-outline"></ion-icon></button>
+                </div>
+                 <div class="modal-body">
+                    <label for="workoutInput">Workout Plan (e.g., Exercise 1 reps, Exercise 2 time):</label>
+                    <textarea id="workoutInput" rows="5" placeholder="e.g., Push-ups 10, Squats 12, Plank 60s"></textarea>
+                 </div>
+                 <div class="modal-footer">
+                      
+                      <button type="button" class="modal-button yes-button" id="submitWorkout" data-client-id="">Assign</button>
+                 </div>
+            </div>
+        </div>
+
+        <!-- Progress View Modal -->
+        <div id="progressModalOverlay" class="modal-overlay">
+            <div class="modal" id="progressModal">
+                 <div class="modal-header">
+                     <h2 class="modal-title">Progress for <span id="modal-client-name-progress"></span></h2>
+                     <button type="button" class="modal-close" aria-label="Close modal"><ion-icon name="close-outline"></ion-icon></button>
+                 </div>
+                 <div class="modal-body">
+                    <h3>Workout Plan Items:</h3>
+                     <div id="workoutPlanItems">
+                         <!-- JS will populate this -->
+                     </div>
+                     <h3>Current Progress: <span id="progressPercentage">0%</span></h3>
+                 </div>
+                 <div class="modal-footer">
+                     
+                      <button type="button" class="modal-button yes-button" id="saveProgressBtn">Save Progress</button>
+                 </div>
+            </div>
+        </div>
+
+        <!-- Add Client Success Modal -->
+        <div id="addClientSuccessModalOverlay" class="modal-overlay">
+             <div class="modal" id="addClientSuccessModal">
+                  <div class="modal-header">
+                      <h3 class="modal-title">Success!</h3>
+                      <!-- Optional: <button type="button" class="modal-close" aria-label="Close modal"><ion-icon name="close-outline"></ion-icon></button> -->
+                  </div>
+                  <div class="modal-body">
+                       <ion-icon name="checkmark-circle-outline" class="success-icon"></ion-icon>
+                      <p>New client added successfully!</p>
+                  </div>
+                  <div class="modal-footer" style="justify-content: center;">
+                      <button type="button" class="modal-button ok-button" id="addClientSuccessOk">OK</button>
+                  </div>
+             </div>
+        </div>
+
+         <!-- Delete Confirmation Modal -->
+         <div id="deleteConfirmModalOverlay" class="modal-overlay">
+             <div class="modal" id="deleteConfirmModal">
+                  <div class="modal-header">
+                      <h3 class="modal-title">Confirm Deletion</h3>
+                      <button type="button" class="modal-close" aria-label="Close modal"><ion-icon name="close-outline"></ion-icon></button>
+                  </div>
+                  <div class="modal-body">
+                      <p>Are you sure you want to delete the client "<span id="deleteClientNameSpan" style="font-weight: bold;"></span>"? This action cannot be undone.</p>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="modal-button no-button" id="deleteCancelBtn">Cancel</button>
+                      <button type="button" class="modal-button delete-confirm-button" id="deleteConfirmBtn">Delete Client</button>
+                  </div>
+             </div>
+        </div>
+
+
+    </div> <!-- End container -->
 
 
     <!-- =========== Scripts =========  -->
-    <script src="assets/js/coachclient.js"></script>
+     <!-- Removed link to external coachclient.js -->
+     <script>
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // Navigation Link Activation & Menu Toggle (Standard)
+            let list = document.querySelectorAll(".navigation li");
+            function activeLink() {
+                list.forEach(item => item.classList.remove("hovered"));
+                 const currentLink = Array.from(list).find(item => item.querySelector('a[href="coachclient.html"]'));
+                 if (currentLink) currentLink.classList.add("hovered");
+                 else list[2].classList.add("hovered"); // Fallback if needed
+            }
+            activeLink();
+
+            let toggle = document.querySelector(".toggle");
+            let navigation = document.querySelector(".navigation");
+            let main = document.querySelector(".main");
+            if(toggle && navigation && main) {
+                toggle.onclick = () => {
+                    navigation.classList.toggle("active");
+                    main.classList.toggle("active");
+                     const topbar = document.querySelector(".topbar");
+                     if(topbar) topbar.classList.toggle("active");
+                };
+            }
+
+            // Search Functionality (Standard)
+            const searchInput = document.getElementById('search-input');
+            const searchResultsDiv = document.getElementById('search-results');
+            const searchDataCoachClient = [ "John Doe", "Jane Smith", "Peter Jones", "Assign Workout", "View Progress", "Weight Loss Plan", "Muscle Gain Plan" ];
+            if (searchInput && searchResultsDiv) {
+                 searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase().trim();
+                    searchResultsDiv.innerHTML = '';
+                    searchResultsDiv.style.display = 'none';
+                    if (searchTerm.length > 0) {
+                        const filteredResults = searchDataCoachClient.filter(item => item.toLowerCase().includes(searchTerm));
+                        displayResults(filteredResults, searchTerm);
+                    }
+                });
+                document.addEventListener('click', event => {
+                    if (!event.target.closest('.search-container')) searchResultsDiv.style.display = 'none';
+                });
+            }
+            function displayResults(results, searchTerm) {
+                 if (results.length > 0) {
+                    const ul = document.createElement('ul');
+                    results.forEach(result => {
+                        const li = document.createElement('li');
+                        const regex = new RegExp(`(${searchTerm})`, 'gi');
+                        li.innerHTML = result.replace(regex, '<span class="highlight">$1</span>');
+                        li.addEventListener('click', () => {
+                            searchInput.value = result;
+                            searchResultsDiv.style.display = 'none';
+                            console.log("Selected:", result);
+                        });
+                        ul.appendChild(li);
+                    });
+                    searchResultsDiv.appendChild(ul);
+                    searchResultsDiv.style.display = 'block';
+                } else {
+                    searchResultsDiv.style.display = 'none';
+                }
+            }
+
+            // Mail & Notification Dropdown Functionality (Standard)
+            const mailIconInbox = document.getElementById('mail-icon-inbox');
+            const unreadNotification = document.getElementById('unread-notification');
+            const inboxPreview = document.getElementById('inbox-preview');
+            let hasUnread = true;
+            function updateUnreadIndicator() { if (unreadNotification) unreadNotification.style.display = hasUnread ? 'block' : 'none'; }
+            if(mailIconInbox && inboxPreview && unreadNotification) {
+                updateUnreadIndicator();
+                mailIconInbox.addEventListener('click', event => {
+                     event.stopPropagation();
+                     if (notificationsDropdown) notificationsDropdown.style.display = 'none';
+                     const isVisible = inboxPreview.style.display === 'block';
+                     inboxPreview.style.display = isVisible ? 'none' : 'block';
+                     if (!isVisible && hasUnread) { hasUnread = false; updateUnreadIndicator(); }
+                });
+            }
+            const notificationIcon = document.getElementById('notification-icon');
+            const notificationBadge = document.getElementById('notification-badge');
+            const notificationsDropdown = document.getElementById('notifications-dropdown');
+            let hasNewNotifications = true;
+            if (notificationIcon && notificationBadge && notificationsDropdown) {
+                 notificationBadge.style.display = hasNewNotifications ? 'block' : 'none';
+                notificationIcon.addEventListener('click', event => {
+                     event.stopPropagation();
+                     if (inboxPreview) inboxPreview.style.display = 'none';
+                     const isVisible = notificationsDropdown.style.display === 'block';
+                     notificationsDropdown.style.display = isVisible ? 'none' : 'block';
+                     if (!isVisible && hasNewNotifications) { hasNewNotifications = false; notificationBadge.style.display = 'none'; }
+                });
+            }
+            document.addEventListener('click', event => {
+                if (inboxPreview && !event.target.closest('.mail-container')) inboxPreview.style.display = 'none';
+                if (notificationsDropdown && !event.target.closest('.notification-container')) notificationsDropdown.style.display = 'none';
+            });
+
+
+            // --- Modal Handling (Standard) ---
+            function showModal(overlayId) {
+                const overlay = document.getElementById(overlayId);
+                if (overlay) overlay.classList.add('active');
+            }
+            function hideModal(overlayId) {
+                const overlay = document.getElementById(overlayId);
+                if (overlay) overlay.classList.remove('active');
+            }
+            document.querySelectorAll('.modal-overlay').forEach(overlay => {
+                overlay.addEventListener('click', (event) => {
+                    if (event.target === overlay) hideModal(overlay.id);
+                });
+            });
+            document.querySelectorAll('.modal-close').forEach(button => { // Standard close buttons in header
+                button.addEventListener('click', () => {
+                     const overlay = button.closest('.modal-overlay');
+                     if(overlay) hideModal(overlay.id);
+                });
+            });
+             document.querySelectorAll('.modal-button.ok-button').forEach(button => { // Close success/notification modals on OK
+                 button.addEventListener('click', () => {
+                     const overlay = button.closest('.modal-overlay');
+                     if(overlay) hideModal(overlay.id);
+                 });
+             });
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    document.querySelectorAll('.modal-overlay.active').forEach(overlay => hideModal(overlay.id));
+                }
+            });
+            // --- End Modal Handling ---
+
+            // Sign Out Modal Logic (Standard)
+            const signOutLink = document.getElementById('signOutLink');
+            const signOutNoButton = document.getElementById('signOutNo');
+            const signOutYesButton = document.getElementById('signOutYes');
+            if (signOutLink) signOutLink.addEventListener('click', (event) => { event.preventDefault(); showModal('signOutModalOverlay'); });
+            if (signOutNoButton) signOutNoButton.addEventListener('click', () => hideModal('signOutModalOverlay'));
+            if (signOutYesButton) signOutYesButton.addEventListener('click', () => window.location.href = 'index.html');
+
+
+            // --- Coach Client Page Specific JS ---
+            const clientForm = document.getElementById('clientForm');
+            const clientsTableBody = document.getElementById('clientsTableBody');
+            // Modal elements
+            const workoutInput = document.getElementById('workoutInput');
+            const submitWorkoutBtn = document.getElementById('submitWorkout');
+            const modalClientNameAssign = document.getElementById('modal-client-name-assign');
+            const modalClientNameProgress = document.getElementById('modal-client-name-progress');
+            const workoutPlanItemsDiv = document.getElementById('workoutPlanItems');
+            const progressPercentageSpan = document.getElementById('progressPercentage');
+            const saveProgressBtn = document.getElementById('saveProgressBtn');
+            const addClientSuccessOkBtn = document.getElementById('addClientSuccessOk'); // OK button for success modal
+            const deleteConfirmBtn = document.getElementById('deleteConfirmBtn');
+            const deleteCancelBtn = document.getElementById('deleteCancelBtn');
+            const deleteClientNameSpan = document.getElementById('deleteClientNameSpan');
+
+            let currentEditClientId = null;
+            let currentProgressClientId = null;
+            let rowToDelete = null; // Store the row to be deleted
+
+            // Function to add client row to table
+            function addClientToTable(client) {
+                const newRow = clientsTableBody.insertRow();
+                newRow.classList.add('client-row');
+                newRow.dataset.clientId = client.id;
+                newRow.dataset.workoutPlan = client.workoutPlan || "";
+                newRow.dataset.completedCount = client.completedCount || 0;
+
+                const headers = ["Name", "Email", "Phone", "Current Plan", "Actions"];
+                newRow.innerHTML = `
+                    <td data-label="${headers[0]}: ">${client.name}</td>
+                    <td data-label="${headers[1]}: ">${client.email || '-'}</td>
+                    <td data-label="${headers[2]}: ">${client.phone || '-'}</td>
+                    <td data-label="${headers[3]}: ">${client.plan || 'Not Set'}</td>
+                    <td data-label="${headers[4]}">
+                        <button class="action-btn view-btn" title="View Progress"><ion-icon name="eye-outline"></ion-icon></button>
+                        <button class="action-btn assign-btn" title="Assign Workout"><ion-icon name="clipboard-outline"></ion-icon></button>
+                        <button class="action-btn delete-btn" title="Delete Client"><ion-icon name="trash-outline"></ion-icon></button>
+                    </td>
+                `;
+                attachActionListeners(newRow);
+            }
+
+            // Function to attach listeners to action buttons
+            function attachActionListeners(row) {
+                const viewBtn = row.querySelector('.view-btn');
+                const assignBtn = row.querySelector('.assign-btn');
+                const deleteBtn = row.querySelector('.delete-btn');
+
+                if(viewBtn) viewBtn.addEventListener('click', handleViewProgress);
+                if(assignBtn) assignBtn.addEventListener('click', handleAssignWorkout);
+                if(deleteBtn) deleteBtn.addEventListener('click', handleDeleteClient);
+            }
+
+            // Handle Add Client Form Submission
+            if (clientForm) {
+                clientForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const newClient = {
+                        id: Date.now(),
+                        name: document.getElementById('clientName').value,
+                        email: document.getElementById('clientEmail').value,
+                        phone: document.getElementById('clientPhone').value,
+                        plan: document.getElementById('clientPlan').value,
+                        goal: document.getElementById('clientGoal').value,
+                        startDate: document.getElementById('startDate').value
+                    };
+                    addClientToTable(newClient);
+                    clientForm.reset();
+                    showModal('addClientSuccessModalOverlay'); // Show success modal
+                });
+            }
+
+            // Handle OK button on Add Client Success Modal
+             if (addClientSuccessOkBtn) {
+                 addClientSuccessOkBtn.addEventListener('click', () => hideModal('addClientSuccessModalOverlay'));
+             }
+
+            // Handle Assign Workout Button Click
+            function handleAssignWorkout(event) {
+                const row = event.target.closest('.client-row');
+                currentEditClientId = row.dataset.clientId;
+                const clientName = row.querySelector('td[data-label^="Name"]')?.textContent || row.querySelector('td:first-child').textContent; // Get name reliably
+                const currentPlan = row.dataset.workoutPlan || '';
+
+                if (modalClientNameAssign) modalClientNameAssign.textContent = clientName;
+                if (workoutInput) workoutInput.value = currentPlan;
+                if (submitWorkoutBtn) submitWorkoutBtn.dataset.clientId = currentEditClientId;
+
+                showModal('workoutModalOverlay');
+            }
+
+            // Handle Submit Workout Button in Modal
+            if (submitWorkoutBtn) {
+                submitWorkoutBtn.addEventListener('click', function() {
+                    const clientId = this.dataset.clientId;
+                    const newPlan = workoutInput.value;
+                    const clientRow = clientsTableBody.querySelector(`tr[data-client-id="${clientId}"]`);
+                    if (clientRow) {
+                        clientRow.dataset.workoutPlan = newPlan;
+                        clientRow.dataset.completedCount = 0; // Reset progress on new plan
+                        console.log(`Workout for client ${clientId} updated: ${newPlan}`);
+                    }
+                    hideModal('workoutModalOverlay');
+                });
+            }
+
+            // Handle View Progress Button Click
+            function handleViewProgress(event) {
+                 const row = event.target.closest('.client-row');
+                 currentProgressClientId = row.dataset.clientId;
+                 const clientName = row.querySelector('td[data-label^="Name"]')?.textContent || row.querySelector('td:first-child').textContent;
+                 const workoutPlan = row.dataset.workoutPlan || "No workout assigned yet.";
+                 const completedCount = parseInt(row.dataset.completedCount || 0, 10);
+
+                 if (modalClientNameProgress) modalClientNameProgress.textContent = clientName;
+                 if (workoutPlanItemsDiv) {
+                     workoutPlanItemsDiv.innerHTML = '';
+                     const items = workoutPlan.split(',').map(item => item.trim()).filter(item => item);
+
+                     if (items.length > 0 && workoutPlan !== "No workout assigned yet.") {
+                         items.forEach((item, index) => {
+                             const itemId = `workout-item-${currentProgressClientId}-${index}`;
+                             const isChecked = index < completedCount;
+                             const itemDiv = document.createElement('div');
+                             itemDiv.innerHTML = `
+                                 <input type="checkbox" id="${itemId}" value="${item}" ${isChecked ? 'checked' : ''}>
+                                 <label for="${itemId}">${item}</label>
+                             `;
+                             workoutPlanItemsDiv.appendChild(itemDiv);
+                         });
+                         workoutPlanItemsDiv.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                            checkbox.addEventListener('change', updateProgressPercentage);
+                        });
+                     } else {
+                         workoutPlanItemsDiv.textContent = workoutPlan;
+                     }
+                 }
+                 updateProgressPercentage();
+                 if (saveProgressBtn) saveProgressBtn.dataset.clientId = currentProgressClientId;
+                 showModal('progressModalOverlay');
+             }
+
+            // Function to update progress percentage display
+             function updateProgressPercentage() {
+                 if (!workoutPlanItemsDiv || !progressPercentageSpan) return;
+                 const checkboxes = workoutPlanItemsDiv.querySelectorAll('input[type="checkbox"]');
+                 const totalItems = checkboxes.length;
+                 const checkedItems = workoutPlanItemsDiv.querySelectorAll('input[type="checkbox"]:checked').length;
+                 const percentage = totalItems === 0 ? 0 : Math.round((checkedItems / totalItems) * 100);
+                 progressPercentageSpan.textContent = `${percentage}%`;
+             }
+
+             // Handle Save Progress Button in Modal
+             if (saveProgressBtn) {
+                 saveProgressBtn.addEventListener('click', function() {
+                     const clientId = this.dataset.clientId;
+                     const clientRow = clientsTableBody.querySelector(`tr[data-client-id="${clientId}"]`);
+                     const checkedItemsCount = workoutPlanItemsDiv.querySelectorAll('input[type="checkbox"]:checked').length;
+
+                     if (clientRow) {
+                         clientRow.dataset.completedCount = checkedItemsCount;
+                         console.log(`Progress saved for client ${clientId}: ${checkedItemsCount} items completed.`);
+                     }
+                     hideModal('progressModalOverlay');
+                 });
+             }
+
+
+            // Handle Delete Client Button Click (Show Confirmation)
+            function handleDeleteClient(event) {
+                 rowToDelete = event.target.closest('.client-row'); // Store the row
+                 const clientName = rowToDelete.querySelector('td[data-label^="Name"]')?.textContent || rowToDelete.querySelector('td:first-child').textContent;
+                 if (deleteClientNameSpan) deleteClientNameSpan.textContent = clientName;
+                 showModal('deleteConfirmModalOverlay');
+            }
+
+             // Handle Delete Confirmation
+             if (deleteConfirmBtn) {
+                 deleteConfirmBtn.addEventListener('click', () => {
+                     if (rowToDelete) {
+                         const clientId = rowToDelete.dataset.clientId;
+                         rowToDelete.remove(); // Remove from table
+                         rowToDelete = null; // Clear the stored row
+                         console.log(`Client ${clientId} deleted.`);
+                         // Add logic here to also delete client data from backend/storage
+                     }
+                     hideModal('deleteConfirmModalOverlay');
+                 });
+             }
+             // Handle Cancel Delete
+             if (deleteCancelBtn) {
+                 deleteCancelBtn.addEventListener('click', () => {
+                     rowToDelete = null; // Clear the stored row
+                     hideModal('deleteConfirmModalOverlay');
+                 });
+             }
+
+
+            // Attach listeners and add data-labels to initially loaded rows
+            const clientTable = document.querySelector('.clients-table');
+            if (clientTable) {
+                const headers = Array.from(clientTable.querySelectorAll('thead th')).map(th => th.textContent.trim());
+                clientsTableBody.querySelectorAll('.client-row').forEach(row => {
+                     attachActionListeners(row); // Attach button listeners
+                     // Add data-labels
+                     row.querySelectorAll('td').forEach((cell, index) => {
+                         if (headers[index]) {
+                              cell.setAttribute('data-label', headers[index] + ': ');
+                         }
+                     });
+                });
+            }
+
+
+            // --- End Coach Client Page Specific JS ---
+
+        }); // End DOMContentLoaded
+    </script>
 
     <!-- ====== ionicons ======= -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>

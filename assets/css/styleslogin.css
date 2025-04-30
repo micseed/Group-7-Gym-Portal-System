@@ -150,3 +150,130 @@ body, html {
 .back-button:hover {
   background-color: #203A93;
 }
+
+/* ==========================
+   Responsive Styles (Media Queries)
+   ========================== */
+
+/* Medium Screens (Tablets, smaller laptops) - Stack layout */
+@media (max-width: 992px) {
+  .login-container {
+    flex-direction: column; /* Stack quote and form vertically */
+    height: auto;           /* Allow height to adjust to content */
+    min-height: 100vh;      /* Ensure it still tries to fill the viewport height */
+  }
+
+  .login-quote,
+  .login-form-wrapper {
+    flex: none; /* Remove the flex-grow behavior */
+    width: 100%; /* Make each section take full width */
+  }
+
+  .login-quote {
+    height: 40vh; /* Give the quote section a fixed portion of the height */
+    min-height: 250px; /* Ensure it doesn't get too small */
+    padding: 1.5rem;
+    justify-content: center; /* Re-center content vertically */
+  }
+
+  .login-quote h2 {
+    font-size: 1.8rem; /* Slightly smaller font */
+    margin-bottom: 0.8rem;
+  }
+
+  .login-quote p {
+    font-size: 1rem; /* Slightly smaller font */
+    max-width: 80%;
+  }
+
+  .login-form-wrapper {
+    padding: 2rem 1.5rem; /* Adjust padding */
+    min-height: 60vh; /* Ensure form area has enough space */
+    justify-content: flex-start; /* Align form towards the top */
+    padding-top: 3rem; /* Add padding top */
+  }
+
+  .login-form {
+    margin: 0 auto; /* Center the form box horizontally */
+  }
+
+  .back-button {
+      background-color: rgba(0, 0, 0, 0.4); /* Add slight background for visibility */
+  }
+}
+
+
+/* Small Screens (Phones) - Further adjustments, maybe hide quote */
+@media (max-width: 600px) {
+  /* Option 1: Keep the quote section, but make it smaller */
+  .login-quote {
+      height: 30vh;
+      min-height: 200px;
+      padding: 1rem;
+  }
+   .login-quote h2 {
+    font-size: 1.5rem;
+  }
+  .login-quote p {
+    font-size: 0.9rem;
+    max-width: 90%;
+  }
+
+  /* Option 2: Hide the quote section entirely (uncomment to use) */
+  /*
+  .login-quote {
+    display: none;
+  }
+  .login-form-wrapper {
+    min-height: 100vh; // Take full height if quote is hidden
+    justify-content: center; // Re-center form vertically if quote is hidden
+    padding-top: 2rem; // Reset padding-top if quote is hidden
+  }
+  .back-button { // Adjust back button if quote is hidden
+     color: #333; // Change color to be visible on light background
+     background: none;
+     top: 15px;
+     left: 15px;
+  }
+   .back-button:hover {
+      background-color: #eee;
+  }
+  */
+
+  .login-form-wrapper {
+      padding: 1.5rem 1rem; /* Reduce padding further */
+  }
+
+  .login-form {
+    padding: 1.5rem; /* Reduce form padding */
+    box-shadow: none; /* Optional: remove shadow on very small screens */
+    border: 1px solid #eee; /* Optional: add border if shadow removed */
+    width: 95%; /* Allow form to be slightly wider */
+    max-width: none; /* Remove max-width constraint */
+  }
+
+  .login-form h2 {
+    font-size: 1.6rem; /* Adjust heading size */
+    margin-bottom: 1.2rem;
+  }
+
+  .form-group input {
+    padding: 0.7rem; /* Adjust input padding */
+  }
+
+  .login-button {
+    padding: 0.7rem; /* Adjust button padding */
+    font-size: 0.95rem;
+  }
+
+  .register-link {
+    font-size: 0.9rem; /* Adjust link font size */
+  }
+
+  .back-button {
+      top: 10px;
+      left: 10px;
+      font-size: 0.9rem;
+      padding: 8px 12px;
+  }
+}

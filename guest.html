@@ -6,805 +6,869 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
-    <link rel="stylesheet" href="assets/css/client.css">
+    <!-- Removed link to external client.css as styles are now inline -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Guest Dashboard</title>
-   
+
     <style>
       /* =============== Globals ============== */
         * {
-        font-family: "Poppins", sans-serif;
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         :root {
-        --blue: #203A93;
-        --white: #fff;
-        --gray: #f5f5f5;
-        --black1: #222;
-        --black2: #999;
-        --yellow: #F1D27C;
-        --light-blue: #e8eeff;
-        --red: #ff6b6b;
-        --green: #4caf50;
+            --blue: #203A93;
+            --white: #fff;
+            --gray: #f5f5f5;
+            --black1: #222;
+            --black2: #999;
+            --yellow: #F1D27C;
+            --light-blue: #e8eeff;
+            --red: #ff6b6b;
+            --green: #4caf50;
         }
 
         body {
-        min-height: 100vh;
-        overflow-x: hidden;
+            background-color: var(--gray); /* Use gray for overall background */
+            min-height: 100vh; /* Ensure body takes full height */
+            overflow-x: hidden; /* Prevent horizontal scroll */
         }
 
         .container {
-        position: relative;
-        width: 100%;
+            position: relative;
+            width: 100%;
         }
 
         /* =============== Navigation ================ */
         .navigation {
-        position: fixed;
-        width: 300px;
-        height: 100%;
-        background: var(--blue);
-        border-left: 10px solid var(--blue);
-        transition: 0.5s;
-        overflow: hidden;
+            position: fixed;
+            width: 300px;
+            height: 100%;
+            background: var(--blue);
+            border-left: 10px solid var(--blue);
+            transition: 0.5s;
+            overflow-y: auto; /* Allow scrolling if menu is long */
+            overflow-x: hidden;
+            z-index: 100; /* Keep nav above main content */
         }
         .navigation.active {
-        width: 80px;
+            width: 80px;
         }
 
         .navigation ul {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding-left: 0; /* Override default ul padding */
         }
 
         .navigation ul li {
-        position: relative;
-        width: 100%;
-        list-style: none;
-        border-top-left-radius: 30px;
-        border-bottom-left-radius: 30px;
+            position: relative;
+            width: 100%;
+            list-style: none;
+            border-top-left-radius: 30px;
+            border-bottom-left-radius: 30px;
         }
 
         .navigation ul li:hover,
         .navigation ul li.hovered {
-        background-color: var(--white);
+            background-color: var(--white);
         }
 
         .navigation ul li:nth-child(1) {
-        margin-bottom: 40px;
-        pointer-events: none;
+            margin-bottom: 40px;
+            pointer-events: none;
         }
 
         .navigation ul li a {
-        position: relative;
-        display: block;
-        width: 100%;
-        display: flex;
-        text-decoration: none;
-        color: var(--white);
+            position: relative;
+            display: block;
+            width: 100%;
+            display: flex;
+            text-decoration: none;
+            color: var(--white);
+            transition: color 0.3s; /* Smooth color transition */
         }
         .navigation ul li:hover a,
         .navigation ul li.hovered a {
-        color: var(--blue);
+            color: var(--blue);
         }
 
         .navigation ul li a .icon {
-        position: relative;
-        display: block;
-        min-width: 60px;
-        height: 60px;
-        line-height: 75px;
-        text-align: center;
+            position: relative;
+            display: block;
+            min-width: 60px;
+            height: 60px;
+            line-height: 75px;
+            text-align: center;
         }
         .navigation ul li a .icon ion-icon {
-        font-size: 1.75rem;
+            font-size: 1.75rem;
         }
 
         .navigation ul li a .title {
-        position: relative;
-        display: block;
-        padding: 0 10px;
-        height: 60px;
-        line-height: 60px;
-        text-align: start;
-        white-space: nowrap;
+            position: relative;
+            display: block;
+            padding: 0 10px;
+            height: 60px;
+            line-height: 60px;
+            text-align: start;
+            white-space: nowrap;
         }
 
         /* --------- Curve Outside ---------- */
         .navigation ul li:hover a::before,
         .navigation ul li.hovered a::before {
-        content: "";
-        position: absolute;
-        right: 0;
-        top: -50px;
-        width: 50px;
-        height: 50px;
-        background-color: transparent;
-        border-radius: 50%;
-        box-shadow: 35px 35px 0 10px var(--white);
-        pointer-events: none;
+            content: "";
+            position: absolute;
+            right: 0;
+            top: -50px;
+            width: 50px;
+            height: 50px;
+            background-color: transparent;
+            border-radius: 50%;
+            box-shadow: 35px 35px 0 10px var(--white);
+            pointer-events: none;
         }
 
         .navigation ul li:hover a::after,
         .navigation ul li.hovered a::after {
-        content: "";
-        position: absolute;
-        right: 0;
-        bottom: -50px;
-        width: 50px;
-        height: 50px;
-        background-color: transparent;
-        border-radius: 50%;
-        box-shadow: 35px -35px 0 10px var(--white);
-        pointer-events: none;
+            content: "";
+            position: absolute;
+            right: 0;
+            bottom: -50px;
+            width: 50px;
+            height: 50px;
+            background-color: transparent;
+            border-radius: 50%;
+            box-shadow: 35px -35px 0 10px var(--white);
+            pointer-events: none;
         }
 
         /* ===================== Main ===================== */
         .main {
-        position: absolute;
-        width: calc(100% - 300px);
-        left: 300px;
-        min-height: 100vh;
-        background: var(--white);
-        transition: 0.5s;
+            position: absolute;
+            width: calc(100% - 300px);
+            left: 300px;
+            min-height: 100vh;
+            background: var(--white); /* White background for main content area */
+            transition: 0.5s;
+            padding: 20px; /* Add padding around main content */
         }
         .main.active {
-        width: calc(100% - 80px);
-        left: 80px;
+            width: calc(100% - 80px);
+            left: 80px;
         }
 
         .topbar {
-        width: 100%;
-        height: 60px;
-        display: flex;
-        align-items: center;
-        padding: 0 10px;
-        justify-content:space-between;
+            width: 100%;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px; /* Reduced padding */
+            justify-content: space-between;
+            background: var(--white); /* Ensure topbar has background */
+            border-bottom: 1px solid var(--gray); /* Subtle separator */
+            position: sticky; /* Make topbar sticky */
+            top: 0;
+            z-index: 90; /* Below nav but above content */
         }
 
         .toggle {
-        position: relative;
-        width: 60px;
-        height: 60px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 2.5rem;
-        cursor: pointer;
-        }
-
-        .search {
-        position: relative;
-        width: 800px;
-        margin: 0 10px;
-        }
-
-        .search label {
-        position: relative;
-        width: 100%;
-        }
-
-        .search label input {
-        width: 100%;
-        height: 40px;
-        border-radius: 40px;
-        padding: 5px 20px;
-        padding-left: 35px;
-        font-size: 18px;
-        outline: none;
-        border: 1px solid var(--black2);
-        }
-
-        .search label ion-icon {
-        position: absolute;
-        top: 0;
-        left: 10px;
-        font-size: 1.2rem;
-        }
-
-        .user {
-        position: relative;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        overflow: hidden;
-        cursor: pointer;
-        }
-
-
-        .user img {
-        position: absolute;
-        justify-items: end;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+            position: relative;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5rem;
+            cursor: pointer;
+            color: var(--black1); /* Ensure icon is visible */
         }
 
         /* =============== Search ============== */
         .search-container {
-        position: relative;
-        width: 800px;
-        margin: 0 10px;
+            position: relative;
+            flex-grow: 1; /* Allow search to take available space */
+            max-width: 600px; /* Limit max width */
+            margin: 0 15px; /* Add some margin */
         }
 
         .search-container label {
-        display: flex;
-        align-items: center; 
-        width: 100%;
-        border: 1px solid #ccc;
-        border-radius: 15px;
-        overflow: hidden; 
+            display: flex;
+            align-items: center;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 15px;
+            overflow: hidden;
+            background-color: var(--white);
         }
 
         #search-input {
-        flex-grow: 1; 
-        padding: 10px;
-        border: none;
-        outline: none;
-        font-size: 16px;
-        box-sizing: border-box; 
-        margin-right: 5px; 
+            flex-grow: 1;
+            padding: 8px 15px; /* Adjust padding */
+            border: none;
+            outline: none;
+            font-size: 1rem; /* Adjust font size */
+            box-sizing: border-box;
         }
 
         .search-container label ion-icon {
-        padding-right: 10px;
-        font-size: 20px; 
-        color: #777;
+            padding: 0 10px; /* Adjust padding */
+            font-size: 1.2rem;
+            color: #777;
         }
 
         #search-results {
-        position: absolute;
-        top: calc(100% + 2px);
-        left: 0;
-        right: 0;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        margin-top: 2px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-        z-index: 10;
-        display: none;
-        overflow: hidden; 
+            position: absolute;
+            top: calc(100% + 5px); /* Position below input */
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-top: 2px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            z-index: 110; /* Above other elements */
+            display: none;
+            overflow: hidden;
+            max-height: 300px; /* Limit height */
+            overflow-y: auto;
         }
 
         #search-results ul {
-        list-style: none;
-        padding: 8px 0;
-        margin: 0;
+            list-style: none;
+            padding: 8px 0;
+            margin: 0;
         }
 
         #search-results li {
-        padding: 12px 16px;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-        font-size: 1.0em;
-        color: #333;
+            padding: 10px 16px; /* Adjust padding */
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-size: 0.95em;
+            color: #333;
         }
 
         #search-results li:hover {
-        background-color: #f5f5f5;
-        color: #222;
+            background-color: #f5f5f5;
+            color: #222;
         }
 
         #search-results li:active {
-        background-color: #eee;
+            background-color: #eee;
         }
-
 
         #search-results li span.highlight {
-        font-weight: bold;
-        color: #007bff; 
+            font-weight: bold;
+            color: #007bff;
         }
 
-        /* =============== Mail Icon ============== */
-        .mail-container {
-        position: relative;
-        display: inline-block;
+        /* =============== Topbar Icons & User ============== */
+        .topbar-icons {
+            display: flex;
+            align-items: center;
+            gap: 15px; /* Space between icons */
         }
 
-        #mail-icon-inbox {
-        font-size: 25px;
-        color: #203A93;
-        cursor: pointer;
-        }
-
-        #mail-icon-inbox:hover {
-        opacity: 0.8;
-        }
-
-        #unread-notification {
-        position: absolute;
-        top: -8px;
-        right: -8px;
-        background-color: red;
-        color: white;
-        font-size: 12px;
-        border-radius: 50%;
-        width: 18px;
-        height: 18px;
-        text-align: center;
-        line-height: 18px;
-        display: none; 
-        }
-
-        #inbox-preview {
-        position: absolute;
-        top: calc(100% + 5px);
-        right: -10px;
-        background-color: #f9f9f9;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        width: 250px;
-        padding: 15px;
-        display: none;
-        z-index: 10;
-        text-align: left;
-        }
-
-        #inbox-preview strong {
-        display: block;
-        margin-bottom: 5px;
-        }
-
-        .email-item {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        padding: 3px 0; 
-        }
-
-        .email-item.sender {
-        font-weight: bold;
-        }
-
-        .email-item.subject {
-        color: #555;
-        font-size: 0.9em; 
-        }
-
-        #inbox-preview hr {
-        margin-top: 8px;
-        margin-bottom: 8px;
-        }
-
-        #inbox-preview a {
-        display: block;
-        margin-top: 10px;
-        font-size: 0.8em;
-        text-align: right;
-        color: #007bff;
-        text-decoration: none;
-        }
-
-        /* =============== Notification Icon ============== */
+        .mail-container,
         .notification-container {
-        position: relative;
-        display: inline-block;
+            position: relative;
+            display: flex; /* Use flex for alignment */
+            align-items: center;
         }
 
+        #mail-icon-inbox,
         #notification-icon {
-        font-size: 25px;
-        color: #203A93;
-        cursor: pointer;
+            font-size: 25px;
+            color: var(--blue);
+            cursor: pointer;
+            transition: opacity 0.3s;
         }
 
+        #mail-icon-inbox:hover,
         #notification-icon:hover {
-        opacity: 0.8;
+            opacity: 0.7;
         }
 
+        #unread-notification,
         #notification-badge {
-        position: absolute;
-        top: -8px;
-        right: -8px;
-        background-color: orange;
-        color: white;
-        font-size: 12px;
-        border-radius: 50%;
-        width: 18px;
-        height: 18px;
-        text-align: center;
-        line-height: 18px;
-        display: block; 
+            position: absolute;
+            top: -5px; /* Adjust position */
+            right: -5px;
+            background-color: var(--red);
+            color: white;
+            font-size: 11px; /* Smaller font */
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            text-align: center;
+            line-height: 16px;
+            font-weight: bold;
+            display: block; /* Show by default, JS handles logic */
         }
+         #notification-badge {
+            background-color: orange;
+         }
 
+        #inbox-preview,
         #notifications-dropdown {
-        position: absolute;
-        top: calc(100% + 5px);
-        right: -10px;
-        background-color: #f9f9f9;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        width: 250px;
-        padding: 15px;
-        display: none;
-        z-index: 10;
-        text-align: left;
+            position: absolute;
+            top: calc(100% + 10px); /* Position below icon */
+            right: -10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            width: 280px; /* Slightly wider */
+            padding: 15px;
+            display: none;
+            z-index: 110; /* Above other elements */
+            text-align: left;
+            max-height: 350px; /* Limit height */
+            overflow-y: auto;
         }
 
+        #inbox-preview strong,
         #notifications-dropdown strong {
-        display: block;
-        margin-bottom: 5px;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+            color: var(--black1);
         }
 
+        .email-item,
         .notification-item {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        padding: 3px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 4px 0; /* Adjust padding */
+            font-size: 0.9em; /* Slightly smaller */
         }
 
+        .email-item.sender,
         .notification-item.title {
-        font-weight: bold;
-        margin-top: 5px;
+            font-weight: bold;
         }
 
+        .email-item.subject,
         .notification-item.message {
-        color: #555;
-        font-size: 0.9em;
+            color: #555;
+            font-size: 0.85em;
+        }
+        .notification-item.title {
+             margin-top: 5px;
+             font-size: 0.8em; /* Smaller date/title */
+             color: var(--black2);
         }
 
+
+        #inbox-preview hr,
         #notifications-dropdown hr {
-        margin-top: 8px;
-        margin-bottom: 8px;
+            margin: 8px 0;
+            border: 0;
+            border-top: 1px solid #eee;
         }
 
+        #inbox-preview a,
         #notifications-dropdown a {
-        display: block;
-        margin-top: 10px;
-        font-size: 0.8em;
-        text-align: right;
-        color: #007bff;
-        text-decoration: none;
+            display: block;
+            margin-top: 10px;
+            font-size: 0.85em;
+            text-align: center; /* Center link */
+            color: #007bff;
+            text-decoration: none;
+            padding-top: 5px;
+        }
+         #inbox-preview a:hover,
+        #notifications-dropdown a:hover {
+            text-decoration: underline;
         }
 
-        /* Modal Styles for Sign out*/
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: 15px; /* Space before user info */
+        }
+
+        .user-info .name { /* Changed from just .name */
+            color: var(--black1);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .user {
+            position: relative;
+            min-width: 40px; /* Ensure minimum width */
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .user img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+
+        /* ============ Modal Styles ============ */
         .modal {
-        display: none; 
-        position: fixed; 
-        z-index: 1000; 
-        left: 0;
-        top: 0;
-        width: 100%; 
-        height: 100%; 
-        overflow: auto; 
-        background-color: rgba(0,0,0,0.4); 
-        backdrop-filter: blur(5px);
-        justify-content: center;
-        align-items: center;
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5); /* Darker overlay */
+            backdrop-filter: blur(3px); /* Optional blur */
+            justify-content: center;
+            align-items: center;
+            padding: 20px; /* Padding for smaller screens */
         }
 
         .modal.show {
-        display: flex; 
+            display: flex;
         }
 
+        /* General Modal Content */
         .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto; 
-        padding: 30px;
-        border: 1px solid #888;
-        width: 600px; 
-        max-width: 400px; 
-        border-radius: 15px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        position: relative;
+            background-color: #fefefe;
+            margin: auto; /* Center horizontally and vertically */
+            padding: 30px;
+            border: none; /* Remove border */
+            width: 100%; /* Full width initially */
+            max-width: 500px; /* Default max width */
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+            max-height: 90vh; /* Limit height */
+            overflow-y: auto; /* Allow scrolling within modal */
         }
+
+        /* Sign Out Modal specific content */
+        #signOutModal .modal-content {
+             max-width: 400px; /* Smaller width for signout */
+        }
+        /* Add Exercise Modal specific content */
+         #addExerciseModal .modal-content {
+              max-width: 550px; /* Slightly wider for form */
+         }
 
         .modal-header {
-        padding-bottom: 20px;
-        border-bottom: 1px solid #eee;
-        margin-bottom: 20px;
+            padding-bottom: 15px; /* Reduced padding */
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+            display: flex; /* Align title */
+            justify-content: space-between;
+            align-items: center;
         }
 
         .modal-title {
-        font-size: 1.5em;
-        color: #333;
-        font-weight: bold;
+            font-size: 1.4em; /* Adjust size */
+            color: var(--blue); /* Use theme color */
+            font-weight: 600; /* Slightly bolder */
+            margin-bottom: 0; /* Remove bottom margin */
         }
 
         .modal-body {
-        font-size: 1.1em;
-        color: #555;
-        margin-bottom: 20px;
+            font-size: 1.05em; /* Adjust size */
+            color: #555;
+            margin-bottom: 25px; /* Adjust spacing */
+            line-height: 1.6;
+        }
+        /* Reduce body margin if form is directly inside */
+        #addExerciseModal .modal-body {
+             margin-bottom: 10px;
         }
 
         .modal-footer {
-        display: flex;
-        justify-content: flex-end;
-        gap: 15px;
+             padding-top: 20px;
+             border-top: 1px solid #eee;
+             margin-top: 20px;
+             display: flex;
+             justify-content: flex-end;
+             gap: 15px;
         }
 
+
+        /* General Modal Button */
         .modal-button {
-        background-color: #007bff; 
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-        transition: background-color 0.3s ease;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s, box-shadow 0.3s;
         }
-
         .modal-button:hover {
-        background-color: #0056b3;
+             box-shadow: 0 2px 5px rgba(0,0,0,0.15);
         }
 
-        .modal-button.yes-button {
-        background-color: #203A93;
+        /* Specific Modal Buttons */
+        .modal-button.yes-button { /* For confirm/save actions */
+            background-color: var(--blue);
+            color: white;
         }
-
         .modal-button.yes-button:hover {
-        background-color: #162b6e;
+            background-color: #182c7a; /* Darker blue */
         }
-
-        .modal-button.no-button {
-        background-color: #F1D27C;
+        .modal-button.no-button { /* For cancel/no actions */
+            background-color: var(--yellow);
+            color: var(--black1);
         }
-
         .modal-button.no-button:hover {
-        background-color: #d9ba5f;
+            background-color: #e4c370; /* Darker yellow */
         }
 
-        /* =============== NEW STYLES ============== */
-        
+
+        /* =============== GUEST DASHBOARD SPECIFIC STYLES ============== */
+
+        /* General Section Padding */
+        .greetings, .promo-banner, .dashboard-grid, .workout-plan-container {
+             margin-left: 20px;
+             margin-right: 20px;
+        }
+
+        .greetings {
+            margin-top: 20px; /* Space below topbar */
+            margin-bottom: 20px;
+        }
+
+        .welcome h1 {
+            color: #484848;
+            font-weight: 500; /* Less bold */
+            font-size: 1.8rem; /* Adjust size */
+        }
+
         /* Promo Banner */
         .promo-banner {
-            background: linear-gradient(to right, var(--blue), #5272db);
+            background: linear-gradient(to right, var(--blue), #4a6fcc); /* Adjusted gradient */
             color: white;
-            padding: 20px;
+            padding: 25px; /* Slightly more padding */
             border-radius: 10px;
-            margin: 20px;
+            margin-bottom: 30px; /* Increased margin */
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(32, 58, 147, 0.2); /* Theme shadow */
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+            gap: 15px;
         }
-        
+
         .promo-banner-content {
             flex: 1;
+            min-width: 250px; /* Prevent content from getting too squished */
         }
-        
+
         .promo-banner h2 {
-            margin: 0;
-            font-size: 1.5rem;
+            margin: 0 0 5px 0; /* Add bottom margin */
+            font-size: 1.4rem; /* Adjust size */
+            font-weight: 600;
         }
-        
+
         .promo-banner p {
-            margin: 5px 0 0;
+            margin: 0;
+            font-size: 0.95rem;
+            opacity: 0.9;
         }
-        
+
         .promo-button {
             background-color: var(--yellow);
             color: var(--blue);
             border: none;
-            padding: 10px 20px;
+            padding: 10px 25px; /* Adjust padding */
             border-radius: 5px;
-            font-weight: bold;
+            font-weight: 600; /* Bolder */
             cursor: pointer;
             transition: all 0.3s ease;
+            white-space: nowrap; /* Prevent button text wrapping */
         }
-        
+        .promo-button a { /* Style link inside button */
+            text-decoration: none;
+            color: inherit; /* Inherit color from button */
+        }
+
         .promo-button:hover {
             background-color: #e0c265;
-            transform: scale(1.05);
+            transform: scale(1.03); /* Slightly less scale */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        
+
         /* Dashboard Cards */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            padding: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive columns */
+            gap: 25px; /* Consistent gap */
+            padding: 0; /* Remove grid padding, rely on section margin */
+            margin-bottom: 30px;
         }
-        
+
         .dashboard-card {
             background-color: white;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Softer shadow */
             padding: 20px;
             overflow: hidden;
+            display: flex; /* Use flex for better internal control */
+            flex-direction: column;
         }
 
         .dashboard-card h3 {
             margin-top: 0;
             color: var(--blue);
-            font-size: 1.2rem;
+            font-size: 1.15rem; /* Adjust size */
             border-bottom: 1px solid #eee;
             padding-bottom: 10px;
             margin-bottom: 15px;
+            font-weight: 600;
         }
-        
-        /* Goal Progress */
+
+        /* Goal Progress Card */
         .goal-card {
             position: relative;
         }
-        
+
         .goal-progress {
             display: flex;
             align-items: center;
             margin-bottom: 15px;
         }
-        
+
         .progress-circle {
-            width: 100px;
-            height: 100px;
+             flex-shrink: 0; /* Prevent shrinking */
+            width: 90px; /* Adjust size */
+            height: 90px;
             border-radius: 50%;
-            background: #f0f0f0;
+            background: conic-gradient(var(--blue) 75%, #f0f0f0 0); /* CSS conic gradient */
             position: relative;
-            margin-right: 20px;
+            margin-right: 15px; /* Adjust margin */
+            display: flex; /* Center inner content */
+            align-items: center;
+            justify-content: center;
         }
-        
+
         .progress-circle-inner {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            width: 80px;
-            height: 80px;
+             /* Position handled by parent flex */
+            width: 70px; /* Adjust size */
+            height: 70px;
             border-radius: 50%;
             background: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.3rem; /* Adjust size */
             font-weight: bold;
             color: var(--blue);
         }
-        
+
         .progress-details {
             flex: 1;
         }
-        
+
         .progress-details h4 {
             margin: 0 0 5px;
             font-size: 1rem;
+             color: var(--black1);
         }
-        
+
         .progress-details p {
             margin: 0;
             color: var(--black2);
+             font-size: 0.9rem;
         }
-        
+
         /* Streak Card */
         .streak-number {
-            font-size: 3rem;
+            font-size: 2.8rem; /* Adjust size */
             font-weight: bold;
             color: var(--blue);
             text-align: center;
             margin: 10px 0;
         }
-        
+
         .streak-label {
             text-align: center;
             color: var(--black2);
-            margin-bottom: 10px;
+            margin-bottom: 15px; /* Adjust margin */
+            font-size: 0.9rem;
         }
-        
+
         .streak-calendar {
             display: flex;
-            justify-content: space-between;
+            justify-content: space-around; /* Better spacing */
             margin-top: 15px;
         }
-        
+
         .streak-day {
-            width: 28px;
-            height: 28px;
+            width: 26px; /* Adjust size */
+            height: 26px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.8rem;
+            font-size: 0.75rem; /* Adjust size */
             font-weight: bold;
         }
-        
+
         .streak-day.active {
             background-color: var(--green);
             color: white;
         }
-        
+
         .streak-day.inactive {
             background-color: #f0f0f0;
             color: var(--black2);
         }
-        
-        /* Todo List */
+
+        /* Todo List Card */
         .todo-list {
             list-style: none;
             padding: 0;
-            margin: 0;
+            margin: 0 0 15px 0; /* Add margin bottom */
+             max-height: 150px; /* Limit height and allow scroll */
+             overflow-y: auto;
         }
-        
+
         .todo-item {
             display: flex;
             align-items: center;
-            padding: 10px 0;
+            padding: 8px 5px; /* Adjust padding */
             border-bottom: 1px solid #eee;
+             gap: 10px; /* Gap between items */
         }
-        
+
         .todo-item:last-child {
             border-bottom: none;
         }
-        
+
         .todo-checkbox {
-            margin-right: 10px;
-            width: 20px;
-            height: 20px;
+             flex-shrink: 0;
+            margin-right: 0; /* Use gap instead */
+            width: 18px; /* Adjust size */
+            height: 18px;
             border-radius: 50%;
             border: 2px solid var(--blue);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            transition: background-color 0.2s;
         }
-        
+        .todo-checkbox ion-icon {
+             display: none; /* Hide check initially */
+             font-size: 12px;
+             color: white;
+        }
+
         .todo-checkbox.checked {
             background-color: var(--blue);
-            color: white;
+            border-color: var(--blue);
         }
-        
+        .todo-checkbox.checked ion-icon {
+            display: block; /* Show check when checked */
+        }
+
+
         .todo-text {
             flex: 1;
             font-size: 0.9rem;
+             transition: color 0.2s, text-decoration 0.2s;
         }
-        
+
         .todo-text.completed {
             text-decoration: line-through;
             color: var(--black2);
         }
-        
+
         .todo-delete {
+             flex-shrink: 0;
             color: var(--red);
             cursor: pointer;
-            font-size: 1.2rem;
+            font-size: 1.1rem; /* Adjust size */
+            line-height: 1; /* Align icon better */
+            transition: color 0.2s;
         }
-        
+         .todo-delete:hover {
+              color: #cc5656; /* Darker red */
+         }
+
         .todo-input-container {
             display: flex;
-            margin-top: 15px;
+            margin-top: auto; /* Push to bottom of card */
+            padding-top: 15px; /* Add space above input */
+            border-top: 1px solid #eee; /* Separator */
         }
-        
+
         .todo-input {
             flex: 1;
-            padding: 8px;
+            padding: 8px 10px;
             border: 1px solid #ddd;
             border-radius: 5px 0 0 5px;
             outline: none;
+            font-size: 0.9rem;
         }
-        
+         .todo-input:focus {
+             border-color: var(--blue);
+         }
+
         .todo-add-btn {
             background-color: var(--blue);
             color: white;
             border: none;
-            padding: 8px 15px;
+            padding: 0 12px; /* Adjust padding */
             border-radius: 0 5px 5px 0;
             cursor: pointer;
+            display: flex; /* Align icon */
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
         }
-        
-        /* Workout Plan */
+         .todo-add-btn ion-icon {
+              font-size: 1.2rem;
+         }
+         .todo-add-btn:hover {
+              background-color: #182c7a;
+         }
+
+        /* Workout Plan Section */
         .workout-plan-container {
-            padding: 20px;
+            background-color: white; /* Add background */
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
         }
-        
+
         .workout-plan-header {
             display: flex;
             justify-content: space-between;
             margin-bottom: 20px;
             align-items: center;
+             flex-wrap: wrap; /* Allow wrapping */
+             gap: 10px;
         }
-        
+
         .workout-plan-title {
             color: var(--blue);
-            font-size: 1.5rem;
+            font-size: 1.4rem; /* Adjust size */
             margin: 0;
+            font-weight: 600;
         }
-        
+
         .add-exercise-btn {
             background-color: var(--blue);
             color: white;
@@ -812,104 +876,441 @@
             padding: 8px 15px;
             border-radius: 5px;
             cursor: pointer;
-            display: flex;
+            display: inline-flex; /* Use inline-flex */
             align-items: center;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background-color 0.3s;
         }
-        
+        .add-exercise-btn:hover {
+             background-color: #182c7a;
+        }
+
         .add-exercise-btn ion-icon {
             margin-right: 5px;
+             font-size: 1.1rem;
         }
-        
+
+        /* Make table responsive */
+        .table-responsive-wrapper {
+             overflow-x: auto;
+             width: 100%;
+             margin-bottom: 20px;
+        }
+
         .workout-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            /* Removed margin-bottom, handled by wrapper */
+             min-width: 600px; /* Force scrollbar on smaller viewports if needed */
         }
-        
+
         .workout-table th, .workout-table td {
-            border: 1px solid #ddd;
-            padding: 12px;
+            border: 1px solid #eee; /* Lighter border */
+            padding: 10px 12px; /* Adjust padding */
             text-align: left;
+            font-size: 0.9rem;
+            white-space: nowrap; /* Prevent wrapping */
         }
-        
+
         .workout-table th {
             background-color: var(--light-blue);
             color: var(--blue);
             font-weight: 600;
         }
-        
-        .workout-table tr:nth-child(even) {
+
+        .workout-table tbody tr:nth-child(even) {
             background-color: #f9f9f9;
         }
-        
-        .workout-table tr:hover {
+
+        .workout-table tbody tr:hover {
             background-color: #f1f1f1;
         }
-        
+
         .workout-action {
-            color: var(--blue);
+            color: var(--red); /* Make delete red */
             cursor: pointer;
             font-size: 1.2rem;
+             transition: color 0.2s;
+             display: inline-block; /* Ensure it's clickable */
+             line-height: 1;
         }
-        
+
         .workout-action:hover {
-            color: var(--red);
+            color: #cc5656; /* Darker red */
         }
-        
+
         /* Exercise Form Modal */
+        /* Inherits general modal styles */
         .exercise-form {
             display: flex;
             flex-direction: column;
         }
-        
+
+        /* Form Group Styles (Consistent) */
         .form-group {
             margin-bottom: 15px;
         }
-        
+
         .form-group label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
             font-weight: 500;
+            font-size: 0.95rem;
+            color: var(--black1);
         }
-        
-        .form-control {
+
+        .form-control,
+        .form-select { /* Combined styles */
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
             border-radius: 5px;
-            outline: none;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            outline: none; /* Remove default outline */
         }
-        
-        .form-select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            outline: none;
-        }
-        
+         .form-control:focus,
+         .form-select:focus {
+             border-color: var(--blue);
+             box-shadow: 0 0 0 2px rgba(32, 58, 147, 0.2);
+         }
+         /* Specific for select */
+         .form-select {
+             appearance: none; /* Remove default arrow */
+             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23aaa'%3E%3Cpath fill-rule='evenodd' d='M8 11.5a.5.5 0 0 1-.354-.146l-4-4a.5.5 0 0 1 .708-.708L8 10.293l3.646-3.647a.5.5 0 0 1 .708.708l-4 4A.5.5 0 0 1 8 11.5z'/%3E%3C/svg%3E"); /* Custom arrow */
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 16px 16px;
+            padding-right: 35px; /* Space for arrow */
+         }
+
+
         .form-row {
             display: flex;
-            gap: 10px;
+            gap: 15px; /* Consistent gap */
         }
-        
+
         .form-row .form-group {
             flex: 1;
+             margin-bottom: 0; /* Remove margin if inside row */
         }
 
-        .greetings {
-  padding: 0 30px;
-  margin-top: 2%;
 
-}
+        /* Coach Booking Widget */
+        .coach-booking-widget {
+            margin: 30px 0 0 0; /* Add margin top, remove side margins */
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            background-color: #fdfdff; /* Slightly off-white */
+            color: var(--black1); /* Default text color */
+            border: 1px solid #eee; /* Subtle border */
+        }
+         .coach-booking-widget h2 {
+              font-size: 1.4rem;
+              color: var(--blue);
+              margin-top: 0;
+              margin-bottom: 20px;
+              font-weight: 600;
+              border-bottom: 1px solid #eee;
+              padding-bottom: 10px;
+         }
+         /* Inherit consistent form styles */
+        .coach-booking-widget .booking-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Consistent gap */
+        }
+         .coach-booking-widget .form-group label {
+             /* Use inherited style */
+         }
+         .coach-booking-widget .form-group select,
+         .coach-booking-widget .form-group input {
+             /* Use inherited styles .form-control, .form-select */
+         }
 
-.welcome h1 {
-  color: #484848;
-  font-weight: 200;
-  font-size: 2.5rem;
-}
+        .session-counter {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: var(--light-blue); /* Theme light blue */
+            border-radius: 5px;
+            font-size: 0.95rem;
+             color: var(--blue);
+        }
+        .session-counter span {
+            font-weight: bold;
+            color: var(--red); /* Highlight used count */
+        }
+        .session-counter span:last-of-type {
+             color: var(--green); /* Highlight total count */
+        }
+
+
+        .book-btn, #upgrade-btn { /* Combined styles */
+            background-color: var(--blue);
+            color: white;
+            border: none;
+            padding: 10px 15px; /* Adjust padding */
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem; /* Consistent size */
+            font-weight: 500;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .book-btn:hover, #upgrade-btn:hover {
+            background-color: #182c7a;
+             box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+        .book-btn:disabled {
+            background-color: #aab8e2; /* Lighter blue when disabled */
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        #upgrade-btn { /* Specific styles if needed */
+            background-color: var(--green); /* Example: Green upgrade button */
+            margin-top: 10px;
+            display: inline-block; /* Correct display */
+        }
+         #upgrade-btn:hover {
+             background-color: #45a049;
+         }
+
+        .upgrade-prompt {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff9e6; /* Lighter yellow */
+            border-left: 4px solid var(--yellow);
+            border-radius: 5px;
+            font-size: 0.95rem;
+            display: none; /* Controlled by JS */
+        }
+         .upgrade-prompt p {
+              margin-bottom: 10px;
+              color: #856404; /* Darker yellow text */
+         }
+          .upgrade-prompt p strong {
+               color: #664d03;
+          }
+
+
+        .upcoming-sessions {
+            margin-top: 25px;
+             padding-top: 20px;
+             border-top: 1px solid #eee;
+        }
+         .upcoming-sessions h3 {
+             font-size: 1.2rem;
+             color: var(--blue);
+             margin-bottom: 15px;
+         }
+
+        .session-item {
+            padding: 12px 15px; /* Adjust padding */
+            margin-bottom: 10px;
+            background-color: white;
+            border-left: 4px solid var(--blue);
+            border-radius: 5px;
+             display: flex; /* Use flex for layout */
+             justify-content: space-between;
+             align-items: center;
+             gap: 10px;
+             border: 1px solid #eee; /* Subtle border */
+        }
+         .session-item p {
+              margin: 0;
+              font-size: 0.9rem;
+              line-height: 1.4;
+              color: var(--black2);
+         }
+          .session-item p strong {
+               color: var(--black1);
+          }
+
+
+        .cancel-session {
+             flex-shrink: 0; /* Prevent shrinking */
+            background-color: var(--red);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem; /* Smaller font */
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+         .cancel-session:hover {
+             background-color: #d35400; /* Darker red/orange */
+         }
+
+        .alert {
+            padding: 12px 15px; /* Adjust padding */
+            margin-bottom: 15px;
+            border-radius: 5px;
+            font-size: 0.95rem;
+            display: none; /* Controlled by JS */
+            border-width: 1px;
+            border-style: solid;
+        }
+        .alert-success {
+            background-color: #e6f4ea;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+        .hidden { /* Utility class */
+            display: none !important;
+        }
+
+
+        /* ================== Responsive Design ================== */
+
+        /* Medium devices (tablets, less than 992px) */
+        @media (max-width: 991px) {
+            .navigation {
+                left: -300px; /* Hide nav off-screen */
+                z-index: 1001; /* Ensure nav is on top when active */
+            }
+            .navigation.active {
+                width: 300px; /* Full width when active */
+                left: 0;
+            }
+            .main {
+                width: 100%;
+                left: 0;
+                padding: 15px; /* Adjust padding */
+            }
+            .main.active {
+                 left: 0; /* Keep main content left aligned */
+                 width: 100%;
+            }
+
+            .topbar {
+                padding: 0 15px; /* Adjust padding */
+            }
+            .search-container {
+                max-width: 400px; /* Reduce search width */
+                margin: 0 10px;
+            }
+            .user-info .name {
+                display: none; /* Hide name */
+            }
+            .topbar-icons {
+                 gap: 12px; /* Reduce gap */
+            }
+             #mail-icon-inbox, #notification-icon {
+                  font-size: 23px; /* Slightly smaller icons */
+             }
+             .greetings, .promo-banner, .dashboard-grid, .workout-plan-container {
+                  margin-left: 0;
+                  margin-right: 0;
+             }
+             .welcome h1 { font-size: 1.6rem; }
+             .promo-banner h2 { font-size: 1.3rem; }
+        }
+
+        /* Small devices (landscape phones, less than 768px) */
+        @media (max-width: 767px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr; /* Stack cards vertically */
+                gap: 20px;
+            }
+            .form-row {
+                flex-direction: column;
+                gap: 15px; /* Keep gap */
+            }
+            .modal-content {
+                max-width: 90%; /* Wider modal on small screens */
+                padding: 20px; /* Reduce padding */
+                 max-height: 85vh;
+            }
+             .modal-footer {
+                 flex-direction: column; /* Stack buttons */
+                 gap: 10px;
+             }
+             .modal-button {
+                 width: 100%; /* Full width buttons */
+             }
+             .topbar {
+                 padding: 0 10px;
+             }
+             .search-container {
+                  max-width: 250px; /* Further reduce search */
+             }
+             .welcome h1 { font-size: 1.5rem; }
+             .promo-banner { padding: 20px; }
+             .promo-banner h2 { font-size: 1.2rem; }
+             .promo-banner p { font-size: 0.9rem; }
+             .promo-button { padding: 8px 20px; font-size: 0.9rem; }
+             .dashboard-card { padding: 15px; }
+             .dashboard-card h3 { font-size: 1.1rem; }
+             .goal-progress { flex-direction: column; align-items: flex-start; gap: 15px; }
+             .progress-circle { margin-right: 0; }
+             .workout-plan-container { padding: 20px; }
+             .coach-booking-widget { padding: 20px; }
+             .coach-booking-widget h2 { font-size: 1.3rem; }
+        }
+
+        /* Extra small devices (portrait phones, less than 480px) */
+        @media (max-width: 479px) {
+            .main { padding: 10px; }
+            .toggle {
+                font-size: 2rem; /* Smaller toggle */
+            }
+            .search-container {
+                display: none; /* Hide search completely */
+            }
+            .topbar-icons {
+                margin-left: auto; /* Push icons to right */
+                 gap: 10px;
+            }
+            .user-info {
+                 margin-left: 10px;
+            }
+             .user {
+                  width: 35px;
+                  height: 35px;
+                  min-width: 35px;
+             }
+            #inbox-preview, #notifications-dropdown {
+                width: 250px; /* Narrower dropdown */
+                 right: 0;
+            }
+            .modal-content {
+                max-width: 95%; /* Almost full width */
+                padding: 15px;
+            }
+             .modal-title { font-size: 1.2em; }
+             .modal-body { font-size: 1em; }
+             .welcome h1 { font-size: 1.3rem; }
+             .promo-banner { flex-direction: column; text-align: center; gap: 10px; padding: 15px;}
+             .promo-button { width: 100%; }
+             .dashboard-card h3 { font-size: 1rem; }
+             .progress-circle { width: 80px; height: 80px; }
+             .progress-circle-inner { width: 60px; height: 60px; font-size: 1.1rem; }
+             .streak-number { font-size: 2.5rem; }
+             .streak-day { width: 24px; height: 24px; font-size: 0.7rem; }
+             .todo-text { font-size: 0.85rem; }
+             .todo-input-container { flex-direction: column; gap: 5px; }
+             .todo-input, .todo-add-btn { border-radius: 5px; }
+             .workout-plan-container, .coach-booking-widget { padding: 15px; }
+             .workout-plan-title, .coach-booking-widget h2 { font-size: 1.2rem; }
+             .workout-table th, .workout-table td { padding: 8px 10px; font-size: 0.85rem; }
+             .form-control, .form-select { padding: 8px 10px; font-size: 0.9rem; }
+             .book-btn, #upgrade-btn, .modal-button { padding: 8px 15px; font-size: 0.9rem; }
+             .session-item { flex-direction: column; align-items: flex-start; gap: 5px;}
+             .cancel-session { align-self: flex-end; /* Move cancel button to right */}
+        }
+
     </style>
-    
+
 </head>
 
 <body>
@@ -926,6 +1327,7 @@
                     </a>
                 </li>
 
+                <!-- Added .hovered class for current page -->
                 <li class="hovered">
                     <a href="guest.html">
                         <span class="icon">
@@ -963,7 +1365,7 @@
                 </li>
 
                 <li>
-                    <a href="#" id="signOutLink">
+                    <a href="#" id="signOutLink"> <!-- Ensure ID exists -->
                         <span class="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>
@@ -976,86 +1378,97 @@
         <!-- ========================= Main ==================== -->
         <div class="main">
             <div class="topbar">
-                <div class="toggle">
+                 <div class="toggle">
                     <ion-icon name="menu-outline"></ion-icon>
                 </div>
 
                 <div class="search-container">
                     <label>
-                      <input type="text" id="search-input" placeholder="Search what you're looking for">
+                      <input type="text" id="search-input" placeholder="Search...">
                       <ion-icon name="search-outline"></ion-icon>
                     </label>
                     <div id="search-results">
+                        <!-- Search results populated by JS -->
                     </div>
                 </div>
 
-                <div class="mail-container">
-                    <ion-icon name="mail" id="mail-icon-inbox"></ion-icon>
-                    <div id="unread-notification">1</div>
-                    <div id="inbox-preview">
-                    <strong>Inbox</strong>
-                    <hr>
-                    <div id="unread-messages">
-                        <div class="email-item sender">Coaches</div>
-                        <div class="email-item subject">Session today!</div>
-                        <hr>
+                <!-- Grouped Icons and User Info -->
+                <div class="topbar-icons">
+                    <div class="mail-container">
+                        <ion-icon name="mail-outline" id="mail-icon-inbox"></ion-icon> <!-- Use outline icon -->
+                        <div id="unread-notification" style="display: block;">1</div> <!-- Show initially -->
+                        <div id="inbox-preview">
+                            <strong>Inbox</strong>
+                            <hr>
+                            <div id="unread-messages">
+                                <!-- Example unread -->
+                                <div class="email-item sender">Coaches</div>
+                                <div class="email-item subject">Session today!</div>
+                                <hr>
+                            </div>
+                            <div id="read-messages">
+                                <!-- Example read -->
+                                <div class="email-item sender">Coach</div>
+                                <div class="email-item subject">Can I ask?</div>
+                            </div>
+                            <a href="#">See All Messages</a>
+                        </div>
                     </div>
-                    <div id="read-messages">
-                        <div class="email-item sender">Coach</div>
-                        <div class="email-item subject">Can I ask?</div>
-                    </div>
-                    <a href="#">See All</a>
+
+                    <div class="notification-container">
+                        <ion-icon name="notifications-outline" id="notification-icon"></ion-icon> <!-- Use outline icon -->
+                        <div id="notification-badge" style="display: block;">1</div> <!-- Show initially -->
+                        <div id="notifications-dropdown">
+                            <strong>Notifications</strong>
+                            <hr>
+                            <div id="notification-list">
+                                <!-- Example notifications -->
+                                <div class="notification-item title">Today, 1:00 PM</div>
+                                <div class="notification-item message">Your schedule is today.</div>
+                                <hr>
+                                <div class="notification-item title">Yesterday</div>
+                                <div class="notification-item message">Coach John Cena cancelled the session.</div>
+                            </div>
+                            <a href="#">See All Notifications</a>
+                        </div>
                     </div>
                 </div>
 
-                <div class="notification-container">
-                    <ion-icon name="notifications" id="notification-icon"></ion-icon>
-                    <div id="notification-badge">1</div>
-                    <div id="notifications-dropdown">
-                      <strong>Notifications</strong>
-                      <hr>
-                      <div id="notification-list">
-                        <div class="notification-item title">Today, 1:00 PM</div>
-                        <div class="notification-item message">Your schedule is today.</div>
-                        <hr>
-                        <div class="notification-item title">Coach John Cena</div>
-                        <div class="notification-item message">Cancelled the session</div>
-                      </div>
-                      <a href="#">See All</a>
+                <div class="user-info">
+                    <div class="name"> <!-- Class added for consistency -->
+                        <p>Guest User 01</p>
+                    </div>
+                    <div class="user">
+                        <img src="assets/img/esnyr.jpg" alt="User profile">
                     </div>
                 </div>
-            
-                <div class="name">
-                    <p>Guest User 01</p>
-                </div>
-    
-                <div class="user">
-                    <img src="assets/img/esnyr.jpg" alt="User profile">
-                </div>                
             </div>
+
+             <!-- ============ Guest Page Content Starts Here ============ -->
 
             <div class="greetings">
                 <div class="welcome">
                     <h1>Welcome, Guest!</h1>
                 </div>
             </div>
-            
+
             <!-- Promo Banner -->
             <div class="promo-banner">
                 <div class="promo-banner-content">
                     <h2>Upgrade Your Fitness Journey</h2>
-                    <p>Get personalized workout plans and coaching from certified professionals</p>
+                    <p>Get personalized workout plans and coaching from certified professionals.</p>
                 </div>
-                <button class="promo-button" id="viewPlansBtn"><a href="guestsplan.html" style="text-decoration: none; color: #484848;">View Plans</a></button>
+                <!-- Button now uses class for styling, link remains for navigation -->
+                <a href="guestsplan.html" class="promo-button" style="text-decoration: none;">View Plans</a>
             </div>
-            
+
             <!-- Dashboard Cards -->
             <div class="dashboard-grid">
                 <!-- Goal Progress Card -->
                 <div class="dashboard-card goal-card">
                     <h3>Goal Progress</h3>
                     <div class="goal-progress">
-                        <div class="progress-circle">
+                        <div class="progress-circle"> <!-- Static example -->
                             <div class="progress-circle-inner">75%</div>
                         </div>
                         <div class="progress-details">
@@ -1064,8 +1477,9 @@
                             <p>Current: 11.2 lbs</p>
                         </div>
                     </div>
+                     <!-- Add more goal details or actions if needed -->
                 </div>
-                
+
                 <!-- Streak Card -->
                 <div class="dashboard-card">
                     <h3>Workout Streak</h3>
@@ -1081,22 +1495,22 @@
                         <div class="streak-day inactive">S</div>
                     </div>
                 </div>
-                
+
                 <!-- Todo List Card -->
                 <div class="dashboard-card">
                     <h3>Fitness To-Do</h3>
                     <ul class="todo-list" id="todoList">
+                        <!-- Items added dynamically or statically -->
                         <li class="todo-item">
                             <div class="todo-checkbox checked">
                                 <ion-icon name="checkmark-outline"></ion-icon>
-
                             </div>
                             <span class="todo-text completed">Morning cardio - 30 mins</span>
                             <span class="todo-delete">
                                 <ion-icon name="close-outline"></ion-icon>
                             </span>
                         </li>
-                        <li class="todo-item">
+                         <li class="todo-item">
                             <div class="todo-checkbox">
                                 <ion-icon name="checkmark-outline"></ion-icon>
                             </div>
@@ -1105,7 +1519,7 @@
                                 <ion-icon name="close-outline"></ion-icon>
                             </span>
                         </li>
-                        <li class="todo-item">
+                         <li class="todo-item">
                             <div class="todo-checkbox">
                                 <ion-icon name="checkmark-outline"></ion-icon>
                             </div>
@@ -1116,14 +1530,14 @@
                         </li>
                     </ul>
                     <div class="todo-input-container">
-                        <input type="text" class="todo-input" id="todoInput" placeholder="Add new task">
+                        <input type="text" class="todo-input form-control" id="todoInput" placeholder="Add new task">
                         <button class="todo-add-btn" id="addTodoBtn">
                             <ion-icon name="add-outline"></ion-icon>
                         </button>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Workout Plan Section -->
             <div class="workout-plan-container">
                 <div class="workout-plan-header">
@@ -1133,81 +1547,152 @@
                         Add Exercise
                     </button>
                 </div>
-                
-                <table class="workout-table">
-                    <thead>
-                        <tr>
-                            <th>Day</th>
-                            <th>Exercise</th>
-                            <th>Sets</th>
-                            <th>Reps</th>
-                            <th>Weight</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="workoutTableBody">
-                        <tr>
-                            <td>Monday</td>
-                            <td>Bench Press</td>
-                            <td>4</td>
-                            <td>10</td>
-                            <td>135 lbs</td>
-                            <td>
-                                <span class="workout-action">
-                                    <ion-icon name="trash-outline"></ion-icon>
-                                </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Monday</td>
-                            <td>Barbell Squat</td>
-                            <td>3</td>
-                            <td>12</td>
-                            <td>185 lbs</td>
-                            <td>
-                                <span class="workout-action">
-                                    <ion-icon name="trash-outline"></ion-icon>
-                                </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Wednesday</td>
-                            <td>Deadlift</td>
-                            <td>5</td>
-                            <td>5</td>
-                            <td>225 lbs</td>
-                            <td>
-                                <span class="workout-action">
-                                    <ion-icon name="trash-outline"></ion-icon>
-                                </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Friday</td>
-                            <td>Pull-ups</td>
-                            <td>3</td>
-                            <td>10</td>
-                            <td>Bodyweight</td>
-                            <td>
-                                <span class="workout-action">
-                                    <ion-icon name="trash-outline"></ion-icon>
-                                </span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    
+
+                <!-- Responsive Table Wrapper -->
+                <div class="table-responsive-wrapper">
+                    <table class="workout-table">
+                        <thead>
+                            <tr>
+                                <th>Day</th>
+                                <th>Exercise</th>
+                                <th>Sets</th>
+                                <th>Reps</th>
+                                <th>Weight</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="workoutTableBody">
+                            <!-- Example Rows -->
+                            <tr>
+                                <td>Monday</td>
+                                <td>Bench Press</td>
+                                <td>4</td>
+                                <td>10</td>
+                                <td>135 lbs</td>
+                                <td>
+                                    <span class="workout-action">
+                                        <ion-icon name="trash-outline"></ion-icon>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Monday</td>
+                                <td>Barbell Squat</td>
+                                <td>3</td>
+                                <td>12</td>
+                                <td>185 lbs</td>
+                                <td>
+                                    <span class="workout-action">
+                                        <ion-icon name="trash-outline"></ion-icon>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Wednesday</td>
+                                <td>Deadlift</td>
+                                <td>5</td>
+                                <td>5</td>
+                                <td>225 lbs</td>
+                                <td>
+                                    <span class="workout-action">
+                                        <ion-icon name="trash-outline"></ion-icon>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Friday</td>
+                                <td>Pull-ups</td>
+                                <td>3</td>
+                                <td>10</td>
+                                <td>Bodyweight</td>
+                                <td>
+                                    <span class="workout-action">
+                                        <ion-icon name="trash-outline"></ion-icon>
+                                    </span>
+                                </td>
+                            </tr>
+                            <!-- More rows added by JS -->
+                        </tbody>
+                    </table>
+                </div> <!-- End table wrapper -->
+
+                <!-- Coach Booking Widget -->
+                <div class="coach-booking-widget">
+                    <h2>Book a Coaching Session</h2>
+
+                    <div id="booking-alert" class="alert"></div>
+
+                    <div class="session-counter">
+                        You have used <span id="sessions-used">0</span> of <span>3</span> available coaching sessions
+                    </div>
+
+                    <form id="coach-booking-form" class="booking-form">
+                        <div class="form-group">
+                            <label for="coach-select">Select Coach</label>
+                            <select id="coach-select" class="form-select" required>
+                                <option value="">-- Select a coach --</option>
+                                <option value="coach-1">Coach Sarah (Fitness)</option>
+                                <option value="coach-2">Coach Mike (Career)</option>
+                                <option value="coach-3">Coach Emma (Life)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="session-date">Session Date</label>
+                            <input type="date" id="session-date" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="session-time">Session Time</label>
+                            <select id="session-time" class="form-select" required>
+                                <option value="">-- Select a time --</option>
+                                <option value="9:00">9:00 AM</option>
+                                <option value="10:00">10:00 AM</option>
+                                <option value="11:00">11:00 AM</option>
+                                <option value="13:00">1:00 PM</option>
+                                <option value="14:00">2:00 PM</option>
+                                <option value="15:00">3:00 PM</option>
+                                <option value="16:00">4:00 PM</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" id="book-session-btn" class="book-btn">Book Session</button>
+                    </form>
+
+                    <div id="upgrade-prompt" class="upgrade-prompt">
+                        <p><strong>Need more sessions?</strong> Upgrade to a premium plan for unlimited coaching sessions.</p>
+                        <button id="upgrade-btn" class="book-btn">Upgrade Plan</button>
+                    </div>
+
+                    <div class="upcoming-sessions">
+                        <h3>Your Upcoming Sessions</h3>
+                        <div id="session-list">
+                            <p>No sessions booked yet.</p>
+                            <!-- Sessions added by JS -->
+                        </div>
+                    </div>
+                </div> <!-- End coach-booking-widget -->
+
+            </div> <!-- End workout-plan-container -->
+
+             <!-- ============ Guest Page Content Ends Here ============ -->
+
+        </div> <!-- End main -->
+    </div> <!-- End container -->
+
+
+    <!-- ============ Modals ============ -->
+
     <!-- Sign Out Modal -->
     <div id="signOutModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title">Sign Out</h3>
+                <!-- Optional: Add a close button -->
+                <!-- <span class="close-button">×</span> -->
             </div>
             <div class="modal-body">
-                Are you sure you want to sign out?
+                <p>Are you sure you want to sign out?</p>
             </div>
             <div class="modal-footer">
                 <button id="signOutNo" class="modal-button no-button">No</button>
@@ -1215,12 +1700,13 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Add Exercise Modal -->
     <div id="addExerciseModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title">Add New Exercise</h3>
+                 <!-- Optional: Add a close button -->
             </div>
             <div class="modal-body">
                 <form class="exercise-form" id="exerciseForm">
@@ -1253,7 +1739,7 @@
                     </div>
                     <div class="form-group">
                         <label for="exerciseWeight">Weight</label>
-                        <input type="text" class="form-control" id="exerciseWeight" placeholder="Enter weight (e.g. 50 lbs, Bodyweight)">
+                        <input type="text" class="form-control" id="exerciseWeight" placeholder="e.g., 50 lbs, Bodyweight">
                     </div>
                 </form>
             </div>
@@ -1264,210 +1750,250 @@
         </div>
     </div>
 
+
+    <!-- ========= Scripts ========= -->
     <script>
-        // Navigation Active Link
+        // Navigation Link Activation & Menu Toggle (Same as payment.html)
         let list = document.querySelectorAll(".navigation li");
 
         function activeLink() {
             list.forEach((item) => {
                 item.classList.remove("hovered");
             });
-            this.classList.add("hovered");
+            // Find the link pointing to 'guest.html' and add 'hovered'
+             const currentLink = Array.from(list).find(item => item.querySelector('a[href="guest.html"]'));
+             if (currentLink) {
+                currentLink.classList.add("hovered");
+             } else {
+                 // Fallback or default if needed
+                 list[1].classList.add("hovered"); // Assuming Dashboard is second item
+             }
         }
+        // Add click listener if dynamic activation is desired (e.g., for single-page apps)
+        // list.forEach((item) => item.addEventListener("click", activeLink));
+        activeLink(); // Run once on load
 
-        list.forEach((item) => item.addEventListener("click", activeLink));
-
-        // Menu Toggle
         let toggle = document.querySelector(".toggle");
         let navigation = document.querySelector(".navigation");
         let main = document.querySelector(".main");
 
-        toggle.onclick = function () {
-            navigation.classList.toggle("active");
-            main.classList.toggle("active");
-        };
+        if (toggle && navigation && main) {
+            toggle.onclick = function () {
+                navigation.classList.toggle("active");
+                main.classList.toggle("active");
+            };
+        }
 
-        // Search Function
+        // Search Functionality (Same as payment.html)
         const searchInput = document.getElementById('search-input');
         const searchResultsDiv = document.getElementById('search-results');
-
         const searchData = [
-            "How to diet",
-            "Paano makapasa sa webdev",
-            "Effective workout plan",
-            "Effective sleep",
-            "Gulay effective diet",
-            "Recent Sessions",
-            "Overall well being",
-            "Updates",
-            "Coaches",
-            "Plans"
-        ];
+            "Dashboard", "Profile", "Workout Plan", "Membership Plan", "Settings",
+            "How to upgrade plan", "Book a session", "View goals", "Contact support"
+        ]; // Example data relevant to guest
 
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const filteredResults = searchData.filter(item =>
-                item.toLowerCase().includes(searchTerm)
-            );
+        if (searchInput && searchResultsDiv) {
+             searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                searchResultsDiv.innerHTML = '';
+                searchResultsDiv.style.display = 'none';
 
-            displayResults(filteredResults);
-        });
+                if (searchTerm.length > 0) {
+                    const filteredResults = searchData.filter(item =>
+                        item.toLowerCase().includes(searchTerm)
+                    );
+                    displayResults(filteredResults, searchTerm);
+                }
+            });
 
-        function displayResults(results) {
-            searchResultsDiv.innerHTML = '';
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('.search-container')) {
+                    searchResultsDiv.style.display = 'none';
+                }
+            });
+        }
 
-            if (results.length > 0 && searchInput.value.trim() !== '') {
+        function displayResults(results, searchTerm) {
+             if (results.length > 0) {
                 const ul = document.createElement('ul');
                 results.forEach(result => {
                     const li = document.createElement('li');
-                    li.textContent = result;
+                    const regex = new RegExp(`(${searchTerm})`, 'gi');
+                    li.innerHTML = result.replace(regex, '<span class="highlight">$1</span>');
+
                     li.addEventListener('click', function() {
-                        searchInput.value = this.textContent;
-                        searchResultsDiv.style.display = 'none'; 
+                        searchInput.value = result;
+                        searchResultsDiv.style.display = 'none';
+                        console.log("Selected:", result);
                     });
                     ul.appendChild(li);
                 });
                 searchResultsDiv.appendChild(ul);
-                searchResultsDiv.style.display = 'block'; 
+                searchResultsDiv.style.display = 'block';
             } else {
                 searchResultsDiv.style.display = 'none';
             }
         }
 
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.search-container')) {
-                searchResultsDiv.style.display = 'none';
-            }
-        });
-
-        // Mail Function
-        const mailIconInbox = document.getElementById('mail-icon-inbox');
+        // Mail & Notification Dropdown Functionality (Same as payment.html)
+         const mailIconInbox = document.getElementById('mail-icon-inbox');
         const unreadNotification = document.getElementById('unread-notification');
         const inboxPreview = document.getElementById('inbox-preview');
-        let hasUnread = true; 
+        let hasUnread = true; // Simulate
 
         function updateUnreadIndicator() {
-            unreadNotification.style.display = hasUnread ? 'block' : 'none';
+            if (unreadNotification) {
+                unreadNotification.style.display = hasUnread ? 'block' : 'none';
+                unreadNotification.textContent = '1'; // Example count
+            }
         }
 
-        updateUnreadIndicator();
+        if(mailIconInbox && inboxPreview && unreadNotification) {
+            updateUnreadIndicator();
+            mailIconInbox.addEventListener('click', function(event) {
+                 event.stopPropagation();
+                 if (notificationsDropdown) notificationsDropdown.style.display = 'none';
+                 const isVisible = inboxPreview.style.display === 'block';
+                 inboxPreview.style.display = isVisible ? 'none' : 'block';
+                if (!isVisible && hasUnread) {
+                    hasUnread = false;
+                    updateUnreadIndicator();
+                }
+            });
+        }
 
-        mailIconInbox.addEventListener('click', function() {
-            inboxPreview.style.display = (inboxPreview.style.display === 'block' ? 'none' : 'block');
-
-            if (hasUnread && inboxPreview.style.display === 'block') {
-                hasUnread = false;
-                updateUnreadIndicator();
-                console.log('Mail icon clicked - marking as read');
-            }
-        });
-
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.mail-container')) {
-                inboxPreview.style.display = 'none';
-            }
-        });
-
-        // Notification Function
         const notificationIcon = document.getElementById('notification-icon');
         const notificationBadge = document.getElementById('notification-badge');
         const notificationsDropdown = document.getElementById('notifications-dropdown');
+        let hasNewNotifications = true; // Simulate
 
-        notificationIcon.addEventListener('click', function() {
-            notificationsDropdown.style.display = (notificationsDropdown.style.display === 'block' ? 'none' : 'block');
-            
-            notificationBadge.style.display = 'none';
-        });
+        if (notificationIcon && notificationBadge && notificationsDropdown) {
+             notificationBadge.style.display = hasNewNotifications ? 'block' : 'none';
+            notificationIcon.addEventListener('click', function(event) {
+                 event.stopPropagation();
+                 if (inboxPreview) inboxPreview.style.display = 'none';
+                const isVisible = notificationsDropdown.style.display === 'block';
+                notificationsDropdown.style.display = isVisible ? 'none' : 'block';
+                 if (!isVisible && hasNewNotifications) {
+                     hasNewNotifications = false;
+                     notificationBadge.style.display = 'none';
+                 }
+            });
+        }
 
         document.addEventListener('click', function(event) {
-            if (!event.target.closest('.notification-container')) {
+            if (inboxPreview && !event.target.closest('.mail-container')) {
+                inboxPreview.style.display = 'none';
+            }
+            if (notificationsDropdown && !event.target.closest('.notification-container')) {
                 notificationsDropdown.style.display = 'none';
             }
         });
 
-        // Sign Out Modal
+
+        // Modal Helper Functions
+        function showModal(modalElement) {
+            if (modalElement) modalElement.classList.add('show');
+        }
+        function hideModal(modalElement) {
+            if (modalElement) modalElement.classList.remove('show');
+        }
+
+        // Sign Out Modal Logic
         const signOutLink = document.getElementById('signOutLink');
         const signOutModal = document.getElementById('signOutModal');
         const signOutYesButton = document.getElementById('signOutYes');
         const signOutNoButton = document.getElementById('signOutNo');
 
-        signOutLink.addEventListener('click', function(event) {
-            event.preventDefault();
-            showModal(signOutModal);
-        });
-
-        signOutYesButton.addEventListener('click', function() {
-            window.location.href = 'index.html';
-        });
-
-        signOutNoButton.addEventListener('click', function() {
-            hideModal(signOutModal);
-        });
+        if (signOutLink && signOutModal && signOutYesButton && signOutNoButton) {
+            signOutLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                showModal(signOutModal);
+            });
+            signOutYesButton.addEventListener('click', function() {
+                console.log("Signing out...");
+                window.location.href = 'index.html'; // Redirect to index/login
+            });
+            signOutNoButton.addEventListener('click', function() {
+                hideModal(signOutModal);
+            });
+            signOutModal.addEventListener('click', function(event) {
+                if (event.target === signOutModal) hideModal(signOutModal);
+            });
+        }
 
         // To-Do List Functionality
         const todoList = document.getElementById('todoList');
         const todoInput = document.getElementById('todoInput');
         const addTodoBtn = document.getElementById('addTodoBtn');
 
-        // Add new todo item
-        addTodoBtn.addEventListener('click', function() {
-            addTodoItem();
-        });
+        function createTodoItem(text, isCompleted = false) {
+             const li = document.createElement('li');
+             li.className = 'todo-item';
 
-        todoInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                addTodoItem();
-            }
-        });
+             const checkboxDiv = document.createElement('div');
+             checkboxDiv.className = 'todo-checkbox';
+             if (isCompleted) checkboxDiv.classList.add('checked');
+             checkboxDiv.innerHTML = '<ion-icon name="checkmark-outline"></ion-icon>';
 
-        function addTodoItem() {
+             const textSpan = document.createElement('span');
+             textSpan.className = 'todo-text';
+             if (isCompleted) textSpan.classList.add('completed');
+             textSpan.textContent = text;
+
+             const deleteSpan = document.createElement('span');
+             deleteSpan.className = 'todo-delete';
+             deleteSpan.innerHTML = '<ion-icon name="close-outline"></ion-icon>';
+
+             li.appendChild(checkboxDiv);
+             li.appendChild(textSpan);
+             li.appendChild(deleteSpan);
+
+             // Add event listeners
+             checkboxDiv.addEventListener('click', function() {
+                 this.classList.toggle('checked');
+                 textSpan.classList.toggle('completed');
+             });
+             deleteSpan.addEventListener('click', function() {
+                 li.remove();
+             });
+
+             return li;
+        }
+
+        function addTodoItemFromInput() {
             const todoText = todoInput.value.trim();
             if (todoText !== '') {
-                const li = document.createElement('li');
-                li.className = 'todo-item';
-                li.innerHTML = `
-                    <div class="todo-checkbox">
-                        <ion-icon name="checkmark-outline"></ion-icon>
-                    </div>
-                    <span class="todo-text">${todoText}</span>
-                    <span class="todo-delete">
-                        <ion-icon name="close-outline"></ion-icon>
-                    </span>
-                `;
-                todoList.appendChild(li);
+                const newItem = createTodoItem(todoText);
+                if (todoList) todoList.appendChild(newItem);
                 todoInput.value = '';
-                
-                // Add event listeners to new todo item
-                const checkbox = li.querySelector('.todo-checkbox');
-                const text = li.querySelector('.todo-text');
-                const deleteBtn = li.querySelector('.todo-delete');
-                
-                checkbox.addEventListener('click', function() {
-                    this.classList.toggle('checked');
-                    text.classList.toggle('completed');
-                });
-                
-                deleteBtn.addEventListener('click', function() {
-                    li.remove();
-                });
             }
         }
 
-        // Add click events to existing todo items
-        document.querySelectorAll('.todo-checkbox').forEach(function(checkbox) {
-            checkbox.addEventListener('click', function() {
-                this.classList.toggle('checked');
-                this.closest('.todo-item').querySelector('.todo-text').classList.toggle('completed');
-            });
+        if (addTodoBtn) addTodoBtn.addEventListener('click', addTodoItemFromInput);
+        if (todoInput) todoInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') addTodoItemFromInput();
         });
 
-        document.querySelectorAll('.todo-delete').forEach(function(deleteBtn) {
-            deleteBtn.addEventListener('click', function() {
-                this.closest('.todo-item').remove();
-            });
-        });
+        // Add listeners to initially loaded todo items
+        if (todoList) {
+             todoList.querySelectorAll('.todo-item').forEach(item => {
+                 const checkbox = item.querySelector('.todo-checkbox');
+                 const text = item.querySelector('.todo-text');
+                 const deleteBtn = item.querySelector('.todo-delete');
 
-        // Add Exercise Modal
+                 if (checkbox) checkbox.addEventListener('click', function() {
+                     this.classList.toggle('checked');
+                     if (text) text.classList.toggle('completed');
+                 });
+                 if (deleteBtn) deleteBtn.addEventListener('click', function() {
+                     item.remove();
+                 });
+             });
+        }
+
+
+        // Add Exercise Modal Logic
         const addExerciseBtn = document.getElementById('addExerciseBtn');
         const addExerciseModal = document.getElementById('addExerciseModal');
         const cancelExerciseBtn = document.getElementById('cancelExerciseBtn');
@@ -1475,90 +2001,236 @@
         const exerciseForm = document.getElementById('exerciseForm');
         const workoutTableBody = document.getElementById('workoutTableBody');
 
-        addExerciseBtn.addEventListener('click', function() {
-            showModal(addExerciseModal);
-        });
-
-        cancelExerciseBtn.addEventListener('click', function() {
-            hideModal(addExerciseModal);
-        });
-
-        saveExerciseBtn.addEventListener('click', function() {
-            // Form validation
-            if (!exerciseForm.checkValidity()) {
-                exerciseForm.reportValidity();
-                return;
-            }
-            
-            // Get form values
-            const day = document.getElementById('exerciseDay').value;
-            const name = document.getElementById('exerciseName').value;
-            const sets = document.getElementById('exerciseSets').value;
-            const reps = document.getElementById('exerciseReps').value;
-            const weight = document.getElementById('exerciseWeight').value || 'Bodyweight';
-            
-            // Add new row to workout table
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td>${day}</td>
-                <td>${name}</td>
-                <td>${sets}</td>
-                <td>${reps}</td>
-                <td>${weight}</td>
-                <td>
-                    <span class="workout-action">
-                        <ion-icon name="trash-outline"></ion-icon>
-                    </span>
-                </td>
-            `;
-            workoutTableBody.appendChild(newRow);
-            
-            // Add delete functionality to new row
-            const deleteAction = newRow.querySelector('.workout-action');
-            deleteAction.addEventListener('click', function() {
-                newRow.remove();
+        if (addExerciseBtn && addExerciseModal && cancelExerciseBtn && saveExerciseBtn && exerciseForm && workoutTableBody) {
+            addExerciseBtn.addEventListener('click', function() {
+                 exerciseForm.reset(); // Clear form before showing
+                showModal(addExerciseModal);
             });
-            
-            // Reset form and close modal
-            exerciseForm.reset();
-            hideModal(addExerciseModal);
-        });
 
-        // Add delete functionality to existing workout rows
-        document.querySelectorAll('.workout-action').forEach(function(action) {
-            action.addEventListener('click', function() {
-                this.closest('tr').remove();
+            cancelExerciseBtn.addEventListener('click', function() {
+                hideModal(addExerciseModal);
             });
-        });
 
-        // Plans redirect button
-        const viewPlansBtn = document.getElementById('viewPlansBtn');
-        viewPlansBtn.addEventListener('click', function() {
-            window.location.href = 'plans.html';
-        });
+            saveExerciseBtn.addEventListener('click', function() {
+                if (!exerciseForm.checkValidity()) {
+                    exerciseForm.reportValidity();
+                    return;
+                }
 
-        // Helper functions for showing and hiding modals
-        function showModal(modalElement) {
-            modalElement.classList.add('show');
+                const day = document.getElementById('exerciseDay').value;
+                const name = document.getElementById('exerciseName').value;
+                const sets = document.getElementById('exerciseSets').value;
+                const reps = document.getElementById('exerciseReps').value;
+                const weight = document.getElementById('exerciseWeight').value.trim() || 'Bodyweight';
+
+                const newRow = workoutTableBody.insertRow(); // More robust way to add row
+                newRow.innerHTML = `
+                    <td>${day}</td>
+                    <td>${name}</td>
+                    <td>${sets}</td>
+                    <td>${reps}</td>
+                    <td>${weight}</td>
+                    <td>
+                        <span class="workout-action">
+                            <ion-icon name="trash-outline"></ion-icon>
+                        </span>
+                    </td>
+                `;
+
+                // Add delete functionality to the new row's action button
+                const deleteAction = newRow.querySelector('.workout-action');
+                 if (deleteAction) {
+                    deleteAction.addEventListener('click', function() {
+                        newRow.remove();
+                    });
+                 }
+
+
+                hideModal(addExerciseModal);
+            });
+
+            // Add delete functionality to initially loaded workout rows
+            workoutTableBody.querySelectorAll('.workout-action').forEach(action => {
+                action.addEventListener('click', function() {
+                    action.closest('tr').remove();
+                });
+            });
         }
 
-        function hideModal(modalElement) {
-            modalElement.classList.remove('show');
-        }
 
-        // Close modals when clicking outside
-        window.addEventListener('click', function(event) {
-            if (event.target.classList.contains('modal')) {
-                hideModal(event.target);
-            }
+        // Close modals when clicking outside their content
+        document.querySelectorAll('.modal').forEach(modal => {
+             modal.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    hideModal(modal);
+                }
+            });
         });
 
-        // Initialize progress circle (simulated with CSS)
-        // In a real implementation, you would dynamically create this based on actual user data
+        // Initialize progress circle (static example)
+        // In a real app, update this dynamically based on data
         const progressCircle = document.querySelector('.progress-circle');
-        const progressPercentage = 75;
-        
-        progressCircle.style.background = `conic-gradient(var(--blue) ${progressPercentage}%, #f0f0f0 0)`;
+        const progressPercentage = 75; // Example percentage
+        if (progressCircle) {
+            // The background is set via CSS conic-gradient now
+            // progressCircle.style.background = `conic-gradient(var(--blue) ${progressPercentage}%, #f0f0f0 0)`;
+            const progressInner = progressCircle.querySelector('.progress-circle-inner');
+            if(progressInner) progressInner.textContent = `${progressPercentage}%`;
+        }
+
+
+        // Coach Booking Widget JS
+        document.addEventListener('DOMContentLoaded', function() {
+            const MAX_SESSIONS = 3;
+            let sessions = JSON.parse(localStorage.getItem('guestCoachSessions')) || [];
+
+            const sessionsUsedEl = document.getElementById('sessions-used');
+            const bookingForm = document.getElementById('coach-booking-form');
+            const bookButton = document.getElementById('book-session-btn');
+            const upgradePrompt = document.getElementById('upgrade-prompt');
+            const sessionList = document.getElementById('session-list');
+            const alertBox = document.getElementById('booking-alert');
+            const upgradeBtn = document.getElementById('upgrade-btn');
+
+            function showAlert(message, type = 'error') { // Default to error
+                 if(!alertBox) return;
+                alertBox.textContent = message;
+                alertBox.className = 'alert'; // Reset classes
+                alertBox.classList.add(`alert-${type}`);
+                alertBox.style.display = 'block';
+                setTimeout(() => { alertBox.style.display = 'none'; }, 5000);
+            }
+
+            function updateSessionCounter() {
+                 if (sessionsUsedEl) {
+                    sessionsUsedEl.textContent = sessions.length;
+                     // Update total in span if needed, assumes it's always 3 here
+                     const totalSpan = sessionsUsedEl.nextElementSibling;
+                      if(totalSpan) totalSpan.textContent = MAX_SESSIONS;
+                 }
+            }
+
+            function checkBookingLimit() {
+                 const limitReached = sessions.length >= MAX_SESSIONS;
+                 if (bookButton) bookButton.disabled = limitReached;
+                 if (upgradePrompt) upgradePrompt.style.display = (sessions.length >= 2) ? 'block' : 'none'; // Show prompt earlier
+                 if (limitReached && !bookButton.disabled) { // Show alert only once when limit is hit
+                      showAlert('You have reached your limit of 3 coaching sessions. Please upgrade for more.', 'error');
+                 }
+            }
+
+            function renderSessionList() {
+                 if (!sessionList) return;
+                if (sessions.length === 0) {
+                    sessionList.innerHTML = '<p>No sessions booked yet.</p>';
+                    return;
+                }
+
+                sessionList.innerHTML = ''; // Clear list
+                sessions.sort((a, b) => new Date(a.date + ' ' + a.time) - new Date(b.date + ' ' + b.time)); // Sort sessions
+
+                sessions.forEach((session, index) => {
+                    const sessionItem = document.createElement('div');
+                    sessionItem.className = 'session-item';
+                    const coaches = { 'coach-1': 'Coach Sarah (Fitness)', 'coach-2': 'Coach Mike (Career)', 'coach-3': 'Coach Emma (Life)' };
+                    const coachName = coaches[session.coach] || session.coach;
+                     // Format date nicely
+                    const dateObj = new Date(session.date + 'T00:00:00'); // Treat date as local
+                     const formattedDate = dateObj.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+
+                     // Format time
+                     const [hour, minute] = session.time.split(':');
+                     const timeObj = new Date();
+                     timeObj.setHours(hour, minute, 0);
+                      const formattedTime = timeObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+
+
+                    sessionItem.innerHTML = `
+                        <div>
+                            <p><strong>${coachName}</strong></p>
+                            <p>${formattedDate} at ${formattedTime}</p>
+                        </div>
+                        <button class="cancel-session" data-index="${index}">Cancel</button>
+                    `;
+                    sessionList.appendChild(sessionItem);
+                });
+
+                // Add event listeners after rendering
+                sessionList.querySelectorAll('.cancel-session').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        if (confirm('Are you sure you want to cancel this session?')) {
+                             const index = parseInt(this.getAttribute('data-index'));
+                             cancelSession(index);
+                        }
+                    });
+                });
+            }
+
+            function cancelSession(index) {
+                sessions.splice(index, 1);
+                localStorage.setItem('guestCoachSessions', JSON.stringify(sessions));
+                showAlert('Session successfully canceled', 'success');
+                updateSessionCounter();
+                renderSessionList();
+                checkBookingLimit();
+            }
+
+            if (bookingForm) {
+                bookingForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    if (sessions.length >= MAX_SESSIONS) {
+                        showAlert('Booking limit reached. Please upgrade.', 'error');
+                        return;
+                    }
+
+                    const coach = document.getElementById('coach-select').value;
+                    const date = document.getElementById('session-date').value;
+                    const time = document.getElementById('session-time').value;
+
+                    if (!coach || !date || !time) {
+                        showAlert('Please fill in all fields.', 'error');
+                        return;
+                    }
+
+                     // Basic date validation: Ensure date is not in the past
+                     const selectedDate = new Date(date + 'T00:00:00');
+                     const today = new Date();
+                     today.setHours(0, 0, 0, 0); // Compare dates only
+                     if (selectedDate < today) {
+                         showAlert('Cannot book sessions in the past.', 'error');
+                         return;
+                     }
+
+                    const isDuplicate = sessions.some(s => s.date === date && s.time === time && s.coach === coach); // Check coach too
+                    if (isDuplicate) {
+                        showAlert('You already have a session booked at this time with this coach.', 'error');
+                        return;
+                    }
+
+                    sessions.push({ coach, date, time });
+                    localStorage.setItem('guestCoachSessions', JSON.stringify(sessions));
+
+                    bookingForm.reset();
+                    showAlert('Coaching session booked successfully!', 'success');
+                    updateSessionCounter();
+                    renderSessionList();
+                    checkBookingLimit();
+                });
+            }
+
+            if (upgradeBtn) {
+                upgradeBtn.addEventListener('click', function() {
+                    window.location.href = 'guestsplan.html'; // Navigate to plans page
+                });
+            }
+
+            // Initial setup
+            updateSessionCounter();
+            renderSessionList();
+            checkBookingLimit();
+        }); // End Coach Booking Widget JS
+
+
     </script>
 
     <!-- ====== ionicons ======= -->

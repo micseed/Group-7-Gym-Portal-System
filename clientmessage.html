@@ -6,783 +6,43 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
-    <link rel="stylesheet" href="assets/css/client.css">
+    <!-- Removed link to external css -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>Client Dashboard</title>
-   
+    <title>Client Dashboard - Messages</title>
+
     <style>
-      /* =============== Globals ============== */
+        /* =============== Globals ============== */
         * {
-        font-family: "Poppins", sans-serif;
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         :root {
-        --blue: #203A93;
-        --white: #fff;
-        --gray: #f5f5f5;
-        --black1: #222;
-        --black2: #999;
-        --yellow: #F1D27C;
-        --light-blue: #e8eeff;
-        --red: #ff6b6b;
-        --green: #4caf50;
+            --blue: #203A93;
+            --white: #fff;
+            --gray: #f5f5f5;
+            --black1: #222;
+            --black2: #999;
+            --yellow: #F1D27C;
+            --light-blue: #e8eeff;
+            --red: #ff6b6b;
+            --green: #4caf50;
         }
 
         body {
-        min-height: 100vh;
-        overflow-x: hidden;
+            background-color: var(--gray);
+            min-height: 100vh;
+            overflow: hidden; /* Prevent body scroll when chat scrolls */
         }
 
         .container {
-        position: relative;
-        width: 100%;
+            position: relative;
+            width: 100%;
         }
 
         /* =============== Navigation ================ */
-        .navigation {
-        position: fixed;
-        width: 300px;
-        height: 100%;
-        background: var(--blue);
-        border-left: 10px solid var(--blue);
-        transition: 0.5s;
-        overflow: hidden;
-        }
-        .navigation.active {
-        width: 80px;
-        }
-
-        .navigation ul {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        }
-
-        .navigation ul li {
-        position: relative;
-        width: 100%;
-        list-style: none;
-        border-top-left-radius: 30px;
-        border-bottom-left-radius: 30px;
-        }
-
-        .navigation ul li:hover,
-        .navigation ul li.hovered {
-        background-color: var(--white);
-        }
-
-        .navigation ul li:nth-child(1) {
-        margin-bottom: 40px;
-        pointer-events: none;
-        }
-
-        .navigation ul li a {
-        position: relative;
-        display: block;
-        width: 100%;
-        display: flex;
-        text-decoration: none;
-        color: var(--white);
-        }
-        .navigation ul li:hover a,
-        .navigation ul li.hovered a {
-        color: var(--blue);
-        }
-
-        .navigation ul li a .icon {
-        position: relative;
-        display: block;
-        min-width: 60px;
-        height: 60px;
-        line-height: 75px;
-        text-align: center;
-        }
-        .navigation ul li a .icon ion-icon {
-        font-size: 1.75rem;
-        }
-
-        .navigation ul li a .title {
-        position: relative;
-        display: block;
-        padding: 0 10px;
-        height: 60px;
-        line-height: 60px;
-        text-align: start;
-        white-space: nowrap;
-        }
-
-        /* --------- Curve Outside ---------- */
-        .navigation ul li:hover a::before,
-        .navigation ul li.hovered a::before {
-        content: "";
-        position: absolute;
-        right: 0;
-        top: -50px;
-        width: 50px;
-        height: 50px;
-        background-color: transparent;
-        border-radius: 50%;
-        box-shadow: 35px 35px 0 10px var(--white);
-        pointer-events: none;
-        }
-
-        .navigation ul li:hover a::after,
-        .navigation ul li.hovered a::after {
-        content: "";
-        position: absolute;
-        right: 0;
-        bottom: -50px;
-        width: 50px;
-        height: 50px;
-        background-color: transparent;
-        border-radius: 50%;
-        box-shadow: 35px -35px 0 10px var(--white);
-        pointer-events: none;
-        }
-
-        /* ===================== Main ===================== */
-        .main {
-        position: absolute;
-        width: calc(100% - 300px);
-        left: 300px;
-        min-height: 100vh;
-        background: var(--white);
-        transition: 0.5s;
-        }
-        .main.active {
-        width: calc(100% - 80px);
-        left: 80px;
-        }
-
-        .topbar {
-        width: 100%;
-        height: 60px;
-        display: flex;
-        align-items: center;
-        padding: 0 10px;
-        justify-content:space-between;
-        }
-
-        .toggle {
-        position: relative;
-        width: 60px;
-        height: 60px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 2.5rem;
-        cursor: pointer;
-        }
-
-        .search {
-        position: relative;
-        width: 800px;
-        margin: 0 10px;
-        }
-
-        .search label {
-        position: relative;
-        width: 100%;
-        }
-
-        .search label input {
-        width: 100%;
-        height: 40px;
-        border-radius: 40px;
-        padding: 5px 20px;
-        padding-left: 35px;
-        font-size: 18px;
-        outline: none;
-        border: 1px solid var(--black2);
-        }
-
-        .search label ion-icon {
-        position: absolute;
-        top: 0;
-        left: 10px;
-        font-size: 1.2rem;
-        }
-
-        .user {
-        position: relative;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        overflow: hidden;
-        cursor: pointer;
-        }
-
-
-        .user img {
-        position: absolute;
-        justify-items: end;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        }
-
-        /* =============== Search ============== */
-        .search-container {
-        position: relative;
-        width: 800px;
-        margin: 0 10px;
-        }
-
-        .search-container label {
-        display: flex;
-        align-items: center; 
-        width: 100%;
-        border: 1px solid #ccc;
-        border-radius: 15px;
-        overflow: hidden; 
-        }
-
-        #search-input {
-        flex-grow: 1; 
-        padding: 10px;
-        border: none;
-        outline: none;
-        font-size: 16px;
-        box-sizing: border-box; 
-        margin-right: 5px; 
-        }
-
-        .search-container label ion-icon {
-        padding-right: 10px;
-        font-size: 20px; 
-        color: #777;
-        }
-
-        #search-results {
-        position: absolute;
-        top: calc(100% + 2px);
-        left: 0;
-        right: 0;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        margin-top: 2px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-        z-index: 10;
-        display: none;
-        overflow: hidden; 
-        }
-
-        #search-results ul {
-        list-style: none;
-        padding: 8px 0;
-        margin: 0;
-        }
-
-        #search-results li {
-        padding: 12px 16px;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-        font-size: 1.0em;
-        color: #333;
-        }
-
-        #search-results li:hover {
-        background-color: #f5f5f5;
-        color: #222;
-        }
-
-        #search-results li:active {
-        background-color: #eee;
-        }
-
-
-        #search-results li span.highlight {
-        font-weight: bold;
-        color: #007bff; 
-        }
-
-        /* =============== Mail Icon ============== */
-        .mail-container {
-        position: relative;
-        display: inline-block;
-        }
-
-        #mail-icon-inbox {
-        font-size: 25px;
-        color: #203A93;
-        cursor: pointer;
-        }
-
-        #mail-icon-inbox:hover {
-        opacity: 0.8;
-        }
-
-        #unread-notification {
-        position: absolute;
-        top: -8px;
-        right: -8px;
-        background-color: red;
-        color: white;
-        font-size: 12px;
-        border-radius: 50%;
-        width: 18px;
-        height: 18px;
-        text-align: center;
-        line-height: 18px;
-        display: none; 
-        }
-
-        #inbox-preview {
-        position: absolute;
-        top: calc(100% + 5px);
-        right: -10px;
-        background-color: #f9f9f9;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        width: 250px;
-        padding: 15px;
-        display: none;
-        z-index: 10;
-        text-align: left;
-        }
-
-        #inbox-preview strong {
-        display: block;
-        margin-bottom: 5px;
-        }
-
-        .email-item {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        padding: 3px 0; 
-        }
-
-        .email-item.sender {
-        font-weight: bold;
-        }
-
-        .email-item.subject {
-        color: #555;
-        font-size: 0.9em; 
-        }
-
-        #inbox-preview hr {
-        margin-top: 8px;
-        margin-bottom: 8px;
-        }
-
-        #inbox-preview a {
-        display: block;
-        margin-top: 10px;
-        font-size: 0.8em;
-        text-align: right;
-        color: #007bff;
-        text-decoration: none;
-        }
-
-        /* =============== Notification Icon ============== */
-        .notification-container {
-        position: relative;
-        display: inline-block;
-        }
-
-        #notification-icon {
-        font-size: 25px;
-        color: #203A93;
-        cursor: pointer;
-        }
-
-        #notification-icon:hover {
-        opacity: 0.8;
-        }
-
-        #notification-badge {
-        position: absolute;
-        top: -8px;
-        right: -8px;
-        background-color: orange;
-        color: white;
-        font-size: 12px;
-        border-radius: 50%;
-        width: 18px;
-        height: 18px;
-        text-align: center;
-        line-height: 18px;
-        display: block; 
-        }
-
-        #notifications-dropdown {
-        position: absolute;
-        top: calc(100% + 5px);
-        right: -10px;
-        background-color: #f9f9f9;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        width: 250px;
-        padding: 15px;
-        display: none;
-        z-index: 10;
-        text-align: left;
-        }
-
-        #notifications-dropdown strong {
-        display: block;
-        margin-bottom: 5px;
-        }
-
-        .notification-item {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        padding: 3px 0;
-        }
-
-        .notification-item.title {
-        font-weight: bold;
-        margin-top: 5px;
-        }
-
-        .notification-item.message {
-        color: #555;
-        font-size: 0.9em;
-        }
-
-        #notifications-dropdown hr {
-        margin-top: 8px;
-        margin-bottom: 8px;
-        }
-
-        #notifications-dropdown a {
-        display: block;
-        margin-top: 10px;
-        font-size: 0.8em;
-        text-align: right;
-        color: #007bff;
-        text-decoration: none;
-        }
-
-        /* Modal Styles for Sign out*/
-        .modal {
-        display: none; 
-        position: fixed; 
-        z-index: 1000; 
-        left: 0;
-        top: 0;
-        width: 100%; 
-        height: 100%; 
-        overflow: auto; 
-        background-color: rgba(0,0,0,0.4); 
-        backdrop-filter: blur(5px);
-        justify-content: center;
-        align-items: center;
-        }
-
-        .modal.show {
-        display: flex; 
-        }
-
-        .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto; 
-        padding: 30px;
-        border: 1px solid #888;
-        width: 600px; 
-        max-width: 400px; 
-        border-radius: 15px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        position: relative;
-        }
-
-        .modal-header {
-        padding-bottom: 20px;
-        border-bottom: 1px solid #eee;
-        margin-bottom: 20px;
-        }
-
-        .modal-title {
-        font-size: 1.5em;
-        color: #333;
-        font-weight: bold;
-        }
-
-        .modal-body {
-        font-size: 1.1em;
-        color: #555;
-        margin-bottom: 20px;
-        }
-
-        .modal-footer {
-        display: flex;
-        justify-content: flex-end;
-        gap: 15px;
-        }
-
-        .modal-button {
-        background-color: #007bff; 
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-        transition: background-color 0.3s ease;
-        }
-
-        .modal-button:hover {
-        background-color: #0056b3;
-        }
-
-        .modal-button.yes-button {
-        background-color: #203A93;
-        }
-
-        .modal-button.yes-button:hover {
-        background-color: #162b6e;
-        }
-
-        .modal-button.no-button {
-        background-color: #F1D27C;
-        }
-
-        .modal-button.no-button:hover {
-        background-color: #d9ba5f;
-        }
-
-        /* Chat container styles */
-        .chat-container {
-            width: 96%;
-            justify-self: center;
-            height: calc(100vh - 60px);
-            margin-top: 5%;
-            display: flex;
-        }
-
-        /* Contacts sidebar */
-        .contacts-sidebar {
-            border-radius: 20px;
-            width: 300px;
-            background-color: var(--white);
-            border-right: 1px solid #ddd;
-            overflow-y: auto;
-        }
-
-        .contacts-header {
-            padding: 20px;
-            background-color: var(--blue);
-            color: var(--white);
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .search-contacts {
-            padding: 10px;
-            background-color: var(--white);
-            border-bottom: 1px solid #ddd;
-        }
-
-        .search-contacts input {
-            width: 100%;
-            padding: 8px 10px;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            outline: none;
-        }
-
-        .contact-list {
-            list-style: none;
-        }
-
-        .contact-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .contact-item:hover, .contact-item.active {
-            background-color: var(--light-blue);
-        }
-
-        .contact-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 15px;
-            overflow: hidden;
-        }
-
-        .contact-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .contact-info {
-            flex: 1;
-        }
-
-        .contact-name {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .contact-status {
-            font-size: 0.85rem;
-            color: var(--black2);
-        }
-
-        .contact-status.online {
-            color: var(--green);
-        }
-
-        /* Chat area */
-   .chat-area {
-    
-       flex: 1;
-       display: flex;
-       flex-direction: column;
-       background-color: #f9f9f9;
-       margin-left: 10px; /* Add a left margin */
-       /* Or, if you prefer spacing on all sides: */
-       /* margin: 10px; */
-   }
-
-   .chat-header {
-       display: flex;
-       align-items: center;
-       padding: 15px 20px;
-       background-color: var(--white);
-       border-bottom: 1px solid #ddd;
-   }
-
-   .current-contact-avatar {
-       width: 40px;
-       height: 40px;
-       border-radius: 50%;
-       margin-right: 15px;
-       overflow: hidden;
-   }
-
-   .current-contact-avatar img {
-       width: 100%;
-       height: 100%;
-       object-fit: cover;
-   }
-
-   .current-contact-info {
-       flex: 1;
-   }
-
-   .current-contact-name {
-       font-weight: bold;
-   }
-
-   .current-contact-status {
-       font-size: 0.85rem;
-       color: var(--green);
-   }
-
-   .chat-tools {
-       display: flex;
-       gap: 15px;
-   }
-
-   .chat-tool {
-       font-size: 1.2rem;
-       color: var(--blue);
-       cursor: pointer;
-   }
-
-   .messages-container {
-       flex: 1;
-       padding: 20px;
-       overflow-y: auto;
-       display: flex;
-       flex-direction: column;
-   }
-
-   .message {
-       max-width: 70%;
-       margin-bottom: 15px;
-       padding: 10px 15px;
-       border-radius: 10px;
-       position: relative;
-   }
-
-   .message.received {
-       align-self: flex-start;
-       background-color: var(--white);
-       border-top-left-radius: 0;
-   }
-
-   .message.sent {
-       align-self: flex-end;
-       background-color: var(--blue);
-       color: var(--white);
-       border-top-right-radius: 0;
-   }
-
-   .message-time {
-       font-size: 0.75rem;
-       color: var(--black2);
-       margin-top: 5px;
-       text-align: right;
-   }
-
-   .message.sent .message-time {
-       color: #ccc;
-   }
-
-   .message-input-container {
-       display: flex;
-       align-items: center;
-       padding: 15px;
-       background-color: var(--white);
-       border-top: 1px solid #ddd;
-   }
-
-   .message-input {
-       flex: 1;
-       padding: 10px 15px;
-       border: 1px solid #ddd;
-       border-radius: 20px;
-       outline: none;
-       resize: none;
-       max-height: 100px;
-       min-height: 40px;
-   }
-
-   .message-actions {
-       display: flex;
-       gap: 10px;
-       margin-left: 10px;
-   }
-
-   .message-action {
-       width: 40px;
-       height: 40px;
-       border-radius: 50%;
-       display: flex;
-       justify-content: center;
-       align-items: center;
-       background-color: var(--blue);
-       color: var(--white);
-       cursor: pointer;
-       transition: background-color 0.2s;
-   }
-
-   .message-action:hover {
-       background-color: #162b6e;
-   }
-
-        /* Navigation bar */
         .navigation {
             position: fixed;
             width: 300px;
@@ -790,119 +50,43 @@
             background: var(--blue);
             border-left: 10px solid var(--blue);
             transition: 0.5s;
-            overflow: hidden;
-            z-index: 1000;
+            overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 100;
         }
-
         .navigation.active {
             width: 80px;
         }
+        .navigation ul { position: absolute; top: 0; left: 0; width: 100%; padding-left: 0; }
+        .navigation ul li { position: relative; width: 100%; list-style: none; border-top-left-radius: 30px; border-bottom-left-radius: 30px; }
+        .navigation ul li:hover, .navigation ul li.hovered { background-color: var(--white); }
+        .navigation ul li:nth-child(1) { margin-bottom: 40px; pointer-events: none; }
+        .navigation ul li a { position: relative; display: block; width: 100%; display: flex; text-decoration: none; color: var(--white); transition: color 0.3s; }
+        .navigation ul li:hover a, .navigation ul li.hovered a { color: var(--blue); }
+        .navigation ul li a .icon { position: relative; display: block; min-width: 60px; height: 60px; line-height: 75px; text-align: center; }
+        .navigation ul li a .icon ion-icon { font-size: 1.75rem; }
+        .navigation ul li a .title { position: relative; display: block; padding: 0 10px; height: 60px; line-height: 60px; text-align: start; white-space: nowrap; }
+        .navigation ul li:hover a::before, .navigation ul li.hovered a::before { content: ""; position: absolute; right: 0; top: -50px; width: 50px; height: 50px; background-color: transparent; border-radius: 50%; box-shadow: 35px 35px 0 10px var(--white); pointer-events: none; }
+        .navigation ul li:hover a::after, .navigation ul li.hovered a::after { content: ""; position: absolute; right: 0; bottom: -50px; width: 50px; height: 50px; background-color: transparent; border-radius: 50%; box-shadow: 35px -35px 0 10px var(--white); pointer-events: none; }
 
-        .navigation ul {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-        }
-
-        .navigation ul li {
-            position: relative;
-            width: 100%;
-            list-style: none;
-            border-top-left-radius: 30px;
-            border-bottom-left-radius: 30px;
-        }
-
-        .navigation ul li:hover,
-        .navigation ul li.hovered {
-            background-color: var(--white);
-        }
-
-        .navigation ul li:nth-child(1) {
-            margin-bottom: 40px;
-            pointer-events: none;
-        }
-
-        .navigation ul li a {
-            position: relative;
-            display: block;
-            width: 100%;
-            display: flex;
-            text-decoration: none;
-            color: var(--white);
-        }
-
-        .navigation ul li:hover a,
-        .navigation ul li.hovered a {
-            color: var(--blue);
-        }
-
-        .navigation ul li a .icon {
-            position: relative;
-            display: block;
-            min-width: 60px;
-            height: 60px;
-            line-height: 75px;
-            text-align: center;
-        }
-
-        .navigation ul li a .icon ion-icon {
-            font-size: 1.75rem;
-        }
-
-        .navigation ul li a .title {
-            position: relative;
-            display: block;
-            padding: 0 10px;
-            height: 60px;
-            line-height: 60px;
-            text-align: start;
-            white-space: nowrap;
-        }
-
-        .navigation ul li:hover a::before,
-        .navigation ul li.hovered a::before {
-            content: "";
-            position: absolute;
-            right: 0;
-            top: -50px;
-            width: 50px;
-            height: 50px;
-            background-color: transparent;
-            border-radius: 50%;
-            box-shadow: 35px 35px 0 10px var(--white);
-            pointer-events: none;
-        }
-
-        .navigation ul li:hover a::after,
-        .navigation ul li.hovered a::after {
-            content: "";
-            position: absolute;
-            right: 0;
-            bottom: -50px;
-            width: 50px;
-            height: 50px;
-            background-color: transparent;
-            border-radius: 50%;
-            box-shadow: 35px -35px 0 10px var(--white);
-            pointer-events: none;
-        }
-
-        /* Main content */
+        /* ===================== Main ===================== */
         .main {
             position: absolute;
             width: calc(100% - 300px);
             left: 300px;
-            min-height: 100vh;
-            background: var(--white);
+            height: 100vh; /* Full viewport height */
+            background: var(--gray);
             transition: 0.5s;
+            padding: 0; /* Remove padding to allow chat full space */
+            display: flex; /* Use flex for layout */
+            flex-direction: column; /* Stack topbar and chat */
         }
-
         .main.active {
             width: calc(100% - 80px);
             left: 80px;
         }
 
+        /* ===================== Topbar ===================== */
         .topbar {
             width: 100%;
             height: 60px;
@@ -910,180 +94,363 @@
             align-items: center;
             padding: 0 10px;
             justify-content: space-between;
-            position: fixed;
+            background: var(--white);
+            border-bottom: 1px solid #eee;
+            position: sticky; /* Changed from fixed */
             top: 0;
-            left: 300px;
-            width: calc(100% - 300px);
+            z-index: 90;
+            flex-shrink: 0; /* Prevent topbar from shrinking */
+        }
+        .toggle { position: relative; width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; font-size: 2.5rem; cursor: pointer; color: var(--black1); }
+
+        /* Search */
+        .search-container { position: relative; flex-grow: 1; max-width: 600px; margin: 0 15px; }
+        .search-container label { display: flex; align-items: center; width: 100%; border: 1px solid #ccc; border-radius: 15px; overflow: hidden; background-color: var(--white); }
+        #search-input { flex-grow: 1; padding: 8px 15px; border: none; outline: none; font-size: 1rem; box-sizing: border-box; }
+        .search-container label ion-icon { padding: 0 10px; font-size: 1.2rem; color: #777; }
+        #search-results { position: absolute; top: calc(100% + 5px); left: 0; right: 0; background-color: #fff; border: 1px solid #ccc; border-radius: 8px; margin-top: 2px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); z-index: 110; display: none; overflow: hidden; max-height: 300px; overflow-y: auto; }
+        #search-results ul { list-style: none; padding: 8px 0; margin: 0; }
+        #search-results li { padding: 10px 16px; cursor: pointer; transition: background-color 0.2s ease; font-size: 0.95em; color: #333; }
+        #search-results li:hover { background-color: #f5f5f5; color: #222; }
+        #search-results li:active { background-color: #eee; }
+        #search-results li span.highlight { font-weight: bold; color: #007bff; }
+
+        /* Topbar Icons & User */
+        .topbar-icons { display: flex; align-items: center; gap: 15px; }
+        .mail-container, .notification-container { position: relative; display: flex; align-items: center; }
+        #mail-icon-inbox, #notification-icon { font-size: 25px; color: var(--blue); cursor: pointer; transition: opacity 0.3s; }
+        #mail-icon-inbox:hover, #notification-icon:hover { opacity: 0.7; }
+        #unread-notification, #notification-badge { position: absolute; top: -5px; right: -5px; background-color: var(--red); color: white; font-size: 11px; border-radius: 50%; width: 16px; height: 16px; text-align: center; line-height: 16px; font-weight: bold; display: block; }
+        #notification-badge { background-color: orange; }
+        #inbox-preview, #notifications-dropdown { position: absolute; top: calc(100% + 10px); right: -10px; background-color: #f9f9f9; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); width: 280px; padding: 15px; display: none; z-index: 110; text-align: left; max-height: 350px; overflow-y: auto; }
+        #inbox-preview strong, #notifications-dropdown strong { display: block; margin-bottom: 8px; font-size: 1.1em; color: var(--black1); }
+        .email-item, .notification-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 4px 0; font-size: 0.9em; }
+        .email-item.sender, .notification-item.title { font-weight: bold; }
+        .email-item.subject, .notification-item.message { color: #555; font-size: 0.85em; }
+        .notification-item.title { margin-top: 5px; font-size: 0.8em; color: var(--black2); }
+        #inbox-preview hr, #notifications-dropdown hr { margin: 8px 0; border: 0; border-top: 1px solid #eee; }
+        #inbox-preview a, #notifications-dropdown a { display: block; margin-top: 10px; font-size: 0.85em; text-align: center; color: #007bff; text-decoration: none; padding-top: 5px; }
+        #inbox-preview a:hover, #notifications-dropdown a:hover { text-decoration: underline; }
+        .user-info { display: flex; align-items: center; gap: 10px; margin-left: 15px; }
+        .user-info .name { color: var(--black1); font-weight: 500; white-space: nowrap; }
+        .user { position: relative; min-width: 40px; width: 40px; height: 40px; border-radius: 50%; overflow: hidden; cursor: pointer; }
+        .user img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+
+        /* ============ Modal Styles (Consistent) ============ */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 1000; justify-content: center; align-items: center; overflow: auto; transition: opacity 0.3s ease; backdrop-filter: blur(3px); opacity: 0; pointer-events: none; }
+        .modal-overlay.active { display: flex; opacity: 1; pointer-events: auto; }
+        .modal { background-color: #fff; border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); width: 90%; max-width: 440px; margin: auto; transform: scale(0.95) translateY(10px); transition: transform 0.3s ease, opacity 0.3s ease; overflow: hidden; opacity: 0; display: none; }
+        .modal-overlay.active .modal { display: block; transform: scale(1) translateY(0); opacity: 1; }
+        .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid #eaeaea; display: flex; justify-content: space-between; align-items: center; background-color: #f8f9fa; }
+        .modal-title { font-size: 1.35rem; font-weight: 600; margin: 0; color: var(--blue); }
+        .modal-close { cursor: pointer; font-size: 1.8rem; color: #999; border: none; background: none; padding: 0; line-height: 1; transition: color 0.2s ease; }
+        .modal-close:hover { color: #555; }
+        .modal-body { padding: 1.5rem; font-size: 1.1rem; color: #555; line-height: 1.6; text-align: center; }
+        .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid #eaeaea; display: flex; justify-content: flex-end; gap: 12px; background-color: #f8f9fa; }
+        .modal-button { padding: 0.6rem 1.2rem; border-radius: 6px; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease; border: none; }
+        .no-button { background-color: var(--yellow); color: var(--black1); }
+        .no-button:hover { background-color: #e4c370; }
+        .yes-button { background-color: var(--blue); color: white; }
+        .yes-button:hover { background-color: #182c7a; }
+
+        /* =============== CHAT INTERFACE STYLES ============== */
+        .chat-container {
+            width: 100%; /* Take full width of main */
+            height: calc(100vh - 60px); /* Full height minus topbar */
+            display: flex;
+            overflow: hidden; /* Prevent container overflow */
+            position: relative; /* Needed for absolute positioning of sidebar on mobile */
+        }
+
+        /* Contacts Sidebar */
+        .contacts-sidebar {
+            width: 300px; /* Default width */
             background-color: var(--white);
-            z-index: 999;
-            transition: 0.5s;
-        }
-
-        .topbar.active {
-            left: 80px;
-            width: calc(100% - 80px);
-        }
-
-        .toggle {
-            position: relative;
-            width: 60px;
-            height: 60px;
+            border-right: 1px solid #ddd;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2.5rem;
-            cursor: pointer;
+            flex-direction: column;
+            transition: width 0.5s, left 0.5s; /* Smooth transition */
+            flex-shrink: 0; /* Prevent sidebar from shrinking */
         }
 
-        .user {
-            position: relative;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            overflow: hidden;
-            cursor: pointer;
+        .contacts-header {
+            padding: 15px 20px; /* Adjust padding */
+            background-color: var(--blue);
+            color: var(--white);
+            font-size: 1.1rem; /* Adjust font size */
+            font-weight: 600;
+            flex-shrink: 0;
         }
 
-        .user img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .name {
-            margin-right: 10px;
-        }
-
-        /* Date divider */
-        .date-divider {
-            display: flex;
-            align-items: center;
-            margin: 20px 0;
-            color: var(--black2);
-        }
-
-        .date-divider::before,
-        .date-divider::after {
-            content: "";
-            flex: 1;
+        .search-contacts {
+            padding: 10px 15px; /* Adjust padding */
+            background-color: var(--white);
             border-bottom: 1px solid #ddd;
+            flex-shrink: 0;
         }
 
-        .date-divider::before {
-            margin-right: 10px;
+        .search-contacts input {
+            width: 100%;
+            padding: 8px 15px; /* Adjust padding */
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+            font-size: 0.9rem;
         }
 
-        .date-divider::after {
-            margin-left: 10px;
+        .contact-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto; /* Allow contact list scrolling */
+            flex-grow: 1; /* Take remaining vertical space */
         }
 
-        /* Mobile responsiveness */
-        @media (max-width: 991px) {
-            .navigation {
-                left: -300px;
-            }
-            .navigation.active {
-                width: 300px;
-                left: 0;
-            }
-            .main {
-                width: 100%;
-                left: 0;
-            }
-            .main.active {
-                left: 300px;
-            }
-            .topbar {
-                width: 100%;
-                left: 0;
-            }
-            .topbar.active {
-                left: 300px;
-            }
-            .contacts-sidebar {
-                width: 250px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .contacts-sidebar {
-                position: absolute;
-                left: -250px;
-                height: 100%;
-                transition: 0.3s;
-                z-index: 100;
-            }
-            .contacts-sidebar.active {
-                left: 0;
-            }
-            .chat-container {
-                margin-top: 60px;
-            }
-            .chat-header {
-                padding: 10px;
-            }
-            .message {
-                max-width: 85%;
-            }
-        }
-
-        /* Message status indicators */
-        .message-status {
-            font-size: 0.7rem;
-            margin-top: 2px;
-            text-align: right;
-            color: #ccc;
-        }
-
-        /* Typing indicator */
-        .typing-indicator {
+        .contact-item {
             display: flex;
             align-items: center;
-            background-color: var(--white);
-            border-radius: 10px;
-            padding: 8px 15px;
-            margin-bottom: 15px;
-            align-self: flex-start;
-            border-top-left-radius: 0;
+            padding: 12px 15px; /* Adjust padding */
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .contact-item:last-child { border-bottom: none; }
+
+        .contact-item:hover, .contact-item.active {
+            background-color: var(--light-blue);
         }
 
-        .typing-indicator span {
-            height: 8px;
-            width: 8px;
-            margin: 0 2px;
-            background-color: var(--black2);
+        .contact-avatar {
+            width: 45px; /* Slightly smaller avatar */
+            height: 45px;
             border-radius: 50%;
-            display: inline-block;
-            animation: typing-bounce 1.4s infinite ease-in-out both;
+            margin-right: 12px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .contact-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        .contact-info { flex: 1; min-width: 0; /* Prevent text overflow issues */}
+        .contact-name { font-weight: 600; margin-bottom: 3px; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .contact-status { font-size: 0.8rem; color: var(--black2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .contact-status.online { color: var(--green); font-weight: 500; }
+
+        /* Chat Area */
+        .chat-area {
+            flex: 1; /* Take remaining horizontal space */
+            display: flex;
+            flex-direction: column;
+            background-color: var(--gray); /* Use main background color */
+            overflow: hidden; /* Prevent chat area overflow */
         }
 
-        .typing-indicator span:nth-child(1) {
-            animation-delay: -0.32s;
+        .chat-header {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px; /* Adjust padding */
+            background-color: var(--white);
+            border-bottom: 1px solid #ddd;
+            flex-shrink: 0; /* Prevent header shrinking */
+            min-height: 60px; /* Ensure consistent height */
         }
 
-        .typing-indicator span:nth-child(2) {
-            animation-delay: -0.16s;
+        .current-contact-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            margin-right: 12px; overflow: hidden; flex-shrink: 0;
+        }
+        .current-contact-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        .current-contact-info { flex: 1; min-width: 0; }
+        .current-contact-name { font-weight: 600; font-size: 1rem; }
+        .current-contact-status { font-size: 0.8rem; color: var(--green); }
+
+        .chat-tools { display: flex; gap: 15px; margin-left: auto; /* Push tools right */}
+        .chat-tool { font-size: 1.3rem; color: var(--blue); cursor: pointer; transition: color 0.2s;}
+        .chat-tool:hover { color: #182e75; }
+
+        /* Messages Container */
+        .messages-container {
+            flex: 1; /* Take remaining vertical space */
+            padding: 15px; /* Adjust padding */
+            overflow-y: auto; /* Enable message scrolling */
+            display: flex;
+            flex-direction: column;
         }
 
-        @keyframes typing-bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
+        /* Individual Messages */
+        .message {
+            max-width: 65%; /* Adjust max width */
+            margin-bottom: 12px; /* Adjust margin */
+            padding: 10px 15px;
+            border-radius: 15px; /* More rounded */
+            position: relative;
+            word-wrap: break-word; /* Allow long words to break */
+            line-height: 1.4;
+            font-size: 0.95rem;
+        }
+        .message.received { align-self: flex-start; background-color: var(--white); border-top-left-radius: 5px; box-shadow: 0 1px 2px rgba(0,0,0,0.08);}
+        .message.sent { align-self: flex-end; background-color: var(--blue); color: var(--white); border-top-right-radius: 5px; box-shadow: 0 1px 2px rgba(0,0,0,0.08);}
+
+        .message-time { font-size: 0.7rem; color: var(--black2); margin-top: 5px; text-align: right; }
+        .message.sent .message-time { color: rgba(255, 255, 255, 0.7); }
+        .message-status { font-size: 0.7rem; margin-top: 2px; text-align: right; color: rgba(255, 255, 255, 0.7); }
+        .message.sent .message-status { margin-left: 5px; display: inline-block; } /* Show status inline */
+
+        /* Date Divider */
+        .date-divider { display: flex; align-items: center; margin: 20px 0; color: var(--black2); font-size: 0.8rem; font-weight: 500;}
+        .date-divider::before, .date-divider::after { content: ""; flex: 1; border-bottom: 1px solid #ddd; }
+        .date-divider span { padding: 0 10px; }
+        .date-divider::before { margin-right: 10px; }
+        .date-divider::after { margin-left: 10px; }
+
+        /* Typing Indicator */
+        .typing-indicator { display: none; /* Hide initially */ align-items: center; background-color: var(--white); border-radius: 15px; padding: 8px 12px; margin-bottom: 12px; align-self: flex-start; border-top-left-radius: 5px; box-shadow: 0 1px 2px rgba(0,0,0,0.08);}
+        .typing-indicator span { height: 7px; width: 7px; margin: 0 2px; background-color: var(--black2); border-radius: 50%; display: inline-block; animation: typing-bounce 1.4s infinite ease-in-out both; }
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing-bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+
+        /* Message Input Area */
+        .message-input-container {
+            display: flex; align-items: center; padding: 10px 15px; background-color: var(--white);
+            border-top: 1px solid #ddd; flex-shrink: 0;
+        }
+        .message-input {
+            flex: 1; padding: 10px 15px; border: 1px solid #ddd; border-radius: 20px; outline: none;
+            resize: none; max-height: 100px; min-height: 40px; font-size: 1rem; line-height: 1.4;
+        }
+        .message-actions { display: flex; gap: 10px; margin-left: 10px; }
+        .message-action {
+            width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            background-color: var(--blue); color: var(--white); cursor: pointer; transition: background-color 0.2s; border: none; font-size: 1.2rem;
+        }
+        .message-action:hover { background-color: #162b6e; }
+
+
+        /* ================== Responsive Design ================== */
+        @media (max-width: 991px) { /* Tablets */
+            .navigation { left: -300px; z-index: 1001; }
+            .navigation.active { width: 300px; left: 0; }
+            .main { width: 100%; left: 0; padding: 0; } /* Remove padding */
+            .main.active { left: 0; width: 100%; } /* Keep main left */
+            .topbar { /* Topbar spans full width */
+                 padding: 0 15px;
+                 /* No left positioning needed */
+                 width: 100%;
+                 left: 0;
+                 transition: none; /* Remove transition if not needed */
+            }
+            .topbar.active { /* No change needed */
+                 left: 0;
+                 width: 100%;
+             }
+            .search-container { max-width: 400px; margin: 0 10px; }
+            .user-info .name { display: none; }
+            .topbar-icons { gap: 12px; }
+            #mail-icon-inbox, #notification-icon { font-size: 23px; }
+
+             /* Chat Specific Tablet */
+             .contacts-sidebar { width: 250px; }
+             .chat-area { margin-left: 0; } /* Remove margin when sidebar potentially overlaps */
+             .chat-container { height: calc(100vh - 60px); /* Recalculate height */}
         }
 
-        
+        @media (max-width: 767px) { /* Small Tablets / Large Phones */
+            .modal-content { max-width: 90%; padding: 20px; }
+            .modal-footer { flex-direction: column; gap: 10px; }
+            .modal-button { width: 100%; }
+            .topbar { padding: 0 10px; }
+            .search-container { max-width: 250px; }
+
+            /* Chat Specific Mobile */
+             .chat-container { flex-direction: column; /* Stack potentially */ }
+             .contacts-sidebar {
+                 position: absolute; /* Position off-screen */
+                 left: -100%; /* Hide completely */
+                 width: 80%; /* Take most of screen width */
+                 max-width: 300px;
+                 height: calc(100vh - 60px); /* Full height below topbar */
+                 top: 60px; /* Position below topbar */
+                 border-right: 1px solid #ddd;
+                 z-index: 95; /* Below topbar but above chat area */
+                 transition: left 0.3s ease-in-out;
+                 box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+             }
+             .contacts-sidebar.active {
+                 left: 0; /* Slide in */
+             }
+             .chat-area {
+                 width: 100%; /* Take full width */
+                 margin-left: 0;
+             }
+             /* Add a button to toggle sidebar if needed */
+             .toggle-contacts {
+                 display: block; /* Show button on mobile */
+                 /* Add styling for the button */
+                 position: absolute; top: 15px; left: 15px; z-index: 96;
+                 background: var(--blue); color: white; border:none; padding: 5px 10px; border-radius: 5px;
+             }
+              /* Hide toggle button for contacts sidebar on larger screens */
+            .toggle-contacts { display: none; }
+            @media (max-width: 767px) {
+                 .toggle-contacts { display: block; /* Show on small screens */ }
+             }
+
+             .chat-header { padding: 10px 15px; min-height: 55px; }
+             .current-contact-avatar { width: 35px; height: 35px; margin-right: 10px;}
+             .current-contact-name { font-size: 0.95rem; }
+             .chat-tools { gap: 10px; }
+             .chat-tool { font-size: 1.1rem; }
+             .messages-container { padding: 10px; }
+             .message { max-width: 80%; padding: 8px 12px; font-size: 0.9rem; margin-bottom: 10px; }
+             .message-input-container { padding: 10px; }
+             .message-input { padding: 8px 12px; min-height: 38px; font-size: 0.95rem;}
+             .message-actions { gap: 8px; }
+             .message-action { width: 38px; height: 38px; font-size: 1.1rem;}
+        }
+
+        @media (max-width: 479px) { /* Phones */
+            .main { padding: 0; } /* Remove padding */
+            .toggle { font-size: 2rem; }
+            .search-container { display: none; }
+            .topbar-icons { margin-left: auto; gap: 10px; }
+            .user-info { margin-left: 10px; }
+            .user { width: 35px; height: 35px; min-width: 35px; }
+            #inbox-preview, #notifications-dropdown { width: 250px; right: 0; }
+            .modal { max-width: 95%; padding: 15px; }
+            .modal-title { font-size: 1.2em; }
+            .modal-body { padding: 1rem; font-size: 1rem; }
+            .modal-footer { padding: 0.75rem 1rem; }
+
+             /* Further refine chat for small phones */
+             .contacts-header { padding: 12px 15px; font-size: 1rem;}
+             .search-contacts { padding: 8px 10px; }
+             .contact-item { padding: 10px 12px; }
+             .contact-avatar { width: 40px; height: 40px; margin-right: 10px;}
+             .contact-name { font-size: 0.9rem;}
+             .contact-status { font-size: 0.75rem;}
+             .chat-header { padding: 8px 10px; min-height: 50px;}
+             .current-contact-avatar { width: 30px; height: 30px;}
+             .current-contact-name { font-size: 0.9rem;}
+             .current-contact-status { font-size: 0.75rem;}
+             .chat-tool { font-size: 1rem; }
+             .message { font-size: 0.85rem; padding: 6px 10px; }
+             .message-time { font-size: 0.65rem; }
+             .message-status { font-size: 0.65rem; }
+             .message-input-container { padding: 8px 10px; }
+             .message-input { min-height: 36px; font-size: 0.9rem;}
+             .message-action { width: 36px; height: 36px; font-size: 1rem;}
+        }
 
     </style>
-    
+
 </head>
 
 <body>
     <!-- =============== Navigation ================ -->
     <div class="container">
         <div class="navigation">
-            <ul>
+             <ul>
                 <li>
                     <a href="#">
                         <span class="icon">
@@ -1092,7 +459,6 @@
                         <span class="title">ENERGIZE</span>
                     </a>
                 </li>
-
                 <li>
                     <a href="testclient.html">
                         <span class="icon">
@@ -1101,17 +467,15 @@
                         <span class="title">Dashboard</span>
                     </a>
                 </li>
-
-                <li>
-                    <a href="clientmessage.html">
-                        <span class="icon">
-                            <ion-icon name="chatbubble-outline"></ion-icon>
-                        </span>
-                        <span class="title">Message</span>
-                    </a>
+                <!-- Add hovered class -->
+                <li class="hovered">
+                  <a href="clientmessage.html">
+                      <span class="icon">
+                          <ion-icon name="chatbubble-outline"></ion-icon>
+                      </span>
+                      <span class="title">Message</span>
+                  </a>
                 </li>
-
-
                 <li>
                     <a href="profile.html">
                         <span class="icon">
@@ -1120,7 +484,6 @@
                         <span class="title">Profile</span>
                     </a>
                 </li>
-
                 <li>
                     <a href="schedule.html">
                         <span class="icon">
@@ -1129,7 +492,6 @@
                         <span class="title">Workout Plan</span>
                     </a>
                 </li>
-
                 <li>
                     <a href="payment.html">
                         <span class="icon">
@@ -1138,7 +500,6 @@
                         <span class="title">Membership Plan</span>
                     </a>
                 </li>
-
                 <li>
                     <a href="settings.html">
                         <span class="icon">
@@ -1147,9 +508,8 @@
                         <span class="title">Settings</span>
                     </a>
                 </li>
-
                 <li>
-                    <a href="#">
+                    <a href="#" id="signOutLink"> <!-- Add ID -->
                         <span class="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>
@@ -1162,62 +522,67 @@
         <!-- ========================= Main ==================== -->
         <div class="main">
             <div class="topbar">
-                <div class="toggle">
+                 <div class="toggle">
                     <ion-icon name="menu-outline"></ion-icon>
                 </div>
+                 <!-- Add button to toggle contacts on mobile -->
+                 <button class="toggle-contacts" style="display: none;">
+                     <ion-icon name="people-outline"></ion-icon>
+                 </button>
 
                 <div class="search-container">
                     <label>
-                      <input type="text" id="search-input" placeholder="Search what you're looking for">
+                      <input type="text" id="search-input" placeholder="Search messages or coaches...">
                       <ion-icon name="search-outline"></ion-icon>
                     </label>
                     <div id="search-results">
+                        <!-- Search results populated by JS -->
                     </div>
                 </div>
 
-                <div class="mail-container">
-                    <ion-icon name="mail" id="mail-icon-inbox"></ion-icon>
-                    <div id="unread-notification">1</div>
-                    <div id="inbox-preview">
-                    <strong>Inbox</strong>
-                    <hr>
-                    <div id="unread-messages">
-                        <div class="email-item sender">Coaches</div>
-                        <div class="email-item subject">Session today!</div>
-                        <hr>
+                <!-- Grouped Icons and User Info -->
+                <div class="topbar-icons">
+                    <div class="mail-container">
+                        <ion-icon name="mail-outline" id="mail-icon-inbox"></ion-icon>
+                        <div id="unread-notification" style="display: block;">1</div>
+                        <div id="inbox-preview">
+                            <strong>Inbox</strong><hr>
+                            <div id="unread-messages">
+                                <div class="email-item sender">Coaches</div>
+                                <div class="email-item subject">Session today!</div><hr>
+                            </div>
+                            <div id="read-messages">
+                                <div class="email-item sender">Coach</div>
+                                <div class="email-item subject">Can I ask?</div>
+                            </div>
+                            <a href="#">See All Messages</a>
+                        </div>
                     </div>
-                    <div id="read-messages">
-                        <div class="email-item sender">Coach</div>
-                        <div class="email-item subject">Can I ask?</div>
-                    </div>
-                    <a href="#">See All</a>
+
+                    <div class="notification-container">
+                        <ion-icon name="notifications-outline" id="notification-icon"></ion-icon>
+                        <div id="notification-badge" style="display: block;">1</div>
+                        <div id="notifications-dropdown">
+                            <strong>Notifications</strong><hr>
+                            <div id="notification-list">
+                                <div class="notification-item title">Today, 1:00 PM</div>
+                                <div class="notification-item message">Your schedule is today.</div><hr>
+                                <div class="notification-item title">Coach John Cena</div>
+                                <div class="notification-item message">Cancelled the session</div>
+                            </div>
+                            <a href="#">See All Notifications</a>
+                        </div>
                     </div>
                 </div>
 
-                <div class="notification-container">
-                    <ion-icon name="notifications" id="notification-icon"></ion-icon>
-                    <div id="notification-badge">1</div>
-                    <div id="notifications-dropdown">
-                      <strong>Notifications</strong>
-                      <hr>
-                      <div id="notification-list">
-                        <div class="notification-item title">Today, 1:00 PM</div>
-                        <div class="notification-item message">Your schedule is today.</div>
-                        <hr>
-                        <div class="notification-item title">Coach John Cena</div>
-                        <div class="notification-item message">Cancelled the session</div>
-                      </div>
-                      <a href="#">See All</a>
+                <div class="user-info">
+                    <div class="name">
+                        <p>Esnyr Slayalili</p>
+                    </div>
+                    <div class="user">
+                        <img src="assets/img/esnyr.jpg" alt="User profile">
                     </div>
                 </div>
-            
-                <div class="name">
-                    <p>Esnyr Slayalili</p>
-                </div>
-    
-                <div class="user">
-                    <img src="assets/img/esnyr.jpg" alt="User profile">
-                </div>                
             </div>
 
             <!-- Chat Container -->
@@ -1226,45 +591,39 @@
                 <div class="contacts-sidebar">
                     <div class="contacts-header">Messages</div>
                     <div class="search-contacts">
-                        <input type="text" placeholder="Search coaches...">
+                        <input type="text" id="contactSearchInput" placeholder="Search coaches...">
                     </div>
                     <ul class="contact-list">
-                        <li class="contact-item active">
-                            <div class="contact-avatar">
-                                <img src="assets/img/customer01.jpg" alt="Michael Rodriguez">
-                            </div>
+                        <!-- Contact items -->
+                         <li class="contact-item active">
+                            <div class="contact-avatar"><img src="assets/img/customer01.jpg" alt="Michael Rodriguez"></div>
                             <div class="contact-info">
                                 <div class="contact-name">Michael Rodriguez</div>
                                 <div class="contact-status online">Online</div>
                             </div>
                         </li>
-                        <li class="contact-item">
-                            <div class="contact-avatar">
-                                <img src="assets/img/coach3.jpg" alt="Sarah Johnson">
-                            </div>
+                         <li class="contact-item">
+                            <div class="contact-avatar"><img src="assets/img/coach3.jpg" alt="Sarah Johnson"></div>
                             <div class="contact-info">
                                 <div class="contact-name">Sarah Johnson</div>
                                 <div class="contact-status">Last seen 2h ago</div>
                             </div>
                         </li>
                         <li class="contact-item">
-                            <div class="contact-avatar">
-                                <img src="assets/img/coach4.jpg" alt="David Thompson">
-                            </div>
+                            <div class="contact-avatar"><img src="assets/img/coach4.jpg" alt="David Thompson"></div>
                             <div class="contact-info">
                                 <div class="contact-name">David Thompson</div>
                                 <div class="contact-status">Last seen yesterday</div>
                             </div>
                         </li>
-                        <li class="contact-item">
-                            <div class="contact-avatar">
-                                <img src="assets/img/coach6.jpg" alt="Emma Wilson">
-                            </div>
+                         <li class="contact-item">
+                            <div class="contact-avatar"><img src="assets/img/coach6.jpg" alt="Emma Wilson"></div>
                             <div class="contact-info">
                                 <div class="contact-name">Emma Wilson</div>
                                 <div class="contact-status">Last seen 3d ago</div>
                             </div>
                         </li>
+                         <!-- Add more contacts as needed -->
                     </ul>
                 </div>
 
@@ -1279,407 +638,377 @@
                             <div class="current-contact-status">Online</div>
                         </div>
                         <div class="chat-tools">
-                            <div class="chat-tool">
-                                <ion-icon name="call-outline"></ion-icon>
-                            </div>
-                            <div class="chat-tool">
-                                <ion-icon name="videocam-outline"></ion-icon>
-                            </div>
-                            <div class="chat-tool">
-                                <ion-icon name="ellipsis-vertical-outline"></ion-icon>
-                            </div>
+                            <div class="chat-tool"><ion-icon name="call-outline"></ion-icon></div>
+                            <div class="chat-tool"><ion-icon name="videocam-outline"></ion-icon></div>
+                            <div class="chat-tool"><ion-icon name="ellipsis-vertical-outline"></ion-icon></div>
                         </div>
                     </div>
 
                     <div class="messages-container">
-                        <div class="date-divider">April 27, 2025</div>
-                        
-                        <div class="message received">
-                            <div class="message-content">
-                                Good morning! How are you feeling today? Ready for your workout session?
-                            </div>
-                            <div class="message-time">9:30 AM</div>
-                        </div>
+                        <!-- Date Divider -->
+                        <div class="date-divider"><span>April 27, 2025</span></div>
+                        <!-- Messages -->
+                         <div class="message received"> <div class="message-content">Good morning! How are you feeling today? Ready for your workout session?</div> <div class="message-time">9:30 AM</div> </div>
+                         <div class="message sent"> <div class="message-content">Morning Coach! I'm feeling pretty good, but a bit sore from yesterday's leg day.</div> <div class="message-time">9:32 AM</div> <div class="message-status">Read</div> </div>
+                         <div class="message received"> <div class="message-content">That's normal after a good leg workout! Make sure you're stretching and staying hydrated. Would you like to modify today's workout to focus more on recovery?</div> <div class="message-time">9:35 AM</div> </div>
+                         <div class="message sent"> <div class="message-content">That sounds great. What kind of recovery exercises do you recommend?</div> <div class="message-time">9:38 AM</div> <div class="message-status">Read</div> </div>
+                         <div class="message received"> <div class="message-content">I'd recommend some light cardio to increase blood flow to the muscles, followed by dynamic stretching and foam rolling. How about we start with a 10-minute walk, then go through a series of stretches targeting your quads, hamstrings, and calves?</div> <div class="message-time">9:40 AM</div> </div>
+                         <div class="message sent"> <div class="message-content">Perfect! I have a foam roller at home too. What time should we meet today?</div> <div class="message-time">9:42 AM</div> <div class="message-status">Read</div> </div>
 
-                        <div class="message sent">
-                            <div class="message-content">
-                                Morning Coach! I'm feeling pretty good, but a bit sore from yesterday's leg day.
-                            </div>
-                            <div class="message-time">9:32 AM</div>
-                            <div class="message-status">Read</div>
-                        </div>
+                         <div class="date-divider"><span>Today</span></div>
 
-                        <div class="message received">
-                            <div class="message-content">
-                                That's normal after a good leg workout! Make sure you're stretching and staying hydrated. Would you like to modify today's workout to focus more on recovery?
-                            </div>
-                            <div class="message-time">9:35 AM</div>
-                        </div>
+                         <div class="message received"> <div class="message-content">Hey there! Just checking in on how you're feeling today after our recovery session yesterday. Any improvement in the soreness?</div> <div class="message-time">8:15 AM</div> </div>
+                         <div class="message sent"> <div class="message-content">Hi Coach! Yes, I'm feeling much better today. The foam rolling really helped!</div> <div class="message-time">8:20 AM</div> <div class="message-status">Read</div> </div>
+                         <div class="message received"> <div class="message-content">Great to hear! Ready for our upper body session at 4 PM today? I've prepared a challenging but balanced routine focusing on your shoulders and back.</div> <div class="message-time">8:22 AM</div> </div>
+                         <div class="message sent"> <div class="message-content">Definitely! I've been looking forward to working on my upper body strength. Should I bring anything special?</div> <div class="message-time">8:25 AM</div> <div class="message-status">Read</div> </div>
+                         <div class="message received"> <div class="message-content">Just your regular gym gear and water bottle. And don't forget to have a light meal about 1-2 hours before our session. We'll be focusing on compound movements so you'll need that energy!</div> <div class="message-time">8:30 AM</div> </div>
+                         <div class="message sent"> <div class="message-content">Got it! By the way, I wanted to ask about my nutrition plan. I've been following it for two weeks now, but I'm still feeling hungry after dinner. Any tips?</div> <div class="message-time">8:35 AM</div> <div class="message-status">Read</div> </div>
 
-                        <div class="message sent">
-                            <div class="message-content">
-                                That sounds great. What kind of recovery exercises do you recommend?
-                            </div>
-                            <div class="message-time">9:38 AM</div>
-                            <div class="message-status">Read</div>
-                        </div>
-
-                        <div class="message received">
-                            <div class="message-content">
-                                I'd recommend some light cardio to increase blood flow to the muscles, followed by dynamic stretching and foam rolling. How about we start with a 10-minute walk, then go through a series of stretches targeting your quads, hamstrings, and calves?
-                            </div>
-                            <div class="message-time">9:40 AM</div>
-                        </div>
-
-                        <div class="message sent">
-                            <div class="message-content">
-                                Perfect! I have a foam roller at home too. What time should we meet today?
-                            </div>
-                            <div class="message-time">9:42 AM</div>
-                            <div class="message-status">Read</div>
-                        </div>
-
-                        <div class="date-divider">Today</div>
-
-                        <div class="message received">
-                            <div class="message-content">
-                                Hey there! Just checking in on how you're feeling today after our recovery session yesterday. Any improvement in the soreness?
-                            </div>
-                            <div class="message-time">8:15 AM</div>
-                        </div>
-
-                        <div class="message sent">
-                            <div class="message-content">
-                                Hi Coach! Yes, I'm feeling much better today. The foam rolling really helped!
-                            </div>
-                            <div class="message-time">8:20 AM</div>
-                            <div class="message-status">Read</div>
-                        </div>
-
-                        <div class="message received">
-                            <div class="message-content">
-                                Great to hear! Ready for our upper body session at 4 PM today? I've prepared a challenging but balanced routine focusing on your shoulders and back.
-                            </div>
-                            <div class="message-time">8:22 AM</div>
-                        </div>
-
-                        <div class="message sent">
-                            <div class="message-content">
-                                Definitely! I've been looking forward to working on my upper body strength. Should I bring anything special?
-                            </div>
-                            <div class="message-time">8:25 AM</div>
-                            <div class="message-status">Read</div>
-                        </div>
-
-                        <div class="message received">
-                            <div class="message-content">
-                                Just your regular gym gear and water bottle. And don't forget to have a light meal about 1-2 hours before our session. We'll be focusing on compound movements so you'll need that energy!
-                            </div>
-                            <div class="message-time">8:30 AM</div>
-                        </div>
-
-                        <div class="message sent">
-                            <div class="message-content">
-                                Got it! By the way, I wanted to ask about my nutrition plan. I've been following it for two weeks now, but I'm still feeling hungry after dinner. Any tips?
-                            </div>
-                            <div class="message-time">8:35 AM</div>
-                            <div class="message-status">Read</div>
-                        </div>
-
-                        <div class="typing-indicator">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div>
+                        <!-- Typing Indicator -->
+                        <div class="typing-indicator"><span></span><span></span><span></span></div>
                     </div>
 
                     <div class="message-input-container">
                         <textarea class="message-input" placeholder="Type a message..."></textarea>
                         <div class="message-actions">
-                            <div class="message-action">
-                                <ion-icon name="send"></ion-icon>
-                            </div>
-            
-           
-    
+                            <!-- Add file attachment icon -->
+                             <button class="message-action" aria-label="Attach file"><ion-icon name="attach-outline"></ion-icon></button>
+                             <!-- Send button -->
+                             <button class="message-action" id="sendMessageBtn" aria-label="Send message"><ion-icon name="send"></ion-icon></button>
+                        </div>
+                    </div>
+                </div> <!-- End Chat Area -->
+            </div> <!-- End Chat Container -->
+
+        </div> <!-- End main -->
+    </div> <!-- End container -->
+
+
+    <!-- ============ Modals ============ -->
     <!-- Sign Out Modal -->
-    <div id="signOutModal" class="modal">
-        <div class="modal-content">
+    <div class="modal-overlay" id="signOutModalOverlay">
+        <div class="modal" id="signOutModal">
             <div class="modal-header">
                 <h3 class="modal-title">Sign Out</h3>
+                 <button type="button" class="modal-close" aria-label="Close modal"><ion-icon name="close-outline"></ion-icon></button>
             </div>
             <div class="modal-body">
-                Are you sure you want to sign out?
+                <p>Are you sure you want to sign out?</p>
             </div>
             <div class="modal-footer">
-                <button id="signOutNo" class="modal-button no-button">No</button>
-                <button id="signOutYes" class="modal-button yes-button">Yes</button>
+                <button type="button" class="modal-button no-button" id="signOutNo">Cancel</button>
+                <button type="button" class="modal-button yes-button" id="signOutYes">Sign Out</button>
             </div>
         </div>
     </div>
-    
-   
 
+
+    <!-- =========== Scripts =========  -->
     <script>
-        let list = document.querySelectorAll(".navigation li");
-        
-        function activeLink() {
-        list.forEach((item) => {
-        item.classList.remove("hovered");
-        });
-        this.classList.add("hovered");
-        }
-        
-        list.forEach((item) => item.addEventListener("click", activeLink));
-        
-        // Menu Toggle (remains the same)
-        let toggle = document.querySelector(".toggle");
-        let navigation = document.querySelector(".navigation");
-        let main = document.querySelector(".main");
-        
-        toggle.onclick = function () {
-        navigation.classList.toggle("active");
-        main.classList.toggle("active");
-        };
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
 
-        // Search Function
-        const searchInput = document.getElementById('search-input');
-        const searchResultsDiv = document.getElementById('search-results');
-
-        const searchData = [
-            "How to diet",
-            "Paano makapasa sa webdev",
-            "Effective workout plan",
-            "Effective sleep",
-            "Gulay effective diet",
-            "Recent Sessions",
-            "Overall well being",
-            "Updates",
-            "Coaches",
-            "Plans"
-        ];
-
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const filteredResults = searchData.filter(item =>
-                item.toLowerCase().includes(searchTerm)
-            );
-
-            displayResults(filteredResults);
-        });
-
-        function displayResults(results) {
-            searchResultsDiv.innerHTML = '';
-
-            if (results.length > 0 && searchInput.value.trim() !== '') {
-                const ul = document.createElement('ul');
-                results.forEach(result => {
-                    const li = document.createElement('li');
-                    li.textContent = result;
-                    li.addEventListener('click', function() {
-                        searchInput.value = this.textContent;
-                        searchResultsDiv.style.display = 'none'; 
-                    });
-                    ul.appendChild(li);
-                });
-                searchResultsDiv.appendChild(ul);
-                searchResultsDiv.style.display = 'block'; 
-            } else {
-                searchResultsDiv.style.display = 'none';
+            // Navigation Link Activation & Menu Toggle (Standard)
+            let list = document.querySelectorAll(".navigation li");
+            function activeLink() {
+                list.forEach(item => item.classList.remove("hovered"));
+                // Find the link pointing to 'clientmessage.html'
+                 const currentLink = Array.from(list).find(item => item.querySelector('a[href="clientmessage.html"]'));
+                 if (currentLink) currentLink.classList.add("hovered");
+                 else list[2].classList.add("hovered"); // Fallback if needed (adjust index)
             }
-        }
+            activeLink();
 
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.search-container')) {
-                searchResultsDiv.style.display = 'none';
+            let toggle = document.querySelector(".toggle");
+            let navigation = document.querySelector(".navigation");
+            let main = document.querySelector(".main");
+            if(toggle && navigation && main) {
+                toggle.onclick = () => {
+                    navigation.classList.toggle("active");
+                    main.classList.toggle("active");
+                    // Also toggle the topbar's active state if you need it to shift
+                     const topbar = document.querySelector(".topbar");
+                     if(topbar) topbar.classList.toggle("active");
+                };
             }
-        });
 
-        // Mail Function
-        const mailIconInbox = document.getElementById('mail-icon-inbox');
-        const unreadNotification = document.getElementById('unread-notification');
-        const inboxPreview = document.getElementById('inbox-preview');
-        let hasUnread = true; 
-
-        function updateUnreadIndicator() {
-            unreadNotification.style.display = hasUnread ? 'block' : 'none';
-        }
-
-        updateUnreadIndicator();
-
-        mailIconInbox.addEventListener('click', function() {
-            inboxPreview.style.display = (inboxPreview.style.display === 'block' ? 'none' : 'block');
-
-            if (hasUnread && inboxPreview.style.display === 'block') {
-                hasUnread = false;
-                updateUnreadIndicator();
-                console.log('Mail icon clicked - marking as read');
-            }
-        });
-
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.mail-container')) {
-                inboxPreview.style.display = 'none';
-            }
-        });
-
-        // Notification Function
-        const notificationIcon = document.getElementById('notification-icon');
-        const notificationBadge = document.getElementById('notification-badge');
-        const notificationsDropdown = document.getElementById('notifications-dropdown');
-
-        notificationIcon.addEventListener('click', function() {
-            notificationsDropdown.style.display = (notificationsDropdown.style.display === 'block' ? 'none' : 'block');
-            
-            notificationBadge.style.display = 'none';
-        });
-
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.notification-container')) {
-                notificationsDropdown.style.display = 'none';
-            }
-        });
-
-         // Message Functionality
-         const messageInput = document.querySelector('.message-input');
-        const sendButton = document.querySelector('.message-action');
-        const messagesContainer = document.querySelector('.messages-container');
-        const typingIndicator = document.querySelector('.typing-indicator');
-
-        // Function to add a new message
-        function addMessage(content, isSent = true) {
-            // Hide typing indicator when sending a message
-            typingIndicator.style.display = 'none';
-            
-            const messageDiv = document.createElement('div');
-            messageDiv.className = isSent ? 'message sent' : 'message received';
-            
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'message-content';
-            contentDiv.textContent = content;
-            
-            const timeDiv = document.createElement('div');
-            timeDiv.className = 'message-time';
-            
-            const now = new Date();
-            const hours = now.getHours();
-            const minutes = now.getMinutes();
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            const formattedHours = hours % 12 || 12;
-            const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
-            
-            timeDiv.textContent = `${formattedHours}:${formattedMinutes} ${ampm}`;
-            
-            messageDiv.appendChild(contentDiv);
-            messageDiv.appendChild(timeDiv);
-            
-            if (isSent) {
-                const statusDiv = document.createElement('div');
-                statusDiv.className = 'message-status';
-                statusDiv.textContent = 'Sent';
-                messageDiv.appendChild(statusDiv);
-            }
-            
-            messagesContainer.appendChild(messageDiv);
-            
-            // Scroll to bottom
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            
-            return messageDiv;
-        }
-
-        // Function to simulate coach response
-        function simulateCoachResponse() {
-            // Show typing indicator
-            typingIndicator.style.display = 'flex';
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            
-            const responses = [
-                "That's a great question about your nutrition plan. If you're feeling hungry after dinner, try adding more protein and fiber to your meals. Also, you could include a small healthy snack before bed like Greek yogurt or a protein shake.",
-                "Let's adjust your meal plan. Try increasing your portion sizes slightly for your protein and vegetables. Also, make sure you're drinking enough water throughout the day.",
-                "I understand the hunger issue. Let's add a light evening snack to your plan - perhaps some cottage cheese with berries or a small handful of nuts. How does that sound?",
-                "Looking forward to our session today! About your nutrition plan, I've noticed you might be missing some healthy fats which help with satiety. Try adding some avocado or nuts to your dinner."
-            ];
-            
-            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-            
-            // Simulate typing delay
-            setTimeout(() => {
-                addMessage(randomResponse, false);
-                
-                // Change sent to read
-                const sentMessages = document.querySelectorAll('.message.sent');
-                if (sentMessages.length > 0) {
-                    const lastSentMessage = sentMessages[sentMessages.length - 1];
-                    const statusDiv = lastSentMessage.querySelector('.message-status');
-                    if (statusDiv) {
-                        statusDiv.textContent = 'Read';
+             // Search Functionality (Standard)
+            const searchInput = document.getElementById('search-input');
+            const searchResultsDiv = document.getElementById('search-results');
+            const searchDataMessages = [ "Michael Rodriguez", "Sarah Johnson", "Nutrition Plan Query", "Workout Soreness", "Schedule Confirmation" ];
+            if (searchInput && searchResultsDiv) {
+                 searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase().trim();
+                    searchResultsDiv.innerHTML = '';
+                    searchResultsDiv.style.display = 'none';
+                    if (searchTerm.length > 0) {
+                        const filteredResults = searchDataMessages.filter(item => item.toLowerCase().includes(searchTerm));
+                        displayResults(filteredResults, searchTerm);
                     }
+                });
+                document.addEventListener('click', event => {
+                    if (!event.target.closest('.search-container')) searchResultsDiv.style.display = 'none';
+                });
+            }
+            function displayResults(results, searchTerm) {
+                 if (results.length > 0) {
+                    const ul = document.createElement('ul');
+                    results.forEach(result => {
+                        const li = document.createElement('li');
+                        const regex = new RegExp(`(${searchTerm})`, 'gi');
+                        li.innerHTML = result.replace(regex, '<span class="highlight">$1</span>');
+                        li.addEventListener('click', () => {
+                            searchInput.value = result;
+                            searchResultsDiv.style.display = 'none';
+                            console.log("Selected:", result);
+                        });
+                        ul.appendChild(li);
+                    });
+                    searchResultsDiv.appendChild(ul);
+                    searchResultsDiv.style.display = 'block';
+                } else {
+                    searchResultsDiv.style.display = 'none';
                 }
-            }, 3000);
-        }
-
-        // Send message on button click
-        sendButton.addEventListener('click', () => {
-            const message = messageInput.value.trim();
-            if (message) {
-                addMessage(message);
-                messageInput.value = '';
-                
-                // Auto-resize textarea
-                messageInput.style.height = 'auto';
-                
-                // Simulate coach response
-                simulateCoachResponse();
             }
-        });
 
-        // Send message on Enter key
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendButton.click();
+            // Mail & Notification Dropdown Functionality (Standard)
+            const mailIconInbox = document.getElementById('mail-icon-inbox');
+            const unreadNotification = document.getElementById('unread-notification');
+            const inboxPreview = document.getElementById('inbox-preview');
+            let hasUnread = true;
+            function updateUnreadIndicator() { if (unreadNotification) unreadNotification.style.display = hasUnread ? 'block' : 'none'; }
+            if(mailIconInbox && inboxPreview && unreadNotification) {
+                updateUnreadIndicator();
+                mailIconInbox.addEventListener('click', event => {
+                     event.stopPropagation();
+                     if (notificationsDropdown) notificationsDropdown.style.display = 'none';
+                     const isVisible = inboxPreview.style.display === 'block';
+                     inboxPreview.style.display = isVisible ? 'none' : 'block';
+                     if (!isVisible && hasUnread) { hasUnread = false; updateUnreadIndicator(); }
+                });
             }
-        });
-
-        // Auto-resize textarea
-        messageInput.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 100) + 'px';
-        });
-
-        // Contact item click
-        const contactItems = document.querySelectorAll('.contact-item');
-        contactItems.forEach(item => {
-            item.addEventListener('click', function() {
-                contactItems.forEach(i => i.classList.remove('active'));
-                this.classList.add('active');
-                
-                // Here you would normally load the conversation with this contact
-                // For demo purposes, we're just showing the current conversation
+            const notificationIcon = document.getElementById('notification-icon');
+            const notificationBadge = document.getElementById('notification-badge');
+            const notificationsDropdown = document.getElementById('notifications-dropdown');
+            let hasNewNotifications = true;
+            if (notificationIcon && notificationBadge && notificationsDropdown) {
+                 notificationBadge.style.display = hasNewNotifications ? 'block' : 'none';
+                notificationIcon.addEventListener('click', event => {
+                     event.stopPropagation();
+                     if (inboxPreview) inboxPreview.style.display = 'none';
+                     const isVisible = notificationsDropdown.style.display === 'block';
+                     notificationsDropdown.style.display = isVisible ? 'none' : 'block';
+                     if (!isVisible && hasNewNotifications) { hasNewNotifications = false; notificationBadge.style.display = 'none'; }
+                });
+            }
+            document.addEventListener('click', event => {
+                if (inboxPreview && !event.target.closest('.mail-container')) inboxPreview.style.display = 'none';
+                if (notificationsDropdown && !event.target.closest('.notification-container')) notificationsDropdown.style.display = 'none';
             });
-        });
 
-        // Sign Out Modal
-        const signOutLink = document.getElementById('signOutLink');
-        const signOutModal = document.getElementById('signOutModal');
-        const signOutYesButton = document.getElementById('signOutYes');
-        const signOutNoButton = document.getElementById('signOutNo');
 
-        signOutLink.addEventListener('click', function(event) {
-            event.preventDefault();
-            showModal(signOutModal);
-        });
+            // --- Modal Handling (Standard) ---
+            function showModal(overlayId) {
+                const overlay = document.getElementById(overlayId);
+                if (overlay) overlay.classList.add('active');
+            }
+            function hideModal(overlayId) {
+                const overlay = document.getElementById(overlayId);
+                if (overlay) overlay.classList.remove('active');
+            }
+            document.querySelectorAll('.modal-overlay').forEach(overlay => {
+                overlay.addEventListener('click', (event) => {
+                    if (event.target === overlay) hideModal(overlay.id);
+                });
+            });
+            document.querySelectorAll('.modal-close').forEach(button => {
+                button.addEventListener('click', () => {
+                     const overlay = button.closest('.modal-overlay');
+                     if(overlay) hideModal(overlay.id);
+                });
+            });
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    document.querySelectorAll('.modal-overlay.active').forEach(overlay => hideModal(overlay.id));
+                }
+            });
+            // --- End Modal Handling ---
 
-        signOutYesButton.addEventListener('click', function() {
-            window.location.href = 'index.html';
-        });
+            // Sign Out Modal Logic (Standard)
+            const signOutLink = document.getElementById('signOutLink');
+            const signOutNoButton = document.getElementById('signOutNo');
+            const signOutYesButton = document.getElementById('signOutYes');
+            if (signOutLink) signOutLink.addEventListener('click', (event) => { event.preventDefault(); showModal('signOutModalOverlay'); });
+            if (signOutNoButton) signOutNoButton.addEventListener('click', () => hideModal('signOutModalOverlay'));
+            if (signOutYesButton) signOutYesButton.addEventListener('click', () => window.location.href = 'index.html');
 
-        signOutNoButton.addEventListener('click', function() {
-            hideModal(signOutModal);
-        });
 
-        
+            // --- Chat Specific JS ---
+            const messageInput = document.querySelector('.message-input');
+            const sendMessageBtn = document.getElementById('sendMessageBtn');
+            const messagesContainer = document.querySelector('.messages-container');
+            const typingIndicator = document.querySelector('.typing-indicator');
+            const contactItems = document.querySelectorAll('.contact-item');
+            const contactSearchInput = document.getElementById('contactSearchInput');
+            const currentContactNameEl = document.querySelector('.current-contact-name');
+            const currentContactStatusEl = document.querySelector('.current-contact-status');
+            const currentContactAvatarImg = document.querySelector('.current-contact-avatar img');
+            const contactsSidebar = document.querySelector('.contacts-sidebar');
+            const toggleContactsBtn = document.querySelector('.toggle-contacts');
+
+             // Toggle Contacts Sidebar on Mobile
+             if (toggleContactsBtn && contactsSidebar) {
+                 toggleContactsBtn.addEventListener('click', () => {
+                     contactsSidebar.classList.toggle('active');
+                 });
+                 // Close sidebar if clicking outside on mobile
+                 document.addEventListener('click', (e) => {
+                      if (window.innerWidth <= 767 && contactsSidebar.classList.contains('active') && !contactsSidebar.contains(e.target) && !toggleContactsBtn.contains(e.target)) {
+                          contactsSidebar.classList.remove('active');
+                      }
+                 });
+             }
+
+
+            // Function to add a new message
+            function addMessage(content, isSent = true) {
+                if (!messagesContainer) return;
+
+                // Hide typing indicator before adding message
+                if (typingIndicator) typingIndicator.style.display = 'none';
+
+                const messageDiv = document.createElement('div');
+                messageDiv.className = isSent ? 'message sent' : 'message received';
+
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'message-content';
+                contentDiv.textContent = content;
+
+                const timeDiv = document.createElement('div');
+                timeDiv.className = 'message-time';
+                const now = new Date();
+                timeDiv.textContent = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+
+                messageDiv.appendChild(contentDiv);
+                messageDiv.appendChild(timeDiv);
+
+                if (isSent) {
+                    const statusDiv = document.createElement('div');
+                    statusDiv.className = 'message-status';
+                    statusDiv.textContent = 'Sent'; // Or use icons
+                    messageDiv.appendChild(statusDiv);
+                     // Simulate read status later
+                     setTimeout(() => { statusDiv.textContent = 'Read'; }, 1500);
+                }
+
+                messagesContainer.appendChild(messageDiv);
+                // Scroll to the bottom smoothly
+                messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: 'smooth' });
+
+                return messageDiv;
+            }
+
+             // Function to simulate coach response
+            function simulateCoachResponse() {
+                if (!typingIndicator || !messagesContainer) return;
+                typingIndicator.style.display = 'flex'; // Show typing
+                messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: 'smooth' });
+
+                const responses = [
+                    "That's a great question! If you're feeling hungry, try adding more protein and fiber. A small healthy snack like Greek yogurt could also help.",
+                    "Let's adjust your plan. Increase protein/veg portions slightly. Ensure you're drinking enough water too.",
+                    "Understood. Let's add a light evening snack - cottage cheese with berries or a few nuts. How's that?",
+                    "About the nutrition plan, maybe add some healthy fats like avocado or nuts to your dinner for better satiety. See you at 4 PM!"
+                ];
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+
+                setTimeout(() => {
+                    addMessage(randomResponse, false); // Add received message
+                }, 2000 + Math.random() * 2000); // Simulate typing delay
+            }
+
+            // Send message logic
+            function sendMessage() {
+                 if (!messageInput) return;
+                 const message = messageInput.value.trim();
+                 if (message) {
+                    addMessage(message, true); // Add the sent message
+                    messageInput.value = ''; // Clear input
+                    messageInput.style.height = 'auto'; // Reset height
+                    messageInput.focus(); // Keep focus
+
+                    simulateCoachResponse(); // Trigger simulated response
+                 }
+            }
+
+            if (sendMessageBtn) sendMessageBtn.addEventListener('click', sendMessage);
+            if (messageInput) messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+
+            // Auto-resize textarea
+            if (messageInput) messageInput.addEventListener('input', function() {
+                this.style.height = 'auto';
+                // Calculate scroll height and set height, respecting max-height
+                const maxHeight = 100; // From CSS
+                const newHeight = Math.min(this.scrollHeight, maxHeight);
+                this.style.height = newHeight + 'px';
+            });
+
+             // Contact item click handler
+             contactItems.forEach(item => {
+                 item.addEventListener('click', function() {
+                     contactItems.forEach(i => i.classList.remove('active'));
+                     this.classList.add('active');
+
+                     // Update chat header with selected contact's info
+                     const name = this.querySelector('.contact-name')?.textContent || 'Unknown Contact';
+                     const status = this.querySelector('.contact-status')?.textContent || 'Offline';
+                     const statusClass = this.querySelector('.contact-status')?.classList.contains('online') ? 'Online' : status;
+                     const avatarSrc = this.querySelector('.contact-avatar img')?.src || 'assets/img/default-avatar.png'; // Add a default
+
+                     if (currentContactNameEl) currentContactNameEl.textContent = name;
+                     if (currentContactStatusEl) {
+                         currentContactStatusEl.textContent = statusClass;
+                         currentContactStatusEl.style.color = (statusClass === 'Online') ? 'var(--green)' : 'var(--black2)';
+                     }
+                     if (currentContactAvatarImg) currentContactAvatarImg.src = avatarSrc;
+
+                     // TODO: Implement logic to clear existing messages and load the conversation history for the selected contact.
+                     // For now, just clear and maybe add a placeholder.
+                     if (messagesContainer) messagesContainer.innerHTML = `<div style="text-align: center; color: var(--black2); margin-top: 20px;">Messages with ${name}</div>`;
+
+                     // Close sidebar on mobile after selection
+                     if (window.innerWidth <= 767 && contactsSidebar) {
+                         contactsSidebar.classList.remove('active');
+                     }
+                 });
+             });
+
+             // Contact Search Filter
+             if (contactSearchInput && contactItems.length > 0) {
+                 contactSearchInput.addEventListener('input', function() {
+                     const searchTerm = this.value.toLowerCase().trim();
+                     contactItems.forEach(item => {
+                         const name = item.querySelector('.contact-name')?.textContent.toLowerCase();
+                         if (name && name.includes(searchTerm)) {
+                             item.style.display = 'flex';
+                         } else {
+                             item.style.display = 'none';
+                         }
+                     });
+                 });
+             }
+
+             // Scroll messages to bottom on initial load (after potential dynamic loading)
+             if (messagesContainer) {
+                  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+             }
+
+        }); // End DOMContentLoaded
     </script>
 
     <!-- ====== ionicons ======= -->

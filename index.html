@@ -6,30 +6,38 @@
     <title>Energize Gym Center</title>
     <link rel="stylesheet" href="assets/css/landingstyles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+     <!-- Add Font Awesome for potential icons if not already using -->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <!-- Navigation Bar -->
     <header>
-        <nav class="nav-bar">
-            <div class="logo">
-                <h1>ENERGIZE</h1>
-                <h3>GYM CENTER</h3>
-            </div>
+      <nav class="nav-bar">
+          <div class="logo">
+              <h1>ENERGIZE</h1>
+              <h3>GYM CENTER</h3>
+          </div>
 
-            <ul class="menus">
-                <li class="items"><a href="#home">Home</a></li>
-                <li class="items"><a href="#features">Features</a></li>
-                <li class="items"><a href="#plans">Plans</a></li>
-                <li class="items"><a href="#coaches">Coaches</a></li>
-                <li class="items"><a href="#contact">Contact</a></li>
-            </ul>
+         
+          <button class="menu-toggle" id="mobile-menu" aria-label="Open Menu" aria-expanded="false">
+              <i class="fas fa-bars"></i>
+          </button>
 
-            <div class="buttons">
-                <button class="log/reg"><a href="login.html">Log In</a></button>
-            </div>
-           
-        </nav>
-    </header>
+          <ul class="menus" id="nav-links"> 
+              <li class="items"><a href="#home">Home</a></li>
+              <li class="items"><a href="#features">Features</a></li>
+              <li class="items"><a href="#plans">Plans</a></li>
+              <li class="items"><a href="#coaches">Coaches</a></li>
+              <li class="items"><a href="#contact">Contact</a></li>
+              <li class="items mobile-login"><a href="login.html" class="log/reg">Log In</a></li>
+          </ul>
+
+          <div class="buttons desktop-login"> 
+              <button class="log/reg"><a href="login.html">Log In</a></button>
+          </div>
+
+      </nav>
+  </header>
 
     <!-- Login Modal -->
     <div id="loginModal" class="login-modal">
@@ -149,7 +157,7 @@
                         <ul class="plan-features">
                           <li>
                             <ion-icon name="checkmark-outline"></ion-icon>
-                            <span>2 Personal Training Sessions</span>
+                            <span>7 Personal Training Sessions</span>
                           </li>
                           <li>
                             <ion-icon name="checkmark-outline"></ion-icon>
@@ -182,7 +190,7 @@
                         <ul class="plan-features">
                           <li>
                             <ion-icon name="checkmark-outline"></ion-icon>
-                            <span>4 Personal Training Sessions</span>
+                            <span>10 Personal Training Sessions</span>
                           </li>
                           <li>
                             <ion-icon name="checkmark-outline"></ion-icon>
@@ -218,7 +226,7 @@
                         <ul class="plan-features">
                           <li>
                             <ion-icon name="checkmark-outline"></ion-icon>
-                            <span>8 Personal Training Sessions</span>
+                            <span>15 Personal Training Sessions</span>
                           </li>
                           <li>
                             <ion-icon name="checkmark-outline"></ion-icon>
@@ -590,20 +598,68 @@
       }
     });
     
-    // Handle login button
-    const loginBtn = document.querySelector(".login-btn");
-    loginBtn.addEventListener("click", function() {
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
-      
-      if (username && password) {
-        // Redirect to client dashboard
-        window.location.href = "client.html";
-      } else {
-        alert("Please enter both username and password");
-      }
-    });
+    
+// Handle login button
+const loginBtn = document.querySelector(".login-btn");
+loginBtn.addEventListener("click", function() {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+  
+  if (username && password) {
+    // Check if user is a guest
+    if (username.toLowerCase() === "guest") {
+      // Redirect to guest payment page
+      window.location.href = "guestsplan.html";
+    } else {
+      // Redirect to client dashboard for regular users
+      window.location.href = "payment.html";
+    }
+  } else {
+    alert("Please enter both username and password");
+  }
+});
   });
+
+   // JavaScript for hamburger menu toggle
+document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const menus = document.querySelector('.menus');
+    
+    if (menuToggle && menus) {
+        menuToggle.addEventListener('click', function() {
+            menus.classList.toggle('active');
+            
+            // Optional: Change hamburger icon to X when menu is open
+            // Assuming you're using an icon like ☰ for menu and ✕ for close
+            // If using FontAwesome or similar, adjust accordingly
+            if (menus.classList.contains('active')) {
+                menuToggle.innerHTML = '✕'; // Change to X when open
+            } else {
+                menuToggle.innerHTML = '☰'; // Change back to hamburger when closed
+            }
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            // Check if menu is open and click is outside menu and toggle button
+            if (menus.classList.contains('active') && 
+                !menus.contains(event.target) && 
+                event.target !== menuToggle) {
+                    
+                menus.classList.remove('active');
+                menuToggle.innerHTML = '☰'; // Reset icon
+            }
+        });
+        
+        // Close menu when window is resized to desktop size
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768 && menus.classList.contains('active')) {
+                menus.classList.remove('active');
+                menuToggle.innerHTML = '☰'; // Reset icon
+            }
+        });
+    }
+});
     </script>
     
 </body>

@@ -6,823 +6,765 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
-    <link rel="stylesheet" href="assets/css/client.css">
+    <!-- Removed link to external client.css -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>Guest Dashboard</title>
-   
+    <title>Guest Dashboard - Plans</title>
+
     <style>
-      /* =============== Globals ============== */
+        /* =============== Globals ============== */
         * {
-        font-family: "Poppins", sans-serif;
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         :root {
-        --blue: #203A93;
-        --white: #fff;
-        --gray: #f5f5f5;
-        --black1: #222;
-        --black2: #999;
-        --yellow: #F1D27C;
-        --light-blue: #e8eeff;
-        --red: #ff6b6b;
-        --green: #4caf50;
+            --blue: #203A93;
+            --white: #fff;
+            --gray: #f5f5f5;
+            --black1: #222;
+            --black2: #999;
+            --yellow: #F1D27C;
+            --light-blue: #e8eeff;
+            --red: #ff6b6b;
+            --green: #4caf50;
         }
 
         body {
-        min-height: 100vh;
-        overflow-x: hidden;
+            background-color: var(--gray); /* Use gray for overall background */
+            min-height: 100vh; /* Ensure body takes full height */
+            overflow-x: hidden; /* Prevent horizontal scroll */
         }
 
         .container {
-        position: relative;
-        width: 100%;
+            position: relative;
+            width: 100%;
         }
 
         /* =============== Navigation ================ */
         .navigation {
-        position: fixed;
-        width: 300px;
-        height: 100%;
-        background: var(--blue);
-        border-left: 10px solid var(--blue);
-        transition: 0.5s;
-        overflow: hidden;
+            position: fixed;
+            width: 300px;
+            height: 100%;
+            background: var(--blue);
+            border-left: 10px solid var(--blue);
+            transition: 0.5s;
+            overflow-y: auto; /* Allow scrolling if menu is long */
+            overflow-x: hidden;
+            z-index: 100; /* Keep nav above main content */
         }
         .navigation.active {
-        width: 80px;
+            width: 80px;
         }
 
         .navigation ul {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding-left: 0; /* Override default ul padding */
         }
 
         .navigation ul li {
-        position: relative;
-        width: 100%;
-        list-style: none;
-        border-top-left-radius: 30px;
-        border-bottom-left-radius: 30px;
+            position: relative;
+            width: 100%;
+            list-style: none;
+            border-top-left-radius: 30px;
+            border-bottom-left-radius: 30px;
         }
 
         .navigation ul li:hover,
         .navigation ul li.hovered {
-        background-color: var(--white);
+            background-color: var(--white);
         }
 
         .navigation ul li:nth-child(1) {
-        margin-bottom: 40px;
-        pointer-events: none;
+            margin-bottom: 40px;
+            pointer-events: none;
         }
 
         .navigation ul li a {
-        position: relative;
-        display: block;
-        width: 100%;
-        display: flex;
-        text-decoration: none;
-        color: var(--white);
+            position: relative;
+            display: block;
+            width: 100%;
+            display: flex;
+            text-decoration: none;
+            color: var(--white);
+            transition: color 0.3s; /* Smooth color transition */
         }
         .navigation ul li:hover a,
         .navigation ul li.hovered a {
-        color: var(--blue);
+            color: var(--blue);
         }
 
         .navigation ul li a .icon {
-        position: relative;
-        display: block;
-        min-width: 60px;
-        height: 60px;
-        line-height: 75px;
-        text-align: center;
+            position: relative;
+            display: block;
+            min-width: 60px;
+            height: 60px;
+            line-height: 75px;
+            text-align: center;
         }
         .navigation ul li a .icon ion-icon {
-        font-size: 1.75rem;
+            font-size: 1.75rem;
         }
 
         .navigation ul li a .title {
-        position: relative;
-        display: block;
-        padding: 0 10px;
-        height: 60px;
-        line-height: 60px;
-        text-align: start;
-        white-space: nowrap;
+            position: relative;
+            display: block;
+            padding: 0 10px;
+            height: 60px;
+            line-height: 60px;
+            text-align: start;
+            white-space: nowrap;
         }
 
         /* --------- Curve Outside ---------- */
         .navigation ul li:hover a::before,
         .navigation ul li.hovered a::before {
-        content: "";
-        position: absolute;
-        right: 0;
-        top: -50px;
-        width: 50px;
-        height: 50px;
-        background-color: transparent;
-        border-radius: 50%;
-        box-shadow: 35px 35px 0 10px var(--white);
-        pointer-events: none;
+            content: "";
+            position: absolute;
+            right: 0;
+            top: -50px;
+            width: 50px;
+            height: 50px;
+            background-color: transparent;
+            border-radius: 50%;
+            box-shadow: 35px 35px 0 10px var(--white);
+            pointer-events: none;
         }
 
         .navigation ul li:hover a::after,
         .navigation ul li.hovered a::after {
-        content: "";
-        position: absolute;
-        right: 0;
-        bottom: -50px;
-        width: 50px;
-        height: 50px;
-        background-color: transparent;
-        border-radius: 50%;
-        box-shadow: 35px -35px 0 10px var(--white);
-        pointer-events: none;
+            content: "";
+            position: absolute;
+            right: 0;
+            bottom: -50px;
+            width: 50px;
+            height: 50px;
+            background-color: transparent;
+            border-radius: 50%;
+            box-shadow: 35px -35px 0 10px var(--white);
+            pointer-events: none;
         }
 
         /* ===================== Main ===================== */
         .main {
-        position: absolute;
-        width: calc(100% - 300px);
-        left: 300px;
-        min-height: 100vh;
-        background: var(--white);
-        transition: 0.5s;
+            position: absolute;
+            width: calc(100% - 300px);
+            left: 300px;
+            min-height: 100vh;
+            background: var(--white); /* White background for main content area */
+            transition: 0.5s;
+            padding: 20px; /* Add padding around main content */
         }
         .main.active {
-        width: calc(100% - 80px);
-        left: 80px;
+            width: calc(100% - 80px);
+            left: 80px;
         }
 
         .topbar {
-        width: 100%;
-        height: 60px;
-        display: flex;
-        align-items: center;
-        padding: 0 10px;
-        justify-content:space-between;
+            width: 100%;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px; /* Reduced padding */
+            justify-content: space-between;
+            background: var(--white); /* Ensure topbar has background */
+            border-bottom: 1px solid var(--gray); /* Subtle separator */
+            position: sticky; /* Make topbar sticky */
+            top: 0;
+            z-index: 90; /* Below nav but above content */
         }
 
         .toggle {
-        position: relative;
-        width: 60px;
-        height: 60px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 2.5rem;
-        cursor: pointer;
-        }
-
-        .search {
-        position: relative;
-        width: 800px;
-        margin: 0 10px;
-        }
-
-        .search label {
-        position: relative;
-        width: 100%;
-        }
-
-        .search label input {
-        width: 100%;
-        height: 40px;
-        border-radius: 40px;
-        padding: 5px 20px;
-        padding-left: 35px;
-        font-size: 18px;
-        outline: none;
-        border: 1px solid var(--black2);
-        }
-
-        .search label ion-icon {
-        position: absolute;
-        top: 0;
-        left: 10px;
-        font-size: 1.2rem;
-        }
-
-        .user {
-        position: relative;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        overflow: hidden;
-        cursor: pointer;
-        }
-
-
-        .user img {
-        position: absolute;
-        justify-items: end;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+            position: relative;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5rem;
+            cursor: pointer;
+            color: var(--black1); /* Ensure icon is visible */
         }
 
         /* =============== Search ============== */
         .search-container {
-        position: relative;
-        width: 800px;
-        margin: 0 10px;
+            position: relative;
+            flex-grow: 1; /* Allow search to take available space */
+            max-width: 600px; /* Limit max width */
+            margin: 0 15px; /* Add some margin */
         }
 
         .search-container label {
-        display: flex;
-        align-items: center; 
-        width: 100%;
-        border: 1px solid #ccc;
-        border-radius: 15px;
-        overflow: hidden; 
+            display: flex;
+            align-items: center;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 15px;
+            overflow: hidden;
+            background-color: var(--white);
         }
 
         #search-input {
-        flex-grow: 1; 
-        padding: 10px;
-        border: none;
-        outline: none;
-        font-size: 16px;
-        box-sizing: border-box; 
-        margin-right: 5px; 
+            flex-grow: 1;
+            padding: 8px 15px; /* Adjust padding */
+            border: none;
+            outline: none;
+            font-size: 1rem; /* Adjust font size */
+            box-sizing: border-box;
         }
 
         .search-container label ion-icon {
-        padding-right: 10px;
-        font-size: 20px; 
-        color: #777;
+            padding: 0 10px; /* Adjust padding */
+            font-size: 1.2rem;
+            color: #777;
         }
 
         #search-results {
-        position: absolute;
-        top: calc(100% + 2px);
-        left: 0;
-        right: 0;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        margin-top: 2px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-        z-index: 10;
-        display: none;
-        overflow: hidden; 
+            position: absolute;
+            top: calc(100% + 5px); /* Position below input */
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-top: 2px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            z-index: 110; /* Above other elements */
+            display: none;
+            overflow: hidden;
+            max-height: 300px; /* Limit height */
+            overflow-y: auto;
         }
 
         #search-results ul {
-        list-style: none;
-        padding: 8px 0;
-        margin: 0;
+            list-style: none;
+            padding: 8px 0;
+            margin: 0;
         }
 
         #search-results li {
-        padding: 12px 16px;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-        font-size: 1.0em;
-        color: #333;
+            padding: 10px 16px; /* Adjust padding */
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-size: 0.95em;
+            color: #333;
         }
 
         #search-results li:hover {
-        background-color: #f5f5f5;
-        color: #222;
+            background-color: #f5f5f5;
+            color: #222;
         }
 
         #search-results li:active {
-        background-color: #eee;
+            background-color: #eee;
         }
-
 
         #search-results li span.highlight {
-        font-weight: bold;
-        color: #007bff; 
+            font-weight: bold;
+            color: #007bff;
         }
 
-        /* =============== Mail Icon ============== */
-        .mail-container {
-        position: relative;
-        display: inline-block;
+        /* =============== Topbar Icons & User ============== */
+        .topbar-icons {
+            display: flex;
+            align-items: center;
+            gap: 15px; /* Space between icons */
         }
 
-        #mail-icon-inbox {
-        font-size: 25px;
-        color: #203A93;
-        cursor: pointer;
-        }
-
-        #mail-icon-inbox:hover {
-        opacity: 0.8;
-        }
-
-        #unread-notification {
-        position: absolute;
-        top: -8px;
-        right: -8px;
-        background-color: red;
-        color: white;
-        font-size: 12px;
-        border-radius: 50%;
-        width: 18px;
-        height: 18px;
-        text-align: center;
-        line-height: 18px;
-        display: none; 
-        }
-
-        #inbox-preview {
-        position: absolute;
-        top: calc(100% + 5px);
-        right: -10px;
-        background-color: #f9f9f9;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        width: 250px;
-        padding: 15px;
-        display: none;
-        z-index: 10;
-        text-align: left;
-        }
-
-        #inbox-preview strong {
-        display: block;
-        margin-bottom: 5px;
-        }
-
-        .email-item {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        padding: 3px 0; 
-        }
-
-        .email-item.sender {
-        font-weight: bold;
-        }
-
-        .email-item.subject {
-        color: #555;
-        font-size: 0.9em; 
-        }
-
-        #inbox-preview hr {
-        margin-top: 8px;
-        margin-bottom: 8px;
-        }
-
-        #inbox-preview a {
-        display: block;
-        margin-top: 10px;
-        font-size: 0.8em;
-        text-align: right;
-        color: #007bff;
-        text-decoration: none;
-        }
-
-        /* =============== Notification Icon ============== */
+        .mail-container,
         .notification-container {
-        position: relative;
-        display: inline-block;
+            position: relative;
+            display: flex; /* Use flex for alignment */
+            align-items: center;
         }
 
+        #mail-icon-inbox,
         #notification-icon {
-        font-size: 25px;
-        color: #203A93;
-        cursor: pointer;
+            font-size: 25px;
+            color: var(--blue);
+            cursor: pointer;
+            transition: opacity 0.3s;
         }
 
+        #mail-icon-inbox:hover,
         #notification-icon:hover {
-        opacity: 0.8;
+            opacity: 0.7;
         }
 
+        #unread-notification,
         #notification-badge {
-        position: absolute;
-        top: -8px;
-        right: -8px;
-        background-color: orange;
-        color: white;
-        font-size: 12px;
-        border-radius: 50%;
-        width: 18px;
-        height: 18px;
-        text-align: center;
-        line-height: 18px;
-        display: block; 
+            position: absolute;
+            top: -5px; /* Adjust position */
+            right: -5px;
+            background-color: var(--red);
+            color: white;
+            font-size: 11px; /* Smaller font */
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            text-align: center;
+            line-height: 16px;
+            font-weight: bold;
+            display: block; /* Show by default, JS handles logic */
         }
+         #notification-badge {
+            background-color: orange;
+         }
 
+        #inbox-preview,
         #notifications-dropdown {
-        position: absolute;
-        top: calc(100% + 5px);
-        right: -10px;
-        background-color: #f9f9f9;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        width: 250px;
-        padding: 15px;
-        display: none;
-        z-index: 10;
-        text-align: left;
+            position: absolute;
+            top: calc(100% + 10px); /* Position below icon */
+            right: -10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            width: 280px; /* Slightly wider */
+            padding: 15px;
+            display: none;
+            z-index: 110; /* Above other elements */
+            text-align: left;
+            max-height: 350px; /* Limit height */
+            overflow-y: auto;
         }
 
+        #inbox-preview strong,
         #notifications-dropdown strong {
-        display: block;
-        margin-bottom: 5px;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+            color: var(--black1);
         }
 
+        .email-item,
         .notification-item {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        padding: 3px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 4px 0; /* Adjust padding */
+            font-size: 0.9em; /* Slightly smaller */
         }
 
+        .email-item.sender,
         .notification-item.title {
-        font-weight: bold;
-        margin-top: 5px;
+            font-weight: bold;
         }
 
+        .email-item.subject,
         .notification-item.message {
-        color: #555;
-        font-size: 0.9em;
+            color: #555;
+            font-size: 0.85em;
+        }
+        .notification-item.title {
+             margin-top: 5px;
+             font-size: 0.8em; /* Smaller date/title */
+             color: var(--black2);
         }
 
+
+        #inbox-preview hr,
         #notifications-dropdown hr {
-        margin-top: 8px;
-        margin-bottom: 8px;
+            margin: 8px 0;
+            border: 0;
+            border-top: 1px solid #eee;
         }
 
+        #inbox-preview a,
         #notifications-dropdown a {
-        display: block;
-        margin-top: 10px;
-        font-size: 0.8em;
-        text-align: right;
-        color: #007bff;
-        text-decoration: none;
+            display: block;
+            margin-top: 10px;
+            font-size: 0.85em;
+            text-align: center; /* Center link */
+            color: #007bff;
+            text-decoration: none;
+            padding-top: 5px;
+        }
+         #inbox-preview a:hover,
+        #notifications-dropdown a:hover {
+            text-decoration: underline;
         }
 
-        /* Modal Styles for Sign out*/
-        /* Modal Overlay */
-.modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6); /* Slightly darker for better contrast */
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-    overflow: auto;
-    transition: all 0.3s ease; /* Smooth fade-in transition */
-    backdrop-filter: blur(3px); /* Subtle blur effect */
-}
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: 15px; /* Space before user info */
+        }
 
-.modal-overlay.show {
-    display: flex;
-    animation: fadeIn 0.3s ease; /* Animation for show effect */
-}
+        .user-info .name { /* Changed from just .name */
+            color: var(--black1);
+            font-weight: 500;
+            white-space: nowrap;
+        }
 
-/* Modal Container */
-.modal {
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    width: 90%;
-    max-width: 440px;
-    margin: auto;
-    transform: scale(0.95);
-    transition: transform 0.3s ease;
-    overflow: hidden; /* Ensures content doesn't break the rounded corners */
-}
+        .user {
+            position: relative;
+            min-width: 40px; /* Ensure minimum width */
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+        }
 
-.modal.show {
-    transform: scale(1);
-}
+        .user img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-/* Modal Header */
-.modal-header {
-    padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid #eaeaea;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #f8f9fa;
-}
 
-.modal-title {
-    font-size: 1.35rem;
-    font-weight: 600;
-    margin: 0;
-    color: #333;
-}
+        /* ============ Modal Styles (Consistent) ============ */
+        .modal-overlay {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            overflow: auto;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(3px);
+            opacity: 0; /* Start transparent */
+            pointer-events: none; /* Don't capture clicks when hidden */
+        }
 
-/* Modal Body */
-.modal-body {
-    padding: 1.5rem;
-    font-size: 1.1rem;
-    color: #555;
-    line-height: 1.5;
-}
+        .modal-overlay.active { /* Use .active to show */
+            display: flex;
+            opacity: 1;
+            pointer-events: auto;
+        }
 
-/* Modal Footer */
-.modal-footer {
-    padding: 1rem 1.5rem;
-    border-top: 1px solid #eaeaea;
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-}
+        /* General Modal Container */
+        .modal {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            width: 90%;
+            max-width: 550px; /* Default max-width, can be overridden */
+            margin: auto;
+            transform: scale(0.95) translateY(10px); /* Start slightly scaled down */
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            overflow: hidden;
+            opacity: 0; /* Start transparent */
+            display: none; /* Hidden by default */
+        }
 
-/* Close Button */
-.modal-close-button {
-    cursor: pointer;
-    font-size: 1.6rem;
-    color: #999;
-    border: none;
-    background: none;
-    padding: 0;
-    height: 32px;
-    width: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: all 0.2s ease;
-}
+        .modal-overlay.active .modal { /* Show modal when overlay is active */
+             display: block; /* Make visible */
+             transform: scale(1) translateY(0);
+             opacity: 1;
+        }
 
-.modal-close-button:hover {
-    color: #555;
-    background-color: rgba(0, 0, 0, 0.05);
-}
 
-/* Action Buttons */
-.modal-button {
-    padding: 0.6rem 1.2rem;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: none;
-}
+        /* Specific Modal Sizes */
+        #signOutModal .modal { max-width: 440px; }
+        #benefitsModal .modal { max-width: 600px; } /* Wider for benefits */
+        #paymentModal .modal { max-width: 600px; } /* Wider for payment */
+        #successModal .modal { max-width: 480px; }
 
-.no-button {
-    background-color: #f1f3f5;
-    color: #495057;
-}
 
-.no-button:hover {
-    background-color: #e9ecef;
-}
+        /* Modal Header */
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #eaeaea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8f9fa; /* Subtle header background */
+        }
 
-.yes-button {
-    background-color: #4263eb;
-    color: white;
-}
+        .modal-title {
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--blue); /* Theme color title */
+        }
 
-.yes-button:hover {
-    background-color: #3b5bdb;
-    box-shadow: 0 2px 8px rgba(66, 99, 235, 0.3);
-}
+        /* Close Button (Standard) */
+        .modal-close {
+            cursor: pointer;
+            font-size: 1.8rem; /* Larger icon */
+            color: #999;
+            border: none;
+            background: none;
+            padding: 0;
+            line-height: 1; /* Align icon better */
+            transition: color 0.2s ease;
+        }
 
-/* Animation Keyframes */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
+        .modal-close:hover {
+            color: #555;
+        }
 
-/* Responsive Adjustments */
-@media (max-width: 576px) {
-    .modal {
-        width: 95%;
-        max-width: none;
-    }
-    
-    .modal-footer {
-        flex-direction: row;
-    }
-    
-    .modal-button {
-        flex: 1;
-    }
-}
+        /* Modal Body */
+        .modal-body {
+            padding: 1.5rem;
+            font-size: 1rem; /* Adjust base size */
+            color: #555;
+            line-height: 1.6;
+            max-height: 60vh; /* Limit body height */
+            overflow-y: auto; /* Allow scroll within body */
+        }
+        /* Sign Out Modal specific body style */
+         #signOutModal .modal-body {
+              font-size: 1.1rem;
+              text-align: center;
+              max-height: none; /* No scroll needed */
+         }
+
+
+        /* Modal Footer */
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #eaeaea;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            background-color: #f8f9fa; /* Match header */
+        }
+
+        /* Action Buttons (Standard) */
+        .modal-button {
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .no-button { /* For Cancel/No */
+            background-color: var(--yellow);
+            color: var(--black1);
+        }
+        .no-button:hover { background-color: #e4c370; }
+
+        .yes-button { /* For Confirm/Sign Out */
+            background-color: var(--blue);
+            color: white;
+        }
+        .yes-button:hover { background-color: #182c7a; }
+
+         /* Specific button for proceed/payment/dashboard */
+         #proceedToPayment, #paymentForm button[type="submit"], #goToDashboard {
+              background-color: var(--blue);
+              color: white;
+              width: auto; /* Don't force full width */
+         }
+         #proceedToPayment:hover, #paymentForm button[type="submit"]:hover, #goToDashboard:hover {
+              background-color: #182c7a;
+         }
+         /* Make payment submit full width if needed */
+          #paymentForm button[type="submit"] { width: 100%; margin-top: 10px; }
+           #goToDashboard { width: auto; display: inline-block; }
+
+
+        /* =============== GUEST PLANS PAGE SPECIFIC STYLES ============== */
+
         .page-title {
             text-align: center;
-            margin: 30px 0;
+            margin: 25px 0 15px 0; /* Adjust margin */
             color: var(--blue);
-            font-size: 2rem;
+            font-size: 1.8rem; /* Adjust size */
+            font-weight: 600;
         }
 
         .subtitle {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 35px; /* Adjust margin */
             color: var(--black2);
-            font-size: 1.1rem;
+            font-size: 1rem; /* Adjust size */
+            max-width: 600px; /* Limit width */
+            margin-left: auto;
+            margin-right: auto;
         }
 
         /* Plans Container */
         .plans-container {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
+            display: grid; /* Use Grid for better alignment */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive columns */
             gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+            max-width: 1100px; /* Adjust max-width */
+            margin: 0 auto 40px auto; /* Center and add bottom margin */
+            padding: 0 15px; /* Padding for smaller screens */
         }
 
         /* Plan Cards */
         .plan-card {
             background-color: white;
             border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            width: 330px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.09); /* Refined shadow */
             overflow: hidden;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             position: relative;
+             display: flex; /* Use flex to align content */
+             flex-direction: column;
         }
 
         .plan-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            transform: translateY(-8px); /* Slightly less lift */
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
         }
 
         .plan-header {
-            padding: 25px 20px;
+            padding: 30px 20px; /* Increase padding */
             text-align: center;
             position: relative;
+            color: white; /* Ensure text is white */
         }
 
-        .starter-header {
-            background: linear-gradient(135deg, #203A93, #506be6);
-        }
-
-        .connect-header {
-            background: linear-gradient(135deg, #1a237e, #3949ab);
-        }
-
-        .elite-header {
-            background: linear-gradient(135deg, #0d47a1, #1976d2);
-        }
+        /* Header Backgrounds (Keep original gradients) */
+        .starter-header { background: linear-gradient(135deg, #203A93, #506be6); }
+        .connect-header { background: linear-gradient(135deg, #1a237e, #3949ab); }
+        .elite-header { background: linear-gradient(135deg, #0d47a1, #1976d2); }
 
         .plan-name {
-            color: white;
-            font-size: 1.6rem;
-            margin-bottom: 10px;
+            font-size: 1.5rem; /* Adjust size */
+            margin-bottom: 12px;
             font-weight: 600;
         }
 
         .plan-price {
-            color: white;
-            font-size: 2.2rem;
+            font-size: 2rem; /* Adjust size */
             font-weight: bold;
             display: flex;
             justify-content: center;
-            align-items: baseline;
+            align-items: baseline; /* Keep alignment */
+            line-height: 1.1; /* Adjust line height */
         }
 
         .plan-price sup {
-            font-size: 1rem;
-            margin-right: 3px;
+            font-size: 0.9rem; /* Adjust size */
+            margin-right: 4px;
+            font-weight: 500;
+            opacity: 0.9;
         }
 
         .plan-price sub {
-            font-size: 1rem;
-            margin-left: 3px;
+            font-size: 0.9rem; /* Adjust size */
+            margin-left: 4px;
+            font-weight: 500;
+            opacity: 0.9;
         }
 
         .plan-content {
             padding: 25px;
+             flex-grow: 1; /* Allow content to grow */
+             display: flex;
+             flex-direction: column;
         }
 
         .plan-description {
-            color: var(--black1);
-            margin-bottom: 20px;
+            color: var(--black2);
+            margin-bottom: 25px; /* Increase margin */
             text-align: center;
-            min-height: 50px;
+            min-height: 4.5em; /* Ensure consistent height (adjust as needed) */
+            line-height: 1.5;
+             font-size: 0.9rem;
         }
 
         .plan-features {
             list-style: none;
+            padding: 0; /* Remove default padding */
             margin-bottom: 25px;
         }
 
         .plan-features li {
             display: flex;
-            align-items: center;
-            margin-bottom: 15px;
+            align-items: flex-start; /* Align icon with start of text */
+            margin-bottom: 12px; /* Adjust spacing */
             color: var(--black1);
+            font-size: 0.9rem; /* Adjust size */
+            line-height: 1.4;
         }
 
         .plan-features ion-icon {
             color: var(--green);
             margin-right: 10px;
-            font-size: 1.2rem;
+            font-size: 1.1rem; /* Adjust size */
+             flex-shrink: 0; /* Prevent icon shrinking */
+             margin-top: 2px; /* Align icon slightly better */
         }
 
         .plan-button {
             display: block;
             text-align: center;
-            padding: 12px;
+            padding: 12px 20px; /* Adjust padding */
             border-radius: 6px;
             text-decoration: none;
             font-weight: 600;
             transition: all 0.3s ease;
             cursor: pointer;
+            margin-top: auto; /* Push button to bottom */
+            border: none; /* Ensure no border */
         }
 
-        .starter-button {
-            background-color: var(--blue);
-            color: white;
-        }
-
-        .connect-button {
-            background-color: #1a237e;
-            color: white;
-        }
-
-        .elite-button {
-            background-color: #0d47a1;
-            color: white;
-        }
+        /* Button Colors */
+        .starter-button { background-color: var(--blue); color: white; }
+        .connect-button { background-color: #1a237e; color: white; }
+        .elite-button { background-color: #0d47a1; color: white; }
 
         .plan-button:hover {
-            opacity: 0.9;
-            transform: scale(1.05);
+            opacity: 0.85; /* Adjust opacity */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15); /* Add shadow on hover */
         }
 
-        /* Modal Styles */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal {
-            background-color: white;
-            border-radius: 15px;
-            max-width: 600px;
-            width: 90%;
-            padding: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            position: relative;
-        }
-
-        .modal-close {
+        /* Popular Badge */
+        .popular-badge {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--black2);
-        }
-
-        .modal-title {
+            top: 15px; /* Adjust position */
+            right: -5px; /* Adjust position */
+            background-color: var(--yellow);
             color: var(--blue);
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 1.5rem;
+            padding: 6px 12px; /* Adjust padding */
+            border-radius: 20px;
+            font-size: 0.75rem; /* Smaller font */
+            font-weight: bold;
+            transform: rotate(10deg); /* Adjust rotation */
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+             z-index: 1; /* Ensure it's above header */
         }
 
+        /* Specific Modal Content Styling */
         .benefits-title {
             color: var(--black1);
-            margin-bottom: 15px;
+            margin: 10px 0 15px 0; /* Adjust margin */
             font-size: 1.2rem;
+            font-weight: 600;
         }
 
         .benefits-list {
             list-style: none;
             margin-bottom: 25px;
+            padding: 0;
         }
 
         .benefits-list li {
             display: flex;
             align-items: flex-start;
             margin-bottom: 12px;
-            padding-left: 5px;
+            padding-left: 0; /* Use gap or margin on icon */
+             line-height: 1.5;
+             font-size: 0.95rem;
         }
 
         .benefits-list ion-icon {
             color: var(--green);
-            margin-right: 10px;
+            margin-right: 12px; /* Increase space */
             font-size: 1.2rem;
             flex-shrink: 0;
             margin-top: 3px;
@@ -830,55 +772,49 @@
 
         .benefit-text {
             flex: 1;
+             color: var(--black1);
         }
 
-        .modal-button {
-            display: block;
-            text-align: center;
-            padding: 12px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            background-color: var(--blue);
-            color: white;
-            border: none;
-            width: 100%;
-        }
-
-        .modal-button:hover {
-            opacity: 0.9;
-        }
-
-        /* Payment Form */
+        /* Payment Form Styling */
         .payment-section {
-            margin-top: 30px;
+            margin-top: 25px;
+             padding-top: 20px;
+             border-top: 1px solid #eee;
         }
 
         .payment-title {
             color: var(--black1);
-            margin-bottom: 15px;
+            margin-bottom: 20px; /* Adjust margin */
             font-size: 1.2rem;
+            font-weight: 600;
         }
 
+        /* Use consistent form styles */
         .form-group {
             margin-bottom: 15px;
         }
 
-        .form-label {
+        .form-label { /* Renamed from form-group label */
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
+            font-weight: 500;
+            font-size: 0.95rem;
             color: var(--black1);
         }
 
-        .form-input {
+        .form-input { /* Renamed from form-control */
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            outline: none;
         }
+         .form-input:focus {
+             border-color: var(--blue);
+             box-shadow: 0 0 0 2px rgba(32, 58, 147, 0.2);
+         }
 
         .form-row {
             display: flex;
@@ -887,7 +823,33 @@
 
         .form-row .form-group {
             flex: 1;
+             margin-bottom: 0; /* Remove margin if inside row */
         }
+         /* Expiry/CVV specific width */
+         .form-row .form-group:last-child {
+             flex: 0 0 100px;
+         }
+
+        /* Order Summary within Payment Modal */
+        .payment-section .form-group div { /* Style the summary divs */
+             font-size: 0.95rem;
+             color: var(--black2);
+        }
+         .payment-section .form-group div span:last-child {
+              font-weight: 500;
+              color: var(--black1);
+         }
+         .payment-section .form-group div[style*="font-weight: bold"] { /* Total row */
+              color: var(--black1);
+              font-size: 1.05rem;
+              margin-top: 10px;
+              padding-top: 10px;
+              border-top: 1px solid #eee;
+         }
+          .payment-section .form-group div[style*="font-weight: bold"] span:last-child {
+               color: var(--blue);
+          }
+
 
         /* Success Modal */
         .success-icon {
@@ -903,38 +865,102 @@
 
         .success-message {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             color: var(--black1);
+            font-size: 1.05rem;
+            line-height: 1.6;
         }
 
-        /* Popular Badge */
-        .popular-badge {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background-color: var(--yellow);
-            color: var(--blue);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            transform: rotate(15deg);
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+
+        /* ================== Responsive Design ================== */
+
+        /* Medium devices (tablets, less than 992px) */
+        @media (max-width: 991px) {
+            .navigation { left: -300px; z-index: 1001; }
+            .navigation.active { width: 300px; left: 0; }
+            .main { width: 100%; left: 0; padding: 15px; }
+            .main.active { left: 0; width: 100%; }
+            .topbar { padding: 0 15px; }
+            .search-container { max-width: 400px; margin: 0 10px; }
+            .user-info .name { display: none; }
+            .topbar-icons { gap: 12px; }
+             #mail-icon-inbox, #notification-icon { font-size: 23px; }
+             .plans-container { padding: 0 10px; gap: 25px; }
+             .page-title { font-size: 1.6rem; }
+             .subtitle { font-size: 0.95rem; }
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
+        /* Small devices (landscape phones, less than 768px) */
+        @media (max-width: 767px) {
             .plans-container {
-                flex-direction: column;
-                align-items: center;
+                grid-template-columns: 1fr; /* Stack plans */
+                gap: 20px;
+                max-width: 450px; /* Limit width when stacked */
+                 margin-left: auto;
+                 margin-right: auto;
             }
-            
+            .plan-card { width: 100%; /* Full width when stacked */ }
+
             .form-row {
                 flex-direction: column;
-                gap: 0;
+                gap: 0; /* Reset gap handled by form-group margin */
             }
+            .form-row .form-group { margin-bottom: 15px; } /* Add margin back */
+             .form-row .form-group:last-child { flex: 1; } /* Full width for CVV */
+
+            .modal {
+                max-width: 90%; /* Wider modal on small screens */
+                padding: 20px; /* Reduce padding */
+                 max-height: 85vh;
+            }
+            .modal-footer { flex-direction: column; gap: 10px; }
+            .modal-button { width: 100%; }
+            #proceedToPayment, #paymentForm button[type="submit"], #goToDashboard { width: 100%; }
+
+             .topbar { padding: 0 10px; }
+             .search-container { max-width: 250px; }
+             .page-title { font-size: 1.5rem; margin: 20px 0 10px 0; }
+             .subtitle { margin-bottom: 25px; }
+             .plan-name { font-size: 1.4rem; }
+             .plan-price { font-size: 1.8rem; }
         }
+
+        /* Extra small devices (portrait phones, less than 480px) */
+        @media (max-width: 479px) {
+            .main { padding: 10px; }
+            .toggle { font-size: 2rem; }
+            .search-container { display: none; }
+            .topbar-icons { margin-left: auto; gap: 10px; }
+            .user-info { margin-left: 10px; }
+            .user { width: 35px; height: 35px; min-width: 35px; }
+            #inbox-preview, #notifications-dropdown { width: 250px; right: 0; }
+
+            .modal { max-width: 95%; padding: 15px; }
+            .modal-title { font-size: 1.2em; }
+            .modal-body { padding: 1rem; font-size: 0.95rem; }
+            .modal-footer { padding: 0.75rem 1rem; }
+
+            .page-title { font-size: 1.4rem; }
+            .subtitle { font-size: 0.9rem; }
+            .plans-container { gap: 15px; }
+            .plan-header { padding: 25px 15px; }
+            .plan-name { font-size: 1.3rem; }
+            .plan-price { font-size: 1.7rem; }
+            .plan-content { padding: 20px; }
+            .plan-description { font-size: 0.85rem; min-height: 4em; }
+            .plan-features li { font-size: 0.85rem; }
+            .plan-button { padding: 10px 15px; font-size: 0.9rem; }
+            .popular-badge { font-size: 0.7rem; padding: 4px 10px; }
+
+            .form-input { padding: 8px 10px; font-size: 0.95rem; }
+            .form-label { font-size: 0.9rem; }
+            .benefits-title, .payment-title { font-size: 1.1rem; }
+            .benefits-list li { font-size: 0.9rem; }
+             .success-message { font-size: 1rem; }
+        }
+
     </style>
-    
+
 </head>
 
 <body>
@@ -951,7 +977,7 @@
                     </a>
                 </li>
 
-                <li class="hovered">
+                <li> <!-- Removed hovered class -->
                     <a href="guest.html">
                         <span class="icon">
                             <ion-icon name="home-outline"></ion-icon>
@@ -960,7 +986,7 @@
                     </a>
                 </li>
 
-                <li>
+                <li class="hovered"> <!-- Added hovered class -->
                     <a href="guestsplan.html">
                         <span class="icon">
                             <ion-icon name="card-outline"></ion-icon>
@@ -988,7 +1014,7 @@
                 </li>
 
                 <li>
-                    <a href="#" id="signOutLink">
+                    <a href="#" id="signOutLink"> <!-- Ensure ID exists -->
                         <span class="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>
@@ -1001,591 +1027,549 @@
         <!-- ========================= Main ==================== -->
         <div class="main">
             <div class="topbar">
-                <div class="toggle">
+                 <div class="toggle">
                     <ion-icon name="menu-outline"></ion-icon>
                 </div>
 
                 <div class="search-container">
                     <label>
-                      <input type="text" id="search-input" placeholder="Search what you're looking for">
+                      <input type="text" id="search-input" placeholder="Search plans or features...">
                       <ion-icon name="search-outline"></ion-icon>
                     </label>
                     <div id="search-results">
+                        <!-- Search results populated by JS -->
                     </div>
                 </div>
 
-                <div class="mail-container">
-                    <ion-icon name="mail" id="mail-icon-inbox"></ion-icon>
-                    <div id="unread-notification">1</div>
-                    <div id="inbox-preview">
-                    <strong>Inbox</strong>
-                    <hr>
-                    <div id="unread-messages">
-                        <div class="email-item sender">Coaches</div>
-                        <div class="email-item subject">Session today!</div>
-                        <hr>
+                <!-- Grouped Icons and User Info -->
+                <div class="topbar-icons">
+                    <div class="mail-container">
+                        <ion-icon name="mail-outline" id="mail-icon-inbox"></ion-icon>
+                        <div id="unread-notification" style="display: block;">1</div>
+                        <div id="inbox-preview">
+                            <strong>Inbox</strong><hr>
+                            <div id="unread-messages">
+                                <div class="email-item sender">Coaches</div>
+                                <div class="email-item subject">Session today!</div><hr>
+                            </div>
+                            <div id="read-messages">
+                                <div class="email-item sender">Coach</div>
+                                <div class="email-item subject">Can I ask?</div>
+                            </div>
+                            <a href="#">See All Messages</a>
+                        </div>
                     </div>
-                    <div id="read-messages">
-                        <div class="email-item sender">Coach</div>
-                        <div class="email-item subject">Can I ask?</div>
-                    </div>
-                    <a href="#">See All</a>
+
+                    <div class="notification-container">
+                        <ion-icon name="notifications-outline" id="notification-icon"></ion-icon>
+                        <div id="notification-badge" style="display: block;">1</div>
+                        <div id="notifications-dropdown">
+                            <strong>Notifications</strong><hr>
+                            <div id="notification-list">
+                                <div class="notification-item title">Today, 1:00 PM</div>
+                                <div class="notification-item message">Your schedule is today.</div><hr>
+                                <div class="notification-item title">Yesterday</div>
+                                <div class="notification-item message">Coach John Cena cancelled session.</div>
+                            </div>
+                            <a href="#">See All Notifications</a>
+                        </div>
                     </div>
                 </div>
 
-                <div class="notification-container">
-                    <ion-icon name="notifications" id="notification-icon"></ion-icon>
-                    <div id="notification-badge">1</div>
-                    <div id="notifications-dropdown">
-                      <strong>Notifications</strong>
-                      <hr>
-                      <div id="notification-list">
-                        <div class="notification-item title">Today, 1:00 PM</div>
-                        <div class="notification-item message">Your schedule is today.</div>
-                        <hr>
-                        <div class="notification-item title">Coach John Cena</div>
-                        <div class="notification-item message">Cancelled the session</div>
-                      </div>
-                      <a href="#">See All</a>
+                <div class="user-info">
+                    <div class="name">
+                        <p>Guest User 01</p>
                     </div>
-                </div>
-            
-                <div class="name">
-                    <p>Guest User 01</p>
-                </div>
-    
-                <div class="user">
-                    <img src="assets/img/esnyr.jpg" alt="User profile">
-                </div>                
-            </div>
-
-            
-            
-            
-    
-            <div id="signOutModal" class="modal-overlay">
-                <div class="modal">
-                    <div class="modal-header">
-                        <h2 class="modal-title">Sign Out</h2>
-                        <button type="button" class="modal-close-button">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Are you sure you want to sign out?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="modal-button no-button" id="signOutNo">Cancel</button>
-                        <button type="button" class="modal-button yes-button" id="signOutYes">Sign Out</button>
+                    <div class="user">
+                        <img src="assets/img/esnyr.jpg" alt="User profile">
                     </div>
                 </div>
             </div>
-            
 
-    <h1 class="page-title">Choose Your Membership Plan</h1>
-    <p class="subtitle">Transform your fitness journey with a plan tailored to your needs</p>
+             <!-- ============ Guest Plans Page Content Starts Here ============ -->
 
-    <div class="plans-container">
-        <!-- Starter Access Plan -->
-        <div class="plan-card">
-            <div class="plan-header starter-header">
-                <h2 class="plan-name">Starter Access</h2>
-                <div class="plan-price">
-                    <sup>PHP</sup>499<sub>/mo</sub>
+            <h1 class="page-title">Choose Your Membership Plan</h1>
+            <p class="subtitle">Transform your fitness journey with a plan tailored to your needs and unlock exclusive member benefits.</p>
+
+            <div class="plans-container">
+                <!-- Starter Access Plan -->
+                <div class="plan-card">
+                    <div class="plan-header starter-header">
+                        <h2 class="plan-name">Starter Access</h2>
+                        <div class="plan-price">
+                            <sup>PHP</sup>499<sub>/mo</sub>
+                        </div>
+                    </div>
+                    <div class="plan-content">
+                        <p class="plan-description">Perfect for beginners looking to build a solid foundation with essential access and guidance.</p>
+                        <ul class="plan-features">
+                            <li><ion-icon name="checkmark-outline"></ion-icon><span>2 Personal Training Sessions</span></li>
+                            <li><ion-icon name="checkmark-outline"></ion-icon><span>Basic workout plan</span></li>
+                            <li><ion-icon name="checkmark-outline"></ion-icon><span>Tracking progress plan</span></li>
+                            <li><ion-icon name="checkmark-outline"></ion-icon><span>Standard Gym Access</span></li>
+                        </ul>
+                        <button class="plan-button starter-button" data-plan="starter">Get Plan</button>
+                    </div>
+                </div>
+
+                <!-- Coach Connect Plan -->
+                <div class="plan-card">
+                    <div class="popular-badge">Popular</div>
+                    <div class="plan-header connect-header">
+                        <h2 class="plan-name">Coach Connect</h2>
+                        <div class="plan-price">
+                            <sup>PHP</sup>1,799<sub>/mo</sub>
+                        </div>
+                    </div>
+                    <div class="plan-content">
+                        <p class="plan-description">Stay motivated and accountable with personalized plans and direct access to your coach.</p>
+                        <ul class="plan-features">
+                            <li><ion-icon name="checkmark-outline"></ion-icon><span>4 Personal Training Sessions</span></li>
+                            <li><ion-icon name="checkmark-outline"></ion-icon><span>Custom workout plan</span></li>
+                            <li><ion-icon name="checkmark-outline"></ion-icon><span>Custom nutrition plan</span></li>
+                            <li><ion-icon name="checkmark-outline"></ion-icon><span>24/7 coach messaging</span></li>
+                             <li><ion-icon name="checkmark-outline"></ion-icon><span>Weekly Check-ins</span></li>
+                        </ul>
+                        <button class="plan-button connect-button" data-plan="connect">Get Plan</button>
+                    </div>
+                </div>
+
+                <!-- Elite Coaching Plan -->
+                <div class="plan-card">
+                    <div class="plan-header elite-header">
+                        <h2 class="plan-name">Elite Coaching</h2>
+                        <div class="plan-price">
+                            <sup>PHP</sup>3,599<sub>/mo</sub>
+                        </div>
+                    </div>
+                    <div class="plan-content">
+                        <p class="plan-description">The ultimate package for accelerated results with premium access and dedicated support.</p>
+                        <ul class="plan-features">
+                            <li><ion-icon name="checkmark-outline"></ion-icon><span>8 Personal Training Sessions</span></li>
+                            <li><ion-icon name="checkmark-outline"></ion-icon><span>Advanced personalized plans</span></li>
+                            <li><ion-icon name="checkmark-outline"></ion-icon><span>Priority scheduling</span></li>
+                            <li><ion-icon name="checkmark-outline"></ion-icon><span>In-home sessions available</span></li>
+                            <li><ion-icon name="checkmark-outline"></ion-icon><span>24/7 dedicated coach</span></li>
+                             <li><ion-icon name="checkmark-outline"></ion-icon><span>Recovery Sessions</span></li>
+                        </ul>
+                        <button class="plan-button elite-button" data-plan="elite">Get Plan</button>
+                    </div>
                 </div>
             </div>
-            <div class="plan-content">
-                <p class="plan-description">Start strong with guided workouts and gym access at your pace.</p>
-                <ul class="plan-features">
-                    <li>
-                        <ion-icon name="checkmark-outline"></ion-icon>
-                        <span>2 Personal Training Sessions</span>
-                    </li>
-                    <li>
-                        <ion-icon name="checkmark-outline"></ion-icon>
-                        <span>Basic workout plan</span>
-                    </li>
-                    <li>
-                        <ion-icon name="checkmark-outline"></ion-icon>
-                        <span>Tracking progress plan</span>
-                    </li>
-                </ul>
-                <a href="#" class="plan-button starter-button" data-plan="starter" data-price="499">Get Plan</a>
-            </div>
-        </div>
 
-        <!-- Coach Connect Plan -->
-        <div class="plan-card">
-            <div class="popular-badge">Popular</div>
-            <div class="plan-header connect-header">
-                <h2 class="plan-name">Coach Connect</h2>
-                <div class="plan-price">
-                    <sup>PHP</sup>1,799<sub>/mo</sub>
-                </div>
-            </div>
-            <div class="plan-content">
-                <p class="plan-description">Your coach, your plan, your progress - stay connected every week.</p>
-                <ul class="plan-features">
-                    <li>
-                        <ion-icon name="checkmark-outline"></ion-icon>
-                        <span>4 Personal Training Sessions</span>
-                    </li>
-                    <li>
-                        <ion-icon name="checkmark-outline"></ion-icon>
-                        <span>Custom workout plan</span>
-                    </li>
-                    <li>
-                        <ion-icon name="checkmark-outline"></ion-icon>
-                        <span>Custom nutrition plan</span>
-                    </li>
-                    <li>
-                        <ion-icon name="checkmark-outline"></ion-icon>
-                        <span>24/7 coach messaging</span>
-                    </li>
-                </ul>
-                <a href="#" class="plan-button connect-button" data-plan="connect" data-price="1799">Get Plan</a>
-            </div>
-        </div>
+             <!-- ============ Guest Plans Page Content Ends Here ============ -->
 
-        <!-- Elite Coaching Plan -->
-        <div class="plan-card">
-            <div class="plan-header elite-header">
-                <h2 class="plan-name">Elite Coaching</h2>
-                <div class="plan-price">
-                    <sup>PHP</sup>3,599<sub>/mo</sub>
-                </div>
+        </div> <!-- End main -->
+    </div> <!-- End container -->
+
+
+    <!-- ============ Modals ============ -->
+
+    <!-- Sign Out Modal -->
+    <div class="modal-overlay" id="signOutModalOverlay"> <!-- Changed ID -->
+        <div class="modal" id="signOutModal"> <!-- Changed ID -->
+            <div class="modal-header">
+                <h3 class="modal-title">Sign Out</h3>
+                 <button type="button" class="modal-close" aria-label="Close modal">
+                    <ion-icon name="close-outline"></ion-icon>
+                 </button>
             </div>
-            <div class="plan-content">
-                <p class="plan-description">For those who want it all: unlimited access, expert coaching, and faster results.</p>
-                <ul class="plan-features">
-                    <li>
-                        <ion-icon name="checkmark-outline"></ion-icon>
-                        <span>8 Personal Training Sessions</span>
-                    </li>
-                    <li>
-                        <ion-icon name="checkmark-outline"></ion-icon>
-                        <span>Advanced personalized plans</span>
-                    </li>
-                    <li>
-                        <ion-icon name="checkmark-outline"></ion-icon>
-                        <span>Priority scheduling</span>
-                    </li>
-                    <li>
-                        <ion-icon name="checkmark-outline"></ion-icon>
-                        <span>In-home sessions available</span>
-                    </li>
-                    <li>
-                        <ion-icon name="checkmark-outline"></ion-icon>
-                        <span>24/7 dedicated coach</span>
-                    </li>
-                </ul>
-                <a href="#" class="plan-button elite-button" data-plan="elite" data-price="3599">Get Plan</a>
+            <div class="modal-body">
+                <p>Are you sure you want to sign out?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="modal-button no-button" id="signOutNo">Cancel</button>
+                <button type="button" class="modal-button yes-button" id="signOutYes">Sign Out</button>
             </div>
         </div>
     </div>
 
     <!-- Benefits Modal -->
-    <div class="modal-overlay" id="benefitsModal">
-        <div class="modal">
-            <span class="modal-close" id="benefitsClose">
-                <ion-icon name="close-outline"></ion-icon>
-            </span>
-            <h2 class="modal-title" id="planTitle">Plan Name</h2>
-            
-            <h3 class="benefits-title">Plan Benefits</h3>
-            <ul class="benefits-list" id="benefitsList">
-                <!-- Benefits will be populated dynamically -->
-            </ul>
-            
-            <button class="modal-button" id="proceedToPayment">Proceed to Payment</button>
+    <div class="modal-overlay" id="benefitsModalOverlay"> <!-- Changed ID -->
+        <div class="modal" id="benefitsModal"> <!-- Changed ID -->
+             <div class="modal-header">
+                 <h2 class="modal-title" id="planTitle">Plan Name</h2>
+                 <button type="button" class="modal-close" id="benefitsClose" aria-label="Close modal">
+                     <ion-icon name="close-outline"></ion-icon>
+                 </button>
+             </div>
+             <div class="modal-body">
+                 <h3 class="benefits-title">What You'll Get:</h3>
+                 <ul class="benefits-list" id="benefitsList">
+                     <!-- Benefits will be populated dynamically -->
+                 </ul>
+             </div>
+              <div class="modal-footer">
+                 <button class="modal-button yes-button" id="proceedToPayment">Proceed to Payment</button>
+             </div>
         </div>
     </div>
 
     <!-- Payment Modal -->
-    <div class="modal-overlay" id="paymentModal">
-        <div class="modal">
-            <span class="modal-close" id="paymentClose">
-                <ion-icon name="close-outline"></ion-icon>
-            </span>
-            <h2 class="modal-title">Complete Your Purchase</h2>
-            
-            <h3 class="payment-title">Payment Details</h3>
-            <form id="paymentForm">
-                <div class="form-group">
-                    <label class="form-label">Cardholder Name</label>
-                    <input type="text" class="form-input" placeholder="Enter cardholder name" required>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Card Number</label>
-                    <input type="text" class="form-input" placeholder="1234 5678 9012 3456" required>
-                </div>
-                
-                <div class="form-row">
+    <div class="modal-overlay" id="paymentModalOverlay"> <!-- Changed ID -->
+        <div class="modal" id="paymentModal"> <!-- Changed ID -->
+            <div class="modal-header">
+                 <h2 class="modal-title">Complete Your Purchase</h2>
+                 <button type="button" class="modal-close" id="paymentClose" aria-label="Close modal">
+                     <ion-icon name="close-outline"></ion-icon>
+                 </button>
+            </div>
+            <div class="modal-body">
+                <form id="paymentForm">
+                    <h3 class="payment-title">Payment Details</h3>
                     <div class="form-group">
-                        <label class="form-label">Expiry Date</label>
-                        <input type="text" class="form-input" placeholder="MM/YY" required>
+                        <label class="form-label" for="cardholderName">Cardholder Name</label>
+                        <input type="text" id="cardholderName" class="form-input" placeholder="Juan Dela Cruz" required>
                     </div>
-                    
+
                     <div class="form-group">
-                        <label class="form-label">CVV</label>
-                        <input type="text" class="form-input" placeholder="123" required>
+                        <label class="form-label" for="cardNumber">Card Number</label>
+                        <input type="text" id="cardNumber" class="form-input" placeholder="1234 5678 9012 3456" inputmode="numeric" pattern="[\d\s]{16,19}" maxlength="19" required>
                     </div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Billing Address</label>
-                    <input type="text" class="form-input" placeholder="Enter your billing address" required>
-                </div>
-                
-                <div class="payment-section">
-                    <h3 class="payment-title">Order Summary</h3>
-                    <div class="form-group">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                            <span>Plan:</span>
-                            <span id="summaryPlanName">Plan Name</span>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="expiryDate">Expiry Date</label>
+                            <input type="text" id="expiryDate" class="form-input" placeholder="MM / YY" pattern="\d{2}\s?\/\s?\d{2}" maxlength="7" required>
                         </div>
-                        <div style="display: flex; justify-content: space-between; font-weight: bold;">
-                            <span>Total:</span>
-                            <span id="summaryPlanPrice">PHP 0.00</span>
+
+                        <div class="form-group">
+                            <label class="form-label" for="cvv">CVV</label>
+                            <input type="text" id="cvv" class="form-input" placeholder="123" inputmode="numeric" pattern="\d{3,4}" maxlength="4" required>
                         </div>
                     </div>
-                </div>
-                
-                <button type="submit" class="modal-button">Complete Payment</button>
-            </form>
+
+                    <div class="form-group">
+                        <label class="form-label" for="billingAddress">Billing Address</label>
+                        <input type="text" id="billingAddress" class="form-input" placeholder="Enter your billing address" required>
+                    </div>
+
+                    <div class="payment-section"> <!-- Order Summary Section -->
+                        <h3 class="payment-title">Order Summary</h3>
+                        <div class="form-group"> <!-- Using form-group for spacing consistency -->
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span>Plan:</span>
+                                <span id="summaryPlanName">Plan Name</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-weight: bold;">
+                                <span>Total Amount:</span>
+                                <span id="summaryPlanPrice">PHP 0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="modal-button yes-button">Complete Payment</button>
+                </form>
+            </div>
         </div>
     </div>
 
     <!-- Success Modal -->
-    <div class="modal-overlay" id="successModal">
-        <div class="modal">
-            <div class="success-icon">
-                <ion-icon name="checkmark-circle-outline"></ion-icon>
-            </div>
-            <h2 class="modal-title">Payment Successful!</h2>
-            <p class="success-message">Congratulations! Your membership has been activated. You now have access to your personalized dashboard.</p>
-            <button class="modal-button" id="goToDashboard">Go to Dashboard</button>
+    <div class="modal-overlay" id="successModalOverlay"> <!-- Changed ID -->
+        <div class="modal" id="successModal"> <!-- Changed ID -->
+             <div class="modal-header">
+                 <h2 class="modal-title">Payment Successful!</h2>
+                  <!-- No close button here, force user action -->
+             </div>
+             <div class="modal-body" style="text-align: center;"> <!-- Center body content -->
+                 <div class="success-icon">
+                     <ion-icon name="checkmark-circle-outline"></ion-icon>
+                 </div>
+                 <p class="success-message">Congratulations! Your membership has been activated. You now have access to your personalized dashboard.</p>
+             </div>
+             <div class="modal-footer" style="justify-content: center;"> <!-- Center footer button -->
+                  <button class="modal-button yes-button" id="goToDashboard">Go to Dashboard</button>
+             </div>
         </div>
     </div>
-    
-    
-    
 
+
+    <!-- ========= Scripts ========= -->
     <script>
-        
-         // Plan data with detailed benefits
-         const planData = {
-            starter: {
-                name: "Starter Access",
-                price: 499,
-                benefits: [
-                    "2 Personal Training Sessions per month with certified trainers",
-                    "Basic workout plan tailored to your fitness level",
-                    "Access to progress tracking tools to monitor your journey",
-                    "Unlimited gym access during regular hours",
-                    "Access to basic equipment and facilities",
-                    "One initial fitness assessment",
-                    "Monthly body composition analysis",
-                    "Access to group classes (subject to availability)"
-                ]
-            },
-            connect: {
-                name: "Coach Connect",
-                price: 1799,
-                benefits: [
-                    "4 Personal Training Sessions per month with expert coaches",
-                    "Custom workout plan designed specifically for your goals",
-                    "Personalized nutrition plan with meal suggestions",
-                    "24/7 coach messaging for guidance and support",
-                    "Unlimited gym access including premium hours",
-                    "Weekly check-ins with your dedicated coach",
-                    "Monthly progress evaluations and plan adjustments",
-                    "Priority booking for group classes",
-                    "Access to premium workout areas",
-                    "Nutritional supplement consultation"
-                ]
-            },
-            elite: {
-                name: "Elite Coaching",
-                price: 3599,
-                benefits: [
-                    "8 Personal Training Sessions per month with elite trainers",
-                    "Advanced personalized workout plans with regular updates",
-                    "Comprehensive nutrition program with meal planning",
-                    "Priority scheduling for all services and amenities",
-                    "In-home training sessions available upon request",
-                    "24/7 dedicated coach support with rapid response time",
-                    "Bi-weekly body composition and fitness assessments",
-                    "Access to exclusive elite member facilities and equipment",
-                    "Recovery sessions including guided stretching and massage",
-                    "Access to partner wellness services (physiotherapy, nutrition)",
-                    "Complimentary towel service and premium amenities",
-                    "Exclusive workshops and seminars with fitness experts"
-                ]
-            }
-        };
-
-        // Get all plan buttons
-        const planButtons = document.querySelectorAll('.plan-button');
-        const benefitsModal = document.getElementById('benefitsModal');
-        const paymentModal = document.getElementById('paymentModal');
-        const successModal = document.getElementById('successModal');
-        const benefitsClose = document.getElementById('benefitsClose');
-        const paymentClose = document.getElementById('paymentClose');
-        const proceedToPayment = document.getElementById('proceedToPayment');
-        const paymentForm = document.getElementById('paymentForm');
-        const goToDashboard = document.getElementById('goToDashboard');
-
-        // Current selected plan
-        let currentPlan = null;
-
-        // Add event listeners to plan buttons
-        planButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.preventDefault();
-                const planType = button.getAttribute('data-plan');
-                showPlanBenefits(planType);
-            });
-        });
-
-        // Close benefit modal
-        benefitsClose.addEventListener('click', () => {
-            benefitsModal.classList.remove('active');
-        });
-
-        // Close payment modal
-        paymentClose.addEventListener('click', () => {
-            paymentModal.classList.remove('active');
-        });
-
-        // Proceed to payment
-        proceedToPayment.addEventListener('click', () => {
-            benefitsModal.classList.remove('active');
-            
-            // Update order summary
-            document.getElementById('summaryPlanName').textContent = planData[currentPlan].name;
-            document.getElementById('summaryPlanPrice').textContent = `PHP ${planData[currentPlan].price.toLocaleString()}`;
-            
-            paymentModal.classList.add('active');
-        });
-
-        // Submit payment form
-        paymentForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            paymentModal.classList.remove('active');
-            successModal.classList.add('active');
-        });
-
-        // Go to dashboard
-        goToDashboard.addEventListener('click', () => {
-            window.location.href = 'testclient.html'; // Redirect to the member dashboard
-        });
-
-        // Show plan benefits
-        function showPlanBenefits(planType) {
-            currentPlan = planType;
-            const plan = planData[planType];
-            
-            // Update modal title
-            document.getElementById('planTitle').textContent = plan.name;
-            
-            // Populate benefits list
-            const benefitsList = document.getElementById('benefitsList');
-            benefitsList.innerHTML = '';
-            
-            plan.benefits.forEach(benefit => {
-                const li = document.createElement('li');
-                li.innerHTML = `
-                    <ion-icon name="checkmark-circle-outline"></ion-icon>
-                    <span class="benefit-text">${benefit}</span>
-                `;
-                benefitsList.appendChild(li);
-            });
-            
-            // Show modal
-            benefitsModal.classList.add('active');
-        }
-
-        // Close modals when clicking outside
-        window.addEventListener('click', (e) => {
-            if (e.target === benefitsModal) {
-                benefitsModal.classList.remove('active');
-            }
-            if (e.target === paymentModal) {
-                paymentModal.classList.remove('active');
-            }
-            if (e.target === successModal) {
-                successModal.classList.remove('active');
-            }
-        });
-        // Navigation Active Link
+         // Navigation Link Activation & Menu Toggle (Standard)
         let list = document.querySelectorAll(".navigation li");
-
         function activeLink() {
-            list.forEach((item) => {
-                item.classList.remove("hovered");
-            });
-            this.classList.add("hovered");
+            list.forEach(item => item.classList.remove("hovered"));
+            // Find the link pointing to 'guestsplan.html'
+             const currentLink = Array.from(list).find(item => item.querySelector('a[href="guestsplan.html"]'));
+             if (currentLink) currentLink.classList.add("hovered");
         }
+        activeLink(); // Activate on load
 
-        list.forEach((item) => item.addEventListener("click", activeLink));
-
-        // Menu Toggle
         let toggle = document.querySelector(".toggle");
         let navigation = document.querySelector(".navigation");
         let main = document.querySelector(".main");
+        if(toggle && navigation && main) {
+            toggle.onclick = () => {
+                navigation.classList.toggle("active");
+                main.classList.toggle("active");
+            };
+        }
 
-        toggle.onclick = function () {
-            navigation.classList.toggle("active");
-            main.classList.toggle("active");
-        };
-
-        // Search Function
+         // Search Functionality (Standard)
         const searchInput = document.getElementById('search-input');
         const searchResultsDiv = document.getElementById('search-results');
-
-        const searchData = [
-            "How to diet",
-            "Paano makapasa sa webdev",
-            "Effective workout plan",
-            "Effective sleep",
-            "Gulay effective diet",
-            "Recent Sessions",
-            "Overall well being",
-            "Updates",
-            "Coaches",
-            "Plans"
+        const searchDataPlans = [ // Plan specific search data
+            "Starter Access Plan", "Coach Connect Plan", "Elite Coaching Plan",
+            "Personal Training", "Custom workout plan", "Nutrition plan", "24/7 messaging",
+            "Gym Access", "Progress Tracking", "Priority Scheduling", "In-home sessions"
         ];
 
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const filteredResults = searchData.filter(item =>
-                item.toLowerCase().includes(searchTerm)
-            );
-
-            displayResults(filteredResults);
-        });
-
-        function displayResults(results) {
-            searchResultsDiv.innerHTML = '';
-
-            if (results.length > 0 && searchInput.value.trim() !== '') {
+        if (searchInput && searchResultsDiv) {
+             searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                searchResultsDiv.innerHTML = '';
+                searchResultsDiv.style.display = 'none';
+                if (searchTerm.length > 0) {
+                    const filteredResults = searchDataPlans.filter(item => item.toLowerCase().includes(searchTerm));
+                    displayResults(filteredResults, searchTerm);
+                }
+            });
+            document.addEventListener('click', event => {
+                if (!event.target.closest('.search-container')) searchResultsDiv.style.display = 'none';
+            });
+        }
+        function displayResults(results, searchTerm) {
+             if (results.length > 0) {
                 const ul = document.createElement('ul');
                 results.forEach(result => {
                     const li = document.createElement('li');
-                    li.textContent = result;
-                    li.addEventListener('click', function() {
-                        searchInput.value = this.textContent;
-                        searchResultsDiv.style.display = 'none'; 
+                    const regex = new RegExp(`(${searchTerm})`, 'gi');
+                    li.innerHTML = result.replace(regex, '<span class="highlight">$1</span>');
+                    li.addEventListener('click', () => {
+                        searchInput.value = result;
+                        searchResultsDiv.style.display = 'none';
+                        console.log("Selected:", result); // Optional: trigger action
                     });
                     ul.appendChild(li);
                 });
                 searchResultsDiv.appendChild(ul);
-                searchResultsDiv.style.display = 'block'; 
+                searchResultsDiv.style.display = 'block';
             } else {
                 searchResultsDiv.style.display = 'none';
             }
         }
-        
 
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.search-container')) {
-                searchResultsDiv.style.display = 'none';
-            }
-        });
-
-        // Mail Function
+        // Mail & Notification Dropdown Functionality (Standard)
         const mailIconInbox = document.getElementById('mail-icon-inbox');
         const unreadNotification = document.getElementById('unread-notification');
         const inboxPreview = document.getElementById('inbox-preview');
-        let hasUnread = true; 
-
-        function updateUnreadIndicator() {
-            unreadNotification.style.display = hasUnread ? 'block' : 'none';
+        let hasUnread = true; // Simulate
+        function updateUnreadIndicator() { if (unreadNotification) unreadNotification.style.display = hasUnread ? 'block' : 'none'; }
+        if(mailIconInbox && inboxPreview && unreadNotification) {
+            updateUnreadIndicator();
+            mailIconInbox.addEventListener('click', event => {
+                 event.stopPropagation();
+                 if (notificationsDropdown) notificationsDropdown.style.display = 'none';
+                 const isVisible = inboxPreview.style.display === 'block';
+                 inboxPreview.style.display = isVisible ? 'none' : 'block';
+                 if (!isVisible && hasUnread) { hasUnread = false; updateUnreadIndicator(); }
+            });
         }
-
-        updateUnreadIndicator();
-
-        mailIconInbox.addEventListener('click', function() {
-            inboxPreview.style.display = (inboxPreview.style.display === 'block' ? 'none' : 'block');
-
-            if (hasUnread && inboxPreview.style.display === 'block') {
-                hasUnread = false;
-                updateUnreadIndicator();
-                console.log('Mail icon clicked - marking as read');
-            }
-        });
-
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.mail-container')) {
-                inboxPreview.style.display = 'none';
-            }
-        });
-
-        // Notification Function
         const notificationIcon = document.getElementById('notification-icon');
         const notificationBadge = document.getElementById('notification-badge');
         const notificationsDropdown = document.getElementById('notifications-dropdown');
-
-        notificationIcon.addEventListener('click', function() {
-            notificationsDropdown.style.display = (notificationsDropdown.style.display === 'block' ? 'none' : 'block');
-            
-            notificationBadge.style.display = 'none';
+        let hasNewNotifications = true; // Simulate
+        if (notificationIcon && notificationBadge && notificationsDropdown) {
+             notificationBadge.style.display = hasNewNotifications ? 'block' : 'none';
+            notificationIcon.addEventListener('click', event => {
+                 event.stopPropagation();
+                 if (inboxPreview) inboxPreview.style.display = 'none';
+                 const isVisible = notificationsDropdown.style.display === 'block';
+                 notificationsDropdown.style.display = isVisible ? 'none' : 'block';
+                 if (!isVisible && hasNewNotifications) { hasNewNotifications = false; notificationBadge.style.display = 'none'; }
+            });
+        }
+        document.addEventListener('click', event => {
+            if (inboxPreview && !event.target.closest('.mail-container')) inboxPreview.style.display = 'none';
+            if (notificationsDropdown && !event.target.closest('.notification-container')) notificationsDropdown.style.display = 'none';
         });
 
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.notification-container')) {
-                notificationsDropdown.style.display = 'none';
+
+        // --- Modal Handling (Standard) ---
+        function showModal(overlayId) {
+            const overlay = document.getElementById(overlayId);
+            if (overlay) {
+                 overlay.classList.add('active');
+                 // Ensure the modal inside is also animated correctly if needed
+                 const modal = overlay.querySelector('.modal');
+                 if (modal) { /* Force reflow for transition */ modal.offsetHeight; }
+            }
+        }
+
+        function hideModal(overlayId) {
+            const overlay = document.getElementById(overlayId);
+            if (overlay) overlay.classList.remove('active');
+        }
+
+        // Close modal on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (event) => {
+                if (event.target === overlay) {
+                     // Find the ID of the overlay to pass to hideModal
+                     hideModal(overlay.id);
+                }
+            });
+        });
+
+        // Close modal on close button click
+        document.querySelectorAll('.modal-close').forEach(button => {
+            button.addEventListener('click', () => {
+                 const overlay = button.closest('.modal-overlay');
+                 if(overlay) hideModal(overlay.id);
+            });
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.active').forEach(overlay => {
+                    hideModal(overlay.id);
+                });
             }
         });
+        // --- End Modal Handling ---
 
-        //  Sign Out Modal Logic (Add to both files)
-    const signOutLink = document.getElementById('signOutLink');
-    const signOutModal = document.getElementById('signOutModal');
-    const signOutNoButton = document.getElementById('signOutNo');
-    const signOutYesButton = document.getElementById('signOutYes');
-    const modalOverlay = document.querySelector('.modal-overlay'); //  Get the overlay
 
-    signOutLink.addEventListener('click', (event) => {
-        event.preventDefault();
-        modalOverlay.classList.add('show'); //  Show the overlay
-        signOutModal.classList.add('show'); //  Show the modal
-    });
+        // Sign Out Modal Logic (Standard - Uses new Modal Handling)
+        const signOutLink = document.getElementById('signOutLink');
+        const signOutNoButton = document.getElementById('signOutNo');
+        const signOutYesButton = document.getElementById('signOutYes');
 
-    signOutNoButton.addEventListener('click', () => {
-        modalOverlay.classList.remove('show');
-        signOutModal.classList.remove('show');
-    });
-
-    signOutYesButton.addEventListener('click', () => {
-        window.location.href = 'index.html'; //  Or your sign-out URL
-    });
-
-    //  Close modal on overlay click
-    modalOverlay.addEventListener('click', (event) => {
-        if (event.target === modalOverlay) {
-            modalOverlay.classList.remove('show');
-            document.querySelectorAll('.modal.show').forEach(modal => modal.classList.remove('show'));
-        }
-    });
-
-    //  Close modal on close button click (IMPORTANT:  For ALL modals)
-    document.querySelectorAll('.modal-close-button').forEach(button => {
-        button.addEventListener('click', () => {
-            modalOverlay.classList.remove('show');
-            button.closest('.modal').classList.remove('show');
+        if (signOutLink) signOutLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            showModal('signOutModalOverlay');
         });
-    });
+        if (signOutNoButton) signOutNoButton.addEventListener('click', () => hideModal('signOutModalOverlay'));
+        if (signOutYesButton) signOutYesButton.addEventListener('click', () => window.location.href = 'index.html');
 
-    //  Close modal on Escape key
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
-            modalOverlay.classList.remove('show');
-            document.querySelectorAll('.modal.show').forEach(modal => modal.classList.remove('show'));
+
+        // --- Guest Plans Page Specific JS ---
+         const planData = {
+            starter: {
+                name: "Starter Access", price: 499,
+                benefits: [
+                    "2 Personal Training Sessions per month", "Basic workout plan",
+                    "Progress tracking tools", "Standard gym access",
+                    "Access to basic equipment", "Initial fitness assessment"
+                ]
+            },
+            connect: {
+                name: "Coach Connect", price: 1799,
+                benefits: [
+                    "4 Personal Training Sessions per month", "Custom workout plan",
+                    "Personalized nutrition plan", "24/7 coach messaging",
+                    "Unlimited gym access (incl. premium hours)", "Weekly coach check-ins",
+                    "Monthly progress evaluations", "Priority group class booking"
+                ]
+            },
+            elite: {
+                name: "Elite Coaching", price: 3599,
+                benefits: [
+                    "8 Personal Training Sessions per month", "Advanced personalized plans",
+                    "Comprehensive nutrition program", "Priority scheduling",
+                    "In-home training available", "24/7 dedicated coach support",
+                    "Bi-weekly assessments", "Access to exclusive facilities",
+                    "Recovery sessions (massage/stretch)", "Partner wellness access",
+                    "Complimentary towel service"
+                ]
+            }
+        };
+
+        const planButtons = document.querySelectorAll('.plan-button');
+        const proceedToPaymentBtn = document.getElementById('proceedToPayment');
+        const paymentForm = document.getElementById('paymentForm');
+        const goToDashboardBtn = document.getElementById('goToDashboard');
+        const benefitsListEl = document.getElementById('benefitsList');
+        const planTitleEl = document.getElementById('planTitle');
+        const summaryPlanNameEl = document.getElementById('summaryPlanName');
+        const summaryPlanPriceEl = document.getElementById('summaryPlanPrice');
+
+        let currentPlan = null;
+
+        planButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                currentPlan = button.getAttribute('data-plan'); // Store selected plan
+                const plan = planData[currentPlan];
+
+                if (plan && planTitleEl && benefitsListEl) {
+                    planTitleEl.textContent = plan.name; // Update modal title
+                    benefitsListEl.innerHTML = ''; // Clear previous benefits
+                    plan.benefits.forEach(benefit => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<ion-icon name="checkmark-circle-outline"></ion-icon><span class="benefit-text">${benefit}</span>`;
+                        benefitsListEl.appendChild(li);
+                    });
+                    showModal('benefitsModalOverlay'); // Show benefits modal
+                } else {
+                     console.error("Plan data or modal elements not found for:", currentPlan);
+                }
+            });
+        });
+
+        if (proceedToPaymentBtn) {
+            proceedToPaymentBtn.addEventListener('click', () => {
+                if (currentPlan && planData[currentPlan]) {
+                    const plan = planData[currentPlan];
+                     // Update summary in payment modal
+                     if (summaryPlanNameEl) summaryPlanNameEl.textContent = plan.name;
+                     if (summaryPlanPriceEl) summaryPlanPriceEl.textContent = `PHP ${plan.price.toLocaleString()}`; // Format price
+
+                    hideModal('benefitsModalOverlay');
+                    showModal('paymentModalOverlay');
+                } else {
+                     alert("Please select a plan first."); // Should not happen if flow is correct
+                }
+            });
         }
-    });
 
+        if (paymentForm) {
+            paymentForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                // Add actual payment processing logic here if needed (e.g., Stripe, etc.)
+                console.log("Payment submitted for plan:", currentPlan);
+                hideModal('paymentModalOverlay');
+                showModal('successModalOverlay'); // Show success
+            });
+        }
 
-        
+        if (goToDashboardBtn) {
+            goToDashboardBtn.addEventListener('click', () => {
+                 // Redirect to the *actual* client dashboard after successful payment
+                window.location.href = 'testclient.html';
+            });
+        }
+
+         // --- Input Formatting (Card Number, Expiry) ---
+         const cardNumberInput = document.getElementById('cardNumber');
+         const expiryDateInput = document.getElementById('expiryDate');
+
+         if (cardNumberInput) {
+             cardNumberInput.addEventListener('input', function (e) {
+                 let value = e.target.value.replace(/\D/g, '');
+                 let formattedValue = '';
+                 for (let i = 0; i < value.length; i++) {
+                     if (i > 0 && i % 4 === 0) formattedValue += ' ';
+                     formattedValue += value[i];
+                 }
+                 e.target.value = formattedValue.substring(0, 19);
+             });
+         }
+
+         if (expiryDateInput) {
+             expiryDateInput.addEventListener('input', function (e) {
+                 let value = e.target.value.replace(/\D/g, '');
+                 if (value.length >= 2) {
+                     value = value.substring(0, 2) + ' / ' + value.substring(2, 4);
+                 }
+                 e.target.value = value.substring(0, 7); // MM / YY
+             });
+         }
+          // --- End Input Formatting ---
+
+        // --- End Guest Plans Page Specific JS ---
+
     </script>
 
     <!-- ====== ionicons ======= -->

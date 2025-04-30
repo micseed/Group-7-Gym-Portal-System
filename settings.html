@@ -6,760 +6,359 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <!-- Removed link to external CSS -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>Client Dashboard</title>
+    <title>Client Dashboard - Settings</title>
     <!-- ======= Styles ====== -->
     <style>
         /* =============== Globals ============== */
-* {
-  font-family: "Poppins", sans-serif;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-:root {
-  --blue: #203A93;
-  --white: #fff;
-  --gray: #f5f5f5;
-  --black1: #222;
-  --black2: #999;
-}
-
-body {
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-.container {
-  position: relative;
-  width: 100%;
-}
-
-/* =============== Navigation ================ */
-.navigation {
-  position: fixed;
-  width: 300px;
-  height: 100%;
-  background: var(--blue);
-  border-left: 10px solid var(--blue);
-  transition: 0.5s;
-  overflow: hidden;
-}
-.navigation.active {
-  width: 80px;
-}
-
-.navigation ul {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-}
-
-.navigation ul li {
-  position: relative;
-  width: 100%;
-  list-style: none;
-  border-top-left-radius: 30px;
-  border-bottom-left-radius: 30px;
-}
-
-.navigation ul li:hover,
-.navigation ul li.hovered {
-  background-color: var(--white);
-}
-
-.navigation ul li:nth-child(1) {
-  margin-bottom: 40px;
-  pointer-events: none;
-}
-
-.navigation ul li a {
-  position: relative;
-  display: block;
-  width: 100%;
-  display: flex;
-  text-decoration: none;
-  color: var(--white);
-}
-.navigation ul li:hover a,
-.navigation ul li.hovered a {
-  color: var(--blue);
-}
-
-.navigation ul li a .icon {
-  position: relative;
-  display: block;
-  min-width: 60px;
-  height: 60px;
-  line-height: 75px;
-  text-align: center;
-}
-.navigation ul li a .icon ion-icon {
-  font-size: 1.75rem;
-}
-
-.navigation ul li a .title {
-  position: relative;
-  display: block;
-  padding: 0 10px;
-  height: 60px;
-  line-height: 60px;
-  text-align: start;
-  white-space: nowrap;
-}
-
-/* --------- Curve Outside ---------- */
-.navigation ul li:hover a::before,
-.navigation ul li.hovered a::before {
-  content: "";
-  position: absolute;
-  right: 0;
-  top: -50px;
-  width: 50px;
-  height: 50px;
-  background-color: transparent;
-  border-radius: 50%;
-  box-shadow: 35px 35px 0 10px var(--white);
-  pointer-events: none;
-}
-
-.navigation ul li:hover a::after,
-.navigation ul li.hovered a::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: -50px;
-  width: 50px;
-  height: 50px;
-  background-color: transparent;
-  border-radius: 50%;
-  box-shadow: 35px -35px 0 10px var(--white);
-  pointer-events: none;
-}
-
-/* ===================== Main ===================== */
-.main {
-  position: absolute;
-  width: calc(100% - 300px);
-  left: 300px;
-  min-height: 100vh;
-  background: var(--white);
-  transition: 0.5s;
-}
-.main.active {
-  width: calc(100% - 80px);
-  left: 80px;
-}
-
-.topbar {
-  width: 100%;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-  justify-content:space-between;
-}
-
-.toggle {
-  position: relative;
-  width: 60px;
-  height: 60px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 2.5rem;
-  cursor: pointer;
-}
-
-.search {
-  position: relative;
-  width: 800px;
-  margin: 0 10px;
-}
-
-.search label {
-  position: relative;
-  width: 100%;
-}
-
-.search label input {
-  width: 100%;
-  height: 40px;
-  border-radius: 40px;
-  padding: 5px 20px;
-  padding-left: 35px;
-  font-size: 18px;
-  outline: none;
-  border: 1px solid var(--black2);
-}
-
-.search label ion-icon {
-  position: absolute;
-  top: 0;
-  left: 10px;
-  font-size: 1.2rem;
-}
-
-.user {
-  position: relative;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  overflow: hidden;
-  cursor: pointer;
-}
-
-
-.user img {
-  position: absolute;
-  justify-items: end;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* =============== Search ============== */
-.search-container {
-  position: relative;
-  width: 800px;
-  margin: 0 10px;
-}
-
-.search-container label {
-  display: flex;
-align-items: center; 
-width: 100%;
-border: 1px solid #ccc;
-border-radius: 15px;
-overflow: hidden; 
-}
-
-#search-input {
-  flex-grow: 1; 
-padding: 10px;
-border: none;
-outline: none;
-font-size: 16px;
-box-sizing: border-box; 
-margin-right: 5px; 
-}
-
-.search-container label ion-icon {
-  padding-right: 10px;
-  font-size: 20px; 
-  color: #777;
-}
-
-#search-results {
-  position: absolute;
-  top: calc(100% + 2px);
-  left: 0;
-  right: 0;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  margin-top: 2px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  z-index: 10;
-  display: none;
-  overflow: hidden; 
-}
-
-#search-results ul {
-  list-style: none;
-  padding: 8px 0;
-  margin: 0;
-}
-
-#search-results li {
-  padding: 12px 16px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  font-size: 1.0em;
-  color: #333;
-}
-
-#search-results li:hover {
-  background-color: #f5f5f5;
-  color: #222;
-}
-
-#search-results li:active {
-  background-color: #eee;
-}
-
-
-#search-results li span.highlight {
-  font-weight: bold;
-  color: #007bff; 
-}
-
-/* =============== Mail Icon ============== */
-.mail-container {
-  position: relative;
-  display: inline-block;
-}
-
-#mail-icon-inbox {
-  font-size: 25px;
-  color: #203A93;
-  cursor: pointer;
-}
-
-#mail-icon-inbox:hover {
-  opacity: 0.8;
-}
-
-#unread-notification {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background-color: red;
-  color: white;
-  font-size: 12px;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  text-align: center;
-  line-height: 18px;
-  display: none; 
-}
-
-#inbox-preview {
-  position: absolute;
-  top: calc(100% + 5px);
-  right: -10px;
-  background-color: #f9f9f9;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 250px;
-  padding: 15px;
-  display: none;
-  z-index: 10;
-  text-align: left;
-}
-
-#inbox-preview strong {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.email-item {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding: 3px 0; 
-}
-
-.email-item.sender {
-  font-weight: bold;
-}
-
-.email-item.subject {
-  color: #555;
-  font-size: 0.9em; 
-}
-
-#inbox-preview hr {
-  margin-top: 8px;
-  margin-bottom: 8px;
-}
-
-#inbox-preview a {
-  display: block;
-  margin-top: 10px;
-  font-size: 0.8em;
-  text-align: right;
-  color: #007bff;
-  text-decoration: none;
-}
-
-/* =============== Notification Icon ============== */
-.notification-container {
-  position: relative;
-  display: inline-block;
-}
-
-#notification-icon {
-  font-size: 25px;
-  color: #203A93;
-  cursor: pointer;
-}
-
-#notification-icon:hover {
-  opacity: 0.8;
-}
-
-#notification-badge {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background-color: orange;
-  color: white;
-  font-size: 12px;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  text-align: center;
-  line-height: 18px;
-  display: block; 
-}
-
-#notifications-dropdown {
-  position: absolute;
-  top: calc(100% + 5px);
-  right: -10px;
-  background-color: #f9f9f9;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 250px;
-  padding: 15px;
-  display: none;
-  z-index: 10;
-  text-align: left;
-}
-
-#notifications-dropdown strong {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.notification-item {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding: 3px 0;
-}
-
-.notification-item.title {
-  font-weight: bold;
-  margin-top: 5px;
-}
-
-.notification-item.message {
-  color: #555;
-  font-size: 0.9em;
-}
-
-#notifications-dropdown hr {
-  margin-top: 8px;
-  margin-bottom: 8px;
-}
-
-#notifications-dropdown a {
-  display: block;
-  margin-top: 10px;
-  font-size: 0.8em;
-  text-align: right;
-  color: #007bff;
-  text-decoration: none;
-}
-
-/* ======================= Cards ====================== */
-.greetings {
-  padding: 0 30px;
-  margin-top: 2%;
-
-}
-
-.welcome h1 {
-  color: #484848;
-  font-weight: 200;
-  font-size: 2.5rem;
-}
-
-.cardBox {
-  position: relative;
-  width: 100%;
-  padding: 20px;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 30px;
-}
-
-.cardBox .card {
-  position: relative;
-  background: var(--white);
-  padding: 30px;
-  border-radius: 20px;
-  display: flex;
-  justify-content: space-between;
-  cursor: pointer;
-  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
-}
-
-.cardBox .card .numbers {
-  position: relative;
-  font-weight: 500;
-  font-size: 2.5rem;
-  color: var(--blue);
-}
-
-.cardBox .card .cardName {
-  color: var(--black2);
-  font-size: 1.1rem;
-  margin-top: 5px;
-}
-
-.cardBox .card .iconBx {
-  font-size: 3.5rem;
-  color: var(--black2);
-}
-
-.cardBox .card:hover {
-  background: var(--blue);
-}
-.cardBox .card:hover .numbers,
-.cardBox .card:hover .cardName,
-.cardBox .card:hover .iconBx {
-  color: var(--white);
-}
-
-.settings-container {
-    max-width: 100%;
-    margin: 40px auto;
-    padding: 30px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.settings-header {
-    text-align: center;
-    padding-bottom: 20px;
-    margin-bottom: 30px;
-    border-bottom: 1px solid #eee;
-}
-
-.settings-header h1 {
-    color: #203a93;
-    font-size: 2em;
-    margin-bottom: 5px;
-}
-
-.settings-header p {
-    color: #777;
-    font-size: 0.9em;
-}
-
-.settings-section {
-    margin-bottom: 25px;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    background-color: #f9f9f9;
-}
-
-.settings-section h2 {
-    color: #444;
-    font-size: 1.5em;
-    margin-top: 0;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
-}
-
-.setting-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.setting-item label {
-    width: 150px;
-    font-weight: bold;
-    color: #555;
-    margin-right: 15px;
-}
-
-.setting-item input[type="email"],
-.setting-item input[type="text"],
-.setting-item select {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1em;
-    color: #666;
-    flex-grow: 1;
-}
-
-.setting-item input[type="email"]:disabled,
-.setting-item input[type="text"]:disabled {
-    background-color: #eee;
-    color: #777;
-    cursor: not-allowed;
-}
-
-.settings-actions button {
-    background-color: #203a93;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    margin-right: 10px;
-
-}
-
-.settings-actions button:hover {
-    background-color: #18267a;
-}
-
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 40px;
-    height: 20px;
-}
-
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.slider {
-    position: absolute;
-    cursor: pointer;
-    width: 40px;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-    border-radius: 20px;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 16px;
-    width: 16px;
-    left: 2px;
-    bottom: 2px;
-    background-color: white;
-    transition: .4s;
-    border-radius: 50%;
-}
-
-input:checked + .slider {
-    background-color: #203a93;
-}
-
-input:focus + .slider {
-    box-shadow: 0 0 1px #203a93;
-}
-
-input:checked + .slider:before {
-    transform: translateX(20px);
-}
-
-.settings-footer {
-    text-align: center;
-    margin-top: 40px;
-    padding: 20px 0;
-    border-top: 1px solid #eee;
-    color: #777;
-    font-size: 0.8em;
-}
-
-.settings-footer p {
-    margin: 5px 0;
-}
-
- /* Modal Styles for Sign out*/
- .modal {
-        display: none; 
-        position: fixed; 
-        z-index: 1000; 
-        left: 0;
-        top: 0;
-        width: 100%; 
-        height: 100%; 
-        overflow: auto; 
-        background-color: rgba(0,0,0,0.4); 
-        backdrop-filter: blur(5px);
-        justify-content: center;
-        align-items: center;
+        * {
+            font-family: "Poppins", sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .modal.show {
-        display: flex; 
+        :root {
+            --blue: #203A93;
+            --white: #fff;
+            --gray: #f5f5f5;
+            --black1: #222;
+            --black2: #999;
+            --yellow: #F1D27C;
+            --light-blue: #e8eeff;
+            --red: #ff6b6b;
+            --green: #4caf50;
         }
 
-        .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto; 
-        padding: 30px;
-        border: 1px solid #888;
-        width: 600px; 
-        max-width: 400px; 
-        border-radius: 15px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        position: relative;
+        body {
+            background-color: var(--gray);
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        .modal-header {
-        padding-bottom: 20px;
-        border-bottom: 1px solid #eee;
-        margin-bottom: 20px;
+        .container {
+            position: relative;
+            width: 100%;
         }
 
-        .modal-title {
-        font-size: 1.5em;
-        color: #333;
-        font-weight: bold;
+        /* =============== Navigation ================ */
+        .navigation {
+            position: fixed;
+            width: 300px;
+            height: 100%;
+            background: var(--blue);
+            border-left: 10px solid var(--blue);
+            transition: 0.5s;
+            overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 100;
+        }
+        .navigation.active { width: 80px; }
+        .navigation ul { position: absolute; top: 0; left: 0; width: 100%; padding-left: 0; }
+        .navigation ul li { position: relative; width: 100%; list-style: none; border-top-left-radius: 30px; border-bottom-left-radius: 30px; }
+        .navigation ul li:hover, .navigation ul li.hovered { background-color: var(--white); }
+        .navigation ul li:nth-child(1) { margin-bottom: 40px; pointer-events: none; }
+        .navigation ul li a { position: relative; display: block; width: 100%; display: flex; text-decoration: none; color: var(--white); transition: color 0.3s; }
+        .navigation ul li:hover a, .navigation ul li.hovered a { color: var(--blue); }
+        .navigation ul li a .icon { position: relative; display: block; min-width: 60px; height: 60px; line-height: 75px; text-align: center; }
+        .navigation ul li a .icon ion-icon { font-size: 1.75rem; }
+        .navigation ul li a .title { position: relative; display: block; padding: 0 10px; height: 60px; line-height: 60px; text-align: start; white-space: nowrap; }
+        .navigation ul li:hover a::before, .navigation ul li.hovered a::before { content: ""; position: absolute; right: 0; top: -50px; width: 50px; height: 50px; background-color: transparent; border-radius: 50%; box-shadow: 35px 35px 0 10px var(--white); pointer-events: none; }
+        .navigation ul li:hover a::after, .navigation ul li.hovered a::after { content: ""; position: absolute; right: 0; bottom: -50px; width: 50px; height: 50px; background-color: transparent; border-radius: 50%; box-shadow: 35px -35px 0 10px var(--white); pointer-events: none; }
+
+        /* ===================== Main ===================== */
+        .main {
+            position: absolute;
+            width: calc(100% - 300px);
+            left: 300px;
+            min-height: 100vh;
+            background: var(--white);
+            transition: 0.5s;
+            padding: 20px;
+        }
+        .main.active { width: calc(100% - 80px); left: 80px; }
+
+        /* ===================== Topbar ===================== */
+        .topbar {
+            width: 100%; height: 60px; display: flex; align-items: center; padding: 0 10px; justify-content: space-between;
+            background: var(--white); border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 90;
+        }
+        .toggle { position: relative; width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; font-size: 2.5rem; cursor: pointer; color: var(--black1); }
+
+        /* Search */
+        .search-container { position: relative; flex-grow: 1; max-width: 600px; margin: 0 15px; }
+        .search-container label { display: flex; align-items: center; width: 100%; border: 1px solid #ccc; border-radius: 15px; overflow: hidden; background-color: var(--white); }
+        #search-input { flex-grow: 1; padding: 8px 15px; border: none; outline: none; font-size: 1rem; box-sizing: border-box; }
+        .search-container label ion-icon { padding: 0 10px; font-size: 1.2rem; color: #777; }
+        #search-results { position: absolute; top: calc(100% + 5px); left: 0; right: 0; background-color: #fff; border: 1px solid #ccc; border-radius: 8px; margin-top: 2px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); z-index: 110; display: none; overflow: hidden; max-height: 300px; overflow-y: auto; }
+        #search-results ul { list-style: none; padding: 8px 0; margin: 0; }
+        #search-results li { padding: 10px 16px; cursor: pointer; transition: background-color 0.2s ease; font-size: 0.95em; color: #333; }
+        #search-results li:hover { background-color: #f5f5f5; color: #222; }
+        #search-results li:active { background-color: #eee; }
+        #search-results li span.highlight { font-weight: bold; color: #007bff; }
+
+        /* Topbar Icons & User */
+        .topbar-icons { display: flex; align-items: center; gap: 15px; }
+        .mail-container, .notification-container { position: relative; display: flex; align-items: center; }
+        #mail-icon-inbox, #notification-icon { font-size: 25px; color: var(--blue); cursor: pointer; transition: opacity 0.3s; }
+        #mail-icon-inbox:hover, #notification-icon:hover { opacity: 0.7; }
+        #unread-notification, #notification-badge { position: absolute; top: -5px; right: -5px; background-color: var(--red); color: white; font-size: 11px; border-radius: 50%; width: 16px; height: 16px; text-align: center; line-height: 16px; font-weight: bold; display: block; }
+        #notification-badge { background-color: orange; }
+        #inbox-preview, #notifications-dropdown { position: absolute; top: calc(100% + 10px); right: -10px; background-color: #f9f9f9; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); width: 280px; padding: 15px; display: none; z-index: 110; text-align: left; max-height: 350px; overflow-y: auto; }
+        #inbox-preview strong, #notifications-dropdown strong { display: block; margin-bottom: 8px; font-size: 1.1em; color: var(--black1); }
+        .email-item, .notification-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 4px 0; font-size: 0.9em; }
+        .email-item.sender, .notification-item.title { font-weight: bold; }
+        .email-item.subject, .notification-item.message { color: #555; font-size: 0.85em; }
+        .notification-item.title { margin-top: 5px; font-size: 0.8em; color: var(--black2); }
+        #inbox-preview hr, #notifications-dropdown hr { margin: 8px 0; border: 0; border-top: 1px solid #eee; }
+        #inbox-preview a, #notifications-dropdown a { display: block; margin-top: 10px; font-size: 0.85em; text-align: center; color: #007bff; text-decoration: none; padding-top: 5px; }
+        #inbox-preview a:hover, #notifications-dropdown a:hover { text-decoration: underline; }
+        .user-info { display: flex; align-items: center; gap: 10px; margin-left: 15px; }
+        .user-info .name { color: var(--black1); font-weight: 500; white-space: nowrap; }
+        .user { position: relative; min-width: 40px; width: 40px; height: 40px; border-radius: 50%; overflow: hidden; cursor: pointer; }
+        .user img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+
+        /* ============ Modal Styles (Consistent) ============ */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 1000; justify-content: center; align-items: center; overflow: auto; transition: opacity 0.3s ease; backdrop-filter: blur(3px); opacity: 0; pointer-events: none; }
+        .modal-overlay.active { display: flex; opacity: 1; pointer-events: auto; }
+        .modal { background-color: #fff; border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); width: 90%; max-width: 440px; margin: auto; transform: scale(0.95) translateY(10px); transition: transform 0.3s ease, opacity 0.3s ease; overflow: hidden; opacity: 0; display: none; }
+        .modal-overlay.active .modal { display: block; transform: scale(1) translateY(0); opacity: 1; }
+        .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid #eaeaea; display: flex; justify-content: space-between; align-items: center; background-color: #f8f9fa; }
+        .modal-title { font-size: 1.35rem; font-weight: 600; margin: 0; color: var(--blue); }
+        .modal-close { cursor: pointer; font-size: 1.8rem; color: #999; border: none; background: none; padding: 0; line-height: 1; transition: color 0.2s ease; }
+        .modal-close:hover { color: #555; }
+        .modal-body { padding: 1.5rem; font-size: 1.1rem; color: #555; line-height: 1.6; text-align: center; }
+        .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid #eaeaea; display: flex; justify-content: flex-end; gap: 12px; background-color: #f8f9fa; }
+        .modal-button { padding: 0.6rem 1.2rem; border-radius: 6px; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease; border: none; }
+        .no-button { background-color: var(--yellow); color: var(--black1); }
+        .no-button:hover { background-color: #e4c370; }
+        .yes-button { background-color: var(--blue); color: white; }
+        .yes-button:hover { background-color: #182c7a; }
+
+        /* =============== SETTINGS PAGE SPECIFIC STYLES ============== */
+        .settings-container {
+            max-width: 900px; /* Limit width for better readability */
+            margin: 20px auto 0 auto; /* Center and add top margin */
+            padding: 0; /* Remove padding from container */
         }
 
-        .modal-body {
-        font-size: 1.1em;
-        color: #555;
-        margin-bottom: 20px;
+        .settings-header {
+            text-align: center;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
         }
 
-        .modal-footer.sign-out-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 15px;
+        .settings-header h1 {
+            color: var(--blue);
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            font-weight: 600;
         }
 
-        .modal-button {
-        background-color: #007bff; 
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-        transition: background-color 0.3s ease;
+        .settings-header p {
+            color: var(--black2);
+            font-size: 1rem;
         }
 
-        .modal-button:hover {
-        background-color: #0056b3;
+        .settings-section {
+            margin-bottom: 30px; /* Increase spacing between sections */
+            padding: 25px; /* Add padding to sections */
+            border-radius: 10px; /* Consistent radius */
+            background-color: var(--white); /* White background for sections */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Consistent shadow */
         }
 
-        .modal-button.yes-button {
-        background-color: #203A93;
+        .settings-section h2 {
+            color: var(--blue); /* Use theme color */
+            font-size: 1.3rem; /* Adjust size */
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            font-weight: 600;
         }
 
-        .modal-button.yes-button:hover {
-        background-color: #c82333;
+        .setting-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px; /* Increase spacing */
+            flex-wrap: wrap; /* Allow wrapping */
+            gap: 10px; /* Gap between label and control */
         }
 
-        .modal-button.no-button {
-        background-color: #F1D27C;
+        .setting-item label:not(.switch) { /* Exclude switch label from fixed width */
+            width: 180px; /* Fixed width for labels */
+            font-weight: 500; /* Adjusted weight */
+            color: var(--black1);
+            margin-right: 0; /* Use gap instead */
+            flex-shrink: 0; /* Prevent shrinking */
+             font-size: 0.95rem;
         }
 
-        .modal-button.no-button:hover {
-        background-color: #5a6268;
+         /* Specific label for switch */
+         .setting-item label.switch-label {
+            flex-grow: 1; /* Allow text label to take space */
+            margin-right: 10px;
+            font-weight: 500;
+            color: var(--black1);
+             font-size: 0.95rem;
+             cursor: pointer; /* Make label clickable for switch */
+         }
+
+        .setting-item input[type="email"],
+        .setting-item input[type="text"],
+        .setting-item select,
+        .setting-item .button { /* Style button consistently */
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: var(--black1);
+            flex-grow: 1; /* Allow input/select/button to grow */
+             min-width: 150px; /* Ensure minimum width */
+             transition: border-color 0.3s, box-shadow 0.3s;
+             outline: none;
+        }
+         .setting-item input:focus, .setting-item select:focus {
+             border-color: var(--blue);
+             box-shadow: 0 0 0 2px rgba(32, 58, 147, 0.2);
+         }
+
+        .setting-item input[type="email"]:disabled,
+        .setting-item input[type="text"]:disabled {
+            background-color: #eee;
+            color: #777;
+            cursor: not-allowed;
+             border-color: #ddd;
+        }
+         /* Specific style for Change Password button */
+         .setting-item .button {
+              flex-grow: 0; /* Don't let button grow */
+              background-color: var(--blue);
+              color: white;
+              border: none;
+              cursor: pointer;
+         }
+         .setting-item .button:hover {
+              background-color: #182c7a;
+         }
+
+
+        /* Switch Styles */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px; /* Adjusted size */
+            height: 24px; /* Adjusted size */
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+
+        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc; transition: .4s; border-radius: 24px; /* Adjusted radius */
+        }
+
+        .slider:before {
+            position: absolute; content: ""; height: 18px; width: 18px; /* Adjusted size */
+            left: 3px; bottom: 3px; /* Adjusted position */
+            background-color: white; transition: .4s; border-radius: 50%;
+        }
+
+        input:checked + .slider { background-color: var(--blue); }
+        input:focus + .slider { box-shadow: 0 0 1px var(--blue); }
+        input:checked + .slider:before { transform: translateX(20px); } /* Adjusted translation */
+
+        /* Settings Actions */
+        .settings-actions {
+            display: flex;
+            justify-content: flex-end; /* Align button right */
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+         /* Use standard button class for consistency */
+        .settings-actions .button {
+            width: auto; /* Allow natural width */
+            margin-top: 0; /* Override widget button margin */
+            align-self: auto; /* Override widget button align */
+        }
+
+
+        .settings-footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px 0;
+            border-top: 1px solid #eee;
+            color: #777;
+            font-size: 0.85em;
+        }
+
+        .settings-footer p {
+            margin: 5px 0;
+        }
+
+        /* ================== Responsive Design Adjustments ================== */
+        @media (max-width: 991px) { /* Tablets */
+             .navigation { left: -300px; z-index: 1001; }
+             .navigation.active { width: 300px; left: 0; }
+             .main { width: 100%; left: 0; padding: 15px; }
+             .main.active { left: 0; width: 100%; }
+             .topbar { padding: 0 15px; width: 100%; left: 0; }
+             .topbar.active { width: 100%; left: 0; }
+             .search-container { max-width: 400px; margin: 0 10px; }
+             .user-info .name { display: none; }
+             .topbar-icons { gap: 12px; }
+             #mail-icon-inbox, #notification-icon { font-size: 23px; }
+
+             .settings-container { padding: 0 15px; } /* Add padding on smaller screens */
+             .settings-header h1 { font-size: 1.6rem; }
+             .settings-section { padding: 20px; }
+        }
+
+        @media (max-width: 767px) { /* Small Tablets / Large Phones */
+             .modal-content { max-width: 90%; padding: 20px; }
+             .modal-footer { flex-direction: column; gap: 10px; }
+             .modal-button { width: 100%; }
+             .topbar { padding: 0 10px; }
+             .search-container { max-width: 250px; }
+
+             .settings-header h1 { font-size: 1.5rem; }
+             .settings-section h2 { font-size: 1.2rem; }
+             .setting-item { flex-direction: column; align-items: flex-start; } /* Stack label and control */
+             .setting-item label:not(.switch) { width: auto; margin-bottom: 5px; } /* Auto width for label */
+             .setting-item input, .setting-item select, .setting-item .button { width: 100%; } /* Full width controls */
+             .setting-item label.switch-label { width: auto; flex-grow: 0; } /* Adjust switch label width */
+              .settings-actions { justify-content: stretch; flex-direction: column;}
+              .settings-actions .button { width: 100%;}
+        }
+
+        @media (max-width: 479px) { /* Phones */
+             .main { padding: 10px; }
+             .toggle { font-size: 2rem; }
+             .search-container { display: none; }
+             .topbar-icons { margin-left: auto; gap: 10px; }
+             .user-info { margin-left: 10px; }
+             .user { width: 35px; height: 35px; min-width: 35px; }
+             #inbox-preview, #notifications-dropdown { width: 250px; right: 0; }
+             .modal { max-width: 95%; padding: 15px; }
+             .modal-title { font-size: 1.2em; }
+             .modal-body { padding: 1rem; font-size: 1rem; }
+             .modal-footer { padding: 0.75rem 1rem; }
+
+             .settings-container { padding: 0 10px; }
+             .settings-header h1 { font-size: 1.4rem; }
+             .settings-header p { font-size: 0.85rem; }
+             .settings-section { padding: 15px; }
+             .settings-section h2 { font-size: 1.1rem; }
+             .setting-item label { font-size: 0.9rem; }
+             .setting-item input, .setting-item select, .setting-item .button { font-size: 0.95rem; padding: 8px 10px;}
+             .settings-actions .button { font-size: 0.95rem; }
         }
 
     </style>
@@ -769,7 +368,7 @@ input:checked + .slider:before {
     <!-- =============== Navigation ================ -->
     <div class="container">
         <div class="navigation">
-            <ul>
+             <ul>
                 <li>
                     <a href="#">
                         <span class="icon">
@@ -778,7 +377,6 @@ input:checked + .slider:before {
                         <span class="title">ENERGIZE</span>
                     </a>
                 </li>
-
                 <li>
                     <a href="testclient.html">
                         <span class="icon">
@@ -787,16 +385,14 @@ input:checked + .slider:before {
                         <span class="title">Dashboard</span>
                     </a>
                 </li>
-
-                <li>
+                 <li>
                   <a href="clientmessage.html">
                       <span class="icon">
                           <ion-icon name="chatbubble-outline"></ion-icon>
                       </span>
                       <span class="title">Message</span>
                   </a>
-              </li>
-
+                </li>
                 <li>
                     <a href="profile.html">
                         <span class="icon">
@@ -805,7 +401,6 @@ input:checked + .slider:before {
                         <span class="title">Profile</span>
                     </a>
                 </li>
-
                 <li>
                     <a href="schedule.html">
                         <span class="icon">
@@ -814,7 +409,6 @@ input:checked + .slider:before {
                         <span class="title">Workout Plan</span>
                     </a>
                 </li>
-
                 <li>
                     <a href="payment.html">
                         <span class="icon">
@@ -823,8 +417,8 @@ input:checked + .slider:before {
                         <span class="title">Membership Plan</span>
                     </a>
                 </li>
-
-                <li>
+                 <!-- Add hovered class -->
+                <li class="hovered">
                     <a href="settings.html">
                         <span class="icon">
                             <ion-icon name="settings-outline"></ion-icon>
@@ -832,9 +426,8 @@ input:checked + .slider:before {
                         <span class="title">Settings</span>
                     </a>
                 </li>
-
                 <li>
-                    <a href="#">
+                    <a href="#" id="signOutLink"> <!-- Add ID -->
                         <span class="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>
@@ -847,356 +440,379 @@ input:checked + .slider:before {
         <!-- ========================= Main ==================== -->
         <div class="main">
             <div class="topbar">
-                <div class="toggle">
+                 <div class="toggle">
                     <ion-icon name="menu-outline"></ion-icon>
                 </div>
 
                 <div class="search-container">
                     <label>
-                      <input type="text" id="search-input" placeholder="Search what you're looking for">
+                      <input type="text" id="search-input" placeholder="Search settings...">
                       <ion-icon name="search-outline"></ion-icon>
                     </label>
                     <div id="search-results">
-                    </div>
-                  </div>
-
-                  
-                  <div class="mail-container">
-                    <ion-icon name="mail" id="mail-icon-inbox"></ion-icon>
-                    <div id="unread-notification">1</div>
-                    <div id="inbox-preview">
-                    <strong>Inbox</strong>
-                    <hr>
-                    <div id="unread-messages">
-                        <div class="email-item sender">Coaches</div>
-                        <div class="email-item subject">Session today!</div>
-                        <hr>
-                    </div>
-                    <div id="read-messages">
-                        <div class="email-item sender">Coach</div>
-                        <div class="email-item subject">Can I ask?</div>
-                    </div>
-                    <a href="#">See All</a>
+                        <!-- Search results populated by JS -->
                     </div>
                 </div>
 
-                <div class="notification-container">
-                    <ion-icon name="notifications" id="notification-icon"></ion-icon>
-                    <div id="notification-badge">1</div>
-                    <div id="notifications-dropdown">
-                      <strong>Notifications</strong>
-                      <hr>
-                      <div id="notification-list">
-                        <div class="notification-item title">Today, 1:00 PM</div>
-                        <div class="notification-item message">Your schedule is today.</div>
-                        <hr>
-                        <div class="notification-item title">Coach John Cena</div>
-                        <div class="notification-item message">Cancelled the session</div>
-                      </div>
-                      <a href="#">See All</a>
+                <!-- Grouped Icons and User Info -->
+                <div class="topbar-icons">
+                    <div class="mail-container">
+                        <ion-icon name="mail-outline" id="mail-icon-inbox"></ion-icon>
+                        <div id="unread-notification" style="display: block;">1</div>
+                        <div id="inbox-preview">
+                            <strong>Inbox</strong><hr>
+                            <div id="unread-messages">
+                                <div class="email-item sender">Coach</div>
+                                <div class="email-item subject">Can you help me?</div><hr>
+                            </div>
+                            <div id="read-messages">
+                                <div class="email-item sender">User 1</div>
+                                <div class="email-item subject">Previous message...</div>
+                            </div>
+                            <a href="#">See All Messages</a>
+                        </div>
                     </div>
-                  </div>
-            
-                <div class="name">
-                    <p>Esnyr Slayalili</p>
+
+                    <div class="notification-container">
+                        <ion-icon name="notifications-outline" id="notification-icon"></ion-icon>
+                        <div id="notification-badge" style="display: block;">1</div>
+                        <div id="notifications-dropdown">
+                            <strong>Notifications</strong><hr>
+                            <div id="notification-list">
+                                <div class="notification-item title">Today, 5:00 PM</div>
+                                <div class="notification-item message">You have a session scheduled.</div><hr>
+                                <div class="notification-item title">New Request</div>
+                                <div class="notification-item message">Veronica has requested a session.</div>
+                            </div>
+                            <a href="#">See All Notifications</a>
+                        </div>
+                    </div>
                 </div>
-    
-                <div class="user">
-                    <img src="esnyr.jpg" alt="">
-                </div>                
+
+                <div class="user-info">
+                    <div class="name">
+                        <p>Esnyr Slayalili</p> <!-- Updated Name -->
+                    </div>
+                    <div class="user">
+                        <img src="assets/img/esnyr.jpg" alt="User Profile"> <!-- Updated Image -->
+                    </div>
+                </div>
             </div>
 
+            <!-- ====================== Settings Content ================== -->
             <div class="settings-container">
                 <header class="settings-header">
                     <h1>Settings</h1>
                     <p>Customize your account and preferences.</p>
                 </header>
-        
+
                 <section class="settings-section">
                     <h2>Account</h2>
                     <div class="setting-item">
                         <label for="email">Email:</label>
-                        <input type="email" id="email" value="micahsedigo@energize.com" disabled>
+                        <input type="email" id="email" value="esnyr.slayalili@example.com" disabled> <!-- Updated value -->
                     </div>
                     <div class="setting-item">
                         <label for="username">Username:</label>
-                        <input type="text" id="username" value="micahsedigo" disabled>
+                        <input type="text" id="username" value="esnyr_slay" disabled> <!-- Updated value -->
                     </div>
                     <div class="setting-item">
                         <label for="change-password">Change Password:</label>
-                        <button class="settings-actions button">Change Password</button>
+                        <button class="button">Change Password</button> <!-- Made it a button -->
                     </div>
                 </section>
-        
+
                 <section class="settings-section">
                     <h2>Notifications</h2>
                     <div class="setting-item">
+                         <label for="email-notifications" class="switch-label">Email Notifications (Updates, Reminders)</label>
                         <label class="switch">
                             <input type="checkbox" id="email-notifications" checked>
                             <span class="slider round"></span>
                         </label>
-                        <span>Email Notifications</span>
                     </div>
                     <div class="setting-item">
+                         <label for="push-notifications" class="switch-label">Push Notifications (App Alerts)</label>
                         <label class="switch">
                             <input type="checkbox" id="push-notifications">
                             <span class="slider round"></span>
                         </label>
-                        <span>Push Notifications</span>
+                    </div>
+                     <div class="setting-item">
+                         <label for="sms-notifications" class="switch-label">SMS Notifications (Urgent Only)</label>
+                        <label class="switch">
+                            <input type="checkbox" id="sms-notifications">
+                            <span class="slider round"></span>
+                        </label>
                     </div>
                 </section>
-        
+
                 <section class="settings-section">
                     <h2>Preferences</h2>
                     <div class="setting-item">
                         <label for="language">Language:</label>
                         <select id="language">
-                            <option value="en">English</option>
+                            <option value="en" selected>English</option>
                             <option value="es">Spanish</option>
                             <option value="fr">French</option>
+                            <option value="tl">Tagalog</option> <!-- Added Tagalog -->
                         </select>
                     </div>
                     <div class="setting-item">
                         <label for="theme">Theme:</label>
                         <select id="theme">
-                            <option value="light">Light</option>
+                            <option value="light" selected>Light</option>
                             <option value="dark">Dark</option>
                         </select>
                     </div>
+                     <div class="setting-item">
+                        <label for="timezone">Time Zone:</label>
+                        <select id="timezone">
+                            <option value="PHT" selected>Philippines Standard Time (PHT)</option>
+                            <option value="EST">Eastern Standard Time (EST)</option>
+                            <option value="PST">Pacific Standard Time (PST)</option>
+                             <!-- Add more timezones -->
+                        </select>
+                    </div>
                 </section>
-        
+
                 <div class="settings-actions">
+                    <!-- Removed cancel button, save button handles action -->
                     <button class="button primary save-settings-button">Save Changes</button>
-                    
-                <footer class="settings-footer">
-                    <p>&copy; 2025 ENERGIZE Gym Center</p>
-                    <p>Contact: info@energizegym.com</p>
-                </footer>
-            </div>
-
-            <div id="signOutModal" class="modal">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h2 class="modal-title">Sign Out</h2>
-                  </div>
-                  <div class="modal-body">
-                    <p>Are you sure you want to sign out?</p>
-                  </div>
-                  <div class="modal-footer sign-out-actions">
-                    <button class="modal-button no-button" id="signOutNo">No</button>
-                    <button class="modal-button yes-button" id="signOutYes">Yes</button>
-                  </div>
                 </div>
-              </div>
+
+            </div> <!-- End settings-container -->
+
+            <footer class="settings-footer">
+                <p>© 2025 ENERGIZE Gym Center</p>
+                <p>Need help? <a href="#">Contact Support</a> | <a href="#">Privacy Policy</a></p>
+            </footer>
+             <!-- ====================== End Settings Content ================== -->
+
+        </div> <!-- End main -->
+    </div> <!-- End container -->
 
 
-    
-            <script>
-                let list = document.querySelectorAll(".navigation li");
-        
-        function activeLink() {
-        list.forEach((item) => {
-        item.classList.remove("hovered");
-        });
-        this.classList.add("hovered");
-        }
-        
-        list.forEach((item) => item.addEventListener("click", activeLink));
-        
-        // Menu Toggle (remains the same)
-        let toggle = document.querySelector(".toggle");
-        let navigation = document.querySelector(".navigation");
-        let main = document.querySelector(".main");
-        
-        toggle.onclick = function () {
-        navigation.classList.toggle("active");
-        main.classList.toggle("active");
-        };
-        
-        //Search Function
-        const searchInput = document.getElementById('search-input');
-        const searchResultsDiv = document.getElementById('search-results');
-        
-        const searchData = [
-        "How to diet",
-        "Paano makapasa sa webdev",
-        "Effective workout plan",
-        "Effective sleep",
-        "Gulay effective diet",
-        "Recent Sessions",
-        "Overall well being",
-        "Updates",
-        "Coaches",
-        "Plans"
-        ];
-        
-        searchInput.addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase();
-        const filteredResults = searchData.filter(item =>
-        item.toLowerCase().includes(searchTerm)
-        );
-        
-        displayResults(filteredResults);
-        });
-        
-        function displayResults(results) {
-        searchResultsDiv.innerHTML = '';
-        
-        if (results.length > 0 && searchInput.value.trim() !== '') {
-        const ul = document.createElement('ul');
-        results.forEach(result => {
-        const li = document.createElement('li');
-        li.textContent = result;
-        li.addEventListener('click', function() {
-        searchInput.value = this.textContent;
-        searchResultsDiv.style.display = 'none'; 
-        });
-        ul.appendChild(li);
-        });
-        searchResultsDiv.appendChild(ul);
-        searchResultsDiv.style.display = 'block'; 
-        } else {
-        searchResultsDiv.style.display = 'none';
-        }
-        }
-        
-        document.addEventListener('click', function(event) {
-        if (!event.target.closest('.search-container')) {
-        searchResultsDiv.style.display = 'none';
-        }
-        });
-        
-        //Mail Function
-        const mailIconInbox = document.getElementById('mail-icon-inbox');
-        const unreadNotification = document.getElementById('unread-notification');
-        const inboxPreview = document.getElementById('inbox-preview');
-        let hasUnread = true; 
-        
-        function updateUnreadIndicator() {
-        unreadNotification.style.display = hasUnread ? 'block' : 'none';
-        }
-        
-        updateUnreadIndicator();
-        
-        mailIconInbox.addEventListener('click', function() {
-        inboxPreview.style.display = (inboxPreview.style.display === 'block' ? 'none' : 'block');
-        
-        if (hasUnread && inboxPreview.style.display === 'block') {
-        hasUnread = false;
-        updateUnreadIndicator();
-        ad
-        console.log('Mail icon clicked - marking as read');
-        }
-        });
-        
-        
-        document.addEventListener('click', function(event) {
-        if (!event.target.closest('.mail-container')) {
-        inboxPreview.style.display = 'none';
-        }
-        });
-        
-        
-        //Notification Function
-        const notificationIcon = document.getElementById('notification-icon');
-        const notificationBadge = document.getElementById('notification-badge');
-        const notificationsDropdown = document.getElementById('notifications-dropdown');
-        
-        notificationIcon.addEventListener('click', function() {
-        notificationsDropdown.style.display = (notificationsDropdown.style.display === 'block' ? 'none' : 'block');
-        
-        notificationBadge.style.display = 'none';
-        });
-        
-        
-        document.addEventListener('click', function(event) {
-        if (!event.target.closest('.notification-container')) {
-        notificationsDropdown.style.display = 'none';
-        }
-        });
-        
+    <!-- ============ Modals ============ -->
+    <!-- Sign Out Modal -->
+    <div class="modal-overlay" id="signOutModalOverlay">
+        <div class="modal" id="signOutModal">
+            <div class="modal-header">
+                <h3 class="modal-title">Sign Out</h3>
+                 <button type="button" class="modal-close" aria-label="Close modal"><ion-icon name="close-outline"></ion-icon></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to sign out?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="modal-button no-button" id="signOutNo">Cancel</button>
+                <button type="button" class="modal-button yes-button" id="signOutYes">Sign Out</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- =========== Scripts =========  -->
+    <script>
+        // Wait for DOM to be fully loaded
         document.addEventListener('DOMContentLoaded', function() {
-                    const submitPaymentButton = document.getElementById('submit-payment');
-                    const cardNumberInput = document.getElementById('card-number');
-                    const expiryDateInput = document.getElementById('expiry-date');
-                    const cvvInput = document.getElementById('cvv');
-                    const cardholderNameInput = document.getElementById('cardholder-name');
-                    const errorMessages = document.querySelectorAll('.error-message');
-        
-                    submitPaymentButton.addEventListener('click', function(event) {
-                        event.preventDefault();
-        
-                        let isValid = true;
-                        errorMessages.forEach(error => error.textContent = '');
-        
-                        if (!/^\d{16}$/.test(cardNumberInput.value.replace(/[^0-9]/g, ''))) {
-                            document.getElementById('card-number-error').textContent = 'Please enter a valid 16-digit card number.';
-                            isValid = false;
-                        }
-                        if (!/^\d{2}\/\d{4}$/.test(expiryDateInput.value)) {
-                            document.getElementById('expiry-date-error').textContent = 'Please enter a valid expiry date (MM/YYYY).';
-                            isValid = false;
-                        }
-                        if (!/^\d{3}$/.test(cvvInput.value)) {
-                            document.getElementById('cvv-error').textContent = 'Please enter a valid 3-digit CVV.';
-                            isValid = false;
-                        }
-                        if (cardholderNameInput.value.trim() === '') {
-                            document.getElementById('cardholder-name-error').textContent = 'Please enter the cardholder name.';
-                            isValid = false;
-                        }
-        
-                        if (isValid) {
-                            alert('Payment successful! Thank you for your renewal.');
-                        }
-                    });
-                });
 
-                //Sign out
-                document.addEventListener('DOMContentLoaded', function() {
-                    const signOutLink = document.querySelector('.navigation ul li:last-child a');
-                    const signOutModal = document.getElementById('signOutModal');
-                    const signOutYesButton = document.getElementById('signOutYes');
-                    const signOutNoButton = document.getElementById('signOutNo');
+            // Navigation Link Activation & Menu Toggle (Standard)
+            let list = document.querySelectorAll(".navigation li");
+            function activeLink() {
+                list.forEach(item => item.classList.remove("hovered"));
+                 // Find the link pointing to 'settings.html'
+                 const currentLink = Array.from(list).find(item => item.querySelector('a[href="settings.html"]'));
+                 if (currentLink) currentLink.classList.add("hovered");
+                 else list[6].classList.add("hovered"); // Adjust index if needed
+            }
+            activeLink();
 
-                    if (signOutLink) {
-                    signOutLink.addEventListener('click', function(event) {
-                        event.preventDefault();
-                        showModal(signOutModal);
-                    });
-                    } else {
-                    console.error("Sign Out link not found!");
-                    }
+            let toggle = document.querySelector(".toggle");
+            let navigation = document.querySelector(".navigation");
+            let main = document.querySelector(".main");
+            if(toggle && navigation && main) {
+                toggle.onclick = () => {
+                    navigation.classList.toggle("active");
+                    main.classList.toggle("active");
+                     const topbar = document.querySelector(".topbar");
+                     if(topbar) topbar.classList.toggle("active");
+                };
+            }
 
-                    signOutYesButton.addEventListener('click', function() {
-                    window.location.href = 'index.html';
-                    });
-
-                    signOutNoButton.addEventListener('click', function() {
-                    hideModal(signOutModal);
-                    });
-
-                    window.addEventListener('click', function(event) {
-                    if (event.target == signOutModal) {
-                        hideModal(signOutModal);
-                    }
-                    });
-
-                    // Helper functions for showing and hiding the modal
-                    function showModal(modalElement) {
-                    modalElement.classList.add('show');
-                    }
-
-                    function hideModal(modalElement) {
-                    modalElement.classList.remove('show');
+             // Search Functionality (Standard)
+            const searchInput = document.getElementById('search-input');
+            const searchResultsDiv = document.getElementById('search-results');
+            const searchDataSettingsPage = [ "Account Settings", "Change Password", "Notifications", "Email Preferences", "Theme", "Language", "Privacy" ];
+            if (searchInput && searchResultsDiv) {
+                 searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase().trim();
+                    searchResultsDiv.innerHTML = '';
+                    searchResultsDiv.style.display = 'none';
+                    if (searchTerm.length > 0) {
+                        const filteredResults = searchDataSettingsPage.filter(item => item.toLowerCase().includes(searchTerm));
+                        displayResults(filteredResults, searchTerm);
                     }
                 });
-        
-            </script>
-        
-            <!-- ====== ionicons ======= -->
-        <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-        <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-        </body>
-        
-        </html>
+                document.addEventListener('click', event => {
+                    if (!event.target.closest('.search-container')) searchResultsDiv.style.display = 'none';
+                });
+            }
+            function displayResults(results, searchTerm) {
+                 if (results.length > 0) {
+                    const ul = document.createElement('ul');
+                    results.forEach(result => {
+                        const li = document.createElement('li');
+                        const regex = new RegExp(`(${searchTerm})`, 'gi');
+                        li.innerHTML = result.replace(regex, '<span class="highlight">$1</span>');
+                        li.addEventListener('click', () => {
+                            searchInput.value = result;
+                            searchResultsDiv.style.display = 'none';
+                            console.log("Selected:", result);
+                        });
+                        ul.appendChild(li);
+                    });
+                    searchResultsDiv.appendChild(ul);
+                    searchResultsDiv.style.display = 'block';
+                } else {
+                    searchResultsDiv.style.display = 'none';
+                }
+            }
+
+            // Mail & Notification Dropdown Functionality (Standard)
+            // ... (Include the standard JS block for mail/notifications here) ...
+             const mailIconInbox = document.getElementById('mail-icon-inbox');
+            const unreadNotification = document.getElementById('unread-notification');
+            const inboxPreview = document.getElementById('inbox-preview');
+            let hasUnread = true; // Simulate
+            function updateUnreadIndicator() { if (unreadNotification) unreadNotification.style.display = hasUnread ? 'block' : 'none'; }
+            if(mailIconInbox && inboxPreview && unreadNotification) {
+                updateUnreadIndicator();
+                mailIconInbox.addEventListener('click', event => {
+                     event.stopPropagation();
+                     if (notificationsDropdown) notificationsDropdown.style.display = 'none';
+                     const isVisible = inboxPreview.style.display === 'block';
+                     inboxPreview.style.display = isVisible ? 'none' : 'block';
+                     if (!isVisible && hasUnread) { hasUnread = false; updateUnreadIndicator(); }
+                });
+            }
+            const notificationIcon = document.getElementById('notification-icon');
+            const notificationBadge = document.getElementById('notification-badge');
+            const notificationsDropdown = document.getElementById('notifications-dropdown');
+            let hasNewNotifications = true; // Simulate
+            if (notificationIcon && notificationBadge && notificationsDropdown) {
+                 notificationBadge.style.display = hasNewNotifications ? 'block' : 'none';
+                notificationIcon.addEventListener('click', event => {
+                     event.stopPropagation();
+                     if (inboxPreview) inboxPreview.style.display = 'none';
+                     const isVisible = notificationsDropdown.style.display === 'block';
+                     notificationsDropdown.style.display = isVisible ? 'none' : 'block';
+                     if (!isVisible && hasNewNotifications) { hasNewNotifications = false; notificationBadge.style.display = 'none'; }
+                });
+            }
+            document.addEventListener('click', event => {
+                if (inboxPreview && !event.target.closest('.mail-container')) inboxPreview.style.display = 'none';
+                if (notificationsDropdown && !event.target.closest('.notification-container')) notificationsDropdown.style.display = 'none';
+            });
+
+
+            // --- Modal Handling (Standard) ---
+            function showModal(overlayId) {
+                const overlay = document.getElementById(overlayId);
+                if (overlay) overlay.classList.add('active');
+            }
+            function hideModal(overlayId) {
+                const overlay = document.getElementById(overlayId);
+                if (overlay) overlay.classList.remove('active');
+            }
+            document.querySelectorAll('.modal-overlay').forEach(overlay => {
+                overlay.addEventListener('click', (event) => {
+                    if (event.target === overlay) hideModal(overlay.id);
+                });
+            });
+            document.querySelectorAll('.modal-close').forEach(button => {
+                button.addEventListener('click', () => {
+                     const overlay = button.closest('.modal-overlay');
+                     if(overlay) hideModal(overlay.id);
+                });
+            });
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    document.querySelectorAll('.modal-overlay.active').forEach(overlay => hideModal(overlay.id));
+                }
+            });
+            // --- End Modal Handling ---
+
+            // Sign Out Modal Logic (Standard)
+            const signOutLink = document.getElementById('signOutLink');
+            const signOutNoButton = document.getElementById('signOutNo');
+            const signOutYesButton = document.getElementById('signOutYes');
+            if (signOutLink) signOutLink.addEventListener('click', (event) => { event.preventDefault(); showModal('signOutModalOverlay'); });
+            if (signOutNoButton) signOutNoButton.addEventListener('click', () => hideModal('signOutModalOverlay'));
+            if (signOutYesButton) signOutYesButton.addEventListener('click', () => window.location.href = 'index.html');
+
+
+            // --- Settings Page Specific JS ---
+             const saveSettingsButton = document.querySelector('.save-settings-button');
+             const changePasswordButton = document.querySelector('.setting-item .button'); // More specific selector if needed
+
+             if (saveSettingsButton) {
+                 saveSettingsButton.addEventListener('click', function() {
+                     // Collect all settings data
+                     const settingsData = {
+                          // Account section might not be editable here, maybe just password change
+                         notifications: {
+                             email: document.getElementById('email-notifications')?.checked,
+                             push: document.getElementById('push-notifications')?.checked,
+                             sms: document.getElementById('sms-notifications')?.checked
+                         },
+                         preferences: {
+                             language: document.getElementById('language')?.value,
+                             theme: document.getElementById('theme')?.value,
+                             timezone: document.getElementById('timezone')?.value
+                         }
+                         // Add privacy settings if they are part of the form
+                     };
+                     console.log('Saving settings:', settingsData);
+                     // Add logic to send data to the server here
+                     alert('Settings saved successfully!'); // Placeholder
+                 });
+             }
+
+             if(changePasswordButton) {
+                  changePasswordButton.addEventListener('click', function() {
+                       alert('Change Password button clicked (Functionality requires a separate form/modal)');
+                       // Usually this would open a dedicated modal for password change
+                       // with fields for current password, new password, confirm new password.
+                  });
+             }
+
+             // Theme switcher logic (Example - applies class to body)
+             const themeSelect = document.getElementById('theme');
+             if(themeSelect) {
+                 themeSelect.addEventListener('change', function() {
+                     document.body.classList.remove('theme-light', 'theme-dark'); // Remove previous theme
+                     if(this.value === 'dark') {
+                         document.body.classList.add('theme-dark');
+                         // You'd need to define .theme-dark styles in your CSS
+                         console.log('Dark theme selected');
+                     } else {
+                          document.body.classList.add('theme-light');
+                          console.log('Light theme selected');
+                     }
+                 });
+                  // Apply initial theme on load if needed
+                 // document.body.classList.add(themeSelect.value === 'dark' ? 'theme-dark' : 'theme-light');
+             }
+
+             // --- End Settings Page Specific JS ---
+
+        }); // End DOMContentLoaded
+    </script>
+
+    <!-- ====== ionicons ======= -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+
+</html>

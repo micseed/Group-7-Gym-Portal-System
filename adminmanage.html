@@ -1,0 +1,2767 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <title>Admin Dashboard</title>
+    <!-- ======= Styles ====== -->
+    <style>
+        /* =============== Globals ============== */
+* {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --blue: #203A93;
+  --white: #fff;
+  --gray: #f5f5f5;
+  --black1: #222;
+  --black2: #999;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.container {
+  position: relative;
+  width: 100%;
+}
+
+/* =============== Navigation ================ */
+.navigation {
+  position: fixed;
+  width: 300px;
+  height: 100%;
+  background: var(--blue);
+  border-left: 10px solid var(--blue);
+  transition: 0.5s;
+  overflow: hidden;
+}
+.navigation.active {
+  width: 80px;
+}
+
+.navigation ul {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.navigation ul li {
+  position: relative;
+  width: 100%;
+  list-style: none;
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
+}
+
+.navigation ul li:hover,
+.navigation ul li.hovered {
+  background-color: var(--white);
+}
+
+.navigation ul li:nth-child(1) {
+  margin-bottom: 40px;
+  pointer-events: none;
+}
+
+.navigation ul li a {
+  position: relative;
+  display: block;
+  width: 100%;
+  display: flex;
+  text-decoration: none;
+  color: var(--white);
+}
+.navigation ul li:hover a,
+.navigation ul li.hovered a {
+  color: var(--blue);
+}
+
+.navigation ul li a .icon {
+  position: relative;
+  display: block;
+  min-width: 60px;
+  height: 60px;
+  line-height: 75px;
+  text-align: center;
+}
+.navigation ul li a .icon ion-icon {
+  font-size: 1.75rem;
+}
+
+.navigation ul li a .title {
+  position: relative;
+  display: block;
+  padding: 0 10px;
+  height: 60px;
+  line-height: 60px;
+  text-align: start;
+  white-space: nowrap;
+}
+  
+/* --------- Curve Outside ---------- */
+.navigation ul li:hover a::before,
+.navigation ul li.hovered a::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: -50px;
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  border-radius: 50%;
+  box-shadow: 35px 35px 0 10px var(--white);
+  pointer-events: none;
+}
+.navigation ul li:hover a::after,
+.navigation ul li.hovered a::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -50px;
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  border-radius: 50%;
+  box-shadow: 35px -35px 0 10px var(--white);
+  pointer-events: none;
+}
+
+
+/* ===================== Main ===================== */
+.main {
+  position: absolute;
+  width: calc(100% - 300px);
+  left: 300px;
+  min-height: 100vh;
+  background: var(--white);
+  transition: 0.5s;
+}
+.main.active {
+  width: calc(100% - 80px);
+  left: 80px;
+}
+
+.topbar {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  justify-content:space-between;
+}
+
+.toggle {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
+  cursor: pointer;
+}
+
+/* =============== Search Icon ================ */
+.search-container {
+  position: relative;
+  width: 800px;
+  margin: 0 10px;
+}
+
+.search-container label {
+  display: flex; 
+align-items: center; 
+width: 100%;
+border: 1px solid #ccc;
+border-radius: 15px;
+overflow: hidden;
+}
+
+#search-input {
+  flex-grow: 1; 
+padding: 10px;
+border: none;
+outline: none;
+font-size: 16px;
+box-sizing: border-box; 
+margin-right: 5px;
+}
+
+.search-container label ion-icon {
+  padding-right: 10px;
+  font-size: 20px; 
+  color: #777;
+}
+
+#search-results {
+  position: absolute;
+  top: calc(100% + 2px); 
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-top: 2px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  display: none;
+  overflow: hidden;
+}
+
+#search-results ul {
+  list-style: none;
+  padding: 8px 0;
+  margin: 0;
+}
+
+#search-results li {
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 1.0em;
+  color: #333;
+}
+
+#search-results li:hover {
+  background-color: #f5f5f5;
+  color: #222;
+}
+
+#search-results li:active {
+  background-color: #eee;
+}
+
+
+#search-results li span.highlight {
+  font-weight: bold;
+  color: #007bff; 
+}
+
+/* =============== Mail Icon ================ */
+.mail-container {
+  position: relative;
+  display: inline-block;
+}
+
+#mail-icon-inbox {
+  font-size: 25px;
+  color: #203A93;
+  cursor: pointer;
+}
+
+#mail-icon-inbox:hover {
+  opacity: 0.8;
+}
+
+#unread-notification {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: red;
+  color: white;
+  font-size: 12px;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  text-align: center;
+  line-height: 18px;
+  display: none; 
+}
+
+#inbox-preview {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: -10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 250px;
+  padding: 15px;
+  display: none; 
+  z-index: 10;
+  text-align: left;
+}
+
+#inbox-preview strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.email-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 3px 0; 
+}
+
+.email-item.sender {
+  font-weight: bold;
+}
+
+.email-item.subject {
+  color: #555;
+  font-size: 0.9em; 
+}
+
+#inbox-preview hr {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+#inbox-preview a {
+  display: block;
+  margin-top: 10px;
+  font-size: 0.8em;
+  text-align: right;
+  color: #007bff;
+  text-decoration: none;
+}
+
+/* =============== Notification ================ */
+.notification-container {
+  position: relative;
+  display: inline-block;
+}
+
+#notification-icon {
+  font-size: 25px;
+  color: #203A93;
+  cursor: pointer;
+}
+
+#notification-icon:hover {
+  opacity: 0.8;
+}
+
+#notification-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: orange;
+  color: white;
+  font-size: 12px;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  text-align: center;
+  line-height: 18px;
+  display: block; 
+}
+
+#notifications-dropdown {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: -10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 250px;
+  padding: 15px;
+  display: none;
+  z-index: 10;
+  text-align: left;
+}
+
+#notifications-dropdown strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.notification-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 3px 0;
+}
+
+.notification-item.title {
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.notification-item.message {
+  color: #555;
+  font-size: 0.9em;
+}
+
+#notifications-dropdown hr {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+#notifications-dropdown a {
+  display: block;
+  margin-top: 10px;
+  font-size: 0.8em;
+  text-align: right;
+  color: #007bff;
+  text-decoration: none;
+}
+
+  
+  /* =============== User ================ */
+.user {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+
+.user img {
+  position: absolute;
+  justify-items: end;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+  
+
+
+/* Modal Styles for Sign out*/
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 1000; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgba(0,0,0,0.4); 
+  backdrop-filter: blur(5px);
+  justify-content: center;
+  align-items: center;
+  }
+
+  .modal.show {
+  display: flex; 
+  }
+
+  .modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; 
+  padding: 30px;
+  border: 1px solid #888;
+  width: 600px; 
+  max-width: 400px; 
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+  }
+
+  .modal-header {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 20px;
+  }
+
+  .modal-title {
+  font-size: 1.5em;
+  color: #333;
+  font-weight: bold;
+  }
+
+  .modal-body {
+  font-size: 1.1em;
+  color: #555;
+  margin-bottom: 20px;
+  }
+
+  .modal-footer.sign-out-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  }
+
+  .modal-button {
+  background-color: #007bff; 
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  }
+
+  .modal-button:hover {
+  background-color: #0056b3;
+  }
+
+  .modal-button.yes-button {
+  background-color: #203A93;
+  }
+
+  .modal-button.yes-button:hover {
+  background-color: #c82333;
+  }
+
+  .modal-button.no-button {
+  background-color: #F1D27C;
+  }
+
+  .modal-button.no-button:hover {
+  background-color: #5a6268;
+  }
+
+  .container {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            width: 96%;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .dashboard-header h1 {
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        .admin-stats {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            flex: 1;
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-radius: var(--radius);
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .stat-card h3 {
+            margin: 0;
+            font-size: 16px;
+            color: var(--text-light);
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+
+        .search-filter-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 0 10px;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-box input {
+            padding: 10px;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .search-box button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .filter-box {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-box select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+
+        #admin-list {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+        }
+
+        #admin-list thead th {
+            background-color: #ecf0f1;
+            color: var(--text-dark);
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #bdc3c7;
+            position: relative;
+        }
+
+        .sortable {
+            cursor: pointer;
+        }
+
+        .sortable::after {
+            content: '↕';
+            position: absolute;
+            right: 8px;
+            color: #95a5a6;
+        }
+
+        .sortable.asc::after {
+            content: '↑';
+            color: var(--primary-color);
+        }
+
+        .sortable.desc::after {
+            content: '↓';
+            color: var(--primary-color);
+        }
+
+        #admin-list tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #admin-list tbody tr:hover {
+            background-color: #f0f0f0;
+        }
+
+        #admin-list tbody td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        #admin-list tbody td:last-child {
+            text-align: center;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .actions-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .icon-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .edit-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .edit-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .delete-btn {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background-color: var(--danger-hover);
+        }
+
+        .change-password-btn {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .change-password-btn:hover {
+            background-color: var(--warning-hover);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            gap: 5px;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .pagination button:hover,
+        .pagination button.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .pagination button:disabled {
+            background-color: #f5f5f5;
+            color: #aaa;
+            cursor: not-allowed;
+            border-color: #ddd;
+        }
+
+        #add-admin-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 10px 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+        }
+
+        #add-admin-button:hover {
+            background-color: var(--secondary-hover);
+        }
+
+        #add-admin-form {
+            display: none;
+            background-color: var(--card-bg);
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .form-header h2 {
+            margin: 0;
+            color: var(--text-dark);
+        }
+
+        .form-close {
+            font-size: 24px;
+            color: var(--text-light);
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="password"],
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="email"]:focus,
+        .form-group input[type="password"]:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        .error-message {
+            color: var(--danger-color);
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .form-actions {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .cancel-btn {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .cancel-btn:hover {
+            background-color: #7f8c8d;
+        }
+
+        .save-btn {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .save-btn:hover {
+            background-color: var(--secondary-hover);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: var(--radius);
+            width: 50%;
+            position: relative;
+            box-shadow: var(--shadow);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: var(--text-dark);
+        }
+
+        .close-button {
+            font-size: 24px;
+            color: var(--text-light);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .close-button:hover {
+            color: var(--text-dark);
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            text-align: right;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #333;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.5s ease;
+            z-index: 1500;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background-color: var(--secondary-color);
+        }
+
+        .toast.error {
+            background-color: var(--danger-color);
+        }
+
+        .toast.warning {
+            background-color: var(--warning-color);
+        }
+
+        .toast .close-toast {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            margin-left: auto;
+        }
+
+        .bulk-actions {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .bulk-actions select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .bulk-actions button {
+            padding: 8px 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .bulk-actions button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .checkbox-cell {
+            width: 40px;
+            text-align: center;
+        }
+
+        .select-all-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .custom-checkbox {
+            position: relative;
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #bdc3c7;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .custom-checkbox input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 18px;
+            width: 18px;
+            background-color: white;
+            border-radius: 3px;
+            transition: all 0.2s ease;
+        }
+
+        .custom-checkbox input:checked ~ .checkmark {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        .custom-checkbox input:checked ~ .checkmark:after {
+            display: block;
+            left: 6px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .password-strength {
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .strength-meter {
+            height: 4px;
+            width: 100%;
+            background-color: #eee;
+            margin-top: 5px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .strength-meter-fill {
+            height: 100%;
+            width: 0;
+            transition: width 0.3s ease;
+        }
+
+        .weak {
+            width: 33%;
+            background-color: #e74c3c;
+        }
+
+        .medium {
+            width: 66%;
+            background-color: #f39c12;
+        }
+
+        .strong {
+            width: 100%;
+            background-color: #2ecc71;
+        }
+
+        .permissions-container {
+            margin-top: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+        }
+
+        .permissions-title {
+            margin-bottom: 10px;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .permissions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .permission-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .activity-log {
+            margin-top: 30px;
+        }
+
+        .accordion-header {
+            background-color: #f8f9fa;
+            padding: 12px 15px;
+            border-radius: 5px;
+            font-weight: 600;
+            color: var(--text-dark);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .accordion-content {
+            display: none;
+            padding: 15px 0;
+        }
+
+        .activity-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .activity-icon {
+            width: 30px;
+            height: 30px;
+            background-color: #e1f5fe;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+        }
+
+        .activity-details {
+            flex-grow: 1;
+        }
+
+        .activity-time {
+            color: var(--text-light);
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .admin-stats {
+                flex-direction: column;
+            }
+
+            .search-filter-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: none;
+            }
+
+            .modal-content {
+                width: 90%;
+                margin: 20% auto;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            #admin-list thead {
+                display: none;
+            }
+
+            #admin-list tbody td {
+                display: block;
+                width: 100%;
+                text-align: left;
+                padding-left: 50%;
+                position: relative;
+            }
+
+            #admin-list tbody td:before {
+                content: attr(data-title);
+                position: absolute;
+                left: 10px;
+                font-weight: bold;
+                color: var(--text-dark);
+            }
+
+            .actions-container {
+                flex-direction: column;
+                padding-left: 0 !important;
+            }
+
+            .edit-btn, .delete-btn, .change-password-btn {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+
+            .bulk-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .permissions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- =============== Navigation ================ -->
+    <div class="container">
+        <div class="navigation">
+            <ul>
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="barbell"></ion-icon>
+                        </span>
+                        <span class="title">ENERGIZE</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="testadmin.html">
+                        <span class="icon">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="adminclients.html">
+                        <span class="icon">
+                            <ion-icon name="people-outline"></ion-icon>
+                        </span>
+                        <span class="title">Manage Clients</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="admincoaches.html">
+                        <span class="icon">
+                            <ion-icon name="people-outline"></ion-icon>
+                        </span>
+                        <span class="title">Manage Coaches</span>
+                    </a>
+                </li>
+
+                <li>
+                  <a href="adminguests.html">
+                      <span class="icon">
+                          <ion-icon name="person-add-outline"></ion-icon>
+                      </span>
+                      <span class="title">Manage Guests</span>
+                  </a>
+              </li>
+
+              <li>
+                <a href="adminmanage.html">
+                    <span class="icon">
+                        <ion-icon name="person-add-outline"></ion-icon>
+                    </span>
+                    <span class="title">Manage Admins</span>
+                </a>
+            </li>
+
+                <li>
+                    <a href="admincomplaint.html">
+                        <span class="icon">
+                            <ion-icon name="chatbubble-outline"></ion-icon>
+                        </span>
+                        <span class="title">Complaints/Requests</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="adminpayments.html">
+                        <span class="icon">
+                            <ion-icon name="card-outline"></ion-icon>
+                        </span>
+                        <span class="title"> Clients Payments</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="adminsettings.html">
+                        <span class="icon">
+                            <ion-icon name="settings-outline"></ion-icon>
+                        </span>
+                        <span class="title">Settings</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ========================= Main ==================== -->
+        <div class="main">
+            <div class="topbar">
+                <div class="toggle">
+                    <ion-icon name="menu-outline"></ion-icon>
+                </div>
+
+                <div class="search-container">
+                    <label>
+                      <input type="text" id="search-input" placeholder="Search what you're looking for">
+                      <ion-icon name="search-outline"></ion-icon>
+                    </label>
+                    <div id="search-results">
+                    </div>
+                  </div>
+
+                  
+                  <div class="mail-container">
+                    <ion-icon name="mail" id="mail-icon-inbox"></ion-icon>
+                    <div id="unread-notification">1</div>
+                    <div id="inbox-preview">
+                    <strong>Inbox</strong>
+                    <hr>
+                    <div id="unread-messages">
+                        <div class="email-item sender">Clients</div>
+                        <div class="email-item subject">3 complaints were submitted</div>
+                        <hr>
+                    </div>
+                    <div id="read-messages">
+                        <div class="email-item sender">Coach</div>
+                        <div class="email-item subject">Can I ask?</div>
+                    </div>
+                    <a href="#">See All</a>
+                    </div>
+                </div>
+
+                <div class="notification-container">
+                    <ion-icon name="notifications" id="notification-icon"></ion-icon>
+                    <div id="notification-badge">1</div>
+                    <div id="notifications-dropdown">
+                      <strong>Notifications</strong>
+                      <hr>
+                      <div id="notification-list">
+                        <div class="notification-item title">Today, 1:00 PM</div>
+                        <div class="notification-item message">New clients added.</div>
+                        <hr>
+                        <div class="notification-item title">Sales Update</div>
+                        <div class="notification-item message">It increased by 25%</div>
+                      </div>
+                      <a href="#">See All</a>
+                    </div>
+                  </div>
+            
+                <div class="name">
+                    <p>Peter Pan</p>
+                </div>
+    
+                <div class="user">
+                    <img src="assets/img/ramburat.jpg" alt="">
+                </div>                
+            </div>
+
+            <div class="container">
+                <div class="dashboard-header">
+                    <h1>Admin Management</h1>
+                    <button id="add-admin-button" class="icon-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="16"></line>
+                            <line x1="8" y1="12" x2="16" y2="12"></line>
+                        </svg>
+                        Add New Admin
+                    </button>
+                </div>
+        
+                <div class="admin-stats">
+                    <div class="stat-card">
+                        <h3>Total Admins</h3>
+                        <div class="stat-number" id="total-admins">3</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Active Admins</h3>
+                        <div class="stat-number" id="active-admins">2</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Super Admins</h3>
+                        <div class="stat-number" id="super-admins">1</div>
+                    </div>
+                </div>
+        
+                <div class="search-filter-container">
+                    <div class="search-box">
+                        <input type="text" id="admin-search" placeholder="Search admins...">
+                        <button id="search-button">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="filter-box">
+                        <select id="status-filter">
+                            <option value="">All Statuses</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                        <select id="role-filter">
+                            <option value="">All Roles</option>
+                            <option value="superadmin">Super Admin</option>
+                            <option value="contentmanager">Content Manager</option>
+                            <option value="membermanager">Member Manager</option>
+                            <option value="schedulemanager">Schedule Manager</option>
+                        </select>
+                    </div>
+                </div>
+        
+                <div class="bulk-actions" id="bulk-actions">
+                    <span>Selected: <span id="selected-count">0</span></span>
+                    <select id="bulk-action-select">
+                        <option value="">Choose Action</option>
+                        <option value="activate">Activate</option>
+                        <option value="deactivate">Deactivate</option>
+                        <option value="delete">Delete</option>
+                    </select>
+                    <button id="apply-bulk-action">Apply</button>
+                </div>
+        
+                <div class="table-container">
+                    <table id="admin-list">
+                        <thead>
+                            <tr>
+                                <th class="checkbox-cell">
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" id="select-all">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </th>
+                                <th class="sortable" data-sort="name">Name</th>
+                                <th class="sortable" data-sort="email">Email</th>
+                                <th class="sortable" data-sort="username">Username</th>
+                                <th class="sortable" data-sort="role">Role</th>
+                                <th class="sortable" data-sort="status">Status</th>
+                                <th>Last Login</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+        
+                <div class="pagination" id="pagination">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+        
+                <div class="activity-log">
+                    <div class="accordion-header">
+                        <span>Recent Activity Log</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="9" cy="7" r="4"></circle>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                </svg>
+                            </div>
+                            <div class="activity-details">
+                                <div>John Doe added new admin Jane Smith</div>
+                                <div class="activity-time">Today, 9:32 AM</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                            </div>
+                            <div class="activity-details">
+                                <div>John Doe updated admin Bob Johnson's role</div>
+                                <div class="activity-time">Yesterday, 3:45 PM</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                    <polyline points="16 17 21 12 16 7"></polyline>
+                                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                                </svg>
+                            </div>
+                            <div class="activity-details">
+                                <div>Jane Smith logged in to the admin panel</div>
+                                <div class="activity-time">Yesterday, 10:12 AM</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <form id="add-admin-form">
+                <div class="form-header">
+                    <h2>Add New Administrator</h2>
+                    <button type="button" class="form-close">&times;</button>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" required>
+                        <div id="name-error" class="error-message"></div>
+                    </div>
+        
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                        <div id="email-error" class="error-message"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+                <div id="username-error" class="error-message"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="role">Role</label>
+                <select id="role" name="role" required>
+                    <option value="">Select Role</option>
+                    <option value="superadmin">Super Admin</option>
+                    <option value="contentmanager">Content Manager</option>
+                    <option value="membermanager">Member Manager</option>
+                    <option value="schedulemanager">Schedule Manager</option>
+                </select>
+                <div id="role-error" class="error-message"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="password-container">
+                    <input type="password" id="password" name="password" required>
+                    <button type="button" class="toggle-password">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+                <div class="password-strength">
+                    <span id="password-strength-text">Password strength</span>
+                    <div class="strength-meter">
+                        <div class="strength-meter-fill" id="strength-meter-fill"></div>
+                    </div>
+                </div>
+                <div id="password-error" class="error-message"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password</label>
+                <div class="password-container">
+                    <input type="password" id="confirm-password" name="confirm-password" required>
+                    <button type="button" class="toggle-password">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+                <div id="confirm-password-error" class="error-message"></div>
+            </div>
+        </div>
+
+        <div class="permissions-container">
+            <div class="permissions-title">Permissions</div>
+            <div class="permissions-grid">
+                <div class="permission-item">
+                    <input type="checkbox" id="perm-dashboard" name="permissions[]" value="dashboard">
+                    <label for="perm-dashboard">Dashboard Access</label>
+                </div>
+                <div class="permission-item">
+                    <input type="checkbox" id="perm-admins" name="permissions[]" value="admins">
+                    <label for="perm-admins">Admin Management</label>
+                </div>
+                <div class="permission-item">
+                    <input type="checkbox" id="perm-users" name="permissions[]" value="users">
+                    <label for="perm-users">User Management</label>
+                </div>
+                <div class="permission-item">
+                    <input type="checkbox" id="perm-content" name="permissions[]" value="content">
+                    <label for="perm-content">Content Management</label>
+                </div>
+                <div class="permission-item">
+                    <input type="checkbox" id="perm-settings" name="permissions[]" value="settings">
+                    <label for="perm-settings">System Settings</label>
+                </div>
+                <div class="permission-item">
+                    <input type="checkbox" id="perm-reports" name="permissions[]" value="reports">
+                    <label for="perm-reports">Reports</label>
+                </div>
+                <div class="permission-item">
+                    <input type="checkbox" id="perm-activity" name="permissions[]" value="activity">
+                    <label for="perm-activity">Activity Logs</label>
+                </div>
+                <div class="permission-item">
+                    <input type="checkbox" id="perm-api" name="permissions[]" value="api">
+                    <label for="perm-api">API Access</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn cancel-btn" id="cancel-form">Cancel</button>
+            <button type="submit" class="btn save-btn">Save Admin</button>
+        </div>
+    </form>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Confirm Deletion</h2>
+                <button class="close-button">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this administrator? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn cancel-btn" id="cancel-delete">Cancel</button>
+                <button class="btn delete-btn" id="confirm-delete">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="change-password-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Change Password</h2>
+                <button class="close-button">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="new-password">New Password</label>
+                    <div class="password-container">
+                        <input type="password" id="new-password" name="new-password" required>
+                        <button type="button" class="toggle-password">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="password-strength">
+                        <span id="new-password-strength-text">Password strength</span>
+                        <div class="strength-meter">
+                            <div class="strength-meter-fill" id="new-strength-meter-fill"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-new-password">Confirm New Password</label>
+                    <div class="password-container">
+                        <input type="password" id="confirm-new-password" name="confirm-new-password" required>
+                        <button type="button" class="toggle-password">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="new-password-error" class="error-message"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn cancel-btn" id="cancel-password-change">Cancel</button>
+                <button class="btn save-btn" id="confirm-password-change">Update Password</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div id="toast-message"></div>
+        <button class="close-toast">&times;</button>
+    </div>
+
+
+           
+
+  <div id="signOutModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Sign Out</h2>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to sign out?</p>
+      </div>
+      <div class="modal-footer sign-out-actions">
+        <button class="modal-button no-button" id="signOutNo">No</button>
+        <button class="modal-button yes-button" id="signOutYes">Yes</button>
+      </div>
+    </div>
+  </div>
+        </div>
+            
+ <!-- =========== Scripts =========  -->
+ <script>
+    let list = document.querySelectorAll(".navigation li");
+
+function activeLink() {
+  list.forEach((item) => {
+    item.classList.remove("hovered");
+  });
+  this.classList.add("hovered");
+}
+
+list.forEach((item) => item.addEventListener("click", activeLink));
+
+// Menu Toggle (remains the same)
+let toggle = document.querySelector(".toggle");
+let navigation = document.querySelector(".navigation");
+let main = document.querySelector(".main");
+
+toggle.onclick = function () {
+  navigation.classList.toggle("active");
+  main.classList.toggle("active");
+};
+
+//Search Function
+const searchInput = document.getElementById('search-input');
+const searchResultsDiv = document.getElementById('search-results');
+
+const searchData = [
+  "Total Sales",
+  "Total Clients",
+  "Settings",
+  "Total Coaches",
+  "Payments",
+  "Recent Complaints",
+  "Admin Dashboard",
+  "Updates",
+  "Database Updates",
+  "Added Admins"
+];
+
+searchInput.addEventListener('input', function() {
+  const searchTerm = this.value.toLowerCase();
+  const filteredResults = searchData.filter(item =>
+    item.toLowerCase().includes(searchTerm)
+  );
+
+  displayResults(filteredResults);
+});
+
+function displayResults(results) {
+  searchResultsDiv.innerHTML = '';
+
+  if (results.length > 0 && searchInput.value.trim() !== '') {
+    const ul = document.createElement('ul');
+    results.forEach(result => {
+      const li = document.createElement('li');
+      li.textContent = result;
+      li.addEventListener('click', function() {
+        searchInput.value = this.textContent;
+        searchResultsDiv.style.display = 'none'; 
+      });
+      ul.appendChild(li);
+    });
+    searchResultsDiv.appendChild(ul);
+    searchResultsDiv.style.display = 'block'; 
+  } else {
+    searchResultsDiv.style.display = 'none';
+  }
+}
+
+document.addEventListener('click', function(event) {
+  if (!event.target.closest('.search-container')) {
+    searchResultsDiv.style.display = 'none';
+  }
+});
+
+//Mail Function
+const mailIconInbox = document.getElementById('mail-icon-inbox');
+const unreadNotification = document.getElementById('unread-notification');
+const inboxPreview = document.getElementById('inbox-preview');
+let hasUnread = true; 
+
+function updateUnreadIndicator() {
+  unreadNotification.style.display = hasUnread ? 'block' : 'none';
+}
+
+updateUnreadIndicator();
+
+mailIconInbox.addEventListener('click', function() {
+  inboxPreview.style.display = (inboxPreview.style.display === 'block' ? 'none' : 'block');
+
+  if (hasUnread && inboxPreview.style.display === 'block') {
+    hasUnread = false;
+    updateUnreadIndicator();
+ad
+    console.log('Mail icon clicked - marking as read');
+  }
+});
+
+
+document.addEventListener('click', function(event) {
+  if (!event.target.closest('.mail-container')) {
+    inboxPreview.style.display = 'none';
+  }
+});
+
+
+//Notification Function
+const notificationIcon = document.getElementById('notification-icon');
+const notificationBadge = document.getElementById('notification-badge');
+const notificationsDropdown = document.getElementById('notifications-dropdown');
+
+notificationIcon.addEventListener('click', function() {
+  notificationsDropdown.style.display = (notificationsDropdown.style.display === 'block' ? 'none' : 'block');
+  
+  notificationBadge.style.display = 'none';
+});
+
+
+document.addEventListener('click', function(event) {
+  if (!event.target.closest('.notification-container')) {
+    notificationsDropdown.style.display = 'none';
+  }
+});
+
+
+//Sign out
+document.addEventListener('DOMContentLoaded', function() {
+  const signOutLink = document.querySelector('.navigation ul li:last-child a');
+  const signOutModal = document.getElementById('signOutModal');
+  const signOutYesButton = document.getElementById('signOutYes');
+  const signOutNoButton = document.getElementById('signOutNo');
+
+  if (signOutLink) {
+  signOutLink.addEventListener('click', function(event) {
+      event.preventDefault();
+      showModal(signOutModal);
+  });
+  } else {
+  console.error("Sign Out link not found!");
+  }
+
+  signOutYesButton.addEventListener('click', function() {
+  window.location.href = 'index.html';
+  });
+
+  signOutNoButton.addEventListener('click', function() {
+  hideModal(signOutModal);
+  });
+
+  window.addEventListener('click', function(event) {
+  if (event.target == signOutModal) {
+      hideModal(signOutModal);
+  }
+  });
+
+  // Helper functions for showing and hiding the modal
+  function showModal(modalElement) {
+  modalElement.classList.add('show');
+  }
+
+  function hideModal(modalElement) {
+  modalElement.classList.remove('show');
+  }
+});
+
+ // Sample data for demonstration
+ const adminData = [
+            {
+                id: 1,
+                name: "John Doe",
+                email: "john@example.com",
+                username: "johndoe",
+                role: "superadmin",
+                status: "active",
+                lastLogin: "2023-08-10 14:32:45"
+            },
+            {
+                id: 2,
+                name: "Jane Smith",
+                email: "jane@example.com",
+                username: "janesmith",
+                role: "contentmanager",
+                status: "active",
+                lastLogin: "2023-08-09 09:15:22"
+            },
+            {
+                id: 3,
+                name: "Bob Johnson",
+                email: "bob@example.com",
+                username: "bobjohnson",
+                role: "membermanager",
+                status: "inactive",
+                lastLogin: "2023-07-28 16:41:10"
+            }
+        ];
+
+        // DOM elements
+        const adminList = document.getElementById("admin-list");
+        const pagination = document.getElementById("pagination");
+        const addAdminButton = document.getElementById("add-admin-button");
+        const addAdminForm = document.getElementById("add-admin-form");
+        const deleteModal = document.getElementById("delete-modal");
+        const changePasswordModal = document.getElementById("change-password-modal");
+        const toast = document.getElementById("toast");
+        const adminSearch = document.getElementById("admin-search");
+        const statusFilter = document.getElementById("status-filter");
+        const roleFilter = document.getElementById("role-filter");
+        const bulkActionsContainer = document.getElementById("bulk-actions");
+        const selectAllCheckbox = document.getElementById("select-all");
+        const accordion = document.querySelector(".accordion-header");
+        const accordionContent = document.querySelector(".accordion-content");
+
+        // Variables for pagination
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let filteredData = [...adminData];
+
+        // Initialize
+        document.addEventListener("DOMContentLoaded", function() {
+            updateStatistics();
+            renderAdminTable();
+            setupEventListeners();
+        });
+
+        // Event Listeners
+        function setupEventListeners() {
+            // Add Admin Button
+            addAdminButton.addEventListener("click", function() {
+                addAdminForm.style.display = "block";
+                // Reset form
+                document.getElementById("add-admin-form").reset();
+                clearErrors();
+            });
+
+            // Close Form
+            document.querySelector(".form-close").addEventListener("click", function() {
+                addAdminForm.style.display = "none";
+            });
+
+            // Cancel Form
+            document.getElementById("cancel-form").addEventListener("click", function() {
+                addAdminForm.style.display = "none";
+            });
+
+            // Toggle Password Visibility
+            const togglePasswordButtons = document.querySelectorAll(".toggle-password");
+            togglePasswordButtons.forEach(button => {
+                button.addEventListener("click", function() {
+                    const passwordField = this.previousElementSibling;
+                    const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+                    passwordField.setAttribute("type", type);
+                    
+                    // Change eye icon
+                    this.innerHTML = type === "password" ? 
+                        '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>' : 
+                        '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
+                });
+            });
+
+            // Password Strength Meter
+            document.getElementById("password").addEventListener("input", checkPasswordStrength);
+            document.getElementById("new-password").addEventListener("input", function() {
+                checkPasswordStrength(this, "new-strength-meter-fill", "new-password-strength-text");
+            });
+
+            // Form Submission
+            document.getElementById("add-admin-form").addEventListener("submit", function(e) {
+                e.preventDefault();
+                if (validateForm()) {
+                    addNewAdmin();
+                    addAdminForm.style.display = "none";
+                    showToast("Admin added successfully!", "success");
+                }
+            });
+
+            // Close Modal Buttons
+            const closeButtons = document.querySelectorAll(".close-button");
+            closeButtons.forEach(button => {
+                button.addEventListener("click", function() {
+                    deleteModal.style.display = "none";
+                    changePasswordModal.style.display = "none";
+                });
+            });
+
+            // Cancel Delete Button
+            document.getElementById("cancel-delete").addEventListener("click", function() {
+                deleteModal.style.display = "none";
+            });
+
+            // Confirm Delete Button
+            document.getElementById("confirm-delete").addEventListener("click", function() {
+                const adminId = parseInt(this.getAttribute("data-id"));
+                deleteAdmin(adminId);
+                deleteModal.style.display = "none";
+            });
+
+            // Cancel Password Change Button
+            document.getElementById("cancel-password-change").addEventListener("click", function() {
+                changePasswordModal.style.display = "none";
+            });
+
+            // Confirm Password Change Button
+            document.getElementById("confirm-password-change").addEventListener("click", function() {
+                const adminId = parseInt(this.getAttribute("data-id"));
+                changePassword(adminId);
+                changePasswordModal.style.display = "none";
+            });
+
+            // Close Toast
+            document.querySelector(".close-toast").addEventListener("click", function() {
+                toast.classList.remove("show");
+            });
+
+            // Search
+            adminSearch.addEventListener("input", function() {
+                filterAdmins();
+            });
+
+            // Status Filter
+            statusFilter.addEventListener("change", function() {
+                filterAdmins();
+            });
+
+            // Role Filter
+            roleFilter.addEventListener("change", function() {
+                filterAdmins();
+            });
+
+            // Select All Checkboxes
+            selectAllCheckbox.addEventListener("change", function() {
+                const checkboxes = document.querySelectorAll("tbody input[type='checkbox']");
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = this.checked;
+                });
+                updateBulkActions();
+            });
+
+            // Apply Bulk Action
+            document.getElementById("apply-bulk-action").addEventListener("click", applyBulkAction);
+
+            // Sortable Columns
+            const sortableColumns = document.querySelectorAll(".sortable");
+            sortableColumns.forEach(column => {
+                column.addEventListener("click", function() {
+                    sortTable(this.getAttribute("data-sort"));
+                });
+            });
+
+            // Accordion Toggle
+            accordion.addEventListener("click", function() {
+                this.classList.toggle("active");
+                if (accordionContent.style.display === "block") {
+                    accordionContent.style.display = "none";
+                } else {
+                    accordionContent.style.display = "block";
+                }
+            });
+        }
+
+        // Render Admin Table
+        function renderAdminTable() {
+            const tbody = adminList.querySelector("tbody");
+            tbody.innerHTML = "";
+
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const currentData = filteredData.slice(startIndex, endIndex);
+
+            if (currentData.length === 0) {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `<td colspan="8" style="text-align: center;">No administrators found.</td>`;
+                tbody.appendChild(tr);
+            } else {
+                currentData.forEach(admin => {
+                    const tr = document.createElement("tr");
+                    
+                    // Format date
+                    const lastLoginDate = new Date(admin.lastLogin);
+                    const formattedDate = `${lastLoginDate.toLocaleDateString()} ${lastLoginDate.toLocaleTimeString()}`;
+                    
+                    // Role display name
+                    const roleDisplayMap = {
+                        'superadmin': 'Super Admin',
+                        'contentmanager': 'Content Manager',
+                        'membermanager': 'Member Manager',
+                        'schedulemanager': 'Schedule Manager'
+                    };
+
+                    tr.innerHTML = `
+                        <td class="checkbox-cell">
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="admin-checkbox" data-id="${admin.id}">
+                                <span class="checkmark"></span>
+                            </label>
+                        </td>
+                        <td data-title="Name">${admin.name}</td>
+                        <td data-title="Email">${admin.email}</td>
+                        <td data-title="Username">${admin.username}</td>
+                        <td data-title="Role">${roleDisplayMap[admin.role] || admin.role}</td>
+                        <td data-title="Status">
+                            <span class="status-badge ${admin.status}">${admin.status.charAt(0).toUpperCase() + admin.status.slice(1)}</span>
+                        </td>
+                        <td data-title="Last Login">${formattedDate}</td>
+                        <td data-title="Actions">
+                            <div class="actions-container">
+                                <button class="btn edit-btn icon-btn edit-admin" data-id="${admin.id}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                    </svg>
+                                    Edit
+                                </button>
+                                <button class="btn change-password-btn icon-btn change-password" data-id="${admin.id}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                    </svg>
+                                    Password
+                                </button>
+                                <button class="btn delete-btn icon-btn delete-admin" data-id="${admin.id}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                                    </svg>
+                                    Delete
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                // Add event listeners for the edit, change password, and delete buttons
+                document.querySelectorAll('.edit-admin').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const adminId = parseInt(this.getAttribute('data-id'));
+                        editAdmin(adminId);
+                    });
+                });
+
+                document.querySelectorAll('.change-password').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const adminId = parseInt(this.getAttribute('data-id'));
+                        openChangePasswordModal(adminId);
+                    });
+                });
+
+                document.querySelectorAll('.delete-admin').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const adminId = parseInt(this.getAttribute('data-id'));
+                        openDeleteModal(adminId);
+                    });
+                });
+
+                // Add event listeners for checkboxes
+                document.querySelectorAll('.admin-checkbox').forEach(checkbox => {
+                    checkbox.addEventListener('change', updateBulkActions);
+                });
+            }
+
+            renderPagination();
+        }
+
+        // Render Pagination
+        function renderPagination() {
+            pagination.innerHTML = "";
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+            // Previous button
+            const prevButton = document.createElement("button");
+            prevButton.innerHTML = "Previous";
+            prevButton.disabled = currentPage === 1;
+            prevButton.addEventListener("click", function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderAdminTable();
+                }
+            });
+            pagination.appendChild(prevButton);
+
+            // Page buttons
+            for (let i = 1; i <= totalPages; i++) {
+                const pageButton = document.createElement("button");
+                pageButton.innerHTML = i;
+                pageButton.classList.toggle("active", i === currentPage);
+                pageButton.addEventListener("click", function() {
+                    currentPage = i;
+                    renderAdminTable();
+                });
+                pagination.appendChild(pageButton);
+            }
+
+            // Next button
+            const nextButton = document.createElement("button");
+            nextButton.innerHTML = "Next";
+            nextButton.disabled = currentPage === totalPages || totalPages === 0;
+            nextButton.addEventListener("click", function() {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderAdminTable();
+                }
+            });
+            pagination.appendChild(nextButton);
+        }
+
+        // Update Statistics
+        function updateStatistics() {
+            document.getElementById("total-admins").textContent = adminData.length;
+            document.getElementById("active-admins").textContent = adminData.filter(admin => admin.status === "active").length;
+            document.getElementById("super-admins").textContent = adminData.filter(admin => admin.role === "superadmin").length;
+        }
+
+        // Filter Admins
+        function filterAdmins() {
+            const searchTerm = adminSearch.value.toLowerCase();
+            const statusValue = statusFilter.value;
+            const roleValue = roleFilter.value;
+
+            filteredData = adminData.filter(admin => {
+                // Search filter
+                const matchesSearch = 
+                    admin.name.toLowerCase().includes(searchTerm) ||
+                    admin.email.toLowerCase().includes(searchTerm) ||
+                    admin.username.toLowerCase().includes(searchTerm);
+                
+                // Status filter
+                const matchesStatus = !statusValue || admin.status === statusValue;
+                
+                // Role filter
+                const matchesRole = !roleValue || admin.role === roleValue;
+
+                return matchesSearch && matchesStatus && matchesRole;
+            });
+
+            currentPage = 1;
+            renderAdminTable();
+        }
+
+        // Sort Table
+        function sortTable(column) {
+            const sortableColumns = document.querySelectorAll(".sortable");
+            
+            // Find current sorted column
+            const currentSortedColumn = document.querySelector(".sortable.asc, .sortable.desc");
+            
+            // Determine sort order
+            let sortOrder = "asc";
+            if (currentSortedColumn && currentSortedColumn.getAttribute("data-sort") === column) {
+                sortOrder = currentSortedColumn.classList.contains("asc") ? "desc" : "asc";
+            }
+            
+            // Reset all column headers
+            sortableColumns.forEach(col => {
+                col.classList.remove("asc", "desc");
+            });
+            
+            // Update current column header
+            const columnHeader = document.querySelector(`.sortable[data-sort="${column}"]`);
+            columnHeader.classList.add(sortOrder);
+            
+            // Sort data
+            filteredData.sort((a, b) => {
+                let valueA = a[column];
+                let valueB = b[column];
+                
+                // Handle string comparison
+                if (typeof valueA === "string") {
+                    valueA = valueA.toLowerCase();
+                    valueB = valueB.toLowerCase();
+                }
+                
+                if (valueA < valueB) return sortOrder === "asc" ? -1 : 1;
+                if (valueA > valueB) return sortOrder === "asc" ? 1 : -1;
+                return 0;
+            });
+            
+            renderAdminTable();
+        }
+
+        // Update Bulk Actions
+        function updateBulkActions() {
+            const checkedBoxes = document.querySelectorAll('.admin-checkbox:checked');
+            const selectedCount = checkedBoxes.length;
+            
+            document.getElementById('selected-count').textContent = selectedCount;
+            
+            if (selectedCount > 0) {
+                bulkActionsContainer.style.display = 'flex';
+            } else {
+                bulkActionsContainer.style.display = 'none';
+            }
+        }
+
+        // Apply Bulk Action
+        function applyBulkAction() {
+            const action = document.getElementById('bulk-action-select').value;
+            if (!action) {
+                showToast("Please select an action to apply.", "warning");
+                return;
+            }
+            
+            const selectedIds = Array.from(document.querySelectorAll('.admin-checkbox:checked'))
+                .map(checkbox => parseInt(checkbox.getAttribute('data-id')));
+            
+            if (selectedIds.length === 0) {
+                showToast("No administrators selected.", "warning");
+                return;
+            }
+            
+            let actionText = "";
+            let actionPerformed = false;
+            
+            switch (action) {
+                case 'activate':
+                    selectedIds.forEach(id => {
+                        const adminIndex = adminData.findIndex(admin => admin.id === id);
+                        if (adminIndex !== -1 && adminData[adminIndex].status !== 'active') {
+                            adminData[adminIndex].status = 'active';
+                            actionPerformed = true;
+                        }
+                    });
+                    actionText = "Administrators activated successfully!";
+                    break;
+                    
+                case 'deactivate':
+                    selectedIds.forEach(id => {
+                        const adminIndex = adminData.findIndex(admin => admin.id === id);
+                        if (adminIndex !== -1 && adminData[adminIndex].status !== 'inactive') {
+                            adminData[adminIndex].status = 'inactive';
+                            actionPerformed = true;
+                        }
+                    });
+                    actionText = "Administrators deactivated successfully!";
+                    break;
+                    
+                case 'delete':
+                    selectedIds.forEach(id => {
+                        const adminIndex = adminData.findIndex(admin => admin.id === id);
+                        if (adminIndex !== -1) {
+                            adminData.splice(adminIndex, 1);
+                            actionPerformed = true;
+                        }
+                    });
+                    actionText = "Administrators deleted successfully!";
+                    break;
+            }
+            
+            if (actionPerformed) {
+                updateStatistics();
+                filterAdmins();
+                showToast(actionText, "success");
+                selectAllCheckbox.checked = false;
+                bulkActionsContainer.style.display = 'none';
+            } else {
+                showToast("No changes made.", "warning");
+            }
+        }
+
+        // Check Password Strength (continued)
+function checkPasswordStrength(inputElement = document.getElementById("password"), meterFillId = "strength-meter-fill", strengthTextId = "password-strength-text") {
+    const password = inputElement.value;
+    const meterFill = document.getElementById(meterFillId);
+    const strengthText = document.getElementById(strengthTextId);
+    
+    // Reset
+    meterFill.className = 'strength-meter-fill';
+    
+    if (password.length === 0) {
+        strengthText.textContent = "Password strength";
+        return;
+    }
+    
+    let strength = 0;
+    
+    // Length check
+    if (password.length >= 8) strength += 1;
+    if (password.length >= 12) strength += 1;
+    
+    // Complexity checks
+    if (/[A-Z]/.test(password)) strength += 1;
+    if (/[a-z]/.test(password)) strength += 1;
+    if (/[0-9]/.test(password)) strength += 1;
+    if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+    
+    // Set strength level
+    if (strength <= 2) {
+        meterFill.classList.add('weak');
+        strengthText.textContent = "Weak";
+        meterFill.style.width = "25%";
+    } else if (strength <= 4) {
+        meterFill.classList.add('medium');
+        strengthText.textContent = "Medium";
+        meterFill.style.width = "50%";
+    } else if (strength <= 5) {
+        meterFill.classList.add('strong');
+        strengthText.textContent = "Strong";
+        meterFill.style.width = "75%";
+    } else {
+        meterFill.classList.add('very-strong');
+        strengthText.textContent = "Very Strong";
+        meterFill.style.width = "100%";
+    }
+}
+
+// Validate Form
+function validateForm() {
+    let isValid = true;
+    clearErrors();
+    
+    // Name validation
+    const name = document.getElementById("name");
+    if (!name.value.trim()) {
+        showError(name, "Name is required");
+        isValid = false;
+    }
+    
+    // Email validation
+    const email = document.getElementById("email");
+    if (!email.value.trim()) {
+        showError(email, "Email is required");
+        isValid = false;
+    } else if (!isValidEmail(email.value)) {
+        showError(email, "Please enter a valid email address");
+        isValid = false;
+    }
+    
+    // Username validation
+    const username = document.getElementById("username");
+    if (!username.value.trim()) {
+        showError(username, "Username is required");
+        isValid = false;
+    } else if (username.value.length < 4) {
+        showError(username, "Username must be at least 4 characters");
+        isValid = false;
+    }
+    
+    // Role validation
+    const role = document.getElementById("role");
+    if (!role.value) {
+        showError(role, "Please select a role");
+        isValid = false;
+    }
+    
+    // Password validation
+    const password = document.getElementById("password");
+    const confirmPassword = document.getElementById("confirm-password");
+    
+    if (!password.value) {
+        showError(password, "Password is required");
+        isValid = false;
+    } else if (password.value.length < 8) {
+        showError(password, "Password must be at least 8 characters");
+        isValid = false;
+    }
+    
+    if (!confirmPassword.value) {
+        showError(confirmPassword, "Please confirm your password");
+        isValid = false;
+    } else if (password.value !== confirmPassword.value) {
+        showError(confirmPassword, "Passwords do not match");
+        isValid = false;
+    }
+    
+    return isValid;
+}
+
+// Show Error
+function showError(element, message) {
+    const errorId = `${element.id}-error`;
+    const errorElement = document.getElementById(errorId);
+    if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.style.display = "block";
+        element.classList.add("error");
+    }
+}
+
+// Clear Errors
+function clearErrors() {
+    const errorElements = document.querySelectorAll(".error-message");
+    errorElements.forEach(element => {
+        element.textContent = "";
+        element.style.display = "none";
+    });
+    
+    const formElements = document.querySelectorAll(".form-group input, .form-group select");
+    formElements.forEach(element => {
+        element.classList.remove("error");
+    });
+}
+
+// Email Validation
+function isValidEmail(email) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+}
+
+// Add New Admin
+function addNewAdmin() {
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const username = document.getElementById("username").value;
+    const role = document.getElementById("role").value;
+    const permissions = Array.from(document.querySelectorAll('input[name="permissions[]"]:checked'))
+        .map(checkbox => checkbox.value);
+    
+    // Get the highest existing ID and increment by 1
+    const newId = adminData.length > 0 ? Math.max(...adminData.map(admin => admin.id)) + 1 : 1;
+    
+    // Create new admin object
+    const newAdmin = {
+        id: newId,
+        name: name,
+        email: email,
+        username: username,
+        role: role,
+        status: "active",
+        permissions: permissions,
+        lastLogin: "Never"
+    };
+    
+    // Add to data array
+    adminData.push(newAdmin);
+    
+    // Update table
+    filterAdmins();
+    updateStatistics();
+}
+
+// Edit Admin
+function editAdmin(adminId) {
+    const admin = adminData.find(a => a.id === adminId);
+    if (!admin) return;
+    
+    // Populate form fields
+    document.getElementById("name").value = admin.name;
+    document.getElementById("email").value = admin.email;
+    document.getElementById("username").value = admin.username;
+    document.getElementById("role").value = admin.role;
+    
+    // Check permissions
+    if (admin.permissions) {
+        const checkboxes = document.querySelectorAll('input[name="permissions[]"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = admin.permissions.includes(checkbox.value);
+        });
+    }
+    
+    // Show form
+    document.getElementById("form-title").textContent = "Edit Administrator";
+    document.getElementById("add-admin-form").setAttribute("data-edit-id", adminId);
+    
+    // Handle password fields for editing (optional when editing)
+    const passwordFields = document.querySelectorAll('#password, #confirm-password');
+    passwordFields.forEach(field => {
+        field.removeAttribute('required');
+        field.placeholder = "Leave blank to keep current password";
+    });
+    
+    addAdminForm.style.display = "block";
+}
+
+// Delete Admin
+function deleteAdmin(adminId) {
+    const adminIndex = adminData.findIndex(admin => admin.id === adminId);
+    if (adminIndex !== -1) {
+        adminData.splice(adminIndex, 1);
+        filterAdmins();
+        updateStatistics();
+        showToast("Administrator deleted successfully!", "success");
+    }
+}
+
+// Open Delete Modal
+function openDeleteModal(adminId) {
+    const admin = adminData.find(a => a.id === adminId);
+    if (!admin) return;
+    
+    const confirmButton = document.getElementById("confirm-delete");
+    confirmButton.setAttribute("data-id", adminId);
+    
+    document.querySelector(".modal-body p").textContent = 
+        `Are you sure you want to delete ${admin.name} (${admin.username})? This action cannot be undone.`;
+    
+    deleteModal.style.display = "block";
+}
+
+// Open Change Password Modal
+function openChangePasswordModal(adminId) {
+    const admin = adminData.find(a => a.id === adminId);
+    if (!admin) return;
+    
+    const confirmButton = document.getElementById("confirm-password-change");
+    confirmButton.setAttribute("data-id", adminId);
+    
+    document.querySelector("#change-password-modal .modal-header h2").textContent = 
+        `Change Password for ${admin.name}`;
+    
+    // Reset password fields
+    document.getElementById("new-password").value = "";
+    document.getElementById("confirm-new-password").value = "";
+    document.getElementById("new-password-error").textContent = "";
+    
+    changePasswordModal.style.display = "block";
+}
+
+// Change Password
+function changePassword(adminId) {
+    const newPassword = document.getElementById("new-password").value;
+    const confirmNewPassword = document.getElementById("confirm-new-password").value;
+    
+    if (!newPassword) {
+        showToast("Password cannot be empty!", "error");
+        return;
+    }
+    
+    if (newPassword !== confirmNewPassword) {
+        showToast("Passwords do not match!", "error");
+        return;
+    }
+    
+    if (newPassword.length < 8) {
+        showToast("Password must be at least 8 characters!", "error");
+        return;
+    }
+    
+    // In a real application, we would update the password in the database
+    // Here we just show a success message
+    showToast("Password updated successfully!", "success");
+}
+
+// Show Toast Notification
+function showToast(message, type = "info") {
+    const toast = document.getElementById("toast");
+    const toastMessage = document.getElementById("toast-message");
+    
+    toast.className = "toast show";
+    toast.classList.add(type);
+    toastMessage.textContent = message;
+    
+    // Auto hide after 5 seconds
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 5000);
+}
+ </script>
+
+<!-- ====== ionicons ======= -->
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+
+</html>

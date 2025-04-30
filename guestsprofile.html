@@ -6,796 +6,829 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
-    <title>Guest Dashboard</title>
+    <title>Guest Dashboard - Profile</title>
     <!-- ======= Styles ====== -->
-  <style>
-    /* =============== Globals ============== */
-* {
-    font-family: "Poppins", sans-serif;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  :root {
-    --blue: #203A93;
-    --white: #fff;
-    --gray: #f5f5f5;
-    --black1: #222;
-    --black2: #999;
-  }
-  
-  body {
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-  
-  .container {
-    position: relative;
-    width: 100%;
-  }
-  
-  /* =============== Navigation ================ */
-  .navigation {
-    position: fixed;
-    width: 300px;
-    height: 100%;
-    background: var(--blue);
-    border-left: 10px solid var(--blue);
-    transition: 0.5s;
-    overflow: hidden;
-  }
-  .navigation.active {
-    width: 80px;
-  }
-  
-  .navigation ul {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-  }
-  
-  .navigation ul li {
-    position: relative;
-    width: 100%;
-    list-style: none;
-    border-top-left-radius: 30px;
-    border-bottom-left-radius: 30px;
-  }
-  
-  .navigation ul li:hover,
-  .navigation ul li.hovered {
-    background-color: var(--white);
-  }
-  
-  .navigation ul li:nth-child(1) {
-    margin-bottom: 40px;
-    pointer-events: none;
-  }
-  
-  .navigation ul li a {
-    position: relative;
-    display: block;
-    width: 100%;
-    display: flex;
-    text-decoration: none;
-    color: var(--white);
-  }
-  .navigation ul li:hover a,
-  .navigation ul li.hovered a {
-    color: var(--blue);
-  }
-  
-  .navigation ul li a .icon {
-    position: relative;
-    display: block;
-    min-width: 60px;
-    height: 60px;
-    line-height: 75px;
-    text-align: center;
-  }
-  .navigation ul li a .icon ion-icon {
-    font-size: 1.75rem;
-  }
-  
-  .navigation ul li a .title {
-    position: relative;
-    display: block;
-    padding: 0 10px;
-    height: 60px;
-    line-height: 60px;
-    text-align: start;
-    white-space: nowrap;
-  }
-  
-  /* --------- Curve Outside ---------- */
-  .navigation ul li:hover a::before,
-  .navigation ul li.hovered a::before {
-    content: "";
-    position: absolute;
-    right: 0;
-    top: -50px;
-    width: 50px;
-    height: 50px;
-    background-color: transparent;
-    border-radius: 50%;
-    box-shadow: 35px 35px 0 10px var(--white);
-    pointer-events: none;
-  }
-  .navigation ul li:hover a::after,
-  .navigation ul li.hovered a::after {
-    content: "";
-    position: absolute;
-    right: 0;
-    bottom: -50px;
-    width: 50px;
-    height: 50px;
-    background-color: transparent;
-    border-radius: 50%;
-    box-shadow: 35px -35px 0 10px var(--white);
-    pointer-events: none;
-  }
-  
-  
-  /* ===================== Main ===================== */
-  .main {
-    position: absolute;
-    width: calc(100% - 300px);
-    left: 300px;
-    min-height: 100vh;
-    background: var(--white);
-    transition: 0.5s;
-  }
-  .main.active {
-    width: calc(100% - 80px);
-    left: 80px;
-  }
-  
-  .topbar {
-    width: 100%;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
-    justify-content:space-between;
-  }
-  
-  .toggle {
-    position: relative;
-    width: 60px;
-    height: 60px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 2.5rem;
-    cursor: pointer;
-  }
-  
-/* =============== Search ============== */
-.search-container {
-  position: relative;
-  width: 800px;
-  margin: 0 10px;
-}
-
-.search-container label {
-  display: flex;
-align-items: center; 
-width: 100%;
-border: 1px solid #ccc;
-border-radius: 15px;
-overflow: hidden; 
-}
-
-#search-input {
-  flex-grow: 1; 
-padding: 10px;
-border: none;
-outline: none;
-font-size: 16px;
-box-sizing: border-box; 
-margin-right: 5px; 
-}
-
-.search-container label ion-icon {
-  padding-right: 10px;
-  font-size: 20px; 
-  color: #777;
-}
-
-#search-results {
-  position: absolute;
-  top: calc(100% + 2px);
-  left: 0;
-  right: 0;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  margin-top: 2px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  z-index: 10;
-  display: none;
-  overflow: hidden; 
-}
-
-#search-results ul {
-  list-style: none;
-  padding: 8px 0;
-  margin: 0;
-}
-
-#search-results li {
-  padding: 12px 16px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  font-size: 1.0em;
-  color: #333;
-}
-
-#search-results li:hover {
-  background-color: #f5f5f5;
-  color: #222;
-}
-
-#search-results li:active {
-  background-color: #eee;
-}
-
-
-#search-results li span.highlight {
-  font-weight: bold;
-  color: #007bff; 
-}
-
-/* =============== Mail Icon ============== */
-.mail-container {
-  position: relative;
-  display: inline-block;
-}
-
-#mail-icon-inbox {
-  font-size: 25px;
-  color: #203A93;
-  cursor: pointer;
-}
-
-#mail-icon-inbox:hover {
-  opacity: 0.8;
-}
-
-#unread-notification {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background-color: red;
-  color: white;
-  font-size: 12px;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  text-align: center;
-  line-height: 18px;
-  display: none; 
-}
-
-#inbox-preview {
-  position: absolute;
-  top: calc(100% + 5px);
-  right: -10px;
-  background-color: #f9f9f9;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 250px;
-  padding: 15px;
-  display: none;
-  z-index: 10;
-  text-align: left;
-}
-
-#inbox-preview strong {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.email-item {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding: 3px 0; 
-}
-
-.email-item.sender {
-  font-weight: bold;
-}
-
-.email-item.subject {
-  color: #555;
-  font-size: 0.9em; 
-}
-
-#inbox-preview hr {
-  margin-top: 8px;
-  margin-bottom: 8px;
-}
-
-#inbox-preview a {
-  display: block;
-  margin-top: 10px;
-  font-size: 0.8em;
-  text-align: right;
-  color: #007bff;
-  text-decoration: none;
-}
-
-/* =============== Notification Icon ============== */
-.notification-container {
-  position: relative;
-  display: inline-block;
-}
-
-#notification-icon {
-  font-size: 25px;
-  color: #203A93;
-  cursor: pointer;
-}
-
-#notification-icon:hover {
-  opacity: 0.8;
-}
-
-#notification-badge {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background-color: orange;
-  color: white;
-  font-size: 12px;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  text-align: center;
-  line-height: 18px;
-  display: block; 
-}
-
-#notifications-dropdown {
-  position: absolute;
-  top: calc(100% + 5px);
-  right: -10px;
-  background-color: #f9f9f9;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 250px;
-  padding: 15px;
-  display: none;
-  z-index: 10;
-  text-align: left;
-}
-
-#notifications-dropdown strong {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.notification-item {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding: 3px 0;
-}
-
-.notification-item.title {
-  font-weight: bold;
-  margin-top: 5px;
-}
-
-.notification-item.message {
-  color: #555;
-  font-size: 0.9em;
-}
-
-#notifications-dropdown hr {
-  margin-top: 8px;
-  margin-bottom: 8px;
-}
-
-#notifications-dropdown a {
-  display: block;
-  margin-top: 10px;
-  font-size: 0.8em;
-  text-align: right;
-  color: #007bff;
-  text-decoration: none;
-}
-
-/* =============== Clients Section ============== */
-.user {
-  position: relative;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  overflow: hidden;
-  cursor: pointer;
-}
-
-
-.user img {
-  position: absolute;
-  justify-items: end;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* =============== Profile Section ============== */
-.profile-container {
-  padding: 20px;
-  background-color: var(--gray);
-  border-radius: 10px;
-  margin: 20px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.profile-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 30px;
-}
-
-.profile-picture {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin-right: 20px;
-  border: 4px solid var(--white);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.profile-picture img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.profile-title h2 {
-  color: var(--black1);
-  font-size: 24px;
-  margin-bottom: 5px;
-}
-
-.profile-title p {
-  color: var(--black2);
-  font-size: 14px;
-}
-
-.profile-edit-btn {
-  margin-left: auto;
-  background-color: var(--blue);
-  color: var(--white);
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-.profile-edit-btn:hover {
-  background-color: #182e75; /* Darker shade of blue */
-}
-
-.profile-sections {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.profile-section {
-  background-color: var(--white);
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  flex: 1;
-  min-width: 300px;
-}
-
-.profile-section h3 {
-  color: var(--blue);
-  margin-bottom: 15px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
-}
-
-.info-group {
-  margin-bottom: 15px;
-}
-
-.info-label {
-  font-weight: 500;
-  color: var(--black2);
-  font-size: 14px;
-  margin-bottom: 5px;
-}
-
-.info-value {
-  color: var(--black1);
-  font-size: 16px;
-}
-
-.stats-container {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
-}
-
-.stat-item {
-  text-align: center;
-  background-color: #f0f2f5;
-  padding: 10px 15px;
-  border-radius: 8px;
-  flex: 1;
-  margin: 0 5px;
-}
-
-.stat-value {
-  font-size: 18px;
-  font-weight: bold;
-  color: var(--blue);
-}
-
-.stat-label {
-  font-size: 12px;
-  color: var(--black2);
-  margin-top: 5px;
-}
-
-.health-metrics {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 15px;
-}
-
-.metric-item {
-  background-color: #f0f2f5;
-  padding: 10px 15px;
-  border-radius: 8px;
-  flex: 1;
-  min-width: 120px;
-}
-
-.metric-value {
-  font-size: 18px;
-  font-weight: bold;
-  color: var(--blue);
-}
-
-.metric-label {
-  font-size: 12px;
-  color: var(--black2);
-  margin-top: 5px;
-}
-
-.fitness-goals {
-  margin-top: 15px;
-}
-
-.goal-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.goal-icon {
-  background-color: #e6f0ff;
-  color: var(--blue);
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 10px;
-}
-
-.goal-details {
-  flex: 1;
-}
-
-.goal-title {
-  font-weight: 500;
-  margin-bottom: 2px;
-}
-
-.goal-progress {
-  height: 6px;
-  background-color: #eee;
-  border-radius: 3px;
-  margin-top: 5px;
-  overflow: hidden;
-}
-
-.progress-bar {
-  height: 100%;
-  background-color: var(--blue);
-}
-
-@media (max-width: 768px) {
-  .profile-header {
-    flex-direction: column;
-    text-align: center;
-  }
-  
-  .profile-picture {
-    margin-right: 0;
-    margin-bottom: 15px;
-  }
-  
-  .profile-edit-btn {
-    margin-left: 0;
-    margin-top: 15px;
-  }
-  
-  .profile-sections {
-    flex-direction: column;
-  }
-}
-
-/* Modal Styles for Sign out*/
-        /* Modal Overlay */
+    <style>
+        /* =============== Globals ============== */
+        * {
+            font-family: "Poppins", sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --blue: #203A93;
+            --white: #fff;
+            --gray: #f5f5f5;
+            --black1: #222;
+            --black2: #999;
+            --yellow: #F1D27C;
+            --light-blue: #e8eeff;
+            --red: #ff6b6b;
+            --green: #4caf50;
+        }
+
+        body {
+            background-color: var(--gray); /* Use gray for overall background */
+            min-height: 100vh; /* Ensure body takes full height */
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+        }
+
+        /* =============== Navigation ================ */
+        .navigation {
+            position: fixed;
+            width: 300px;
+            height: 100%;
+            background: var(--blue);
+            border-left: 10px solid var(--blue);
+            transition: 0.5s;
+            overflow-y: auto; /* Allow scrolling if menu is long */
+            overflow-x: hidden;
+            z-index: 100; /* Keep nav above main content */
+        }
+        .navigation.active {
+            width: 80px;
+        }
+
+        .navigation ul {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding-left: 0; /* Override default ul padding */
+        }
+
+        .navigation ul li {
+            position: relative;
+            width: 100%;
+            list-style: none;
+            border-top-left-radius: 30px;
+            border-bottom-left-radius: 30px;
+        }
+
+        .navigation ul li:hover,
+        .navigation ul li.hovered {
+            background-color: var(--white);
+        }
+
+        .navigation ul li:nth-child(1) {
+            margin-bottom: 40px;
+            pointer-events: none;
+        }
+
+        .navigation ul li a {
+            position: relative;
+            display: block;
+            width: 100%;
+            display: flex;
+            text-decoration: none;
+            color: var(--white);
+            transition: color 0.3s; /* Smooth color transition */
+        }
+        .navigation ul li:hover a,
+        .navigation ul li.hovered a {
+            color: var(--blue);
+        }
+
+        .navigation ul li a .icon {
+            position: relative;
+            display: block;
+            min-width: 60px;
+            height: 60px;
+            line-height: 75px;
+            text-align: center;
+        }
+        .navigation ul li a .icon ion-icon {
+            font-size: 1.75rem;
+        }
+
+        .navigation ul li a .title {
+            position: relative;
+            display: block;
+            padding: 0 10px;
+            height: 60px;
+            line-height: 60px;
+            text-align: start;
+            white-space: nowrap;
+        }
+
+        /* --------- Curve Outside ---------- */
+        .navigation ul li:hover a::before,
+        .navigation ul li.hovered a::before {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: -50px;
+            width: 50px;
+            height: 50px;
+            background-color: transparent;
+            border-radius: 50%;
+            box-shadow: 35px 35px 0 10px var(--white);
+            pointer-events: none;
+        }
+
+        .navigation ul li:hover a::after,
+        .navigation ul li.hovered a::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            bottom: -50px;
+            width: 50px;
+            height: 50px;
+            background-color: transparent;
+            border-radius: 50%;
+            box-shadow: 35px -35px 0 10px var(--white);
+            pointer-events: none;
+        }
+
+        /* ===================== Main ===================== */
+        .main {
+            position: absolute;
+            width: calc(100% - 300px);
+            left: 300px;
+            min-height: 100vh;
+            background: var(--white); /* Changed background */
+            transition: 0.5s;
+            padding: 20px; /* Add padding around main content */
+        }
+        .main.active {
+            width: calc(100% - 80px);
+            left: 80px;
+        }
+
+        .topbar {
+            width: 100%;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px; /* Reduced padding */
+            justify-content: space-between;
+            background: var(--white); /* Topbar remains white */
+            border-bottom: 1px solid #eee; /* Lighter border */
+            position: sticky; /* Make topbar sticky */
+            top: 0;
+            z-index: 90; /* Below nav but above content */
+        }
+
+        .toggle {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5rem;
+            cursor: pointer;
+            color: var(--black1); /* Ensure icon is visible */
+        }
+
+        /* =============== Search ============== */
+        .search-container {
+            position: relative;
+            flex-grow: 1; /* Allow search to take available space */
+            max-width: 600px; /* Limit max width */
+            margin: 0 15px; /* Add some margin */
+        }
+
+        .search-container label {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 15px;
+            overflow: hidden;
+            background-color: var(--white);
+        }
+
+        #search-input {
+            flex-grow: 1;
+            padding: 8px 15px; /* Adjust padding */
+            border: none;
+            outline: none;
+            font-size: 1rem; /* Adjust font size */
+            box-sizing: border-box;
+        }
+
+        .search-container label ion-icon {
+            padding: 0 10px; /* Adjust padding */
+            font-size: 1.2rem;
+            color: #777;
+        }
+
+        #search-results {
+            position: absolute;
+            top: calc(100% + 5px); /* Position below input */
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-top: 2px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            z-index: 110; /* Above other elements */
+            display: none;
+            overflow: hidden;
+            max-height: 300px; /* Limit height */
+            overflow-y: auto;
+        }
+
+        #search-results ul {
+            list-style: none;
+            padding: 8px 0;
+            margin: 0;
+        }
+
+        #search-results li {
+            padding: 10px 16px; /* Adjust padding */
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-size: 0.95em;
+            color: #333;
+        }
+
+        #search-results li:hover {
+            background-color: #f5f5f5;
+            color: #222;
+        }
+
+        #search-results li:active {
+            background-color: #eee;
+        }
+
+        #search-results li span.highlight {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        /* =============== Topbar Icons & User ============== */
+        .topbar-icons {
+            display: flex;
+            align-items: center;
+            gap: 15px; /* Space between icons */
+        }
+
+        .mail-container,
+        .notification-container {
+            position: relative;
+            display: flex; /* Use flex for alignment */
+            align-items: center;
+        }
+
+        #mail-icon-inbox,
+        #notification-icon {
+            font-size: 25px;
+            color: var(--blue);
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        #mail-icon-inbox:hover,
+        #notification-icon:hover {
+            opacity: 0.7;
+        }
+
+        #unread-notification,
+        #notification-badge {
+            position: absolute;
+            top: -5px; /* Adjust position */
+            right: -5px;
+            background-color: var(--red);
+            color: white;
+            font-size: 11px; /* Smaller font */
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            text-align: center;
+            line-height: 16px;
+            font-weight: bold;
+            display: block; /* Show by default, JS handles logic */
+        }
+         #notification-badge {
+            background-color: orange;
+         }
+
+        #inbox-preview,
+        #notifications-dropdown {
+            position: absolute;
+            top: calc(100% + 10px); /* Position below icon */
+            right: -10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            width: 280px; /* Slightly wider */
+            padding: 15px;
+            display: none;
+            z-index: 110; /* Above other elements */
+            text-align: left;
+            max-height: 350px; /* Limit height */
+            overflow-y: auto;
+        }
+
+        #inbox-preview strong,
+        #notifications-dropdown strong {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+            color: var(--black1);
+        }
+
+        .email-item,
+        .notification-item {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 4px 0; /* Adjust padding */
+            font-size: 0.9em; /* Slightly smaller */
+        }
+
+        .email-item.sender,
+        .notification-item.title {
+            font-weight: bold;
+        }
+
+        .email-item.subject,
+        .notification-item.message {
+            color: #555;
+            font-size: 0.85em;
+        }
+        .notification-item.title {
+             margin-top: 5px;
+             font-size: 0.8em; /* Smaller date/title */
+             color: var(--black2);
+        }
+
+
+        #inbox-preview hr,
+        #notifications-dropdown hr {
+            margin: 8px 0;
+            border: 0;
+            border-top: 1px solid #eee;
+        }
+
+        #inbox-preview a,
+        #notifications-dropdown a {
+            display: block;
+            margin-top: 10px;
+            font-size: 0.85em;
+            text-align: center; /* Center link */
+            color: #007bff;
+            text-decoration: none;
+            padding-top: 5px;
+        }
+         #inbox-preview a:hover,
+        #notifications-dropdown a:hover {
+            text-decoration: underline;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: 15px; /* Space before user info */
+        }
+
+        .user-info .name { /* Changed from just .name */
+            color: var(--black1);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .user {
+            position: relative;
+            min-width: 40px; /* Ensure minimum width */
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .user img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+
+        /* ============ Modal Styles (Consistent) ============ */
         .modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6); /* Slightly darker for better contrast */
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-    overflow: auto;
-    transition: all 0.3s ease; /* Smooth fade-in transition */
-    backdrop-filter: blur(3px); /* Subtle blur effect */
-}
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            overflow: auto;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(3px);
+            opacity: 0; /* Start transparent */
+            pointer-events: none; /* Don't capture clicks when hidden */
+        }
 
-.modal-overlay.show {
-    display: flex;
-    animation: fadeIn 0.3s ease; /* Animation for show effect */
-}
+        .modal-overlay.active { /* Use .active to show */
+            display: flex;
+            opacity: 1;
+            pointer-events: auto;
+        }
 
-/* Modal Container */
-.modal {
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    width: 90%;
-    max-width: 440px;
-    margin: auto;
-    transform: scale(0.95);
-    transition: transform 0.3s ease;
-    overflow: hidden; /* Ensures content doesn't break the rounded corners */
-}
+        /* General Modal Container */
+        .modal {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            width: 90%;
+            max-width: 440px; /* Default width for sign out */
+            margin: auto;
+            transform: scale(0.95) translateY(10px); /* Start slightly scaled down */
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            overflow: hidden;
+            opacity: 0; /* Start transparent */
+            display: none; /* Hidden by default */
+        }
 
-.modal.show {
-    transform: scale(1);
-}
+        .modal-overlay.active .modal { /* Show modal when overlay is active */
+             display: block; /* Make visible */
+             transform: scale(1) translateY(0);
+             opacity: 1;
+        }
 
-/* Modal Header */
-.modal-header {
-    padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid #eaeaea;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #f8f9fa;
-}
+        /* Modal Header */
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #eaeaea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8f9fa; /* Subtle header background */
+        }
 
-.modal-title {
-    font-size: 1.35rem;
-    font-weight: 600;
-    margin: 0;
-    color: #333;
-}
+        .modal-title {
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--blue); /* Theme color title */
+        }
 
-/* Modal Body */
-.modal-body {
-    padding: 1.5rem;
-    font-size: 1.1rem;
-    color: #555;
-    line-height: 1.5;
-}
+        /* Close Button (Standard) */
+        .modal-close {
+            cursor: pointer;
+            font-size: 1.8rem; /* Larger icon */
+            color: #999;
+            border: none;
+            background: none;
+            padding: 0;
+            line-height: 1; /* Align icon better */
+            transition: color 0.2s ease;
+        }
 
-/* Modal Footer */
-.modal-footer {
-    padding: 1rem 1.5rem;
-    border-top: 1px solid #eaeaea;
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-}
+        .modal-close:hover {
+            color: #555;
+        }
 
-/* Close Button */
-.modal-close-button {
-    cursor: pointer;
-    font-size: 1.6rem;
-    color: #999;
-    border: none;
-    background: none;
-    padding: 0;
-    height: 32px;
-    width: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: all 0.2s ease;
-}
+        /* Modal Body */
+        .modal-body {
+            padding: 1.5rem;
+            font-size: 1.1rem; /* Adjust base size */
+            color: #555;
+            line-height: 1.6;
+            text-align: center; /* Center sign out text */
+        }
 
-.modal-close-button:hover {
-    color: #555;
-    background-color: rgba(0, 0, 0, 0.05);
-}
+        /* Modal Footer */
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #eaeaea;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            background-color: #f8f9fa; /* Match header */
+        }
 
-/* Action Buttons */
-.modal-button {
-    padding: 0.6rem 1.2rem;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: none;
-}
+        /* Action Buttons (Standard) */
+        .modal-button {
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
 
-.no-button {
-    background-color: #f1f3f5;
-    color: #495057;
-}
+        .no-button { /* For Cancel/No */
+            background-color: var(--yellow);
+            color: var(--black1);
+        }
+        .no-button:hover { background-color: #e4c370; }
 
-.no-button:hover {
-    background-color: #e9ecef;
-}
+        .yes-button { /* For Confirm/Sign Out */
+            background-color: var(--blue);
+            color: white;
+        }
+        .yes-button:hover { background-color: #182c7a; }
 
-.yes-button {
-    background-color: #4263eb;
-    color: white;
-}
 
-.yes-button:hover {
-    background-color: #3b5bdb;
-    box-shadow: 0 2px 8px rgba(66, 99, 235, 0.3);
-}
+        /* =============== PROFILE PAGE SPECIFIC STYLES ============== */
+        .profile-container {
+            background-color: var(--white); /* White background for container */
+            border-radius: 10px;
+            margin: 20px 0 0 0; /* Adjust margin */
+            padding: 25px; /* Increase padding */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Softer shadow */
+        }
 
-/* Animation Keyframes */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px; /* Add padding below header */
+            border-bottom: 1px solid #eee; /* Separator */
+            flex-wrap: wrap; /* Allow wrapping */
+            gap: 20px;
+        }
 
-/* Responsive Adjustments */
-@media (max-width: 576px) {
-    .modal {
-        width: 95%;
-        max-width: none;
-    }
-    
-    .modal-footer {
-        flex-direction: row;
-    }
-    
-    .modal-button {
-        flex: 1;
-    }
-}
-   
-  </style>
+        .profile-picture {
+            width: 100px; /* Adjust size */
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 25px; /* Increase margin */
+            border: 4px solid var(--white);
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+
+        .profile-picture img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-title {
+             flex-grow: 1; /* Allow title to take space */
+        }
+
+        .profile-title h2 {
+            color: var(--black1);
+            font-size: 1.6rem; /* Adjust size */
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .profile-title p {
+            color: var(--black2);
+            font-size: 0.9rem; /* Adjust size */
+        }
+
+        .profile-edit-btn {
+            margin-left: auto; /* Pushes button to the right */
+            background-color: var(--blue);
+            color: var(--white);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            white-space: nowrap; /* Prevent wrapping */
+        }
+
+        .profile-edit-btn:hover {
+            background-color: #182e75;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .profile-sections {
+            display: grid; /* Use grid for sections */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive columns */
+            gap: 25px; /* Gap between sections */
+        }
+
+        .profile-section {
+            background-color: #fdfdff; /* Slightly off-white */
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); /* Lighter shadow */
+            border: 1px solid #eee; /* Subtle border */
+        }
+
+        .profile-section h3 {
+            color: var(--blue);
+            margin-bottom: 20px; /* Increase margin */
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            font-size: 1.15rem; /* Adjust size */
+            font-weight: 600;
+        }
+
+        .info-group {
+            margin-bottom: 15px;
+        }
+        .info-group:last-child {
+            margin-bottom: 5px; /* Reduce margin for last item */
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: var(--black2);
+            font-size: 0.85rem; /* Adjust size */
+            margin-bottom: 4px; /* Adjust spacing */
+            display: block; /* Ensure label is block */
+        }
+
+        .info-value {
+            color: var(--black1);
+            font-size: 1rem; /* Adjust size */
+            line-height: 1.4;
+        }
+
+        /* No stats container in this HTML, commenting out */
+        /* .stats-container { ... } */
+        /* .stat-item { ... } */
+        /* .stat-value { ... } */
+        /* .stat-label { ... } */
+
+        /* Health Metrics */
+        .health-metrics {
+            display: grid; /* Use grid for metrics */
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Responsive columns */
+            gap: 10px;
+            margin-top: 5px; /* Reduce top margin */
+        }
+
+        .metric-item {
+            background-color: #f8f9fa; /* Lighter background */
+            padding: 10px; /* Adjust padding */
+            border-radius: 8px;
+            text-align: center; /* Center align */
+            border: 1px solid #eee;
+        }
+
+        .metric-value {
+            font-size: 1.1rem; /* Adjust size */
+            font-weight: 600; /* Slightly bolder */
+            color: var(--blue);
+            display: block; /* Ensure block */
+        }
+
+        .metric-label {
+            font-size: 0.75rem; /* Smaller label */
+            color: var(--black2);
+            margin-top: 3px; /* Adjust spacing */
+            display: block;
+        }
+
+        /* Fitness Goals */
+        .fitness-goals {
+            margin-top: 15px;
+        }
+
+        .goal-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px; /* Increase spacing */
+             gap: 12px; /* Gap between icon and details */
+        }
+         .goal-item:last-child {
+             margin-bottom: 0;
+         }
+
+        .goal-icon {
+            background-color: var(--light-blue);
+            color: var(--blue);
+            width: 38px; /* Adjust size */
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+         .goal-icon ion-icon {
+              font-size: 1.2rem;
+         }
+
+        .goal-details {
+            flex: 1;
+        }
+
+        .goal-title {
+            font-weight: 500;
+            margin-bottom: 4px; /* Space below title */
+            font-size: 0.95rem; /* Adjust size */
+             color: var(--black1);
+        }
+
+        .goal-progress {
+            height: 8px; /* Slightly thicker */
+            background-color: #e9ecef; /* Slightly darker background */
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--blue);
+            border-radius: 4px; /* Match parent */
+             transition: width 0.5s ease-in-out; /* Add animation */
+        }
+
+        /* ================== Responsive Design ================== */
+
+        /* Medium devices (tablets, less than 992px) */
+        @media (max-width: 991px) {
+            .navigation { left: -300px; z-index: 1001; }
+            .navigation.active { width: 300px; left: 0; }
+            .main { width: 100%; left: 0; padding: 15px; }
+            .main.active { left: 0; width: 100%; }
+            .topbar { padding: 0 15px; }
+            .search-container { max-width: 400px; margin: 0 10px; }
+            .user-info .name { display: none; }
+            .topbar-icons { gap: 12px; }
+            #mail-icon-inbox, #notification-icon { font-size: 23px; }
+
+             .profile-container { margin: 15px 0 0 0; padding: 20px; }
+             .profile-sections { grid-template-columns: 1fr; /* Stack sections */ }
+        }
+
+        /* Small devices (landscape phones, less than 768px) */
+        @media (max-width: 767px) {
+            .profile-header {
+                flex-direction: column; /* Stack header items */
+                text-align: center;
+                padding-bottom: 15px;
+                margin-bottom: 20px;
+                gap: 10px;
+            }
+            .profile-picture {
+                margin-right: 0;
+                margin-bottom: 10px;
+                 width: 90px; height: 90px;
+            }
+            .profile-title h2 { font-size: 1.4rem; }
+            .profile-title p { font-size: 0.85rem; }
+            .profile-edit-btn {
+                margin-left: 0; /* Center button */
+                margin-top: 10px;
+            }
+
+            .modal-content { max-width: 90%; padding: 20px; }
+             .modal-footer { flex-direction: column; gap: 10px; }
+             .modal-button { width: 100%; }
+             .topbar { padding: 0 10px; }
+             .search-container { max-width: 250px; }
+             .profile-section { padding: 15px; }
+             .profile-section h3 { font-size: 1.1rem; margin-bottom: 15px;}
+             .info-value { font-size: 0.95rem; }
+             .health-metrics { gap: 8px; }
+             .metric-item { padding: 8px; }
+             .metric-value { font-size: 1rem; }
+        }
+
+        /* Extra small devices (portrait phones, less than 480px) */
+        @media (max-width: 479px) {
+            .main { padding: 10px; }
+            .toggle { font-size: 2rem; }
+            .search-container { display: none; }
+            .topbar-icons { margin-left: auto; gap: 10px; }
+            .user-info { margin-left: 10px; }
+             .user { width: 35px; height: 35px; min-width: 35px; }
+            #inbox-preview, #notifications-dropdown { width: 250px; right: 0; }
+
+            .modal { max-width: 95%; padding: 15px; }
+             .modal-title { font-size: 1.2em; }
+             .modal-body { padding: 1rem; font-size: 1rem; }
+             .modal-footer { padding: 0.75rem 1rem; }
+
+             .profile-container { padding: 15px; margin-top: 10px;}
+             .profile-picture { width: 80px; height: 80px; }
+             .profile-title h2 { font-size: 1.3rem; }
+             .profile-edit-btn { padding: 8px 15px; font-size: 0.85rem; }
+             .profile-section h3 { font-size: 1.05rem; }
+             .info-label { font-size: 0.8rem; }
+             .info-value { font-size: 0.9rem; }
+             .health-metrics { grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); } /* Allow more stacking */
+             .metric-value { font-size: 0.95rem; }
+             .metric-label { font-size: 0.7rem; }
+             .goal-title { font-size: 0.9rem; }
+        }
+
+    </style>
 </head>
 
 <body>
@@ -812,7 +845,7 @@ margin-right: 5px;
                     </a>
                 </li>
 
-                <li class="hovered">
+                <li> <!-- Removed hovered -->
                     <a href="guest.html">
                         <span class="icon">
                             <ion-icon name="home-outline"></ion-icon>
@@ -821,7 +854,7 @@ margin-right: 5px;
                     </a>
                 </li>
 
-                <li>
+                <li> <!-- Removed hovered -->
                     <a href="guestsplan.html">
                         <span class="icon">
                             <ion-icon name="card-outline"></ion-icon>
@@ -830,8 +863,8 @@ margin-right: 5px;
                     </a>
                 </li>
 
-                <li>
-                    <a href="#">
+                <li class="hovered"> <!-- Added hovered -->
+                    <a href="guestsprofile.html">
                         <span class="icon">
                             <ion-icon name="person-outline"></ion-icon>
                         </span>
@@ -849,7 +882,7 @@ margin-right: 5px;
                 </li>
 
                 <li>
-                    <a href="#" id="signOutLink">
+                    <a href="#" id="signOutLink"> <!-- Keep ID -->
                         <span class="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>
@@ -862,63 +895,63 @@ margin-right: 5px;
         <!-- ========================= Main ==================== -->
         <div class="main">
             <div class="topbar">
-                <div class="toggle">
+                 <div class="toggle">
                     <ion-icon name="menu-outline"></ion-icon>
                 </div>
 
                 <div class="search-container">
                     <label>
-                      <input type="text" id="search-input" placeholder="Search what you're looking for">
+                      <input type="text" id="search-input" placeholder="Search profile details...">
                       <ion-icon name="search-outline"></ion-icon>
                     </label>
                     <div id="search-results">
-                    </div>
-                  </div>
-
-                  
-                <div class="mail-container">
-                    <ion-icon name="mail" id="mail-icon-inbox"></ion-icon>
-                    <div id="unread-notification">1</div>
-                    <div id="inbox-preview">
-                    <strong>Inbox</strong>
-                    <hr>
-                    <div id="unread-messages">
-                        <div class="email-item sender">Coach</div>
-                        <div class="email-item subject">Can you help me?</div>
-                        <hr>
-                    </div>
-                    <div id="read-messages">
-                        <div class="email-item sender">User 1</div>
-                        <div class="email-item subject">Previous message...</div>
-                    </div>
-                    <a href="#">See All</a>
+                        <!-- Search results populated by JS -->
                     </div>
                 </div>
 
-                <div class="notification-container">
-                    <ion-icon name="notifications" id="notification-icon"></ion-icon>
-                    <div id="notification-badge">1</div>
-                    <div id="notifications-dropdown">
-                      <strong>Notifications</strong>
-                      <hr>
-                      <div id="notification-list">
-                        <div class="notification-item title">Today, 5:00 PM</div>
-                        <div class="notification-item message">You have a session scheduled.</div>
-                        <hr>
-                        <div class="notification-item title">New Request</div>
-                        <div class="notification-item message">Veronica has requested a session with you.</div>
-                      </div>
-                      <a href="#">See All</a>
+                <!-- Grouped Icons and User Info -->
+                <div class="topbar-icons">
+                    <div class="mail-container">
+                        <ion-icon name="mail-outline" id="mail-icon-inbox"></ion-icon>
+                        <div id="unread-notification" style="display: block;">1</div>
+                        <div id="inbox-preview">
+                            <strong>Inbox</strong><hr>
+                            <div id="unread-messages">
+                                <div class="email-item sender">Coach</div>
+                                <div class="email-item subject">Can you help me?</div><hr>
+                            </div>
+                            <div id="read-messages">
+                                <div class="email-item sender">User 1</div>
+                                <div class="email-item subject">Previous message...</div>
+                            </div>
+                            <a href="#">See All Messages</a>
+                        </div>
                     </div>
-                  </div>
-            
-                <div class="name">
-                    <p> Guest User 01</p>
+
+                    <div class="notification-container">
+                        <ion-icon name="notifications-outline" id="notification-icon"></ion-icon>
+                        <div id="notification-badge" style="display: block;">1</div>
+                        <div id="notifications-dropdown">
+                            <strong>Notifications</strong><hr>
+                            <div id="notification-list">
+                                <div class="notification-item title">Today, 5:00 PM</div>
+                                <div class="notification-item message">You have a session scheduled.</div><hr>
+                                <div class="notification-item title">New Request</div>
+                                <div class="notification-item message">Veronica has requested a session.</div>
+                            </div>
+                            <a href="#">See All Notifications</a>
+                        </div>
+                    </div>
                 </div>
-    
-                <div class="user">
-                    <img src="assets/img/esnyr.jpg" alt="">
-                </div>                
+
+                <div class="user-info">
+                    <div class="name">
+                        <p>Guest User 01</p>
+                    </div>
+                    <div class="user">
+                        <img src="assets/img/esnyr.jpg" alt="User profile">
+                    </div>
+                </div>
             </div>
 
             <!-- ====================== Profile Content ================== -->
@@ -931,6 +964,7 @@ margin-right: 5px;
                         <h2>Esnyr Slayalili</h2>
                         <p>Loyal Guest since January 2025</p>
                     </div>
+                    <!-- Consider disabling edit for guests or changing functionality -->
                     <button class="profile-edit-btn">Edit Profile</button>
                 </div>
 
@@ -940,11 +974,11 @@ margin-right: 5px;
                         <h3>Personal Information</h3>
                         <div class="info-group">
                             <div class="info-label">Full Name</div>
-                            <div class="info-value">Edward Linkin</div>
+                            <div class="info-value">Esnyr Slayalili</div>
                         </div>
                         <div class="info-group">
                             <div class="info-label">Email</div>
-                            <div class="info-value">edward.linkin@example.com</div>
+                            <div class="info-value">esnyr.pakak@example.com</div>
                         </div>
                         <div class="info-group">
                             <div class="info-label">Phone</div>
@@ -960,9 +994,6 @@ margin-right: 5px;
                         </div>
                     </div>
 
-                   
-
-                <div class="profile-sections">
                     <!-- Health Metrics Section -->
                     <div class="profile-section">
                         <h3>Health & Fitness</h3>
@@ -981,11 +1012,11 @@ margin-right: 5px;
                             </div>
                         </div>
 
-                        <h3 style="margin-top: 20px;">Fitness Goals</h3>
+                        <h3 style="margin-top: 25px;">Fitness Goals</h3>
                         <div class="fitness-goals">
                             <div class="goal-item">
                                 <div class="goal-icon">
-                                    <ion-icon name="fitness-outline"></ion-icon>
+                                    <ion-icon name="flame-outline"></ion-icon> <!-- Changed icon -->
                                 </div>
                                 <div class="goal-details">
                                     <div class="goal-title">Increase Strength</div>
@@ -996,7 +1027,7 @@ margin-right: 5px;
                             </div>
                             <div class="goal-item">
                                 <div class="goal-icon">
-                                    <ion-icon name="pulse-outline"></ion-icon>
+                                    <ion-icon name="heart-outline"></ion-icon> <!-- Changed icon -->
                                 </div>
                                 <div class="goal-details">
                                     <div class="goal-title">Cardio Endurance</div>
@@ -1007,7 +1038,7 @@ margin-right: 5px;
                             </div>
                             <div class="goal-item">
                                 <div class="goal-icon">
-                                    <ion-icon name="body-outline"></ion-icon>
+                                    <ion-icon name="scale-outline"></ion-icon> <!-- Changed icon -->
                                 </div>
                                 <div class="goal-details">
                                     <div class="goal-title">Weight Management</div>
@@ -1027,7 +1058,7 @@ margin-right: 5px;
                             <div class="info-value">Chest & Triceps - Apr 27, 2025</div>
                         </div>
                         <div class="info-group">
-                            <div class="info-label">Last Class</div>
+                            <div class="info-label">Last Class Attended</div>
                             <div class="info-value">Yoga Basics - Apr 25, 2025</div>
                         </div>
                         <div class="info-group">
@@ -1047,203 +1078,187 @@ margin-right: 5px;
                             <div class="info-value">HIIT, Weight Training, Yoga</div>
                         </div>
                     </div>
-           
-                    <div id="signOutModal" class="modal-overlay">
-                        <div class="modal">
-                            <div class="modal-header">
-                                <h2 class="modal-title">Sign Out</h2>
-                                <button type="button" class="modal-close-button">&times;</button>
-                            </div>
-                            <div class="modal-body">
-                                <p>Are you sure you want to sign out?</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="modal-button no-button" id="signOutNo">Cancel</button>
-                                <button type="button" class="modal-button yes-button" id="signOutYes">Sign Out</button>
-                            </div>
-                        </div>
-                    </div>
+                 </div> <!-- End profile-sections -->
+            </div> <!-- End profile-container -->
 
-            
+            <!-- ====================== End Profile Content ================== -->
 
- <!-- =========== Scripts =========  -->
- <script>
-    // Add hovered class to selected list item
-let list = document.querySelectorAll(".navigation li");
-
-function activeLink() {
-  list.forEach((item) => {
-    item.classList.remove("hovered");
-  });
-  this.classList.add("hovered");
-}
-
-list.forEach((item) => item.addEventListener("mouseover", activeLink));
-
-// Menu Toggle
-let toggle = document.querySelector(".toggle");
-let navigation = document.querySelector(".navigation");
-let main = document.querySelector(".main");
-
-toggle.onclick = function () {
-  navigation.classList.toggle("active");
-  main.classList.toggle("active");
-};
-
-//Search Button
-const searchInput = document.getElementById('search-input');
-const searchResultsDiv = document.getElementById('search-results');
-
-const searchData = [
-  "Sessions with Client",
-  "Workout Plan",
-  "My Clients",
-  "Session Today",
-  "Bookings",
-  "Requested Sessions",
-  "Plans",
-  "Messages",
-  "Settings",
-  "Profile"
-];
-
-searchInput.addEventListener('input', function() {
-  const searchTerm = this.value.toLowerCase();
-  const filteredResults = searchData.filter(item =>
-    item.toLowerCase().includes(searchTerm)
-  );
-
-  displayResults(filteredResults);
-});
-
-function displayResults(results) {
-  searchResultsDiv.innerHTML = '';
-
-  if (results.length > 0 && searchInput.value.trim() !== '') {
-    const ul = document.createElement('ul');
-    results.forEach(result => {
-      const li = document.createElement('li');
-      li.textContent = result;
-      li.addEventListener('click', function() {
-        searchInput.value = this.textContent;
-        searchResultsDiv.style.display = 'none'; 
-      });
-      ul.appendChild(li);
-    });
-    searchResultsDiv.appendChild(ul);
-    searchResultsDiv.style.display = 'block'; 
-  } else {
-    searchResultsDiv.style.display = 'none'; 
-  }
-}
+        </div> <!-- End main -->
+    </div> <!-- End container -->
 
 
-document.addEventListener('click', function(event) {
-  if (!event.target.closest('.search-container')) {
-    searchResultsDiv.style.display = 'none';
-  }
-});
+    <!-- ============ Modals ============ -->
 
-//Mail Button
-const mailIconInbox = document.getElementById('mail-icon-inbox');
-const unreadNotification = document.getElementById('unread-notification');
-const inboxPreview = document.getElementById('inbox-preview');
-let hasUnread = true; 
-
-function updateUnreadIndicator() {
-  unreadNotification.style.display = hasUnread ? 'block' : 'none';
-}
-
-updateUnreadIndicator();
-
-mailIconInbox.addEventListener('click', function() {
-  inboxPreview.style.display = (inboxPreview.style.display === 'block' ? 'none' : 'block');
-  
-  if (hasUnread && inboxPreview.style.display === 'block') {
-    hasUnread = false;
-    updateUnreadIndicator();
-   
-    console.log('Mail icon clicked - marking as read');
-  }
-});
+    <!-- Sign Out Modal -->
+    <div class="modal-overlay" id="signOutModalOverlay">
+        <div class="modal" id="signOutModal">
+            <div class="modal-header">
+                <h3 class="modal-title">Sign Out</h3>
+                 <button type="button" class="modal-close" aria-label="Close modal">
+                    <ion-icon name="close-outline"></ion-icon>
+                 </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to sign out?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="modal-button no-button" id="signOutNo">Cancel</button>
+                <button type="button" class="modal-button yes-button" id="signOutYes">Sign Out</button>
+            </div>
+        </div>
+    </div>
 
 
-document.addEventListener('click', function(event) {
-  if (!event.target.closest('.mail-container')) {
-    inboxPreview.style.display = 'none';
-  }
-});
-
-
-//Notification Icon
-const notificationIcon = document.getElementById('notification-icon');
-const notificationBadge = document.getElementById('notification-badge');
-const notificationsDropdown = document.getElementById('notifications-dropdown');
-
-notificationIcon.addEventListener('click', function() {
-  notificationsDropdown.style.display = (notificationsDropdown.style.display === 'block' ? 'none' : 'block');
-  
-  notificationBadge.style.display = 'none';
-});
-
-
-document.addEventListener('click', function(event) {
-  if (!event.target.closest('.notification-container')) {
-    notificationsDropdown.style.display = 'none';
-  }
-});
-
-//  Sign Out Modal Logic (Add to both files)
-const signOutLink = document.getElementById('signOutLink');
-    const signOutModal = document.getElementById('signOutModal');
-    const signOutNoButton = document.getElementById('signOutNo');
-    const signOutYesButton = document.getElementById('signOutYes');
-    const modalOverlay = document.querySelector('.modal-overlay'); //  Get the overlay
-
-    signOutLink.addEventListener('click', (event) => {
-        event.preventDefault();
-        modalOverlay.classList.add('show'); //  Show the overlay
-        signOutModal.classList.add('show'); //  Show the modal
-    });
-
-    signOutNoButton.addEventListener('click', () => {
-        modalOverlay.classList.remove('show');
-        signOutModal.classList.remove('show');
-    });
-
-    signOutYesButton.addEventListener('click', () => {
-        window.location.href = 'index.html'; //  Or your sign-out URL
-    });
-
-    //  Close modal on overlay click
-    modalOverlay.addEventListener('click', (event) => {
-        if (event.target === modalOverlay) {
-            modalOverlay.classList.remove('show');
-            document.querySelectorAll('.modal.show').forEach(modal => modal.classList.remove('show'));
+    <!-- =========== Scripts =========  -->
+    <script>
+        // Navigation Link Activation & Menu Toggle (Standard)
+        let list = document.querySelectorAll(".navigation li");
+        function activeLink() {
+            list.forEach(item => item.classList.remove("hovered"));
+            // Find the link pointing to 'guestsprofile.html'
+             const currentLink = Array.from(list).find(item => item.querySelector('a[href="guestsprofile.html"]'));
+             if (currentLink) currentLink.classList.add("hovered");
         }
-    });
+        activeLink(); // Activate on load
 
-    //  Close modal on close button click (IMPORTANT:  For ALL modals)
-    document.querySelectorAll('.modal-close-button').forEach(button => {
-        button.addEventListener('click', () => {
-            modalOverlay.classList.remove('show');
-            button.closest('.modal').classList.remove('show');
+        let toggle = document.querySelector(".toggle");
+        let navigation = document.querySelector(".navigation");
+        let main = document.querySelector(".main");
+        if(toggle && navigation && main) {
+            toggle.onclick = () => {
+                navigation.classList.toggle("active");
+                main.classList.toggle("active");
+            };
+        }
+
+         // Search Functionality (Standard)
+        const searchInput = document.getElementById('search-input');
+        const searchResultsDiv = document.getElementById('search-results');
+        const searchDataProfile = [ // Profile specific search data
+            "Personal Information", "Health Metrics", "Fitness Goals",
+            "Activity History", "Edit Profile", "Change Password", "Membership Details"
+        ];
+
+        if (searchInput && searchResultsDiv) {
+             searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                searchResultsDiv.innerHTML = '';
+                searchResultsDiv.style.display = 'none';
+                if (searchTerm.length > 0) {
+                    const filteredResults = searchDataProfile.filter(item => item.toLowerCase().includes(searchTerm));
+                    displayResults(filteredResults, searchTerm);
+                }
+            });
+            document.addEventListener('click', event => {
+                if (!event.target.closest('.search-container')) searchResultsDiv.style.display = 'none';
+            });
+        }
+        function displayResults(results, searchTerm) {
+             if (results.length > 0) {
+                const ul = document.createElement('ul');
+                results.forEach(result => {
+                    const li = document.createElement('li');
+                    const regex = new RegExp(`(${searchTerm})`, 'gi');
+                    li.innerHTML = result.replace(regex, '<span class="highlight">$1</span>');
+                    li.addEventListener('click', () => {
+                        searchInput.value = result;
+                        searchResultsDiv.style.display = 'none';
+                        console.log("Selected:", result); // Optional: trigger action
+                    });
+                    ul.appendChild(li);
+                });
+                searchResultsDiv.appendChild(ul);
+                searchResultsDiv.style.display = 'block';
+            } else {
+                searchResultsDiv.style.display = 'none';
+            }
+        }
+
+        // Mail & Notification Dropdown Functionality (Standard)
+        const mailIconInbox = document.getElementById('mail-icon-inbox');
+        const unreadNotification = document.getElementById('unread-notification');
+        const inboxPreview = document.getElementById('inbox-preview');
+        let hasUnread = true; // Simulate
+        function updateUnreadIndicator() { if (unreadNotification) unreadNotification.style.display = hasUnread ? 'block' : 'none'; }
+        if(mailIconInbox && inboxPreview && unreadNotification) {
+            updateUnreadIndicator();
+            mailIconInbox.addEventListener('click', event => {
+                 event.stopPropagation();
+                 if (notificationsDropdown) notificationsDropdown.style.display = 'none';
+                 const isVisible = inboxPreview.style.display === 'block';
+                 inboxPreview.style.display = isVisible ? 'none' : 'block';
+                 if (!isVisible && hasUnread) { hasUnread = false; updateUnreadIndicator(); }
+            });
+        }
+        const notificationIcon = document.getElementById('notification-icon');
+        const notificationBadge = document.getElementById('notification-badge');
+        const notificationsDropdown = document.getElementById('notifications-dropdown');
+        let hasNewNotifications = true; // Simulate
+        if (notificationIcon && notificationBadge && notificationsDropdown) {
+             notificationBadge.style.display = hasNewNotifications ? 'block' : 'none';
+            notificationIcon.addEventListener('click', event => {
+                 event.stopPropagation();
+                 if (inboxPreview) inboxPreview.style.display = 'none';
+                 const isVisible = notificationsDropdown.style.display === 'block';
+                 notificationsDropdown.style.display = isVisible ? 'none' : 'block';
+                 if (!isVisible && hasNewNotifications) { hasNewNotifications = false; notificationBadge.style.display = 'none'; }
+            });
+        }
+        document.addEventListener('click', event => {
+            if (inboxPreview && !event.target.closest('.mail-container')) inboxPreview.style.display = 'none';
+            if (notificationsDropdown && !event.target.closest('.notification-container')) notificationsDropdown.style.display = 'none';
         });
-    });
 
-    //  Close modal on Escape key
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
-            modalOverlay.classList.remove('show');
-            document.querySelectorAll('.modal.show').forEach(modal => modal.classList.remove('show'));
+
+        // --- Modal Handling (Standard) ---
+        function showModal(overlayId) {
+            const overlay = document.getElementById(overlayId);
+            if (overlay) overlay.classList.add('active');
         }
-    });
- </script>
+        function hideModal(overlayId) {
+            const overlay = document.getElementById(overlayId);
+            if (overlay) overlay.classList.remove('active');
+        }
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (event) => {
+                if (event.target === overlay) hideModal(overlay.id);
+            });
+        });
+        document.querySelectorAll('.modal-close').forEach(button => {
+            button.addEventListener('click', () => {
+                 const overlay = button.closest('.modal-overlay');
+                 if(overlay) hideModal(overlay.id);
+            });
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.active').forEach(overlay => hideModal(overlay.id));
+            }
+        });
+        // --- End Modal Handling ---
 
-<!-- ====== ionicons ======= -->
-<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-</body>
+        // Sign Out Modal Logic (Standard)
+        const signOutLink = document.getElementById('signOutLink');
+        const signOutNoButton = document.getElementById('signOutNo');
+        const signOutYesButton = document.getElementById('signOutYes');
+        if (signOutLink) signOutLink.addEventListener('click', (event) => { event.preventDefault(); showModal('signOutModalOverlay'); });
+        if (signOutNoButton) signOutNoButton.addEventListener('click', () => hideModal('signOutModalOverlay'));
+        if (signOutYesButton) signOutYesButton.addEventListener('click', () => window.location.href = 'index.html'); // Redirect on Yes
+
+         // Add functionality for the Edit Profile button if needed
+         const editProfileBtn = document.querySelector('.profile-edit-btn');
+         if (editProfileBtn) {
+             editProfileBtn.addEventListener('click', () => {
+                 // Replace with actual edit logic or modal popup
+                 alert('Edit Profile button clicked! (Functionality not implemented)');
+             });
+         }
+
+    </script>
+
+    <!-- ====== ionicons ======= -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
 
 </html>

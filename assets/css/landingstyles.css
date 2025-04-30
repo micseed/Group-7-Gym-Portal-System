@@ -420,8 +420,8 @@ header {
 }
 
 .col {
-  width: 320px; 
-  margin: 20px; 
+  width: 300px; 
+  margin: 10px; 
   padding: 20px;
   background-color: #484848; 
   border-radius: 20px; 
@@ -472,8 +472,10 @@ header {
 }
 
 .big-container {
-  height: 650px;
+  /* height: 650px; */ /* <--- REMOVE OR COMMENT OUT THIS LINE */
   background-color: #83c7f0;
+  padding-top: 20px;    /* Optional: Add some top padding if needed */
+  padding-bottom: 60px; /* <--- ADD some bottom padding for spacing */
 }
 
 .plans-container {
@@ -492,8 +494,9 @@ header {
 }
 
 .plan {
-  width: 380px;
-  height: 580px;
+  /* width: 380px; */ /* Old width */
+  width: 320px; /* <--- TRY A SMALLER VALUE */
+  height: 580px; /* Keep height or adjust if needed */
   margin: 20px;
   padding: 30px;
   padding-top: 0;
@@ -883,3 +886,568 @@ to {opacity: 1;}
 }
 
 
+/* Base styles for desktop - add these to your main CSS if not already present */
+.menu-toggle {
+  display: none; /* Hide hamburger menu in desktop view */
+  background: none;
+  border: none;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+  z-index: 1100;
+}
+
+.menus {
+  display: flex; /* Always display navbar menu in desktop view */
+  gap: 60px; /* Default spacing */
+}
+
+.menus .mobile-login {
+  display: none; /* Hide mobile login in desktop view */
+}
+
+/* Larger Screens (1273px to 1440px) */
+@media (max-width: 1440px) and (min-width: 1273px) {
+  .menus {
+      gap: 50px; /* Slightly reduce menu spacing */
+  }
+  
+  .text-overlay {
+      width: 55%;
+  }
+}
+
+/* Medium-sized laptops and large tablets landscape (1025px to 1272px) */
+@media (max-width: 1272px) and (min-width: 1025px) {
+  .menus {
+      gap: 35px; /* Further reduce menu spacing */
+  }
+  
+  .nav-bar {
+      margin-left: 15px;
+      padding: 12px;
+  }
+  
+  .text-overlay {
+      width: 58%;
+      margin-left: 2.5%;
+  }
+  
+  .text-overlay h1,
+  .text-overlay h2 {
+      font-size: 3.8em;
+  }
+  
+  .text-overlay p {
+      font-size: 1.35em;
+  }
+  
+  .row-feature {
+      gap: 20px;
+  }
+  
+  .plans-container {
+      gap: 25px;
+  }
+  
+  .blue-box {
+      flex-basis: calc(50% - 25px);
+  }
+}
+
+/* Small laptops/large tablets (800px to 1024px) */
+@media (max-width: 1024px) and (min-width: 800px) {
+  .nav-bar {
+      margin-left: 15px;
+      padding: 12px;
+  }
+  
+  .menus {
+      gap: 25px; /* Even smaller gap for this specific range */
+  }
+  
+  .text-overlay {
+      width: 62%;
+      margin-left: 2.5%;
+  }
+  
+  .col {
+      width: calc(50% - 30px);
+      margin: 15px;
+  }
+  
+  .blue-box {
+      flex-basis: calc(50% - 20px);
+  }
+  
+  .coach-card {
+      width: calc(33.33% - 20px);
+  }
+  
+  .contact-section {
+      padding: 25px 15px;
+  }
+  
+  .footer-container {
+      justify-content: space-around;
+      padding: 0 15px;
+  }
+}
+
+/* Regular Tablet/Small Desktop (799px and below) */
+@media (max-width: 799px) {
+  .nav-bar {
+      margin-left: 20px; /* Reduce side margin */
+      padding: 15px;
+  }
+
+  .menus {
+      gap: 40px; /* Reduce gap between menu items */
+  }
+
+  .text-overlay {
+      width: 60%; /* Allow text to take more space */
+      margin-left: 3%;
+  }
+
+  .text-overlay h1,
+  .text-overlay h2 {
+      font-size: 3.5em; /* Slightly smaller headings */
+  }
+
+  .text-overlay p {
+      font-size: 1.3em;
+  }
+
+  .getstarted {
+      font-size: 1.3em;
+      padding: 12px 25px;
+  }
+
+  .row-feature {
+      gap: 15px; /* Add gap for wrapping columns */
+  }
+
+  .col {
+      width: calc(50% - 35px); /* Two columns per row on tablets */
+      margin: 15px;
+  }
+
+  .plans-container {
+      gap: 20px; /* Reduce gap */
+      padding: 0 20px; /* Add padding */
+  }
+
+  .blue-box {
+     flex-basis: calc(50% - 20px); /* Allow plans to wrap, 2 per row */
+     margin-bottom: 20px;
+  }
+
+  .plan {
+    width: 100%; /* Make plan fill blue box */
+    height: auto; /* Adjust height automatically */
+    min-height: 550px; /* Maintain minimum height */
+    margin: 0; /* Remove margin inside blue-box */
+    padding: 20px; /* Adjust padding */
+  }
+
+  .big-container {
+      height: auto; /* Let container height adjust */
+      padding-bottom: 40px; /* Add space at bottom */
+  }
+
+  .coach-container {
+      gap: 20px;
+      padding: 0 20px;
+  }
+
+  .coach-card {
+      width: calc(33.33% - 27px); /* Three coaches per row */
+  }
+
+  .contact-section {
+      padding: 30px 15px;
+  }
+
+  .contact-form {
+      margin-right: 2%;
+  }
+
+  .footer-container {
+     flex-wrap: wrap; /* Allow footer sections to wrap */
+     padding: 0 20px;
+  }
+
+  .footer-section {
+      width: 45%; /* Two sections per row */
+      margin-bottom: 30px;
+  }
+
+  .footer-section:last-child {
+      margin-bottom: 0;
+  }
+}
+
+/* Tablet and Smaller Devices */
+@media (max-width: 768px) {
+  .logo h1 { font-size: 22px; }
+  .logo h3 { font-size: 18px; }
+
+  .menu-toggle { /* Show Hamburger */
+      display: block;
+      margin-right: 20px; /* Add margin */
+  }
+
+  .menus { /* Hide original menu, prepare for mobile */
+      display: none; /* Hide by default */
+      position: absolute;
+      top: 74px; /* Position below header (adjust if header height changes) */
+      left: 0;
+      width: 100%;
+      background-color: #1c2f74; /* Slightly darker blue for contrast */
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 0;
+      gap: 0; /* Remove horizontal gap */
+      border-top: 1px solid #83c7f0; /* Separator line */
+      z-index: 1050; /* Below header, above content */
+  }
+
+  .menus.active { /* Style for when menu is open */
+      display: flex; /* Show the menu */
+  }
+
+  .menus .items {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 5px; /* Space between vertical items */
+  }
+
+  .menus .items:last-child {
+      margin-bottom: 0;
+  }
+
+  .menus a {
+      padding: 15px 0; /* Make links taller touch targets */
+      display: block; /* Make entire area clickable */
+      width: 100%;
+      font-size: 18px; /* Adjust font size */
+  }
+
+  .menus a:after { /* Remove underline effect for mobile */
+      display: none;
+  }
+
+  .menus a:hover {
+      background-color: #2a4ba8; /* Hover effect for mobile menu items */
+      color: #F1D27C;
+  }
+
+  .buttons.desktop-login { /* Hide desktop login button */
+      display: none;
+  }
+
+  .menus .mobile-login { /* Show login link inside mobile menu */
+      display: block;
+      margin-top: 15px; /* Add space above login */
+      border-top: 1px solid rgba(255, 255, 255, 0.2); /* Separator */
+      padding-top: 15px;
+  }
+
+  .menus .mobile-login a {
+      font-weight: bold;
+      color: #F1D27C; /* Make it stand out */
+  }
+
+  /* Banner Adjustments */
+  .text-overlay {
+      top: 55%; /* Adjust vertical position */
+      width: 85%;
+      text-align: center;
+      margin-left: auto; /* Center */
+      margin-right: auto;
+      left: 0;
+      right: 0;
+      transform: translateY(-50%);
+  }
+
+  .text-overlay h1,
+  .text-overlay h2 {
+      font-size: 2.8em; /* Further reduce font size */
+      line-height: 1.2;
+  }
+
+  .text-overlay p {
+      font-size: 1.1em;
+  }
+
+  .getstarted {
+      position: static; /* Remove absolute positioning */
+      display: block; /* Make it a block element */
+      margin: 25px auto 0; /* Center button below text */
+      transform: none; /* Reset transform */
+      font-size: 1.2em;
+      width: fit-content; /* Adjust width */
+  }
+
+  .image-container {
+      height: 90vh; /* Adjust banner height */
+      min-height: 500px;
+  }
+  
+  .image-container img {
+      height: 100%; /* Make image fill container height */
+      object-position: center; /* Center image focus */
+  }
+
+  /* Features Adjustments */
+  .features-cards h1 { font-size: 2em; }
+  .features-cards p { font-size: 1em; margin-bottom: 20px; padding: 0 10px;}
+
+  .row-feature {
+      flex-direction: column; /* Stack features vertically */
+      align-items: center;
+      gap: 25px;
+  }
+
+  .col {
+      width: 85%; /* Make columns wider */
+      max-width: 400px; /* Max width */
+      margin: 0 0 20px 0; /* Adjust margin */
+  }
+
+  /* Pricing Plans Adjustments */
+  .pricing-plans h1 { font-size: 2em; }
+  .pricing-plans p { font-size: 1em; }
+
+  .plans-container {
+      flex-direction: column; /* Stack plans vertically */
+      align-items: center;
+      gap: 30px;
+      padding: 0 15px;
+  }
+
+  .blue-box {
+     flex-basis: 90%; /* Take up most of the width */
+     max-width: 450px; /* Add a max-width */
+     margin-bottom: 30px; /* Space between stacked plans */
+  }
+
+  .plan {
+      min-height: auto; /* Remove min-height */
+  }
+
+  /* Coaches Adjustments */
+  .coach-container {
+      gap: 25px;
+  }
+
+  .coach-card {
+      width: calc(50% - 25px); /* Two coaches per row */
+  }
+
+  /* Contact Adjustments */
+  .contact-section {
+      flex-direction: column; /* Stack content and form */
+      padding: 30px 15px;
+  }
+
+  .contact-content {
+      flex: 1 1 100%; /* Take full width */
+      margin-bottom: 30px; /* Add space below content */
+      align-items: center; /* Center image and text */
+  }
+
+  .contact-image {
+      margin-left: 0; /* Remove margin */
+      text-align: center; /* Center the image */
+      margin-bottom: 15px;
+  }
+  
+  .contact-image img {
+      max-width: 60%; /* Make image smaller */
+  }
+
+  .contact-text p {
+      margin-left: 0; /* Remove margin */
+      text-align: center;
+      padding: 0 10px;
+  }
+
+  .contact-form {
+      flex: 1 1 100%; /* Take full width */
+      margin-right: 0; /* Remove margin */
+      padding: 25px;
+  }
+
+  /* Footer Adjustments */
+  .footer-section {
+      width: 90%; /* Nearly full width, stacked */
+      text-align: center;
+      margin-bottom: 25px;
+  }
+  
+  .footer-section ul {
+      display: inline-block; /* Center list items */
+      text-align: left;
+  }
+  
+  .footer-bottom {
+      flex-direction: column; /* Stack policy links */
+      align-items: center;
+      gap: 10px;
+  }
+
+  /* Modal Adjustments (General) */
+  .login-modal-content,
+  .get-started-modal-content,
+  .modal-content { /* Coach Modal */
+      width: 85%;
+      margin: 15% auto; /* Adjust top margin */
+      padding: 20px;
+  }
+
+  .get-started-modal-content {
+       margin: 20% auto;
+  }
+
+  /* Get Started Modal Specifics */
+  .get-started-choice-container {
+      flex-direction: column; /* Stack choices */
+      align-items: center;
+      gap: 15px; /* Add gap */
+  }
+
+  .get-started-choice {
+      width: 80%; /* Make choices wider */
+  }
+}
+
+/* Smaller Mobile Devices */
+@media (max-width: 480px) {
+  .logo h1 { font-size: 20px; }
+  .logo h3 { font-size: 16px; }
+
+  .text-overlay {
+      width: 90%;
+  }
+
+  .text-overlay h1,
+  .text-overlay h2 {
+      font-size: 2.2em; /* Even smaller */
+  }
+
+  .text-overlay p {
+      font-size: 1em;
+  }
+
+  .getstarted {
+      font-size: 1.1em;
+      padding: 10px 20px;
+  }
+
+  .col {
+      width: 90%; /* Increase width slightly */
+  }
+  
+  .col img {
+      width: 150px;
+      height: 150px;
+  }
+  
+  .col h2 { font-size: 24px; }
+
+  .plan-header h2 { font-size: 1.6em; }
+  .plan-header .price { font-size: 1.8em; }
+
+  .coach-card {
+      width: 80%; /* One coach per row, centered */
+      max-width: 300px;
+  }
+  
+  .coach-card img {
+      height: 350px; /* Adjust image height if needed */
+  }
+
+  /* Modal Adjustments */
+  .login-modal-content,
+  .get-started-modal-content,
+  .modal-content {
+      width: 90%;
+      margin: 10% auto; /* Bring modals higher */
+  }
+  
+  .get-started-modal-content {
+      margin: 15% auto;
+  }
+
+  .login-form input { padding: 10px; font-size: 15px;}
+  .login-btn { padding: 10px 20px; font-size: 15px;}
+
+  .modal-content { /* Coach Modal */
+      margin-top: 15%;
+  }
+  
+  .modal-content img {
+      width: 100px;
+  }
+}
+
+/* Very Small Devices */
+@media (max-width: 320px) {
+  .logo h1 { font-size: 18px; }
+  .logo h3 { font-size: 14px; }
+  
+  .text-overlay h1,
+  .text-overlay h2 {
+      font-size: 1.8em;
+  }
+  
+  .text-overlay p {
+      font-size: 0.9em;
+  }
+  
+  .getstarted {
+      font-size: 1em;
+      padding: 8px 16px;
+  }
+  
+  .coach-card {
+      width: 95%;
+  }
+}
+
+/* Add styles for larger monitors */
+@media (min-width: 1441px) {
+  .container {
+      max-width: 1400px;
+      margin: 0 auto;
+  }
+  
+  .text-overlay {
+      width: 45%;
+  }
+  
+  .text-overlay h1,
+  .text-overlay h2 {
+      font-size: 4.2em;
+  }
+  
+  .text-overlay p {
+      font-size: 1.5em;
+  }
+  
+  .row-feature {
+      gap: 30px;
+  }
+  
+  .plans-container {
+      max-width: 1200px;
+      margin: 0 auto;
+  }
+  
+  .coach-container {
+      max-width: 1300px;
+      margin: 0 auto;
+  }
+}

@@ -42,21 +42,24 @@
       line-height: 1.6;
       overflow-x: hidden;
     }
+    
     .back-button {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  color: white;
-  padding: 10px 16px;
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: 500;
-  transition: background 0.3s ease;
-  z-index: 10;
-}
-.back-button:hover {
-  background-color: #203A93;
-}
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background 0.3s ease;
+      z-index: 10;
+      background-color: rgba(0, 0, 0, 0.3);
+    }
+    
+    .back-button:hover {
+      background-color: #203A93;
+    }
 
     .main-container {
       display: flex;
@@ -211,13 +214,15 @@
 
     .form-row {
       display: flex;
+      flex-wrap: wrap;
       gap: 20px;
       margin-bottom: 20px;
     }
 
     .form-group {
-      flex: 1;
+      flex: 1 1 250px;
       margin-bottom: 20px;
+      min-width: 0;
     }
 
     .form-label {
@@ -367,16 +372,17 @@
     .feature-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 15px;
       margin: 15px 0;
+      justify-content: center;
     }
 
     .feature-item {
-      flex: 1;
-      min-width: 120px;
+      flex: 1 1 140px;
+      max-width: 180px;
       background-color: var(--background-light);
       border-radius: var(--radius-small);
-      padding: 12px;
+      padding: 12px 8px;
       font-size: 14px;
       text-align: center;
       color: var(--dark-text);
@@ -386,19 +392,42 @@
       color: var(--primary-color);
     }
 
+    /* Enhanced Responsive Styles */
+    @media (max-width: 1200px) {
+      .form-group {
+        flex: 1 1 200px;
+      }
+    }
+
     @media (max-width: 992px) {
       .main-container {
         flex-direction: column;
       }
       
       .gym-image-section {
-        min-height: 300px;
+        min-height: 250px;
+        flex: initial;
+        padding: 30px 20px;
+      }
+      
+      .brand-name {
+        font-size: 30px;
+      }
+      
+      .slogan {
+        font-size: 16px;
+        margin-bottom: 20px;
+      }
+      
+      .forms-container {
+        padding: 30px 20px;
       }
     }
 
     @media (max-width: 768px) {
-      .forms-container {
-        padding: 30px 20px;
+      .tab {
+        padding: 15px 10px;
+        font-size: 14px;
       }
       
       .form-row {
@@ -406,8 +435,77 @@
         gap: 0;
       }
       
+      .form-group {
+        flex: 1 1 100%;
+      }
+      
+      .section-title {
+        font-size: 22px;
+      }
+      
       .feature-list {
         flex-direction: column;
+        align-items: center;
+      }
+      
+      .feature-item {
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .brand-name {
+        font-size: 24px;
+      }
+      
+      .slogan {
+        font-size: 14px;
+      }
+      
+      .gym-image-section {
+        min-height: 200px;
+        padding: 20px 15px;
+      }
+      
+      .forms-container {
+        padding: 20px 15px;
+      }
+      
+      .section-title {
+        font-size: 20px;
+        margin-bottom: 20px;
+      }
+      
+      .form-control {
+        padding: 10px 12px;
+      }
+      
+      .btn {
+        padding: 12px 16px;
+        font-size: 14px;
+      }
+      
+      .back-button {
+        top: 10px;
+        left: 10px;
+        padding: 8px 12px;
+        font-size: 14px;
+      }
+    }
+    
+    /* Fix for iOS input issues */
+    input, select, textarea {
+      font-size: 16px; /* Prevents iOS zoom on focus */
+    }
+    
+    /* Touch-friendly enhancements */
+    @media (pointer: coarse) {
+      .tab, .btn, select, input[type="date"] {
+        min-height: 44px; /* Better touch targets */
+      }
+      
+      select.form-control {
+        background-position: right 16px center;
       }
     }
   </style>
@@ -435,7 +533,7 @@
       <div class="forms-container">
         <!-- Guest Registration Form -->
         <div class="form-section active" id="guestForm">
-          <h2 class="section-title">Register as a Guest</h2>
+          <h2 class="section-title">Register as Guest</h2>
           
           <form id="guestRegistrationForm">
             <div class="form-row">
@@ -478,7 +576,7 @@
               <div class="form-group">
                 <label class="form-label" for="guestBirthday">Birthday</label>
                 <input type="date" id="guestBirthday" name="birthday" class="form-control" required>
-                <p class="error-message" id="guestAgeError"></p>
+                <p class="error-message" id="guestBirthdayError"></p>
               </div>
               
               <div class="form-group">
@@ -504,8 +602,6 @@
                 <input type="text" id="guestEmergencyContact" name="emergencyContact" class="form-control" required>
               </div>
             </div>
-            
-            
             
             <button type="submit" class="btn">Register as Guest</button>
             
@@ -564,9 +660,9 @@
               </div>
 
               <div class="form-group">
-                <label class="form-label" for="guestBirthday">Birthday</label>
-                <input type="date" id="guestBirthday" name="birthday" class="form-control" required>
-                <p class="error-message" id="guestAgeError"></p>
+                <label class="form-label" for="memberBirthday">Birthday</label>
+                <input type="date" id="memberBirthday" name="birthday" class="form-control" required>
+                <p class="error-message" id="memberBirthdayError"></p>
               </div>
               
               <div class="form-group">
