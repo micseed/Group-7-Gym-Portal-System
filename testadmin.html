@@ -7,285 +7,721 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" /> <!-- Keep Font Awesome -->
     <title>Admin Dashboard</title>
     <!-- ======= Styles ====== -->
-    <link rel="stylesheet" href="assets/css/admin.css">
+    <!-- <link rel="stylesheet" href="assets/css/admin.css"> --> <!-- Removed link -->
+    <style>
+        /* =============== Globals ============== */
+        * {
+            font-family: "Poppins", sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --blue: #203A93;
+            --white: #fff;
+            --gray: #f5f5f5;
+            --black1: #222;
+            --black2: #999;
+            --yellow: #F1D27C;
+            --light-blue: #e8eeff;
+            --red: #ff6b6b;
+            --green: #4caf50;
+            --orange: #ff9800;
+        }
+
+        body {
+            background-color: var(--gray);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+        }
+
+        /* =============== Navigation ================ */
+        .navigation {
+            position: fixed;
+            width: 300px;
+            height: 100%;
+            background: var(--blue);
+            border-left: 10px solid var(--blue);
+            transition: 0.5s;
+            overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 100;
+        }
+        .navigation.active { width: 80px; }
+        .navigation ul { position: absolute; top: 0; left: 0; width: 100%; padding-left: 0; }
+        .navigation ul li { position: relative; width: 100%; list-style: none; border-top-left-radius: 30px; border-bottom-left-radius: 30px; }
+        .navigation ul li:hover, .navigation ul li.hovered { background-color: var(--white); }
+        .navigation ul li:nth-child(1) { margin-bottom: 40px; pointer-events: none; }
+        .navigation ul li a { position: relative; display: block; width: 100%; display: flex; text-decoration: none; color: var(--white); transition: color 0.3s; }
+        .navigation ul li:hover a, .navigation ul li.hovered a { color: var(--blue); }
+        .navigation ul li a .icon { position: relative; display: block; min-width: 60px; height: 60px; line-height: 75px; text-align: center; }
+        .navigation ul li a .icon ion-icon { font-size: 1.75rem; }
+        .navigation ul li a .title { position: relative; display: block; padding: 0 10px; height: 60px; line-height: 60px; text-align: start; white-space: nowrap; }
+        .navigation ul li:hover a::before, .navigation ul li.hovered a::before { content: ""; position: absolute; right: 0; top: -50px; width: 50px; height: 50px; background-color: transparent; border-radius: 50%; box-shadow: 35px 35px 0 10px var(--white); pointer-events: none; }
+        .navigation ul li:hover a::after, .navigation ul li.hovered a::after { content: ""; position: absolute; right: 0; bottom: -50px; width: 50px; height: 50px; background-color: transparent; border-radius: 50%; box-shadow: 35px -35px 0 10px var(--white); pointer-events: none; }
+
+        /* ===================== Main ===================== */
+        .main {
+            position: absolute;
+            width: calc(100% - 300px);
+            left: 300px;
+            min-height: 100vh;
+            background: var(--white);
+            transition: 0.5s;
+            padding: 20px;
+        }
+        .main.active { width: calc(100% - 80px); left: 80px; }
+
+        /* ===================== Topbar ===================== */
+        .topbar {
+            width: 100%; height: 60px; display: flex; align-items: center; padding: 0 10px; justify-content: space-between;
+            background: var(--white); border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 90;
+        }
+        .toggle { position: relative; width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; font-size: 2.5rem; cursor: pointer; color: var(--black1); }
+
+        /* Search */
+        .search-container { position: relative; flex-grow: 1; max-width: 600px; margin: 0 15px; }
+        .search-container label { display: flex; align-items: center; width: 100%; border: 1px solid #ccc; border-radius: 15px; overflow: hidden; background-color: var(--white); }
+        #search-input { flex-grow: 1; padding: 8px 15px; border: none; outline: none; font-size: 1rem; box-sizing: border-box; }
+        .search-container label ion-icon { padding: 0 10px; font-size: 1.2rem; color: #777; }
+        #search-results { position: absolute; top: calc(100% + 5px); left: 0; right: 0; background-color: #fff; border: 1px solid #ccc; border-radius: 8px; margin-top: 2px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); z-index: 110; display: none; overflow: hidden; max-height: 300px; overflow-y: auto; }
+        #search-results ul { list-style: none; padding: 8px 0; margin: 0; }
+        #search-results li { padding: 10px 16px; cursor: pointer; transition: background-color 0.2s ease; font-size: 0.95em; color: #333; }
+        #search-results li:hover { background-color: #f5f5f5; color: #222; }
+        #search-results li:active { background-color: #eee; }
+        #search-results li span.highlight { font-weight: bold; color: #007bff; }
+
+        /* Topbar Icons & User */
+        .topbar-icons { display: flex; align-items: center; gap: 15px; }
+        .mail-container, .notification-container { position: relative; display: flex; align-items: center; }
+        #mail-icon-inbox, #notification-icon { font-size: 25px; color: var(--blue); cursor: pointer; transition: opacity 0.3s; }
+        #mail-icon-inbox:hover, #notification-icon:hover { opacity: 0.7; }
+        #unread-notification, #notification-badge { position: absolute; top: -5px; right: -5px; background-color: var(--red); color: white; font-size: 11px; border-radius: 50%; width: 16px; height: 16px; text-align: center; line-height: 16px; font-weight: bold; display: block; }
+        #notification-badge { background-color: orange; }
+        #inbox-preview, #notifications-dropdown { position: absolute; top: calc(100% + 10px); right: -10px; background-color: #f9f9f9; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); width: 280px; padding: 15px; display: none; z-index: 110; text-align: left; max-height: 350px; overflow-y: auto; }
+        #inbox-preview strong, #notifications-dropdown strong { display: block; margin-bottom: 8px; font-size: 1.1em; color: var(--black1); }
+        .email-item, .notification-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 4px 0; font-size: 0.9em; }
+        .email-item.sender, .notification-item.title { font-weight: bold; }
+        .email-item.subject, .notification-item.message { color: #555; font-size: 0.85em; }
+        .notification-item.title { margin-top: 5px; font-size: 0.8em; color: var(--black2); }
+        #inbox-preview hr, #notifications-dropdown hr { margin: 8px 0; border: 0; border-top: 1px solid #eee; }
+        #inbox-preview a, #notifications-dropdown a { display: block; margin-top: 10px; font-size: 0.85em; text-align: center; color: #007bff; text-decoration: none; padding-top: 5px; }
+        #inbox-preview a:hover, #notifications-dropdown a:hover { text-decoration: underline; }
+        .user-info { display: flex; align-items: center; gap: 10px; margin-left: 15px; }
+        .user-info .name { color: var(--black1); font-weight: 500; white-space: nowrap; }
+        .user { position: relative; min-width: 40px; width: 40px; height: 40px; border-radius: 50%; overflow: hidden; cursor: pointer; }
+        .user img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+
+        /* ============ Modal Styles (Consistent) ============ */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 1000; justify-content: center; align-items: center; overflow: auto; transition: opacity 0.3s ease; backdrop-filter: blur(3px); opacity: 0; pointer-events: none; }
+        .modal-overlay.active { display: flex; opacity: 1; pointer-events: auto; }
+        .modal { background-color: #fff; border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); width: 90%; max-width: 440px; margin: auto; transform: scale(0.95) translateY(10px); transition: transform 0.3s ease, opacity 0.3s ease; overflow: hidden; opacity: 0; display: none; }
+        .modal-overlay.active .modal { display: block; transform: scale(1) translateY(0); opacity: 1; }
+        .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid #eaeaea; display: flex; justify-content: space-between; align-items: center; background-color: #f8f9fa; }
+        .modal-title { font-size: 1.35rem; font-weight: 600; margin: 0; color: var(--blue); }
+        .modal-close { cursor: pointer; font-size: 1.8rem; color: #999; border: none; background: none; padding: 0; line-height: 1; transition: color 0.2s ease; }
+        .modal-close:hover { color: #555; }
+        .modal-body { padding: 1.5rem; font-size: 1.1rem; color: #555; line-height: 1.6; text-align: center; }
+        .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid #eaeaea; display: flex; justify-content: flex-end; gap: 12px; background-color: #f8f9fa; }
+        .modal-button { padding: 0.6rem 1.2rem; border-radius: 6px; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease; border: none; }
+        .no-button { background-color: var(--yellow); color: var(--black1); }
+        .no-button:hover { background-color: #e4c370; }
+        .yes-button { background-color: var(--blue); color: white; }
+        .yes-button:hover { background-color: #182c7a; }
+
+        /* =============== ADMIN DASHBOARD SPECIFIC STYLES ============== */
+        .greetings { padding: 0 10px; margin-top: 20px; margin-bottom: 20px; }
+        .welcome h1 { color: var(--black1); font-weight: 600; font-size: 1.8rem; }
+
+        /* Cards */
+        .cardBox {
+            position: relative; width: 100%; padding: 0 10px 20px 10px; display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); grid-gap: 20px;
+        }
+        .cardBox .card {
+            position: relative; background: var(--white); padding: 20px; border-radius: 10px;
+            display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07); transition: background 0.3s ease, transform 0.3s ease;
+        }
+        .cardBox .card:hover { background: var(--blue); transform: translateY(-5px); }
+        .cardBox .card .numbers { font-weight: 600; font-size: 2rem; color: var(--blue); transition: color 0.3s ease; }
+        .cardBox .card .cardName { color: var(--black2); font-size: 0.95rem; margin-top: 5px; transition: color 0.3s ease; }
+        .cardBox .card .iconBx { font-size: 2.8rem; color: var(--black2); transition: color 0.3s ease; }
+        .cardBox .card:hover .numbers, .cardBox .card:hover .cardName, .cardBox .card:hover .iconBx { color: var(--white); }
+
+        /* Bottom Section (Analytics & Updates) */
+        .bottom-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+            gap: 25px;
+            padding: 0 10px; /* Match cardbox padding */
+            margin-top: 10px;
+            margin-bottom: 30px;
+        }
+
+        .analytics-card,
+        .updates-card {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #eee; /* Subtle border */
+            display: flex; /* Use flex for internal layout */
+            flex-direction: column;
+        }
+
+        .analytics-card h3,
+        .updates-card h3 {
+            color: var(--blue);
+            margin-bottom: 20px; /* Increased margin */
+            font-size: 1.3rem; /* Adjust size */
+            font-weight: 600;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+
+        /* Analytics Chart Container */
+        .chart-container {
+             position: relative;
+             flex-grow: 1; /* Allow chart to fill space */
+             min-height: 250px; /* Ensure minimum height */
+        }
+         /* Make canvas responsive */
+         #analyticsChart {
+             max-width: 100%;
+             height: auto !important; /* Override inline height for responsiveness */
+         }
+
+        /* Updates List */
+        .updates-list { /* Added wrapper */
+            flex-grow: 1;
+            overflow-y: auto; /* Allow scrolling if list is long */
+            max-height: 300px; /* Limit height */
+        }
+        .update-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px; /* Spacing between items */
+             padding-bottom: 10px; /* Space below text */
+             border-bottom: 1px dashed #f0f0f0; /* Subtle separator */
+        }
+        .update-item:last-child { border-bottom: none; margin-bottom: 0; }
+
+        .update-time {
+            color: var(--black2);
+            font-size: 0.8rem;
+            width: 70px; /* Fixed width */
+            flex-shrink: 0;
+            text-align: right;
+        }
+
+        .update-item i { /* Font Awesome Icon */
+            font-size: 1.1rem; /* Adjust icon size */
+            color: var(--blue);
+            width: 25px; /* Fixed width for alignment */
+            text-align: center;
+            flex-shrink: 0;
+        }
+        /* Specific icon colors (optional) */
+         .update-item .fa-circle-user { color: var(--green); }
+         .update-item .fa-database { color: var(--orange); }
+         .update-item .fa-file-invoice-dollar { color: #673ab7; } /* Purple example */
+         .update-item .fa-calendar-check { color: #03a9f4; } /* Light blue example */
+         .update-item .fa-user-lock { color: var(--red); }
+
+        .update-text {
+            line-height: 1.4;
+            color: var(--black1);
+            font-size: 0.9rem;
+            flex-grow: 1; /* Allow text to take space */
+        }
+
+
+        /* ================== Responsive Design ================== */
+        @media (max-width: 991px) { /* Tablets */
+             .navigation { left: -300px; z-index: 1001; }
+             .navigation.active { width: 300px; left: 0; }
+             .main { width: 100%; left: 0; padding: 15px; }
+             .main.active { left: 0; width: 100%; }
+             .topbar { padding: 0 15px; width: 100%; left: 0; }
+             .topbar.active { width: 100%; left: 0; }
+             .search-container { max-width: 400px; margin: 0 10px; }
+             .user-info .name { display: none; }
+             .topbar-icons { gap: 12px; }
+             #mail-icon-inbox, #notification-icon { font-size: 23px; }
+             .cardBox { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; padding: 0 10px 15px 10px;}
+             .bottom-section { padding: 0 10px; gap: 20px; }
+             .welcome h1 { font-size: 1.6rem; }
+             .analytics-card, .updates-card { padding: 20px; }
+        }
+
+        @media (max-width: 767px) { /* Small Tablets / Large Phones */
+             .modal-content { max-width: 90%; padding: 20px; }
+             .modal-footer { flex-direction: column; gap: 10px; }
+             .modal-button { width: 100%; }
+             .topbar { padding: 0 10px; }
+             .search-container { max-width: 250px; }
+             .greetings { flex-direction: column; align-items: flex-start;}
+             .cardBox { grid-template-columns: 1fr; gap: 15px; } /* Stack cards */
+             .bottom-section { grid-template-columns: 1fr; } /* Stack analytics and updates */
+             .analytics-card h3, .updates-card h3 { font-size: 1.2rem; }
+        }
+
+        @media (max-width: 479px) { /* Phones */
+             .main { padding: 10px; }
+             .toggle { font-size: 2rem; }
+             .search-container { display: none; }
+             .topbar-icons { margin-left: auto; gap: 10px; }
+             .user-info { margin-left: 10px; }
+             .user { width: 35px; height: 35px; min-width: 35px; }
+             #inbox-preview, #notifications-dropdown { width: 250px; right: 0; }
+             .modal { max-width: 95%; padding: 15px; }
+             .modal-title { font-size: 1.2em; }
+             .modal-body { padding: 1rem; font-size: 1rem; }
+             .modal-footer { padding: 0.75rem 1rem; }
+             .welcome h1 { font-size: 1.4rem; }
+             .cardBox { gap: 10px; }
+             .cardBox .card { padding: 15px; }
+             .cardBox .card .numbers { font-size: 1.6rem; }
+             .cardBox .card .cardName { font-size: 0.85rem; }
+             .cardBox .card .iconBx { font-size: 2.2rem; }
+             .bottom-section { padding: 0 5px; gap: 15px; }
+             .analytics-card, .updates-card { padding: 15px; }
+             .analytics-card h3, .updates-card h3 { font-size: 1.1rem; margin-bottom: 15px;}
+             .update-item { gap: 10px; padding-bottom: 8px; margin-bottom: 10px;}
+             .update-time { width: 60px; font-size: 0.75rem;}
+             .update-item i { font-size: 1rem; width: 20px;}
+             .update-text { font-size: 0.85rem;}
+        }
+
+    </style>
 </head>
 
 <body>
     <!-- =============== Navigation ================ -->
     <div class="container">
         <div class="navigation">
-            <ul>
-                <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="barbell"></ion-icon>
-                        </span>
-                        <span class="title">ENERGIZE</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="home-outline"></ion-icon>
-                        </span>
-                        <span class="title">Dashboard</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="adminclients.html">
-                        <span class="icon">
-                            <ion-icon name="people-outline"></ion-icon>
-                        </span>
-                        <span class="title">Manage Clients</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="admincoaches.html">
-                        <span class="icon">
-                            <ion-icon name="people-outline"></ion-icon>
-                        </span>
-                        <span class="title">Manage Coaches</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="adminguests.html">
-                        <span class="icon">
-                            <ion-icon name="person-add-outline"></ion-icon>
-                        </span>
-                        <span class="title">Manage Guests</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="adminmanage.html">
-                        <span class="icon">
-                            <ion-icon name="person-add-outline"></ion-icon>
-                        </span>
-                        <span class="title">Manage Admins</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="admincomplaint.html">
-                        <span class="icon">
-                            <ion-icon name="chatbubble-outline"></ion-icon>
-                        </span>
-                        <span class="title">Complaints/Requests</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="adminpayments.html">
-                        <span class="icon">
-                            <ion-icon name="card-outline"></ion-icon>
-                        </span>
-                        <span class="title"> Clients Payments</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="adminsettings.html">
-                        <span class="icon">
-                            <ion-icon name="settings-outline"></ion-icon>
-                        </span>
-                        <span class="title">Settings</span>
-                    </a>
-                </li>
-
-
-                <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="log-out-outline"></ion-icon>
-                        </span>
-                        <span class="title">Sign Out</span>
-                    </a>
-                </li>
-            </ul>
+             <ul>
+                 <li>
+                     <a href="#">
+                         <span class="icon"><ion-icon name="barbell"></ion-icon></span>
+                         <span class="title">ENERGIZE</span>
+                     </a>
+                 </li>
+                 <!-- Add hovered class -->
+                 <li class="hovered">
+                     <a href="testadmin.html"> <!-- Assuming this is the correct link -->
+                         <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
+                         <span class="title">Dashboard</span>
+                     </a>
+                 </li>
+                 <li>
+                     <a href="adminclients.html">
+                         <span class="icon"><ion-icon name="people-outline"></ion-icon></span>
+                         <span class="title">Manage Clients</span>
+                     </a>
+                 </li>
+                 <li>
+                     <a href="admincoaches.html">
+                         <span class="icon"><ion-icon name="people-outline"></ion-icon></span>
+                         <span class="title">Manage Coaches</span>
+                     </a>
+                 </li>
+                 <li>
+                     <a href="adminguests.html">
+                         <span class="icon"><ion-icon name="person-add-outline"></ion-icon></span>
+                         <span class="title">Manage Guests</span>
+                     </a>
+                 </li>
+                 <li>
+                     <a href="adminmanage.html">
+                         <span class="icon"><ion-icon name="person-add-outline"></ion-icon></span>
+                         <span class="title">Manage Admins</span>
+                     </a>
+                 </li>
+                 <li>
+                     <a href="admincomplaint.html">
+                         <span class="icon"><ion-icon name="chatbubble-outline"></ion-icon></span>
+                         <span class="title">Complaints/Requests</span>
+                     </a>
+                 </li>
+                 <li>
+                     <a href="adminpayments.html">
+                         <span class="icon"><ion-icon name="card-outline"></ion-icon></span>
+                         <span class="title"> Clients Payments</span>
+                     </a>
+                 </li>
+                 <li>
+                     <a href="adminsettings.html">
+                         <span class="icon"><ion-icon name="settings-outline"></ion-icon></span>
+                         <span class="title">Settings</span>
+                     </a>
+                 </li>
+                 <li>
+                     <a href="#" id="signOutLink"> <!-- Keep ID -->
+                         <span class="icon"><ion-icon name="log-out-outline"></ion-icon></span>
+                         <span class="title">Sign Out</span>
+                     </a>
+                 </li>
+             </ul>
         </div>
 
         <!-- ========================= Main ==================== -->
         <div class="main">
             <div class="topbar">
-                <div class="toggle">
-                    <ion-icon name="menu-outline"></ion-icon>
-                </div>
-
-                <div class="search-container">
-                    <label>
-                      <input type="text" id="search-input" placeholder="Search what you're looking for">
-                      <ion-icon name="search-outline"></ion-icon>
-                    </label>
-                    <div id="search-results">
-                    </div>
-                  </div>
-
-                  
-                  <div class="mail-container">
-                    <ion-icon name="mail" id="mail-icon-inbox"></ion-icon>
-                    <div id="unread-notification">1</div>
-                    <div id="inbox-preview">
-                    <strong>Inbox</strong>
-                    <hr>
-                    <div id="unread-messages">
-                        <div class="email-item sender">Clients</div>
-                        <div class="email-item subject">3 complaints were submitted</div>
-                        <hr>
-                    </div>
-                    <div id="read-messages">
-                        <div class="email-item sender">Coach</div>
-                        <div class="email-item subject">Can I ask?</div>
-                    </div>
-                    <a href="#">See All</a>
-                    </div>
-                </div>
-
-                <div class="notification-container">
-                    <ion-icon name="notifications" id="notification-icon"></ion-icon>
-                    <div id="notification-badge">1</div>
-                    <div id="notifications-dropdown">
-                      <strong>Notifications</strong>
-                      <hr>
-                      <div id="notification-list">
-                        <div class="notification-item title">Today, 1:00 PM</div>
-                        <div class="notification-item message">New clients added.</div>
-                        <hr>
-                        <div class="notification-item title">Sales Update</div>
-                        <div class="notification-item message">It increased by 25%</div>
-                      </div>
-                      <a href="#">See All</a>
-                    </div>
-                  </div>
-            
-                <div class="name">
-                    <p>Peter Pan</p>
-                </div>
-    
-                <div class="user">
-                    <img src="assets/img/ramburat.jpg" alt="">
-                </div>                
+                 <div class="toggle"><ion-icon name="menu-outline"></ion-icon></div>
+                 <div class="search-container">
+                     <label>
+                       <input type="text" id="search-input" placeholder="Search dashboard...">
+                       <ion-icon name="search-outline"></ion-icon>
+                     </label>
+                     <div id="search-results"></div>
+                 </div>
+                 <div class="topbar-icons">
+                     <div class="mail-container">
+                         <ion-icon name="mail-outline" id="mail-icon-inbox"></ion-icon>
+                         <div id="unread-notification" style="display: block;">1</div>
+                         <div id="inbox-preview">
+                              <strong>Inbox</strong><hr>
+                              <div id="unread-messages"><div class="email-item sender">Clients</div><div class="email-item subject">3 complaints submitted</div><hr></div>
+                              <div id="read-messages"><div class="email-item sender">Coach</div><div class="email-item subject">Can I ask?</div></div>
+                              <a href="#">See All</a>
+                         </div>
+                     </div>
+                     <div class="notification-container">
+                         <ion-icon name="notifications-outline" id="notification-icon"></ion-icon>
+                         <div id="notification-badge" style="display: block;">1</div>
+                         <div id="notifications-dropdown">
+                              <strong>Notifications</strong><hr>
+                              <div id="notification-list"><div class="notification-item title">Today, 1:00 PM</div><div class="notification-item message">New clients added.</div><hr><div class="notification-item title">Sales Update</div><div class="notification-item message">It increased by 25%</div></div>
+                              <a href="#">See All</a>
+                         </div>
+                     </div>
+                 </div>
+                 <div class="user-info">
+                     <div class="name"><p>Peter Pan</p></div> <!-- Admin Name -->
+                     <div class="user"><img src="assets/img/ramburat.jpg" alt="Admin Avatar"></div> <!-- Admin Image -->
+                 </div>
             </div>
 
-             <!-- ======================= Cards ================== -->
 
-             <div class="greetings">
+            <!-- ======================= Cards ================== -->
+            <div class="greetings">
                 <div class="welcome">
                     <h1>Welcome, Admin!</h1>
                 </div>
             </div>
 
             <div class="cardBox">
-                <div class="card">
-                    <div>
-                        <div class="numbers">549</div>
-                        <div class="cardName">Total Clients</div>
-                    </div>
-
-                    <div class="iconBx">
-                        <ion-icon name="people"></ion-icon>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div>
-                        <div class="numbers">421</div>
-                        <div class="cardName">Scheduled Sessions Today</div>
-                    </div>
-
-                    <div class="iconBx">
-                        <ion-icon name="calendar"></ion-icon>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div>
-                        <div class="numbers">15</div>
-                        <div class="cardName">Pending Coaches Applicants</div>
-                    </div>
-
-                    <div class="iconBx">
-                        <ion-icon name="arrow-down-circle"></ion-icon>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div>
-                        <div class="numbers">$10,842</div>
-                        <div class="cardName">Total Earnings</div>
-                    </div>
-
-                    <div class="iconBx">
-                        <ion-icon name="cash-outline"></ion-icon>
-                    </div>
-                </div>
+                 <div class="card"><div><div class="numbers">549</div><div class="cardName">Total Clients</div></div><div class="iconBx"><ion-icon name="people-circle-outline"></ion-icon></div></div>
+                 <div class="card"><div><div class="numbers">421</div><div class="cardName">Scheduled Sessions Today</div></div><div class="iconBx"><ion-icon name="calendar-number-outline"></ion-icon></div></div>
+                 <div class="card"><div><div class="numbers">15</div><div class="cardName">Pending Coaches Applicants</div></div><div class="iconBx"><ion-icon name="person-add-outline"></ion-icon></div></div>
+                 <div class="card"><div><div class="numbers">$10,842</div><div class="cardName">Total Earnings (Month)</div></div><div class="iconBx"><ion-icon name="cash-outline"></ion-icon></div></div>
             </div>
 
+             <!-- ================ Bottom Section: Analytics & Updates ================= -->
             <div class="bottom-section">
                 <div class="analytics-card">
-                    <h3>Analytics</h3>
-                    <canvas id="analyticsChart" width="400" height="200"></canvas>
-                    </div>
-        
-                <div class="updates-card">
-                    <h3>Latest Updates</h3>
-                    <div class="update-item">
-                        <span class="update-time">2 hours ago</span>
-                        <i class="fa-solid fa-circle-user user-icon"></i>
-                        <span class="update-text">New users added!</span>
-                    </div>
-                    <div class="update-item">
-                        <span class="update-time">1 hr ago</span>
-                        <i class="fa-solid fa-database database-icon"></i>
-                        <span class="update-text">Database was fixed!</span>
-                    </div>
-                    <div class="update-item">
-                        <span class="update-time">1 day ago</span>
-                        <i class="fa-solid fa-file-invoice-dollar invoice-icon"></i>
-                        <span class="update-text">Pricing plans updated!</span>
-                    </div>
-                    <div class="update-item">
-                        <span class="update-time">3 days ago</span>
-                        <i class="fa-solid fa-calendar-check calendar-icon"></i>
-                        <span class="update-text">Sessions approved!</span>
-                    </div>
-                    <div class="update-item">
-                        <span class="update-time">6 days ago</span>
-                        <i class="fa-solid fa-user-lock admin-icon"></i>
-                        <span class="update-text">New admins added!</span>
-                    </div>
+                    <h3>Platform Analytics</h3>
+                     <div class="chart-container">
+                         <canvas id="analyticsChart"></canvas> <!-- Canvas now inside a container -->
+                     </div>
                 </div>
-            </div>
 
-            <div id="signOutModal" class="modal">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h2 class="modal-title">Sign Out</h2>
-                  </div>
-                  <div class="modal-body">
-                    <p>Are you sure you want to sign out?</p>
-                  </div>
-                  <div class="modal-footer sign-out-actions">
-                    <button class="modal-button no-button" id="signOutNo">No</button>
-                    <button class="modal-button yes-button" id="signOutYes">Yes</button>
-                  </div>
+                <div class="updates-card">
+                    <h3>Latest Updates & Activity</h3>
+                     <div class="updates-list"> <!-- Added wrapper for scrolling -->
+                        <div class="update-item">
+                            <span class="update-time">2 hrs ago</span>
+                            <i class="fa-solid fa-user-plus user-icon"></i> <!-- Changed icon class -->
+                            <span class="update-text">New client 'John Smith' registered for Muscle Gain plan.</span>
+                        </div>
+                        <div class="update-item">
+                            <span class="update-time">5 hrs ago</span>
+                            <i class="fa-solid fa-database database-icon"></i>
+                            <span class="update-text">System backup completed successfully.</span>
+                        </div>
+                         <div class="update-item">
+                             <span class="update-time">1 day ago</span>
+                             <i class="fa-solid fa-calendar-check calendar-icon"></i>
+                             <span class="update-text">Coach Edward approved session request from Anya Forger.</span>
+                         </div>
+                        <div class="update-item">
+                            <span class="update-time">1 day ago</span>
+                            <i class="fa-solid fa-file-invoice-dollar invoice-icon"></i>
+                            <span class="update-text">Payment received from Jane Doe for Elite Coaching plan.</span>
+                        </div>
+                        <div class="update-item">
+                             <span class="update-time">2 days ago</span>
+                             <i class="fa-solid fa-triangle-exclamation admin-icon"></i> <!-- Changed icon -->
+                             <span class="update-text">Complaint #102 submitted regarding equipment availability.</span>
+                         </div>
+                        <div class="update-item">
+                            <span class="update-time">3 days ago</span>
+                            <i class="fa-solid fa-user-check admin-icon"></i> <!-- Changed icon -->
+                            <span class="update-text">New coach applicant 'Sarah Lee' awaiting review.</span>
+                        </div>
+                         <!-- Add more updates -->
+                    </div>
                 </div>
-              </div>
-            
+            </div> <!-- End bottom-section -->
+
+        </div> <!-- End main -->
+
+        <!-- ============ Modals ============ -->
+        <!-- Sign Out Modal -->
+        <div class="modal-overlay" id="signOutModalOverlay">
+             <div class="modal" id="signOutModal">
+                 <div class="modal-header">
+                     <h3 class="modal-title">Sign Out</h3>
+                      <button type="button" class="modal-close" aria-label="Close modal"><ion-icon name="close-outline"></ion-icon></button>
+                 </div>
+                 <div class="modal-body">
+                     <p>Are you sure you want to sign out?</p>
+                 </div>
+                 <div class="modal-footer">
+                     <button type="button" class="modal-button no-button" id="signOutNo">Cancel</button>
+                     <button type="button" class="modal-button yes-button" id="signOutYes">Sign Out</button>
+                 </div>
+             </div>
         </div>
 
- <!-- =========== Scripts =========  -->
- <script src="assets/js/admin.js"></script>
+    </div> <!-- End container -->
 
-<!-- ====== ionicons ======= -->
-<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+    <!-- =========== Scripts =========  -->
+    <!-- <script src="assets/js/admin.js"></script> --> <!-- Removed link -->
+    <script>
+         // Wait for DOM to be fully loaded
+         document.addEventListener('DOMContentLoaded', function() {
+
+// --- Standard Setup (Nav, Toggle, Search, Topbar Icons, Modals) ---
+
+// Navigation Link Activation & Menu Toggle (Standard)
+let list = document.querySelectorAll(".navigation li");
+function activeLink() {
+    list.forEach(item => item.classList.remove("hovered"));
+     // Find the link pointing to this page (e.g., testadmin.html)
+     const currentLink = Array.from(list).find(item => item.querySelector('a[href="testadmin.html"]')); // Adjust href if needed
+     if (currentLink) currentLink.classList.add("hovered");
+     else list[1].classList.add("hovered"); // Fallback
+}
+activeLink();
+
+let toggle = document.querySelector(".toggle");
+let navigation = document.querySelector(".navigation");
+let main = document.querySelector(".main");
+if(toggle && navigation && main) {
+    toggle.onclick = () => {
+        navigation.classList.toggle("active");
+        main.classList.toggle("active");
+         const topbar = document.querySelector(".topbar");
+         if(topbar) topbar.classList.toggle("active");
+    };
+}
+
+ // Search Functionality (Standard) - ** CODE INSERTED HERE **
+const searchInput = document.getElementById('search-input');
+const searchResultsDiv = document.getElementById('search-results');
+const searchDataAdmin = [ "Manage Clients", "Manage Coaches", "Payments", "Complaints", "Settings", "Analytics", "Add Admin" ];
+if (searchInput && searchResultsDiv) {
+     searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase().trim();
+        searchResultsDiv.innerHTML = '';
+        searchResultsDiv.style.display = 'none';
+        if (searchTerm.length > 0) {
+            const filteredResults = searchDataAdmin.filter(item => item.toLowerCase().includes(searchTerm));
+            displayResults(filteredResults, searchTerm);
+        }
+    });
+    document.addEventListener('click', event => {
+        if (!event.target.closest('.search-container')) {
+             if(searchResultsDiv) searchResultsDiv.style.display = 'none'; // Hide only if it exists
+        }
+    });
+} else {
+     console.warn("Search input or results container not found.");
+}
+// Display results function (needs to be defined for search)
+function displayResults(results, searchTerm) {
+     if (!searchResultsDiv) return; // Guard clause
+     searchResultsDiv.innerHTML = ''; // Clear previous results
+     if (results.length > 0) {
+        const ul = document.createElement('ul');
+        results.forEach(result => {
+            const li = document.createElement('li');
+            // Simple highlight (can be improved)
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            li.innerHTML = result.replace(regex, '<span class="highlight">$1</span>');
+
+            li.addEventListener('click', () => {
+                if(searchInput) searchInput.value = result; // Set input value
+                searchResultsDiv.style.display = 'none'; // Hide results
+                console.log("Search Selected:", result); // Example action
+                // You might want to trigger a search action here
+            });
+            ul.appendChild(li);
+        });
+        searchResultsDiv.appendChild(ul);
+        searchResultsDiv.style.display = 'block'; // Show results
+    } else {
+        searchResultsDiv.style.display = 'none'; // Hide if no results
+    }
+}
+
+// Mail & Notification Dropdown Functionality (Standard) - ** CODE INSERTED HERE **
+const mailIconInbox = document.getElementById('mail-icon-inbox');
+const unreadNotification = document.getElementById('unread-notification');
+const inboxPreview = document.getElementById('inbox-preview');
+let hasUnread = true; // Simulate initial unread state
+
+function updateUnreadIndicator() {
+    if (unreadNotification) {
+        unreadNotification.style.display = hasUnread ? 'block' : 'none';
+        // Optionally update the count if needed, e.g., unreadNotification.textContent = count;
+    }
+}
+
+if(mailIconInbox && inboxPreview && unreadNotification) {
+    updateUnreadIndicator(); // Initial check
+
+    mailIconInbox.addEventListener('click', function(event) {
+         event.stopPropagation(); // Prevent document click listener from closing immediately
+         const notificationsDropdown = document.getElementById('notifications-dropdown'); // Get dropdown here
+         if (notificationsDropdown) notificationsDropdown.style.display = 'none'; // Close other dropdown
+
+         const isVisible = inboxPreview.style.display === 'block';
+         inboxPreview.style.display = isVisible ? 'none' : 'block';
+
+        // Mark as read when opened (basic simulation)
+        if (!isVisible && hasUnread) {
+            hasUnread = false;
+            updateUnreadIndicator();
+            console.log("Inbox opened, marked as read (simulation).");
+        }
+    });
+} else {
+     console.warn("Mail icon, unread notification, or inbox preview element not found.");
+}
+
+const notificationIcon = document.getElementById('notification-icon');
+const notificationBadge = document.getElementById('notification-badge');
+const notificationsDropdown = document.getElementById('notifications-dropdown');
+let hasNewNotifications = true; // Simulate initial state
+
+if (notificationIcon && notificationBadge && notificationsDropdown) {
+     notificationBadge.style.display = hasNewNotifications ? 'block' : 'none';
+
+    notificationIcon.addEventListener('click', function(event) {
+         event.stopPropagation(); // Prevent document click listener
+         if (inboxPreview) inboxPreview.style.display = 'none'; // Close other dropdown
+
+        const isVisible = notificationsDropdown.style.display === 'block';
+        notificationsDropdown.style.display = isVisible ? 'none' : 'block';
+
+        // Hide badge when opened (basic simulation)
+         if (!isVisible && hasNewNotifications) {
+             // hasNewNotifications = false; // Keep internal state if needed
+             notificationBadge.style.display = 'none'; // Just hide visually
+             console.log("Notifications opened, badge hidden (simulation).");
+         }
+    });
+} else {
+     console.warn("Notification icon, badge, or dropdown element not found.");
+}
+
+ // Close dropdowns when clicking outside - Adjusted to check if elements exist
+ document.addEventListener('click', event => {
+     const mailContainer = event.target.closest('.mail-container');
+     const notificationContainer = event.target.closest('.notification-container');
+
+     if (inboxPreview && !mailContainer) {
+         inboxPreview.style.display = 'none';
+     }
+     if (notificationsDropdown && !notificationContainer) {
+         notificationsDropdown.style.display = 'none';
+     }
+ });
+
+
+// --- Modal Handling (Standard) ---
+function showModal(overlayId) { const overlay = document.getElementById(overlayId); if (overlay) overlay.classList.add('active'); }
+function hideModal(overlayId) { const overlay = document.getElementById(overlayId); if (overlay) overlay.classList.remove('active'); }
+document.querySelectorAll('.modal-overlay').forEach(overlay => { overlay.addEventListener('click', (event) => { if (event.target === overlay) hideModal(overlay.id); }); });
+document.querySelectorAll('.modal-close').forEach(button => { button.addEventListener('click', () => { const overlay = button.closest('.modal-overlay'); if(overlay) hideModal(overlay.id); }); });
+document.addEventListener('keydown', (event) => { if (event.key === 'Escape') { document.querySelectorAll('.modal-overlay.active').forEach(overlay => hideModal(overlay.id)); } });
+
+// Sign Out Modal Logic (Standard)
+const signOutLink = document.querySelector('.navigation ul li:last-child a');
+const signOutNoButton = document.getElementById('signOutNo');
+const signOutYesButton = document.getElementById('signOutYes');
+ // Check if elements exist before adding listeners
+if (signOutLink && signOutNoButton && signOutYesButton) {
+    signOutLink.addEventListener('click', (event) => { event.preventDefault(); showModal('signOutModalOverlay'); });
+    signOutNoButton.addEventListener('click', () => hideModal('signOutModalOverlay'));
+    signOutYesButton.addEventListener('click', () => window.location.href = 'index.html');
+ } else {
+      console.warn("Sign out modal elements not found.");
+ }
+// --- End Standard Setup & Modals ---
+
+
+// --- Admin Dashboard Specific JS ---
+
+// Analytics Chart
+ const ctx = document.getElementById('analyticsChart');
+ if (ctx) {
+    try {
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                datasets: [{
+                    label: 'Client Growth',
+                    data: [120, 150, 180, 210, 250, 280, 310],
+                    borderColor: 'rgb(32, 58, 147)',
+                    tension: 0.1, fill: false
+                }, {
+                    label: 'Revenue (in $1k)',
+                    data: [5, 6, 7, 8.5, 10, 11.5, 12.8],
+                    borderColor: 'rgb(76, 175, 80)',
+                    tension: 0.1, fill: false
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true } },
+                plugins: { legend: { position: 'top', }, title: { display: true, text: 'Client Growth and Revenue Overview' } }
+            }
+        });
+     } catch (error) {
+          console.error("Error creating chart:", error);
+           const chartContainer = document.querySelector('.chart-container');
+           if(chartContainer) chartContainer.innerHTML = "<p style='text-align:center; color: var(--red);'>Could not load analytics chart.</p>";
+     }
+ } else {
+      console.warn("Canvas element with ID 'analyticsChart' not found.");
+ }
+
+// --- End Admin Dashboard Specific JS ---
+
+}); // End DOMContentLoaded
+    </script>
+
+    <!-- ====== ionicons ======= -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
 
 </html>

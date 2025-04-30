@@ -6,391 +6,1067 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard - Manage Users</title>
     <!-- ======= Styles ====== -->
-    <link rel="stylesheet" href="assets/css/adminclients.css">
+    <style>
+        /* =============== Globals ============== */
+        * { font-family: "Poppins", sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --blue: #203A93; --white: #fff; --gray: #f5f5f5; --black1: #222; --black2: #999; --yellow: #F1D27C; --light-blue: #e8eeff; --red: #ff6b6b; --green: #4caf50; --orange: #ff9800; }
+        body { background-color: var(--gray); min-height: 100vh; overflow-x: hidden; }
+        .container { position: relative; width: 100%; }
+
+        /* =============== Navigation ================ */
+        .navigation { position: fixed; width: 300px; height: 100%; background: var(--blue); border-left: 10px solid var(--blue); transition: 0.5s; overflow-y: auto; overflow-x: hidden; z-index: 100; }
+        .navigation.active { width: 80px; }
+        .navigation ul { position: absolute; top: 0; left: 0; width: 100%; padding-left: 0; }
+        .navigation ul li { position: relative; width: 100%; list-style: none; border-top-left-radius: 30px; border-bottom-left-radius: 30px; }
+        .navigation ul li:hover, .navigation ul li.hovered { background-color: var(--white); }
+        .navigation ul li:nth-child(1) { margin-bottom: 40px; pointer-events: none; }
+        .navigation ul li a { position: relative; display: block; width: 100%; display: flex; text-decoration: none; color: var(--white); transition: color 0.3s; }
+        .navigation ul li:hover a, .navigation ul li.hovered a { color: var(--blue); }
+        .navigation ul li a .icon { position: relative; display: block; min-width: 60px; height: 60px; line-height: 75px; text-align: center; }
+        .navigation ul li a .icon ion-icon { font-size: 1.75rem; }
+        .navigation ul li a .title { position: relative; display: block; padding: 0 10px; height: 60px; line-height: 60px; text-align: start; white-space: nowrap; }
+        .navigation ul li:hover a::before, .navigation ul li.hovered a::before { content: ""; position: absolute; right: 0; top: -50px; width: 50px; height: 50px; background-color: transparent; border-radius: 50%; box-shadow: 35px 35px 0 10px var(--white); pointer-events: none; }
+        .navigation ul li:hover a::after, .navigation ul li.hovered a::after { content: ""; position: absolute; right: 0; bottom: -50px; width: 50px; height: 50px; background-color: transparent; border-radius: 50%; box-shadow: 35px -35px 0 10px var(--white); pointer-events: none; }
+
+        /* ===================== Main ===================== */
+        .main { position: absolute; width: calc(100% - 300px); left: 300px; min-height: 100vh; background: var(--white); transition: 0.5s; padding: 20px; }
+        .main.active { width: calc(100% - 80px); left: 80px; }
+
+        /* ===================== Topbar ===================== */
+        .topbar {
+            width: 100%; height: 60px; display: flex; align-items: center;
+            padding: 0 10px; /* Base padding */
+            justify-content: space-between; background: var(--white);
+            border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 90;
+        }
+        .toggle { /* Styles for menu toggle button */
+            flex-shrink: 0; /* Prevent shrinking */
+            position: relative; width: 60px; height: 60px; display: flex;
+            justify-content: center; align-items: center; font-size: 2.5rem;
+            cursor: pointer; color: var(--black1);
+        }
+        /* Search */.search-container {
+            position: relative; flex-grow: 1; /* Allow grow/shrink */
+            max-width: 600px; /* Max width on large screens */
+            margin: 0 15px; /* Spacing */
+            min-width: 150px; /* Prevent becoming too small */
+        }.search-container { position: relative; flex-grow: 1; max-width: 600px; margin: 0 15px; }
+        .search-container label { display: flex; align-items: center; width: 100%; border: 1px solid #ccc; border-radius: 15px; overflow: hidden; background-color: var(--white); }
+        #search-input { flex-grow: 1; padding: 8px 15px; border: none; outline: none; font-size: 1rem; box-sizing: border-box; }
+        .search-container label ion-icon { padding: 0 10px; font-size: 1.2rem; color: #777; }
+        #search-results { position: absolute; top: calc(100% + 5px); left: 0; right: 0; background-color: #fff; border: 1px solid #ccc; border-radius: 8px; margin-top: 2px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); z-index: 110; display: none; overflow: hidden; max-height: 300px; overflow-y: auto; }
+        #search-results ul { list-style: none; padding: 8px 0; margin: 0; }
+        #search-results li { padding: 10px 16px; cursor: pointer; transition: background-color 0.2s ease; font-size: 0.95em; color: #333; }
+        #search-results li:hover { background-color: #f5f5f5; color: #222; }
+        #search-results li:active { background-color: #eee; }
+        #search-results li span.highlight { font-weight: bold; color: #007bff; }
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 15px; /* Default gap */
+            flex-shrink: 0; /* Prevent this group from shrinking */
+        }
+        /* Topbar Icons & User */
+        .topbar-icons { display: flex; align-items: center; gap: 15px; }
+        .mail-container, .notification-container { position: relative; display: flex; align-items: center; }
+        #mail-icon-inbox, #notification-icon { font-size: 25px; color: var(--blue); cursor: pointer; transition: opacity 0.3s; }
+        #mail-icon-inbox:hover, #notification-icon:hover { opacity: 0.7; }
+        #unread-notification, #notification-badge { position: absolute; top: -5px; right: -5px; background-color: var(--red); color: white; font-size: 11px; border-radius: 50%; width: 16px; height: 16px; text-align: center; line-height: 16px; font-weight: bold; display: block; }
+        #notification-badge { background-color: orange; }
+        #inbox-preview, #notifications-dropdown { position: absolute; top: calc(100% + 10px); right: -10px; background-color: #f9f9f9; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); width: 280px; padding: 15px; display: none; z-index: 110; text-align: left; max-height: 350px; overflow-y: auto; }
+        #inbox-preview strong, #notifications-dropdown strong { display: block; margin-bottom: 8px; font-size: 1.1em; color: var(--black1); }
+        .email-item, .notification-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 4px 0; font-size: 0.9em; }
+        .email-item.sender, .notification-item.title { font-weight: bold; }
+        .email-item.subject, .notification-item.message { color: #555; font-size: 0.85em; }
+        .notification-item.title { margin-top: 5px; font-size: 0.8em; color: var(--black2); }
+        #inbox-preview hr, #notifications-dropdown hr { margin: 8px 0; border: 0; border-top: 1px solid #eee; }
+        #inbox-preview a, #notifications-dropdown a { display: block; margin-top: 10px; font-size: 0.85em; text-align: center; color: #007bff; text-decoration: none; padding-top: 5px; }
+        #inbox-preview a:hover, #notifications-dropdown a:hover { text-decoration: underline; }
+        .user-info { display: flex; align-items: center; gap: 10px; }
+        .user-info .name { color: var(--black1); font-weight: 500; white-space: nowrap; }
+        .user { position: relative; min-width: 40px; width: 40px; height: 40px; border-radius: 50%; overflow: hidden; cursor: pointer; }
+        .user img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+
+        /* ============ Modal Styles (Consistent) ============ */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 1000; justify-content: center; align-items: center; overflow: auto; transition: opacity 0.3s ease; backdrop-filter: blur(3px); opacity: 0; pointer-events: none; }
+        .modal-overlay.active { display: flex; opacity: 1; pointer-events: auto; }
+        .modal { background-color: #fff; border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); width: 90%; max-width: 600px; /* Default size */ margin: auto; transform: scale(0.95) translateY(10px); transition: transform 0.3s ease, opacity 0.3s ease; overflow: hidden; opacity: 0; display: none; }
+        .modal-overlay.active .modal { display: block; transform: scale(1) translateY(0); opacity: 1; }
+        /* Specific Modal Sizes */
+        #signOutModal .modal { max-width: 440px; }
+        #addSuccessModal .modal, #deleteConfirmModal .modal { max-width: 450px; }
+        .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid #eaeaea; display: flex; justify-content: space-between; align-items: center; background-color: #f8f9fa; }
+        .modal-title { font-size: 1.35rem; font-weight: 600; margin: 0; color: var(--blue); }
+        .modal-close { cursor: pointer; font-size: 1.8rem; color: #999; border: none; background: none; padding: 0; line-height: 1; transition: color 0.2s ease; }
+        .modal-close:hover { color: #555; }
+        .modal-body { padding: 1.5rem; font-size: 1rem; color: #555; line-height: 1.6; max-height: 70vh; overflow-y: auto; }
+        #signOutModal .modal-body, #deleteConfirmModal .modal-body, #addSuccessModal .modal-body { text-align: center; }
+        #addSuccessModal .modal-body p { font-size: 1.1rem; }
+        #addSuccessModal .success-icon { font-size: 3rem; color: var(--green); margin-bottom: 15px; display: block; }
+        .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid #eaeaea; display: flex; justify-content: flex-end; gap: 12px; background-color: #f8f9fa; }
+        .modal-button { padding: 0.6rem 1.2rem; border-radius: 6px; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease; border: none; }
+        .no-button { background-color: var(--yellow); color: var(--black1); }
+        .no-button:hover { background-color: #e4c370; }
+        .yes-button { background-color: var(--blue); color: white; }
+        .yes-button:hover { background-color: #182c7a; }
+        .delete-confirm-button { background-color: var(--red); color: white; }
+        .delete-confirm-button:hover { background-color: #d32f2f; }
+        .ok-button { background-color: var(--green); color: white; }
+        .ok-button:hover { background-color: #45a049; }
+         /* Edit Modal specific styles */
+         #detailsModal .modal { max-width: 700px; }
+         #detailsModal .modal-body { text-align: left; }
+         #editForm .form-row { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 15px; }
+         #editForm .form-group { flex: 1; min-width: 200px; }
+         #editForm label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.95rem; color: var(--black1); }
+         #editForm input, #editForm select { width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 1rem; }
+         #editForm select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23aaa'%3E%3Cpath fill-rule='evenodd' d='M8 11.5a.5.5 0 0 1-.354-.146l-4-4a.5.5 0 0 1 .708-.708L8 10.293l3.646-3.647a.5.5 0 0 1 .708.708l-4 4A.5.5 0 0 1 8 11.5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px 16px; padding-right: 35px; }
+         .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+         .save-button { background-color: var(--blue); color: white; }
+         .save-button:hover { background-color: #182c7a; }
+         .delete-button { background-color: var(--red); color: white; }
+         .delete-button:hover { background-color: #d32f2f; }
+         #editCoachGroup, #editPurposeGroup, #clientSpecificFields { display: none; } /* Initially hide specific fields */
+
+
+        /* =============== ADMIN CLIENTS/GUESTS PAGE SPECIFIC STYLES ============== */
+        .page-container {
+            display: grid;
+            /* --- CHANGE THIS --- */
+            /* Allow 1 or 2 columns based on available space */
+            /* Each column needs at least ~400px (adjust as needed) */
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            /* --- END CHANGE --- */
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .form-section, .table-section {
+            background-color: var(--white);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            min-width: 0; /* Prevent grid blowout */
+             /* Ensure sections don't force unnecessary column spans */
+             grid-column: auto / span 1;
+        }
+
+        .form-section h3, .table-section h2 {
+            color: var(--blue); margin-bottom: 20px; padding-bottom: 10px;
+            border-bottom: 1px solid #eee; font-size: 1.4rem; font-weight: 600;
+        }
+
+
+        /* Form Styles */
+        .add-form .form-row { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 15px; }
+        .add-form .form-group { flex: 1; min-width: 200px; }
+        .add-form .form-group:last-child { margin-bottom: 0; }
+        .add-form label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.95rem; color: var(--black1); }
+        .add-form input[type="text"], .add-form input[type="email"], .add-form input[type="tel"],
+        .add-form input[type="date"], .add-form select {
+            width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s; outline: none;
+        }
+        .add-form input:focus, .add-form select:focus { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(32, 58, 147, 0.2); }
+        .add-form select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23aaa'%3E%3Cpath fill-rule='evenodd' d='M8 11.5a.5.5 0 0 1-.354-.146l-4-4a.5.5 0 0 1 .708-.708L8 10.293l3.646-3.647a.5.5 0 0 1 .708.708l-4 4A.5.5 0 0 1 8 11.5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px 16px; padding-right: 35px; }
+        .form-actions { display: flex; justify-content: flex-end; margin-top: 20px; }
+        .btn-submit { padding: 10px 25px; border: none; border-radius: 6px; font-size: 1rem; font-weight: 500; cursor: pointer; transition: background-color 0.3s, box-shadow 0.3s; background-color: var(--blue); color: var(--white); }
+        .btn-submit:hover { background-color: #182c7a; box-shadow: 0 2px 5px rgba(0,0,0,0.15);}
+
+        /* Table Styles */
+        .table-section { /* No specific grid span needed now */ }
+        .table-wrapper {
+            overflow-x: auto; /* <<< KEY: Enables horizontal scroll */
+            width: 100%;
+            margin-top: 10px;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            /* Remove min-width, let wrapper handle scroll */
+        }
+        .data-table thead { background-color: var(--light-blue); }
+        .data-table th, .data-table td {
+            padding: 12px 15px; /* Slightly more padding */
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9rem;
+            white-space: nowrap; /* Keep content on one line */
+             vertical-align: middle;
+        }
+        .data-table th { color: var(--blue); font-weight: 600; }
+        .data-table tbody tr:hover { background-color: #f9f9f9; }
+        .action-btn {
+            padding: 4px 8px; border: none; border-radius: 4px; cursor: pointer;
+            font-size: 1.1rem; margin-left: 6px; transition: opacity 0.2s;
+            background: none; color: var(--black2); line-height: 1; vertical-align: middle;
+        }
+        .action-btn:hover { opacity: 0.7; }
+        .view-btn:hover { color: var(--green); }
+        .delete-btn:hover { color: var(--red); }
+
+
+        /* ================== Responsive Design Adjustments ================== */
+        @media (max-width: 991px) { /* Tablets */
+             /* ... Standard Nav/Topbar/Modal responsive rules ... */
+             .page-container { gap: 25px; }
+             .topbar { padding: 0 15px; }
+             .search-container { max-width: 400px; margin: 0 10px; }
+             .user-info .name { display: none; } /* Hide name on tablets */
+             .topbar-right { gap: 10px; } /* Reduce gap */
+             .topbar-icons { gap: 12px; }
+             #mail-icon-inbox, #notification-icon { font-size: 23px; }
+        }
+
+        @media (max-width: 767px) { /* Small Tablets / Large Phones */
+             /* ... Standard Nav/Topbar/Modal responsive rules ... */
+             .page-container { grid-template-columns: 1fr; } /* Ensure stacking */
+             .form-section, .table-section { padding: 20px; }
+             .form-section h3, .table-section h2 { font-size: 1.3rem; }
+             .add-form .form-row { flex-direction: column; gap: 0; margin-bottom: 0;}
+             .add-form .form-group { margin-bottom: 15px; }
+             .form-actions { justify-content: stretch; }
+             .form-actions button { width: 100%; }
+
+             /* --- REMOVED Mobile Table Card View CSS --- */
+             /* Keep standard table layout, rely on scroll wrapper */
+              .data-table th, .data-table td { font-size: 0.85rem; padding: 10px 8px;} /* Slightly reduce padding */
+              .action-btn { font-size: 1rem; } /* Adjust icon size if needed */
+              .topbar { padding: 0 10px; }
+             .search-container {
+                 max-width: 250px; /* Further reduce search width */
+                 margin: 0 10px;
+                 min-width: 100px; /* Allow it to get smaller */
+                 .topbar-right { gap: 8px;}
+             .topbar-icons { gap: 10px; }
+             .user-info { gap: 8px; }
+             /* Reduce icon sizes slightly */
+             #mail-icon-inbox, #notification-icon { font-size: 22px; }
+             .user { width: 38px; height: 38px; min-width: 38px;}
+             
+        }
+      }
+
+        @media (max-width: 479px) { /* Phones */
+             /* ... Standard Nav/Topbar/Modal responsive rules ... */
+             .page-container { gap: 20px; }
+             .form-section, .table-section { padding: 15px; }
+             .form-section h3, .table-section h2 { font-size: 1.2rem; }
+             .add-form input, .add-form select { font-size: 0.95rem; padding: 8px 10px;}
+             .btn-submit { font-size: 0.95rem; }
+             .data-table th, .data-table td { font-size: 0.8rem; padding: 8px 6px;} /* Further reduce padding */
+             .toggle { font-size: 2rem; width: 50px; } /* Smaller toggle */
+             .search-container { display: none; } /* Hide search completely */
+             .topbar-right { margin-left: auto; } /* Push remaining items right */
+             .topbar-icons { gap: 10px; } /* Adjust icon gap */
+             .user-info { margin-left: 10px; gap: 5px;}
+             .user { width: 35px; height: 35px; min-width: 35px; }
+             #mail-icon-inbox, #notification-icon { font-size: 20px; } /* Smaller icons */
+             /* Adjust dropdown positions if needed */
+             #inbox-preview, #notifications-dropdown { width: calc(100vw - 20px); max-width: 280px; right: 5px; }
+
+             
+        }
+
+    </style>
 </head>
 
 <body>
     <!-- =============== Navigation ================ -->
     <div class="container">
         <div class="navigation">
-            <ul>
-                <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="barbell"></ion-icon>
-                        </span>
-                        <span class="title">ENERGIZE</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="testadmin.html">
-                        <span class="icon">
-                            <ion-icon name="home-outline"></ion-icon>
-                        </span>
-                        <span class="title">Dashboard</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="adminclients.html">
-                        <span class="icon">
-                            <ion-icon name="people-outline"></ion-icon>
-                        </span>
-                        <span class="title">Manage Clients</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="admincoaches.html">
-                        <span class="icon">
-                            <ion-icon name="people-outline"></ion-icon>
-                        </span>
-                        <span class="title">Manage Coaches</span>
-                    </a>
-                </li>
-
-                <li>
-                  <a href="adminguests.html">
-                      <span class="icon">
-                          <ion-icon name="person-add-outline"></ion-icon>
-                      </span>
-                      <span class="title">Manage Guests</span>
-                  </a>
-              </li>
-
-              <li>
-                <a href="adminmanage.html">
-                    <span class="icon">
-                        <ion-icon name="person-add-outline"></ion-icon>
-                    </span>
-                    <span class="title">Manage Admins</span>
-                </a>
-            </li>
-
-                <li>
-                    <a href="admincomplaint.html">
-                        <span class="icon">
-                            <ion-icon name="chatbubble-outline"></ion-icon>
-                        </span>
-                        <span class="title">Complaints/Requests</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="adminpayments.html">
-                        <span class="icon">
-                            <ion-icon name="card-outline"></ion-icon>
-                        </span>
-                        <span class="title"> Clients Payments</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="adminsettings.html">
-                        <span class="icon">
-                            <ion-icon name="settings-outline"></ion-icon>
-                        </span>
-                        <span class="title">Settings</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="log-out-outline"></ion-icon>
-                        </span>
-                        <span class="title">Sign Out</span>
-                    </a>
-                </li>
-            </ul>
+             <ul>
+                 <li><a href="#"><span class="icon"><ion-icon name="barbell"></ion-icon></span><span class="title">ENERGIZE</span></a></li>
+                 <li><a href="testadmin.html"><span class="icon"><ion-icon name="home-outline"></ion-icon></span><span class="title">Dashboard</span></a></li>
+                 <li class="hovered"><a href="adminclients.html"><span class="icon"><ion-icon name="people-outline"></ion-icon></span><span class="title">Manage Clients</span></a></li>
+                 <li><a href="admincoaches.html"><span class="icon"><ion-icon name="people-outline"></ion-icon></span><span class="title">Manage Coaches</span></a></li>
+                 <li><a href="adminguests.html"><span class="icon"><ion-icon name="person-add-outline"></ion-icon></span><span class="title">Manage Guests</span></a></li>
+                 <li><a href="adminmanage.html"><span class="icon"><ion-icon name="person-add-outline"></ion-icon></span><span class="title">Manage Admins</span></a></li>
+                 <li><a href="admincomplaint.html"><span class="icon"><ion-icon name="chatbubble-outline"></ion-icon></span><span class="title">Complaints/Requests</span></a></li>
+                 <li><a href="adminpayments.html"><span class="icon"><ion-icon name="card-outline"></ion-icon></span><span class="title"> Clients Payments</span></a></li>
+                 <li><a href="adminsettings.html"><span class="icon"><ion-icon name="settings-outline"></ion-icon></span><span class="title">Settings</span></a></li>
+                 <li><a href="#" id="signOutLink"><span class="icon"><ion-icon name="log-out-outline"></ion-icon></span><span class="title">Sign Out</span></a></li>
+             </ul>
         </div>
 
         <!-- ========================= Main ==================== -->
         <div class="main">
             <div class="topbar">
-                <div class="toggle">
-                    <ion-icon name="menu-outline"></ion-icon>
-                </div>
-
+                <div class="toggle"><ion-icon name="menu-outline"></ion-icon></div>
                 <div class="search-container">
                     <label>
-                      <input type="text" id="search-input" placeholder="Search what you're looking for">
+                      <input type="text" id="search-input" placeholder="Search clients or guests...">
                       <ion-icon name="search-outline"></ion-icon>
                     </label>
-                    <div id="search-results">
-                    </div>
-                  </div>
-
-                  
-                  <div class="mail-container">
-                    <ion-icon name="mail" id="mail-icon-inbox"></ion-icon>
-                    <div id="unread-notification">1</div>
-                    <div id="inbox-preview">
-                    <strong>Inbox</strong>
-                    <hr>
-                    <div id="unread-messages">
-                        <div class="email-item sender">Clients</div>
-                        <div class="email-item subject">3 complaints were submitted</div>
-                        <hr>
-                    </div>
-                    <div id="read-messages">
-                        <div class="email-item sender">Coach</div>
-                        <div class="email-item subject">Can I ask?</div>
-                    </div>
-                    <a href="#">See All</a>
-                    </div>
+                    <div id="search-results"></div>
                 </div>
-
-                <div class="notification-container">
-                    <ion-icon name="notifications" id="notification-icon"></ion-icon>
-                    <div id="notification-badge">1</div>
-                    <div id="notifications-dropdown">
-                      <strong>Notifications</strong>
-                      <hr>
-                      <div id="notification-list">
-                        <div class="notification-item title">Today, 1:00 PM</div>
-                        <div class="notification-item message">New clients added.</div>
-                        <hr>
-                        <div class="notification-item title">Sales Update</div>
-                        <div class="notification-item message">It increased by 25%</div>
-                      </div>
-                      <a href="#">See All</a>
-                    </div>
-                  </div>
-            
-                <div class="name">
-                    <p>Peter Pan</p>
+                <div class="topbar-icons">
+                     <div class="mail-container">
+                         <ion-icon name="mail-outline" id="mail-icon-inbox"></ion-icon>
+                         <div id="unread-notification" style="display: block;">1</div>
+                         <div id="inbox-preview">
+                              <strong>Inbox</strong><hr>
+                              <div id="unread-messages"><div class="email-item sender">Clients</div><div class="email-item subject">3 complaints submitted</div><hr></div>
+                              <div id="read-messages"><div class="email-item sender">Coach</div><div class="email-item subject">Can I ask?</div></div>
+                              <a href="#">See All</a>
+                         </div>
+                     </div>
+                     <div class="notification-container">
+                         <ion-icon name="notifications-outline" id="notification-icon"></ion-icon>
+                         <div id="notification-badge" style="display: block;">1</div>
+                         <div id="notifications-dropdown">
+                              <strong>Notifications</strong><hr>
+                              <div id="notification-list"><div class="notification-item title">Today, 1:00 PM</div><div class="notification-item message">New clients added.</div><hr><div class="notification-item title">Sales Update</div><div class="notification-item message">It increased by 25%</div></div>
+                              <a href="#">See All</a>
+                         </div>
+                     </div>
+                 </div>
+                 <div class="user-info">
+                     <div class="name"><p>Peter Pan</p></div>
+                     <div class="user"><img src="assets/img/ramburat.jpg" alt=""></div>
                 </div>
-    
-                <div class="user">
-                    <img src="assets/img/ramburat.jpg" alt="">
-                </div>                
             </div>
 
-            <!-- Client Form Section -->
-<div class="form-section">
-    <h3>Add New Client</h3>
-    <form id="addClientForm" class="add-form">
-      <div class="form-row">
-        <div class="form-group">
-          <label for="clientName">Name</label>
-          <input type="text" id="clientName" required>
-        </div>
-        <div class="form-group">
-          <label for="clientEmail">Email</label>
-          <input type="email" id="clientEmail" required>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="clientPhone">Phone</label>
-          <input type="tel" id="clientPhone" required>
-        </div>
-        <div class="form-group">
-          <label for="clientCoach">Assigned Coach</label>
-          <input type="text" id="clientCoach" required>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="clientGoal">Fitness Goal</label>
-          <input type="text" id="clientGoal" required>
-        </div>
-        <div class="form-group">
-          <label for="clientStatus">Status</label>
-          <select id="clientStatus" required>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="clientMembership">Membership Type</label>
-          <select id="clientMembership" required>
-            <option value="starter">Starter Access</option>
-            <option value="coach">Coach Connect</option>
-            <option value="elite">Elite Coaching</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-actions">
-        <button type="submit" class="btn-submit">Add Client</button>
-      </div>
-    </form>
-  </div>
-  
-  <!-- Clients Table Section -->
-  <div class="view-clients-container">
-    <h2>ENERGIZE GYM CENTER CLIENTS</h2>
-    <table id="clientsTable">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Phone</th>
-          <th>Assigned Coach</th>
-          <th>Fitness Goal</th>
-          <th>Membership</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="clientsTableBody">
-        <!-- Client rows will be populated here -->
-      </tbody>
-    </table>
-    <p id="emptyClientsMessage" style="display:none;">No clients registered yet.</p>
-  </div>
-  
-  <!-- Guest Form Section -->
-  <div class="form-section">
-    <h3>Add New Guest</h3>
-    <form id="addGuestForm" class="add-form">
-      <div class="form-row">
-        <div class="form-group">
-          <label for="guestName">Name</label>
-          <input type="text" id="guestName" required>
-        </div>
-        <div class="form-group">
-          <label for="guestEmail">Email</label>
-          <input type="email" id="guestEmail" required>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="guestPhone">Phone</label>
-          <input type="tel" id="guestPhone" required>
-        </div>
-        <div class="form-group">
-          <label for="guestPurpose">Visit Purpose</label>
-          <input type="text" id="guestPurpose" required>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="guestStatus">Status</label>
-          <select id="guestStatus" required>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-actions">
-        <button type="submit" class="btn-submit">Add Guest</button>
-      </div>
-    </form>
-  </div>
-  
-  <!-- Guests Table Section -->
-  <div class="view-guests-container" >
-    <h2>ENERGIZE GYM CENTER GUESTS</h2>
-    <table id="guestsTable">
-      <thead >
-        <tr  >
-          <th>Name</th>
-          <th>Email</th>
-          <th>Phone</th>
-          <th>Visit Purpose</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="guestsTableBody" >
-        <!-- Guest rows will be populated here -->
-      </tbody>
-    </table>
-    <p id="emptyGuestsMessage" style="display:none;">No guests registered yet.</p>
-  </div>
-  
-  <!-- Client/Guest Details Modal -->
-  <div id="detailsModal" class="modal">
-    <div class="modal-content">
-      <span class="close-button">&times;</span>
-      <h3 id="modalTitle">Details</h3>
-      <form id="editForm">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="editName">Name</label>
-            <input type="text" id="editName" required>
-          </div>
-          <div class="form-group">
-            <label for="editEmail">Email</label>
-            <input type="email" id="editEmail" required>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="editPhone">Phone</label>
-            <input type="tel" id="editPhone" required>
-          </div>
-          <div class="form-group" id="editCoachGroup">
-            <label for="editCoach">Assigned Coach</label>
-            <input type="text" id="editCoach">
-          </div>
-          <div class="form-group" id="editPurposeGroup" style="display:none;">
-            <label for="editPurpose">Visit Purpose</label>
-            <input type="text" id="editPurpose">
-          </div>
-        </div>
-        <div class="form-row" id="clientSpecificFields">
-          <div class="form-group">
-            <label for="editGoal">Fitness Goal</label>
-            <input type="text" id="editGoal">
-          </div>
-          <div class="form-group">
-            <label for="editMembership">Membership</label>
-            <select id="editMembership">
-              <option value="starter">Starter Access</option>
-              <option value="coach">Coach Connect</option>
-              <option value="elite">Elite Coaching</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="editStatus">Status</label>
-            <select id="editStatus" required>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
-          </div>
-        </div>
-        <input type="hidden" id="editId">
-        <input type="hidden" id="editType">
-        <div class="modal-actions">
-          <button type="submit" class="save-button">Save Changes</button>
-          <button type="button" class="delete-button">Delete</button>
-        </div>
-      </form>
-    </div>
-  </div>
+            <!-- ================== Client/Guest Management Content ================== -->
+            <div class="page-container">
+                <!-- Client Form Section -->
+                <div class="form-section">
+                    <h3>Add New Client</h3>
+                    <form id="addClientForm" class="add-form">
+                        <div class="form-row">
+                            <div class="form-group"><label for="clientName">Name*</label><input type="text" id="clientName" required></div>
+                            <div class="form-group"><label for="clientEmail">Email</label><input type="email" id="clientEmail"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label for="clientPhone">Phone</label><input type="tel" id="clientPhone"></div>
+                            <div class="form-group"><label for="clientCoach">Assigned Coach</label><input type="text" id="clientCoach"></div>
+                        </div>
+                        <div class="form-row">
+                             <div class="form-group"><label for="clientGoal">Fitness Goal</label><input type="text" id="clientGoal"></div>
+                             <div class="form-group"><label for="clientMembership">Membership Type</label><select id="clientMembership" required><option value="starter">Starter Access</option><option value="coach">Coach Connect</option><option value="elite">Elite Coaching</option></select></div>
+                         </div>
+                         <div class="form-row">
+                             <div class="form-group"><label for="clientStatus">Status</label><select id="clientStatus" required><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+                        </div>
+                        <div class="form-actions"><button type="submit" class="btn-submit">Add Client</button></div>
+                    </form>
+                </div>
 
-  <div id="signOutModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title">Sign Out</h2>
-      </div>
-      <div class="modal-body">
-        <p>Are you sure you want to sign out?</p>
-      </div>
-      <div class="modal-footer sign-out-actions">
-        <button class="modal-button no-button" id="signOutNo">No</button>
-        <button class="modal-button yes-button" id="signOutYes">Yes</button>
-      </div>
-    </div>
-  </div>
+                <!-- Clients Table Section -->
+                <div class="table-section">
+                    <h2>Manage Clients</h2>
+                     <div class="table-wrapper"> <!-- *** WRAPPER FOR SCROLL *** -->
+                        <table id="clientsTable" class="data-table">
+                            <thead>
+                                <tr><th>Name</th><th>Email</th><th>Phone</th><th>Assigned Coach</th><th>Fitness Goal</th><th>Membership</th><th>Status</th><th>Actions</th></tr>
+                            </thead>
+                            <tbody id="clientsTableBody">
+                                <!-- Client rows populated by JS -->
+                            </tbody>
+                        </table>
+                     </div>
+                    <p id="emptyClientsMessage" style="display:none; padding: 20px; text-align: center; color: var(--black2);">No clients registered yet.</p>
+                </div>
+
+                <!-- Guest Form Section -->
+                <div class="form-section">
+                    <h3>Add New Guest</h3>
+                    <form id="addGuestForm" class="add-form">
+                        <div class="form-row">
+                            <div class="form-group"><label for="guestName">Name*</label><input type="text" id="guestName" required></div>
+                            <div class="form-group"><label for="guestEmail">Email</label><input type="email" id="guestEmail"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label for="guestPhone">Phone</label><input type="tel" id="guestPhone"></div>
+                            <div class="form-group"><label for="guestPurpose">Visit Purpose</label><input type="text" id="guestPurpose"></div>
+                        </div>
+                         <div class="form-row">
+                            <div class="form-group"><label for="guestStatus">Status</label><select id="guestStatus" required><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+                        </div>
+                        <div class="form-actions"><button type="submit" class="btn-submit">Add Guest</button></div>
+                    </form>
+                </div>
+
+                <!-- Guests Table Section -->
+                <div class="table-section">
+                    <h2>Manage Guests</h2>
+                     <div class="table-wrapper"> <!-- *** WRAPPER FOR SCROLL *** -->
+                        <table id="guestsTable" class="data-table">
+                            <thead>
+                                <tr><th>Name</th><th>Email</th><th>Phone</th><th>Visit Purpose</th><th>Status</th><th>Actions</th></tr>
+                            </thead>
+                            <tbody id="guestsTableBody">
+                                <!-- Guest rows populated by JS -->
+                            </tbody>
+                        </table>
+                     </div>
+                    <p id="emptyGuestsMessage" style="display:none; padding: 20px; text-align: center; color: var(--black2);">No guests registered yet.</p>
+                </div>
+            </div> <!-- End page-container -->
+
+        </div> <!-- End main -->
 
 
- <!-- =========== Scripts =========  -->
- <script src="assets/js/adminclients.js"></script>
+        <!-- ============ Modals ============ -->
+        <!-- Sign Out Modal -->
+        <div class="modal-overlay" id="signOutModalOverlay">
+             <div class="modal" id="signOutModal">
+                  <div class="modal-header"><h3 class="modal-title">Sign Out</h3><button type="button" class="modal-close" aria-label="Close modal"><ion-icon name="close-outline"></ion-icon></button></div>
+                  <div class="modal-body"><p>Are you sure you want to sign out?</p></div>
+                  <div class="modal-footer"><button type="button" class="modal-button no-button" id="signOutNo">Cancel</button><button type="button" class="modal-button yes-button" id="signOutYes">Sign Out</button></div>
+             </div>
+        </div>
 
-<!-- ====== ionicons ======= -->
-<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+        <!-- Add Success Modal -->
+        <div id="addSuccessModalOverlay" class="modal-overlay">
+             <div class="modal" id="addSuccessModal">
+                  <div class="modal-header"><h3 class="modal-title">Success!</h3></div>
+                  <div class="modal-body">
+                       <ion-icon name="checkmark-circle-outline" class="success-icon" style="justify-self: center;"></ion-icon>
+                      <p id="successMessageText">Item added successfully!</p>
+                  </div>
+                  <div class="modal-footer" style="justify-content: center;"><button type="button" class="modal-button ok-button" id="addSuccessOk">OK</button></div>
+             </div>
+        </div>
+
+         <!-- Delete Confirmation Modal -->
+         <div id="deleteConfirmModalOverlay" class="modal-overlay">
+             <div class="modal" id="deleteConfirmModal">
+                  <div class="modal-header"><h3 class="modal-title">Confirm Deletion</h3><button type="button" class="modal-close" aria-label="Close modal"><ion-icon name="close-outline"></ion-icon></button></div>
+                  <div class="modal-body"><p>Are you sure you want to delete <strong id="deleteItemNameSpan">this item</strong>? This action cannot be undone.</p></div>
+                  <div class="modal-footer"><button type="button" class="modal-button no-button" id="deleteCancelBtn">Cancel</button><button type="button" class="modal-button delete-confirm-button" id="deleteConfirmBtn">Delete</button></div>
+             </div>
+        </div>
+
+         <!-- Client/Guest Details & Edit Modal -->
+         <div id="detailsModalOverlay" class="modal-overlay">
+             <div class="modal" id="detailsModal" style="max-width: 700px;">
+                 <div class="modal-header"><h3 class="modal-title" id="modalTitle">Details</h3><button type="button" class="modal-close" aria-label="Close modal"><ion-icon name="close-outline"></ion-icon></button></div>
+                 <div class="modal-body">
+                     <form id="editForm">
+                         <div class="form-row"><div class="form-group"><label for="editName">Name</label><input type="text" id="editName" required></div><div class="form-group"><label for="editEmail">Email</label><input type="email" id="editEmail" required></div></div>
+                         <div class="form-row"><div class="form-group"><label for="editPhone">Phone</label><input type="tel" id="editPhone" required></div><div class="form-group" id="editCoachGroup"><label for="editCoach">Assigned Coach</label><input type="text" id="editCoach"></div><div class="form-group" id="editPurposeGroup" style="display:none;"><label for="editPurpose">Visit Purpose</label><input type="text" id="editPurpose"></div></div>
+                         <div class="form-row" id="clientSpecificFields"><div class="form-group"><label for="editGoal">Fitness Goal</label><input type="text" id="editGoal"></div><div class="form-group"><label for="editMembership">Membership</label><select id="editMembership"><option value="starter">Starter Access</option><option value="coach">Coach Connect</option><option value="elite">Elite Coaching</option></select></div></div>
+                         <div class="form-row"><div class="form-group"><label for="editStatus">Status</label><select id="editStatus" required><option value="active">Active</option><option value="inactive">Inactive</option></select></div></div>
+                         <input type="hidden" id="editId"><input type="hidden" id="editType">
+                     </form>
+                 </div>
+                  <div class="modal-footer">
+                      <button type="button" class="modal-button delete-button" id="modalDeleteButton">Delete</button>
+                      <button type="submit" form="editForm" class="modal-button save-button yes-button">Save Changes</button>
+                  </div>
+             </div>
+         </div>
+
+    </div> <!-- End container -->
+
+
+    <!-- =========== Scripts =========  -->
+    <script>
+      
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+
+// --- Standard Setup ---
+
+// Navigation Link Activation & Menu Toggle (Standard)
+let list = document.querySelectorAll(".navigation li");
+function activeLink() {
+    list.forEach(item => item.classList.remove("hovered"));
+     const currentLink = Array.from(list).find(item => item.querySelector('a[href="adminclients.html"]'));
+     if (currentLink) currentLink.classList.add("hovered");
+     else list[2].classList.add("hovered"); // Fallback
+}
+ // Ensure activeLink is called if needed (e.g., for dynamic hover)
+ list.forEach((item) => item.addEventListener("click", activeLink)); // Add listener for clicks
+activeLink(); // Set initial active state
+
+let toggle = document.querySelector(".toggle");
+let navigation = document.querySelector(".navigation");
+let main = document.querySelector(".main");
+let topbar = document.querySelector(".topbar"); // Get topbar element
+
+// Check if all elements exist before adding listener
+if(toggle && navigation && main && topbar) {
+    toggle.onclick = () => {
+        navigation.classList.toggle("active");
+        main.classList.toggle("active");
+        topbar.classList.toggle("active"); // Toggle topbar active class too
+    };
+} else {
+     console.error("Toggle, Navigation, Main, or Topbar element not found!");
+}
+
+
+// Search Functionality (Standard) - ** FULL CODE **
+const searchInput = document.getElementById('search-input');
+const searchResultsDiv = document.getElementById('search-results');
+// Update search data if needed for this specific page
+const searchDataAdminClients = [ "John Doe", "Jane Smith", "Peter Jones", "Add Client", "Add Guest", "Edit User", "Delete User", "Manage Clients" ];
+
+ // Display results function (needs to be defined for search)
+function displayResults(results, searchTerm) {
+     if (!searchResultsDiv) return; // Guard clause
+     searchResultsDiv.innerHTML = ''; // Clear previous results
+     if (results.length > 0 && searchInput && searchInput.value.trim() !== '') { // Check searchInput exists
+        const ul = document.createElement('ul');
+        results.forEach(result => {
+            const li = document.createElement('li');
+            // Simple highlight (can be improved)
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            li.innerHTML = result.replace(regex, '<span class="highlight">$1</span>');
+
+            li.addEventListener('click', () => {
+                if(searchInput) searchInput.value = result; // Set input value
+                searchResultsDiv.style.display = 'none'; // Hide results
+                console.log("Search Selected:", result); // Example action
+                // You might want to trigger a search action here
+            });
+            ul.appendChild(li);
+        });
+        searchResultsDiv.appendChild(ul);
+        searchResultsDiv.style.display = 'block'; // Show results
+    } else {
+        searchResultsDiv.style.display = 'none'; // Hide if no results
+    }
+}
+
+if (searchInput && searchResultsDiv) {
+     searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase().trim();
+        // searchResultsDiv.innerHTML = ''; // Moved clearing to displayResults
+        // searchResultsDiv.style.display = 'none'; // Moved hiding to displayResults
+        if (searchTerm.length > 0) {
+            const filteredResults = searchDataAdminClients.filter(item => item.toLowerCase().includes(searchTerm));
+            displayResults(filteredResults, searchTerm);
+        } else {
+             searchResultsDiv.style.display = 'none'; // Hide if input is empty
+        }
+    });
+    // Hide search results when clicking outside
+    document.addEventListener('click', event => {
+        const searchContainer = event.target.closest('.search-container');
+        if (!searchContainer && searchResultsDiv) { // Check if click is outside and results div exists
+             searchResultsDiv.style.display = 'none';
+        }
+    });
+} else {
+     console.warn("Search input or results container not found.");
+}
+
+
+// Mail & Notification Dropdown Functionality (Standard) - ** FULL CODE **
+const mailIconInbox = document.getElementById('mail-icon-inbox');
+const unreadNotification = document.getElementById('unread-notification');
+const inboxPreview = document.getElementById('inbox-preview');
+let hasUnread = true; // Simulate initial unread state
+
+function updateUnreadIndicator() {
+    if (unreadNotification) {
+        unreadNotification.style.display = hasUnread ? 'block' : 'none';
+        // Optionally update the count if needed, e.g., unreadNotification.textContent = count;
+    }
+}
+
+if(mailIconInbox && inboxPreview && unreadNotification) {
+    updateUnreadIndicator(); // Initial check
+
+    mailIconInbox.addEventListener('click', function(event) {
+         event.stopPropagation(); // Prevent document click listener from closing immediately
+         const notificationsDropdown = document.getElementById('notifications-dropdown');
+         if (notificationsDropdown) notificationsDropdown.style.display = 'none'; // Close other dropdown
+
+         const isVisible = inboxPreview.style.display === 'block';
+         inboxPreview.style.display = isVisible ? 'none' : 'block';
+
+        if (!isVisible && hasUnread) {
+            hasUnread = false;
+            updateUnreadIndicator();
+            console.log("Inbox opened, marked as read (simulation).");
+        }
+    });
+} else {
+     console.warn("Mail icon, unread notification, or inbox preview element not found.");
+}
+
+const notificationIcon = document.getElementById('notification-icon');
+const notificationBadge = document.getElementById('notification-badge');
+const notificationsDropdown = document.getElementById('notifications-dropdown');
+let hasNewNotifications = true; // Simulate initial state
+
+if (notificationIcon && notificationBadge && notificationsDropdown) {
+     notificationBadge.style.display = hasNewNotifications ? 'block' : 'none';
+
+    notificationIcon.addEventListener('click', function(event) {
+         event.stopPropagation();
+         if (inboxPreview) inboxPreview.style.display = 'none'; // Close other dropdown
+
+        const isVisible = notificationsDropdown.style.display === 'block';
+        notificationsDropdown.style.display = isVisible ? 'none' : 'block';
+
+         if (!isVisible && hasNewNotifications) {
+             // hasNewNotifications = false; // Keep internal state if needed
+             notificationBadge.style.display = 'none'; // Just hide visually
+             console.log("Notifications opened, badge hidden (simulation).");
+         }
+    });
+} else {
+     console.warn("Notification icon, badge, or dropdown element not found.");
+}
+
+ // Close dropdowns when clicking outside
+ document.addEventListener('click', event => {
+     const mailContainer = event.target.closest('.mail-container');
+     const notificationContainer = event.target.closest('.notification-container');
+
+     if (inboxPreview && !mailContainer) {
+         inboxPreview.style.display = 'none';
+     }
+     if (notificationsDropdown && !notificationContainer) {
+         notificationsDropdown.style.display = 'none';
+     }
+ });
+
+
+// --- Modal Handling (Standard) ---
+function showModal(overlayId) { const overlay = document.getElementById(overlayId); if (overlay) overlay.classList.add('active'); }
+function hideModal(overlayId) { const overlay = document.getElementById(overlayId); if (overlay) overlay.classList.remove('active'); }
+document.querySelectorAll('.modal-overlay').forEach(overlay => { overlay.addEventListener('click', (event) => { if (event.target === overlay) hideModal(overlay.id); }); });
+document.querySelectorAll('.modal-close').forEach(button => { button.addEventListener('click', () => { const overlay = button.closest('.modal-overlay'); if(overlay) hideModal(overlay.id); }); });
+document.querySelectorAll('.modal-button.ok-button').forEach(button => { button.addEventListener('click', () => { const overlay = button.closest('.modal-overlay'); if(overlay) hideModal(overlay.id); }); });
+document.addEventListener('keydown', (event) => { if (event.key === 'Escape') { document.querySelectorAll('.modal-overlay.active').forEach(overlay => hideModal(overlay.id)); } });
+
+// Sign Out Modal Logic (Standard)
+const signOutLink = document.getElementById('signOutLink'); // Use ID from Nav Link
+const signOutModalOverlay = document.getElementById('signOutModalOverlay'); // Get Overlay
+const signOutNoButton = document.getElementById('signOutNo');
+const signOutYesButton = document.getElementById('signOutYes');
+ // Check if elements exist before adding listeners
+ if (signOutLink && signOutModalOverlay && signOutNoButton && signOutYesButton) {
+     signOutLink.addEventListener('click', (event) => { event.preventDefault(); showModal('signOutModalOverlay'); });
+     signOutNoButton.addEventListener('click', () => hideModal('signOutModalOverlay'));
+     signOutYesButton.addEventListener('click', () => window.location.href = 'index.html');
+ } else {
+       console.warn("Sign out modal elements not found.");
+ }
+// --- End Standard Setup & Modals ---
+
+
+// --- Admin Clients/Guests Page Specific JS ---
+
+            // DOM Elements (Ensure all IDs match your HTML)
+            const addClientForm = document.getElementById('addClientForm');
+            const addGuestForm = document.getElementById('addGuestForm');
+            const clientsTableBody = document.getElementById('clientsTableBody');
+            const guestsTableBody = document.getElementById('guestsTableBody');
+            const emptyClientsMessage = document.getElementById('emptyClientsMessage');
+            const emptyGuestsMessage = document.getElementById('emptyGuestsMessage');
+            const detailsModalOverlay = document.getElementById('detailsModalOverlay');
+            const modalTitle = document.getElementById('modalTitle');
+            const editForm = document.getElementById('editForm');
+            const editNameInput = document.getElementById('editName');
+            const editEmailInput = document.getElementById('editEmail');
+            const editPhoneInput = document.getElementById('editPhone');
+            const editCoachInput = document.getElementById('editCoach');
+            const editCoachGroup = document.getElementById('editCoachGroup');
+            const editPurposeInput = document.getElementById('editPurpose');
+            const editPurposeGroup = document.getElementById('editPurposeGroup');
+            const editGoalInput = document.getElementById('editGoal');
+            const editMembershipSelect = document.getElementById('editMembership');
+            const editStatusSelect = document.getElementById('editStatus');
+            const clientSpecificFields = document.getElementById('clientSpecificFields');
+            const editIdInput = document.getElementById('editId');
+            const editTypeInput = document.getElementById('editType');
+            const modalDeleteButton = document.getElementById('modalDeleteButton'); // Delete button inside Edit Modal
+            const successMessageText = document.getElementById('successMessageText');
+            const addSuccessOkBtn = document.getElementById('addSuccessOk');
+            const deleteConfirmBtn = document.getElementById('deleteConfirmBtn'); // Confirm button in Delete Modal
+            const deleteCancelBtn = document.getElementById('deleteCancelBtn'); // Cancel button in Delete Modal
+            const deleteItemNameSpan = document.getElementById('deleteItemNameSpan');
+
+            // Check essential elements exist
+            if (!clientsTableBody || !guestsTableBody || !addClientForm || !addGuestForm) {
+                console.error("Crucial table body or form elements are missing!");
+                // Optionally disable functionality or show an error message to the user
+                // return;
+            }
+
+
+            // Initial data (use let for modification)
+            let clients = [
+                {id: 1, name: "John Doe", email: "john.doe@example.com", phone: "(555) 123-4567", coach: "Coach Mike", goal: "Weight Loss", membership: "elite", status: "active"},
+                {id: 2, name: "Jane Smith", email: "jane.smith@example.com", phone: "(555) 987-6543", coach: "Coach Sarah", goal: "Muscle Gain", membership: "coach", status: "active"},
+                {id: 3, name: "Peter Jones", email: "peter.jones@example.com", phone: "(555) 456-7890", coach: "Coach Mike", goal: "General Fitness", membership: "starter", status: "inactive"},
+            ];
+            let guests = []; // Start with empty guests array
+            let itemToDelete = { id: null, type: null, element: null }; // Store info for deletion confirmation
+
+            // --- Table Population Functions ---
+            function addRowToTable(item, type) {
+                const tableBody = type === 'client' ? clientsTableBody : guestsTableBody;
+                if (!tableBody) return; // Exit if table body not found
+
+                const newRow = tableBody.insertRow(); // Use insertRow for potentially better performance/compatibility
+                newRow.dataset.id = item.id;
+                newRow.dataset.type = type;
+                newRow.classList.add('data-row'); // Add a common class for easier selection
+
+                let cellsData = [];
+                let headers = [];
+                const tableElement = tableBody.closest('.data-table');
+
+                if (!tableElement) {
+                     console.error(`Could not find parent table for ${type} table body.`);
+                     return;
+                 }
+
+                 const headerCells = tableElement.querySelectorAll('thead th'); // Select TH elements
+                 headers = Array.from(headerCells).map(th => th.textContent.trim());
+
+                if (type === 'client') {
+                    cellsData = [ item.name, item.email || '-', item.phone || '-', item.coach || '-', item.goal || '-', item.membership || '-', item.status ];
+                } else { // Guest
+                    cellsData = [ item.name, item.email || '-', item.phone || '-', item.purpose || '-', item.status ];
+                }
+
+                // Populate data cells and add data-label
+                cellsData.forEach((cellData, index) => {
+                    const cell = newRow.insertCell();
+                    cell.textContent = cellData;
+                     if (headers[index]) {
+                       cell.setAttribute('data-label', headers[index] + ': ');
+                     }
+                });
+
+                // Actions Cell
+                const actionsHeaderIndex = headers.indexOf("Actions");
+                if (actionsHeaderIndex !== -1) {
+                    const actionsCell = newRow.insertCell();
+                    actionsCell.setAttribute('data-label', headers[actionsHeaderIndex] + ': '); // Set label for actions cell
+                    actionsCell.innerHTML = `
+                        <button class="action-btn view-btn" title="View/Edit Details"><ion-icon name="eye-outline"></ion-icon></button>
+                        <button class="action-btn delete-btn" title="Delete ${type === 'client' ? 'Client' : 'Guest'}"><ion-icon name="trash-outline"></ion-icon></button>
+                    `;
+                    attachActionListeners(newRow); // Attach listeners AFTER adding content
+                } else {
+                     console.warn("Could not find 'Actions' header in table:", tableElement.id);
+                      // Optionally add actions cell even without header
+                      const actionsCellFallback = newRow.insertCell();
+                      actionsCellFallback.innerHTML = `... actions ...`; // Placeholder
+                      attachActionListeners(newRow); // Still attach listeners if needed
+                }
+                checkEmptyTables(); // Update empty message status
+            }
+
+
+            function attachActionListeners(row) {
+                const viewBtn = row.querySelector('.view-btn');
+                const deleteBtn = row.querySelector('.delete-btn');
+                // Remove previous listeners before adding new ones (important if re-populating)
+                // viewBtn?.removeEventListener('click', handleViewDetails); // Not strictly needed if rows are always new
+                // deleteBtn?.removeEventListener('click', handleDelete);
+                if(viewBtn) viewBtn.addEventListener('click', handleViewDetails);
+                if(deleteBtn) deleteBtn.addEventListener('click', handleDelete);
+            }
+
+            function populateTables() {
+                 console.log("Populating tables..."); // Debug log
+                 if (clientsTableBody) {
+                     clientsTableBody.innerHTML = '';
+                     clients.forEach(client => addRowToTable(client, 'client'));
+                 } else {
+                      console.error("Clients table body not found!");
+                 }
+                 if (guestsTableBody) {
+                    guestsTableBody.innerHTML = '';
+                     guests.forEach(guest => addRowToTable(guest, 'guest'));
+                 } else {
+                      console.error("Guests table body not found!");
+                 }
+                 checkEmptyTables();
+                 // addMobileDataLabelsToAllTables(); // Data labels added in addRowToTable now
+             }
+
+            function checkEmptyTables() {
+                 if (emptyClientsMessage) emptyClientsMessage.style.display = clients.length === 0 ? 'block' : 'none';
+                 if (emptyGuestsMessage) emptyGuestsMessage.style.display = guests.length === 0 ? 'block' : 'none';
+             }
+
+            // --- Event Handlers ---
+
+            // Add Client
+            if(addClientForm) {
+                addClientForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    console.log("Adding client..."); // Debug log
+
+                    // Get elements inside the handler
+                    const clientNameInput = document.getElementById('clientName');
+                    const clientEmailInput = document.getElementById('clientEmail');
+                    const clientPhoneInput = document.getElementById('clientPhone');
+                    const clientCoachInput = document.getElementById('clientCoach');
+                    const clientGoalInput = document.getElementById('clientGoal');
+                    const clientMembershipSelect = document.getElementById('clientMembership');
+                    const clientStatusSelect = document.getElementById('clientStatus');
+
+                    if (!clientNameInput || !clientMembershipSelect || !clientStatusSelect) {
+                        alert("Required client fields are missing in the form.");
+                        return;
+                    }
+                    if (!clientNameInput.value.trim()) {
+                         alert("Client Name is required.");
+                         clientNameInput.focus();
+                         return;
+                    }
+
+                    const client = {
+                        id: Date.now(),
+                        name: clientNameInput.value.trim(),
+                        email: clientEmailInput?.value.trim() || '', // Use optional chaining and default
+                        phone: clientPhoneInput?.value.trim() || '',
+                        coach: clientCoachInput?.value.trim() || '',
+                        goal: clientGoalInput?.value.trim() || '',
+                        membership: clientMembershipSelect.value,
+                        status: clientStatusSelect.value
+                    };
+
+                    clients.push(client);
+                    addRowToTable(client, 'client');
+                    addClientForm.reset();
+                    if(successMessageText) successMessageText.textContent = "Client added successfully!";
+                    showModal('addSuccessModalOverlay');
+                });
+            } else {
+                 console.warn("Add Client Form not found!");
+            }
+
+             // Add Guest
+            if(addGuestForm) {
+                addGuestForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    console.log("Adding guest..."); // Debug log
+
+                    // Get elements inside the handler
+                    const guestNameInput = document.getElementById('guestName');
+                    const guestEmailInput = document.getElementById('guestEmail');
+                    const guestPhoneInput = document.getElementById('guestPhone');
+                    const guestPurposeInput = document.getElementById('guestPurpose');
+                    const guestStatusSelect = document.getElementById('guestStatus');
+
+                     if (!guestNameInput || !guestStatusSelect) {
+                         alert("Required guest fields are missing in the form.");
+                         return;
+                     }
+                     if (!guestNameInput.value.trim()) {
+                          alert("Guest Name is required.");
+                          guestNameInput.focus();
+                          return;
+                     }
+
+                    const guest = {
+                        id: Date.now(),
+                        name: guestNameInput.value.trim(),
+                        email: guestEmailInput?.value.trim() || '',
+                        phone: guestPhoneInput?.value.trim() || '',
+                        purpose: guestPurposeInput?.value.trim() || '',
+                        status: guestStatusSelect.value
+                    };
+
+                    guests.push(guest);
+                    addRowToTable(guest, 'guest');
+                    addGuestForm.reset();
+                    if(successMessageText) successMessageText.textContent = "Guest added successfully!";
+                    showModal('addSuccessModalOverlay');
+                });
+            } else {
+                 console.warn("Add Guest Form not found!");
+            }
+
+             // OK button on Success Modal
+             if (addSuccessOkBtn) {
+                 addSuccessOkBtn.addEventListener('click', () => hideModal('addSuccessModalOverlay'));
+             } else {
+                  console.warn("Success modal OK button not found.");
+             }
+
+            // View/Edit Details
+             function handleViewDetails(event) {
+                const row = event.target.closest('.data-row'); // Use common class
+                if (!row || !row.dataset.id || !row.dataset.type) {
+                     console.error("Could not get row data for view/edit.");
+                     return;
+                }
+                const id = row.dataset.id;
+                const type = row.dataset.type;
+                const item = (type === 'client' ? clients : guests).find(i => i.id == id);
+
+                 if (!item || !editForm || !modalTitle || !editIdInput || !editTypeInput || !editNameInput || !editEmailInput || !editPhoneInput || !editStatusSelect || !editCoachGroup || !editPurposeGroup || !clientSpecificFields) {
+                     console.error("Essential elements for edit modal not found!");
+                     return;
+                 }
+
+                console.log("Viewing/Editing:", type, id, item); // Debug log
+
+                modalTitle.textContent = `View/Edit ${type === 'client' ? 'Client' : 'Guest'}`;
+                editIdInput.value = id;
+                editTypeInput.value = type;
+                editNameInput.value = item.name || '';
+                editEmailInput.value = item.email || '';
+                editPhoneInput.value = item.phone || '';
+                editStatusSelect.value = item.status || 'active';
+
+                const clientFieldsVisible = type === 'client';
+                editCoachGroup.style.display = clientFieldsVisible ? 'block' : 'none';
+                clientSpecificFields.style.display = clientFieldsVisible ? 'block' : 'none';
+                editPurposeGroup.style.display = !clientFieldsVisible ? 'block' : 'none';
+
+                if (type === 'client') {
+                    if(editCoachInput) editCoachInput.value = item.coach || '';
+                    if(editGoalInput) editGoalInput.value = item.goal || '';
+                    if(editMembershipSelect) editMembershipSelect.value = item.membership || 'starter';
+                    if(editPurposeInput) editPurposeInput.value = '';
+                } else {
+                    if(editPurposeInput) editPurposeInput.value = item.purpose || '';
+                    if(editCoachInput) editCoachInput.value = '';
+                    if(editGoalInput) editGoalInput.value = '';
+                    if(editMembershipSelect) editMembershipSelect.value = 'starter';
+                }
+
+                // Ensure delete button listener is fresh
+                 if (modalDeleteButton) {
+                    const newDeleteButton = modalDeleteButton.cloneNode(true);
+                    modalDeleteButton.parentNode.replaceChild(newDeleteButton, modalDeleteButton);
+                    newDeleteButton.id = 'modalDeleteButton'; // Keep the ID
+                     newDeleteButton.addEventListener('click', () => {
+                        handleDeleteFromModal(id, type, item.name);
+                    });
+                 } else {
+                     console.warn("Delete button inside modal not found.");
+                 }
+
+                showModal('detailsModalOverlay');
+            }
+
+
+             // Handle Edit Form Submission
+             if(editForm) {
+                 editForm.addEventListener('submit', (e) => {
+                     e.preventDefault();
+                     const id = editIdInput?.value;
+                     const type = editTypeInput?.value;
+                      if (!id || !type) return;
+
+                     const arrayToUpdate = type === 'client' ? clients : guests;
+                     const index = arrayToUpdate.findIndex(item => item.id == id);
+
+                     if (index === -1) return;
+
+                     const updatedData = { /* ... gather updated data ... */ };
+                     // ... (update logic as before) ...
+
+                     populateTables(); // Repopulate tables
+                     hideModal('detailsModalOverlay');
+                     alert(`${type.charAt(0).toUpperCase() + type.slice(1)} updated!`);
+                 });
+             }
+
+            // Delete Action Trigger
+             function handleDelete(event) {
+                 const row = event.target.closest('.data-row'); // Use common class
+                 if (!row || !row.dataset.id || !row.dataset.type) return;
+                 itemToDelete.element = row;
+                 itemToDelete.id = row.dataset.id;
+                 itemToDelete.type = row.dataset.type;
+                 const name = row.querySelector('td:first-child')?.textContent || 'this item';
+
+                 if (deleteItemNameSpan) deleteItemNameSpan.textContent = name;
+                 else console.warn("Delete item name span not found");
+                 showModal('deleteConfirmModalOverlay');
+             }
+
+            // Delete action from inside Edit Modal
+             function handleDeleteFromModal(id, type, name) {
+                 const rowElement = document.querySelector(`.data-table .data-row[data-id="${id}"][data-type="${type}"]`);
+                 if (rowElement) {
+                      itemToDelete = { id, type, element: rowElement };
+                      if (deleteItemNameSpan) deleteItemNameSpan.textContent = name || 'this item';
+                      hideModal('detailsModalOverlay');
+                      showModal('deleteConfirmModalOverlay');
+                 } else {
+                      console.error("Row element not found for modal delete.");
+                 }
+             }
+
+             // Confirm Delete Action
+            if (deleteConfirmBtn) {
+                deleteConfirmBtn.addEventListener('click', () => {
+                    if (itemToDelete.element && itemToDelete.id && itemToDelete.type) {
+                         console.log("Confirming delete for:", itemToDelete); // Debug log
+                         let arrayToUpdate;
+                         let initialLength;
+
+                         if (itemToDelete.type === 'client') {
+                             arrayToUpdate = clients;
+                             initialLength = clients.length;
+                             clients = clients.filter(c => c.id != itemToDelete.id);
+                         } else {
+                             arrayToUpdate = guests;
+                             initialLength = guests.length;
+                             guests = guests.filter(g => g.id != itemToDelete.id);
+                         }
+
+                         // Check if the length actually changed
+                         if (arrayToUpdate.length === initialLength) {
+                             // Check if the element still exists in DOM before alerting failure
+                             if(document.body.contains(itemToDelete.element)){
+                                console.error("Item to delete not found in array during confirmation, but element exists.");
+                             } else {
+                                 // Item was already removed, maybe double click?
+                                 console.warn("Delete confirmation clicked, but item already removed from DOM.");
+                             }
+                         } else {
+                             itemToDelete.element.remove(); // Remove row from DOM
+                             checkEmptyTables();
+                             console.log(`${itemToDelete.type} with ID ${itemToDelete.id} deleted.`);
+                             // Don't use alert, it blocks execution. Use a success message/modal if needed.
+                             // alert(`${itemToDelete.type.charAt(0).toUpperCase() + itemToDelete.type.slice(1)} deleted successfully!`);
+                         }
+                    } else {
+                         console.error("Missing item details for deletion.");
+                    }
+                    hideModal('deleteConfirmModalOverlay');
+                    itemToDelete = { id: null, type: null, element: null }; // Reset
+                });
+            } else {
+                 console.warn("Delete confirmation button not found.");
+            }
+
+
+            // Cancel Delete Action
+             if(deleteCancelBtn) {
+                deleteCancelBtn.addEventListener('click', () => {
+                     itemToDelete = { id: null, type: null, element: null };
+                     hideModal('deleteConfirmModalOverlay');
+                 });
+            } else {
+                  console.warn("Delete cancel button not found.");
+            }
+
+            // Initial Population
+            populateTables();
+
+            // --- End Admin Clients/Guests Page Specific JS ---
+
+        }); // End DOMContentLoaded
+    </script>
+
+
+    <!-- ====== ionicons ======= -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
 
 </html>
