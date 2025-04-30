@@ -811,44 +811,100 @@ margin-right: 5px;
 
 /* Responsive layout */
 @media (max-width: 992px) {
-    .client-form {
-        grid-template-columns: 1fr 1fr;
-    }
+  .client-form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .main {
+    width: 100%;
+    left: 0;
+  }
+
+  .navigation {
+    left: -300px; 
+    z-index: 1001; 
+  }
+
+  .navigation.active {
+    left: 0; /* Slide in */
+  }
+
+  .topbar {
+    width: 100%;
+    padding-left: 60px; 
+  }
+
+  .topbar.active {
+    padding-left: 0;
+  }
+
+  .action-btn {
+    display: inline-block; 
+    width: 48%; 
+    margin-bottom: 5px; 
+  }
 }
 
 @media (max-width: 768px) {
-    .client-form {
-        grid-template-columns: 1fr;
-    }
-    
-    .clients-table thead {
-        display: none;
-    }
-    
-    .clients-table tbody td {
-        display: block;
-        text-align: right;
-        padding-left: 50%;
-        position: relative;
-    }
-    
-    .clients-table tbody td:before {
-        content: attr(data-label);
-        position: absolute;
-        left: 15px;
-        font-weight: bold;
-    }
-    
-    .clients-table tbody tr {
-        margin-bottom: 15px;
-        display: block;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-    }
-    
-    .clients-table td:last-child {
-        text-align: center;
-    }
+  .client-form {
+    grid-template-columns: 1fr;
+  }
+
+  .clients-table thead {
+    display: none; /* Hide table headers */
+  }
+
+  .clients-table tbody td {
+    display: block;
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+  }
+
+  .clients-table tbody td:before {
+    content: attr(data-label);
+    position: absolute;
+    left: 15px;
+    font-weight: bold;
+  }
+
+  .clients-table tbody tr {
+    margin-bottom: 15px;
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+
+  .clients-table td:last-child {
+    text-align: center;
+    display: flex; 
+    flex-direction: row; 
+    justify-content: space-around; 
+    align-items: center; 
+    flex-wrap: wrap; 
+  }
+
+  .action-btn {
+    flex-basis: calc(50% - 10px); 
+    margin: 5px;
+    box-sizing: border-box; 
+  }
+
+  .search-container,
+  .search {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .action-btn {
+    width: 100%; /* Make buttons full width on smaller screens */
+    margin-bottom: 10px;
+  }
+
+  .clients-table td:last-child {
+    flex-direction: column; /* Stack buttons vertically */
+  }
 }
 
 /* Animation for newly added clients */
