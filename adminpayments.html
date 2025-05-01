@@ -6,701 +6,339 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chart.js removed unless needed -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard - Client Payments</title>
     <style>
         /* =============== Globals ============== */
         * {
-        font-family: "Poppins", sans-serif;
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         :root {
-        --blue: #203A93;
-        --white: #fff;
-        --gray: #f5f5f5;
-        --black1: #222;
-        --black2: #999;
+            --blue: #203A93;
+            --white: #fff;
+            --gray: #f5f5f5; /* Corrected variable name */
+            --black1: #222;
+            --black2: #999;
         }
 
         body {
-        min-height: 100vh;
-        overflow-x: hidden;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .container {
-        position: relative;
-        width: 100%;
+            position: relative;
+            width: 100%;
         }
 
         /* =============== Navigation ================ */
-        .navigation {
-        position: fixed;
-        width: 300px;
-        height: 100%;
-        background: var(--blue);
-        border-left: 10px solid var(--blue);
-        transition: 0.5s;
-        overflow: hidden;
-        }
-        .navigation.active {
-        width: 80px;
-        }
-
-        .navigation ul {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        }
-
-        .navigation ul li {
-        position: relative;
-        width: 100%;
-        list-style: none;
-        border-top-left-radius: 30px;
-        border-bottom-left-radius: 30px;
-        }
-
-        .navigation ul li:hover,
-        .navigation ul li.hovered {
-        background-color: var(--white);
-        }
-
-        .navigation ul li:nth-child(1) {
-        margin-bottom: 40px;
-        pointer-events: none;
-        }
-
-        .navigation ul li a {
-        position: relative;
-        display: block;
-        width: 100%;
-        display: flex;
-        text-decoration: none;
-        color: var(--white);
-        }
-        .navigation ul li:hover a,
-        .navigation ul li.hovered a {
-        color: var(--blue);
-        }
-
-        .navigation ul li a .icon {
-        position: relative;
-        display: block;
-        min-width: 60px;
-        height: 60px;
-        line-height: 75px;
-        text-align: center;
-        }
-        .navigation ul li a .icon ion-icon {
-        font-size: 1.75rem;
-        }
-
-        .navigation ul li a .title {
-        position: relative;
-        display: block;
-        padding: 0 10px;
-        height: 60px;
-        line-height: 60px;
-        text-align: start;
-        white-space: nowrap;
-        }
-
-        /* --------- curve outside ---------- */
-        .navigation ul li:hover a::before,
-        .navigation ul li.hovered a::before {
-        content: "";
-        position: absolute;
-        right: 0;
-        top: -50px;
-        width: 50px;
-        height: 50px;
-        background-color: transparent;
-        border-radius: 50%;
-        box-shadow: 35px 35px 0 10px var(--white);
-        pointer-events: none;
-        }
-        .navigation ul li:hover a::after,
-        .navigation ul li.hovered a::after {
-        content: "";
-        position: absolute;
-        right: 0;
-        bottom: -50px;
-        width: 50px;
-        height: 50px;
-        background-color: transparent;
-        border-radius: 50%;
-        box-shadow: 35px -35px 0 10px var(--white);
-        pointer-events: none;
-        }
-
-        /* ===================== Main ===================== */
-        .main {
-        position: absolute;
-        width: calc(100% - 300px);
-        left: 300px;
-        min-height: 100vh;
-        background: var(--white);
-        transition: 0.5s;
-        }
-        .main.active {
-        width: calc(100% - 80px);
-        left: 80px;
-        }
-
-        .topbar {
-        width: 100%;
-        height: 60px;
-        display: flex;
-        align-items: center;
-        padding: 0 10px;
-        justify-content:space-between;
-        }
-
-        .toggle {
-        position: relative;
-        width: 60px;
-        height: 60px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 2.5rem;
-        cursor: pointer;
-        }
-
-        /* =============== Search Icon ================ */
-        .search-container {
-        position: relative;
-        width: 800px;
-        margin: 0 10px;
-        }
-
-        .search-container label {
-        display: flex; 
-        align-items: center; 
-        width: 100%;
-        border: 1px solid #ccc;
-        border-radius: 15px;
-        overflow: hidden;
-        }
-
-        #search-input {
-        flex-grow: 1; 
-        padding: 10px;
-        border: none;
-        outline: none;
-        font-size: 16px;
-        box-sizing: border-box; 
-        margin-right: 5px;
-        }
-
-        .search-container label ion-icon {
-        padding-right: 10px;
-        font-size: 20px; 
-        color: #777;
-        }
-
-        #search-results {
-        position: absolute;
-        top: calc(100% + 2px); 
-        left: 0;
-        right: 0;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        margin-top: 2px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-        z-index: 10;
-        display: none;
-        overflow: hidden;
-        }
-
-        #search-results ul {
-        list-style: none;
-        padding: 8px 0;
-        margin: 0;
-        }
-
-        #search-results li {
-        padding: 12px 16px;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-        font-size: 1.0em;
-        color: #333;
-        }
-
-        #search-results li:hover {
-        background-color: #f5f5f5;
-        color: #222;
-        }
-
-        #search-results li:active {
-        background-color: #eee;
-        }
+        /* --- Standard Navigation Styles --- */
+        .navigation { position: fixed; width: 300px; height: 100%; background: var(--blue); border-left: 10px solid var(--blue); transition: 0.5s; overflow: hidden; z-index: 100; }
+        .navigation.active { width: 80px; }
+        .navigation ul { position: absolute; top: 0; left: 0; width: 100%; padding-left: 0; }
+        .navigation ul li { position: relative; width: 100%; list-style: none; border-top-left-radius: 30px; border-bottom-left-radius: 30px; }
+        .navigation ul li:hover, .navigation ul li.hovered { background-color: var(--white); }
+        .navigation ul li:nth-child(1) { margin-bottom: 40px; pointer-events: none; }
+        .navigation ul li a { position: relative; display: block; width: 100%; display: flex; text-decoration: none; color: var(--white); }
+        .navigation ul li:hover a, .navigation ul li.hovered a { color: var(--blue); }
+        .navigation ul li a .icon { position: relative; display: block; min-width: 60px; height: 60px; line-height: 75px; text-align: center; }
+        .navigation ul li a .icon ion-icon { font-size: 1.75rem; }
+        .navigation ul li a .title { position: relative; display: block; padding: 0 10px; height: 60px; line-height: 60px; text-align: start; white-space: nowrap; }
+        /* Curves */
+        .navigation ul li:hover a::before, .navigation ul li.hovered a::before { content: ""; position: absolute; right: 0; top: -50px; width: 50px; height: 50px; background-color: transparent; border-radius: 50%; box-shadow: 35px 35px 0 10px var(--white); pointer-events: none; }
+        .navigation ul li:hover a::after, .navigation ul li.hovered a::after { content: ""; position: absolute; right: 0; bottom: -50px; width: 50px; height: 50px; background-color: transparent; border-radius: 50%; box-shadow: 35px -35px 0 10px var(--white); pointer-events: none; }
 
 
-        #search-results li span.highlight {
-        font-weight: bold;
-        color: #007bff; 
-        }
+        /* ===================== Main Layout ===================== */
+        /* --- Standard Main Layout Styles --- */
+        .main { position: absolute; width: calc(100% - 300px); left: 300px; min-height: 100vh; background: var(--white); transition: 0.5s; }
+        .main.active { width: calc(100% - 80px); left: 80px; }
 
-        /* =============== Mail Icon ================ */
-        .mail-container {
-        position: relative;
-        display: inline-block;
-        }
-
-        #mail-icon-inbox {
-        font-size: 25px;
-        color: #203A93;
-        cursor: pointer;
-        }
-
-        #mail-icon-inbox:hover {
-        opacity: 0.8;
-        }
-
-        #unread-notification {
-        position: absolute;
-        top: -8px;
-        right: -8px;
-        background-color: red;
-        color: white;
-        font-size: 12px;
-        border-radius: 50%;
-        width: 18px;
-        height: 18px;
-        text-align: center;
-        line-height: 18px;
-        display: none; 
-        }
-
-        #inbox-preview {
-        position: absolute;
-        top: calc(100% + 5px);
-        right: -10px;
-        background-color: #f9f9f9;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        width: 250px;
-        padding: 15px;
-        display: none; 
-        z-index: 10;
-        text-align: left;
-        }
-
-        #inbox-preview strong {
-        display: block;
-        margin-bottom: 5px;
-        }
-
-        .email-item {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        padding: 3px 0; 
-        }
-
-        .email-item.sender {
-        font-weight: bold;
-        }
-
-        .email-item.subject {
-        color: #555;
-        font-size: 0.9em; 
-        }
-
-        #inbox-preview hr {
-        margin-top: 8px;
-        margin-bottom: 8px;
-        }
-
-        #inbox-preview a {
-        display: block;
-        margin-top: 10px;
-        font-size: 0.8em;
-        text-align: right;
-        color: #007bff;
-        text-decoration: none;
-        }
-
-        /* =============== Notification ================ */
-        .notification-container {
-        position: relative;
-        display: inline-block;
-        }
-
-        #notification-icon {
-        font-size: 25px;
-        color: #203A93;
-        cursor: pointer;
-        }
-
-        #notification-icon:hover {
-        opacity: 0.8;
-        }
-
-        #notification-badge {
-        position: absolute;
-        top: -8px;
-        right: -8px;
-        background-color: orange;
-        color: white;
-        font-size: 12px;
-        border-radius: 50%;
-        width: 18px;
-        height: 18px;
-        text-align: center;
-        line-height: 18px;
-        display: block; 
-        }
-
-        #notifications-dropdown {
-        position: absolute;
-        top: calc(100% + 5px);
-        right: -10px;
-        background-color: #f9f9f9;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        width: 250px;
-        padding: 15px;
-        display: none;
-        z-index: 10;
-        text-align: left;
-        }
-
-        #notifications-dropdown strong {
-        display: block;
-        margin-bottom: 5px;
-        }
-
-        .notification-item {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        padding: 3px 0;
-        }
-
-        .notification-item.title {
-        font-weight: bold;
-        margin-top: 5px;
-        }
-
-        .notification-item.message {
-        color: #555;
-        font-size: 0.9em;
-        }
-
-        #notifications-dropdown hr {
-        margin-top: 8px;
-        margin-bottom: 8px;
-        }
-
-        #notifications-dropdown a {
-        display: block;
-        margin-top: 10px;
-        font-size: 0.8em;
-        text-align: right;
-        color: #007bff;
-        text-decoration: none;
-        }
-
-        /* ======================= User ====================== */
-        .user {
-        position: relative;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        overflow: hidden;
-        cursor: pointer;
-        }
+        /* ===================== Topbar ===================== */
+        /* --- Standard Topbar Styles --- */
+        .topbar { width: 100%; height: 60px; display: flex; align-items: center; padding: 0 10px; justify-content: space-between; background: var(--white); box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 99; }
+        .toggle { position: relative; width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; font-size: 2.5rem; cursor: pointer; color: var(--black1); flex-shrink: 0; }
+        /* Search */
+        .search-container { position: relative; flex-grow: 1; max-width: 600px; margin: 0 10px; }
+        .search-container label { display: flex; align-items: center; width: 100%; border: 1px solid #ccc; border-radius: 15px; overflow: hidden; background: var(--white); position: relative; }
+        #search-input { flex-grow: 1; padding: 10px 10px 10px 30px; border: none; outline: none; font-size: 16px; box-sizing: border-box; }
+        .search-container label ion-icon { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); font-size: 20px; color: #777; cursor: pointer; }
+        #search-results { position: absolute; top: calc(100% + 2px); left: 0; right: 0; background-color: #fff; border: 1px solid #ccc; border-radius: 8px; margin-top: 2px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); z-index: 110; display: none; overflow: hidden; max-height: 300px; overflow-y: auto; }
+        #search-results ul { list-style: none; padding: 8px 0; margin: 0; }
+        #search-results li { padding: 12px 16px; cursor: pointer; transition: background-color 0.2s ease; font-size: 1.0em; color: #333; }
+        #search-results li:hover { background-color: #f5f5f5; color: #222; }
+        /* Mail */
+        .mail-container { position: relative; display: inline-block; margin: 0 5px; flex-shrink: 0; }
+        #mail-icon-inbox { font-size: 25px; color: var(--blue); cursor: pointer; padding: 5px; }
+        #mail-icon-inbox:hover { opacity: 0.8; }
+        #unread-mail-badge { position: absolute; top: -2px; right: -2px; background-color: red; color: white; font-size: 11px; border-radius: 50%; width: 16px; height: 16px; text-align: center; line-height: 16px; display: none; pointer-events: none; }
+        #inbox-preview { position: absolute; top: calc(100% + 10px); right: -10px; background-color: #f9f9f9; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); width: 280px; padding: 15px; display: none; z-index: 110; text-align: left; }
+        #inbox-preview strong { display: block; margin-bottom: 5px; }
+        .email-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 3px 0; }
+        .email-item.sender { font-weight: bold; }
+        .email-item.subject { color: #555; font-size: 0.9em; }
+        #inbox-preview hr { margin: 8px 0; }
+        #inbox-preview a { display: block; margin-top: 10px; font-size: 0.8em; text-align: right; color: #007bff; text-decoration: none; }
+        /* Notification */
+        .notification-container { position: relative; display: inline-block; margin: 0 5px; flex-shrink: 0; }
+        #notification-icon { font-size: 25px; color: var(--blue); cursor: pointer; padding: 5px; }
+        #notification-icon:hover { opacity: 0.8; }
+        #notification-badge { position: absolute; top: -2px; right: -2px; background-color: orange; color: white; font-size: 11px; border-radius: 50%; width: 16px; height: 16px; text-align: center; line-height: 16px; display: block; pointer-events: none; }
+        #notifications-dropdown { position: absolute; top: calc(100% + 10px); right: -10px; background-color: #f9f9f9; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); width: 280px; padding: 15px; display: none; z-index: 110; text-align: left; }
+        #notifications-dropdown strong { display: block; margin-bottom: 5px; }
+        .notification-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 3px 0; }
+        .notification-item.title { font-weight: bold; margin-top: 5px; }
+        .notification-item.message { color: #555; font-size: 0.9em; }
+        #notifications-dropdown hr { margin: 8px 0; }
+        #notifications-dropdown a { display: block; margin-top: 10px; font-size: 0.8em; text-align: right; color: #007bff; text-decoration: none; }
+        /* User */
+        .user-info { display: flex; align-items: center; margin-left: 10px; flex-shrink: 0; }
+        .user-info .name { margin-right: 10px; font-weight: 500; white-space: nowrap; }
+        .user { position: relative; min-width: 40px; width: 40px; height: 40px; border-radius: 50%; overflow: hidden; cursor: pointer; }
+        .user img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
 
 
-        .user img {
-        position: absolute;
-        justify-items: end;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        }
+        /* ======================= Payments Page Specific Styles ====================== */
+         .payments-container { /* Renamed outer div for clarity */
+            padding: 20px;
+         }
 
-        /* ======================= Payments ====================== */
-
-        .container {
-        width: 100%;
-        max-width: 100%;
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-        color: #484848;
-        margin: 20px 30px;
-        text-align: start;
+        .payments-container h2 {
+            color: var(--blue); /* Use theme color */
+            margin-bottom: 20px;
+            text-align: left;
+            font-size: 1.8rem;
         }
 
         #filter-container {
-        display: flex;
-        gap: 15px;
-        align-items: center;
-        margin-bottom: 20px;
-        margin-left: 30px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 25px; /* Increased margin */
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        }
+        #filter-container label {
+            font-weight: 500;
+            margin-right: 5px;
         }
 
         #subscription-filter {
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 16px;
-        color: #555;
+            padding: 8px 12px; /* Adjust padding */
+            border: 1px solid #ccc;
+            border-radius: 6px; /* Consistent radius */
+            font-size: 1rem; /* Standardize font size */
+            color: #555;
+            min-width: 180px; /* Give it some width */
         }
 
         .filter-button {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-        transition: background-color 0.3s ease;
+            background-color: var(--blue); /* Use theme color */
+            color: white;
+            border: none;
+            padding: 8px 15px; /* Adjust padding */
+            border-radius: 6px; /* Consistent radius */
+            cursor: pointer;
+            font-size: 1rem; /* Standardize font size */
+            font-weight: 500;
+            transition: background-color 0.3s ease;
         }
-
         .filter-button:hover {
-        background-color: #0056b3;
+            background-color: #1a2f7a; /* Darker blue */
         }
 
-        table {
-        justify-self: center;
-        width: 95%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        border-radius: 6px;
-        overflow: hidden;
+        /* Responsive Table Wrapper */
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         }
 
-        th, td {
-        padding: 12px 15px;
-        text-align: left;
-        border-bottom: 1px solid #eee;
+        table#payments-table { /* More specific selector */
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px; /* Adjust min-width as needed */
         }
 
-        th {
-        background-color: #f9f9f9;
-        color: #333;
-        font-weight: bold;
+        #payments-table th,
+        #payments-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            white-space: nowrap;
+        }
+        #payments-table td:first-child { /* Allow Client Name to wrap */
+             white-space: normal;
         }
 
-        tr:nth-child(even) {
-        background-color: #f2f2f2;
+
+        #payments-table th {
+            background-color: var(--blue); /* Use theme color */
+            color: var(--white);
+            font-weight: 600; /* Bolder headers */
+            font-size: 0.95rem;
         }
 
-        tr:hover {
-        background-color: #e0f7fa;
-        transition: background-color 0.3s ease;
+        #payments-table tbody tr:nth-child(even) {
+            background-color: #f8f9fa; /* Lighter zebra stripe */
+        }
+
+        #payments-table tbody tr:hover {
+            background-color: #e9ecef; /* Subtle hover */
         }
 
         .status-paid {
-        color: #28a745;
-        font-weight: bold;
+            color: #198754; /* Green */
+            font-weight: bold;
         }
 
         .status-due {
-        color: #dc3545;
-        font-weight: bold;
+            color: #dc3545; /* Red */
+            font-weight: bold;
         }
 
-        /* Modal Styles for Sign out*/
-        .modal {
-        display: none; 
-        position: fixed; 
-        z-index: 1000; 
-        left: 0;
-        top: 0;
-        width: 100%; 
-        height: 100%; 
-        overflow: auto; 
-        background-color: rgba(0,0,0,0.4); 
-        backdrop-filter: blur(5px);
-        justify-content: center;
-        align-items: center;
-        }
+        /* =================== Modal Styles (Sign Out) ================== */
+        /* --- Standard Modal Styles --- */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); }
+        .modal.show { display: flex; justify-content: center; align-items: center; animation: fadeInBg 0.3s ease-out; }
+        @keyframes fadeInBg { from { background-color: rgba(0,0,0,0); } to { background-color: rgba(0,0,0,0.5); } }
+        .modal-content { background-color: #fefefe; margin: auto; padding: 25px; border: none; width: 90%; max-width: 450px; border-radius: 8px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2); position: relative; animation: modalFadeIn 0.3s ease-out; }
+        @keyframes modalFadeIn { from {opacity: 0; transform: translateY(-20px) scale(0.98);} to {opacity: 1; transform: translateY(0) scale(1);} }
+        .modal-header { padding-bottom: 15px; border-bottom: 1px solid #eee; margin-bottom: 20px; }
+        .modal-title { font-size: 1.4rem; color: var(--blue); font-weight: 600; margin: 0; }
+        .modal-body { font-size: 1rem; color: #555; margin-bottom: 25px; line-height: 1.6; }
+        .modal-footer.sign-out-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
+        .modal-button { border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 1rem; font-weight: 500; transition: all 0.2s ease; }
+        .modal-button.yes-button { background-color: #dc3545; color: white; }
+        .modal-button.yes-button:hover { background-color: #c82333; }
+        .modal-button.no-button { background-color: #6c757d; color: white; }
+        .modal-button.no-button:hover { background-color: #5a6268; }
+        /* Optional close button */
+        .modal-close-button { position: absolute; top: 10px; right: 15px; font-size: 28px; font-weight: bold; color: #aaa; cursor: pointer; line-height: 1; }
+        .modal-close-button:hover { color: #333; }
 
-        .modal.show {
-        display: flex; 
+        /* =================== Responsive Design ================== */
+        /* --- Standard Responsive Styles --- */
+        @media (max-width: 991px) {
+            .navigation { width: 80px; }
+            .navigation.active { width: 300px; }
+            .main { width: calc(100% - 80px); left: 80px; }
+            .main.active { width: calc(100% - 300px); left: 300px; }
+            .search-container { max-width: 400px; }
+            #payments-table { min-width: 600px; }
         }
-
-        .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto; 
-        padding: 30px;
-        border: 1px solid #888;
-        width: 600px; 
-        max-width: 400px; 
-        border-radius: 15px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        position: relative;
+        @media (max-width: 768px) {
+            .navigation { left: -300px; width: 300px; }
+            .navigation.active { left: 0; width: 300px; }
+            .main { width: 100%; left: 0; }
+            .main.active { width: 100%; left: 0; }
+            .toggle { z-index: 101; color: var(--blue); }
+            .topbar { padding: 0 10px; }
+            .search-container { max-width: 300px; }
+            .user-info .name { display: none; }
+            #payments-table { min-width: 550px; }
+             #payments-table th, #payments-table td { padding: 10px 12px; font-size: 0.9rem; }
+             .payments-container h2 { font-size: 1.6rem; }
+             #filter-container label { font-size: 0.9rem; }
+             #subscription-filter, .filter-button { font-size: 0.9rem; padding: 7px 10px; }
         }
+        @media (max-width: 480px) {
+             .topbar {
+                 padding: 5px 10px;
+                 display: flex;
+                 align-items: center;
+                 justify-content: space-between;
+                 flex-wrap: wrap; /* Allow wrapping */
+             }
+             .toggle { order: 1; flex-shrink: 0; }
+             .mail-container, .notification-container, .user-info { order: 2; margin: 0 3px; flex-shrink: 0; }
+             .search-container { order: 3; width: 100%; margin: 8px 0 5px 0; }
+             .search-container label input { font-size: 14px; height: 36px; padding-left: 30px; }
+             .search-container label ion-icon { font-size: 16px; left: 8px; }
+             #search-results { top: calc(100% + 1px); width: 100%; left: 0; right: 0; }
+             .user-info .name { display: none; }
+             .user { width: 35px; height: 35px; min-width: 35px; }
+             #mail-icon-inbox, #notification-icon { font-size: 22px; padding: 4px;}
+             #unread-mail-badge, #notification-badge { width: 14px; height: 14px; line-height: 14px; font-size: 10px; top: -1px; right: -1px;}
 
-        .modal-header {
-        padding-bottom: 20px;
-        border-bottom: 1px solid #eee;
-        margin-bottom: 20px;
-        }
-
-        .modal-title {
-        font-size: 1.5em;
-        color: #333;
-        font-weight: bold;
-        }
-
-        .modal-body {
-        font-size: 1.1em;
-        color: #555;
-        margin-bottom: 20px;
-        }
-
-        .modal-footer.sign-out-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 15px;
-        }
-
-        .modal-button {
-        background-color: #007bff; 
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-        transition: background-color 0.3s ease;
-        }
-
-        .modal-button:hover {
-        background-color: #0056b3;
-        }
-
-        .modal-button.yes-button {
-        background-color: #203A93;
-        }
-
-        .modal-button.yes-button:hover {
-        background-color: #c82333;
-        }
-
-        .modal-button.no-button {
-        background-color: #F1D27C;
-        }
-
-        .modal-button.no-button:hover {
-        background-color: #5a6268;
+             .payments-container { padding: 10px; }
+             .payments-container h2 { font-size: 1.4rem; margin-bottom: 15px; }
+             #filter-container { gap: 10px; margin-bottom: 15px;}
+             #filter-container label { font-size: 0.85rem; }
+             #subscription-filter, .filter-button { font-size: 0.85rem; padding: 6px 8px; min-width: 120px; }
+             #payments-table { min-width: 450px; }
+             #payments-table th, #payments-table td { padding: 8px 10px; font-size: 0.8rem; }
+             .modal-content { width: 95%; padding: 20px; }
+             .modal-title { font-size: 1.2rem; }
+             .modal-body { font-size: 0.95rem; }
+             .modal-button { padding: 8px 15px; font-size: 0.9rem; }
         }
     </style>
 </head>
 
 <body>
-    <!-- =============== Navigation ================ -->
-    <div class="container">
+    <div class="container"> <!-- Master container -->
         <div class="navigation">
             <ul>
                 <li>
                     <a href="#">
-                        <span class="icon">
-                            <ion-icon name="barbell"></ion-icon>
-                        </span>
+                        <span class="icon"><ion-icon name="barbell"></ion-icon></span>
                         <span class="title">ENERGIZE</span>
                     </a>
                 </li>
-
                 <li>
                     <a href="testadmin.html">
-                        <span class="icon">
-                            <ion-icon name="home-outline"></ion-icon>
-                        </span>
+                        <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
                         <span class="title">Dashboard</span>
                     </a>
                 </li>
-
                 <li>
                     <a href="adminclients.html">
-                        <span class="icon">
-                            <ion-icon name="people-outline"></ion-icon>
-                        </span>
+                        <span class="icon"><ion-icon name="people-outline"></ion-icon></span>
                         <span class="title">Manage Clients</span>
                     </a>
                 </li>
-
                 <li>
                     <a href="admincoaches.html">
-                        <span class="icon">
-                            <ion-icon name="people-outline"></ion-icon>
-                        </span>
+                        <span class="icon"><ion-icon name="people-outline"></ion-icon></span>
                         <span class="title">Manage Coaches</span>
                     </a>
                 </li>
-                
-
                 <li>
                     <a href="adminguests.html">
-                        <span class="icon">
-                            <ion-icon name="person-add-outline"></ion-icon>
-                        </span>
+                        <span class="icon"><ion-icon name="person-add-outline"></ion-icon></span>
                         <span class="title">Manage Guests</span>
                     </a>
                 </li>
-
-                <li>
-                    <a href="adminmanage.html">
-                        <span class="icon">
-                            <ion-icon name="person-add-outline"></ion-icon>
-                        </span>
-                        <span class="title">Manage Admins</span>
-                    </a>
-                </li>
-
+                <li><a href="adminmanage.html"><span class="icon"><ion-icon name="person-add-outline"></ion-icon></span><span class="title">Manage Admins</span></a></li>
                 <li>
                     <a href="admincomplaint.html">
-                        <span class="icon">
-                            <ion-icon name="chatbubble-outline"></ion-icon>
-                        </span>
+                        <span class="icon"><ion-icon name="chatbubble-outline"></ion-icon></span>
                         <span class="title">Complaints/Requests</span>
                     </a>
                 </li>
-                
-                <li>
+                <li class="hovered"> <!-- Mark current page -->
                     <a href="adminpayments.html">
-                        <span class="icon">
-                            <ion-icon name="card-outline"></ion-icon>
-                        </span>
-                        <span class="title"> Clients Payments</span>
+                        <span class="icon"><ion-icon name="card-outline"></ion-icon></span>
+                        <span class="title">Clients Payments</span>
                     </a>
                 </li>
-
                 <li>
                     <a href="adminsettings.html">
-                        <span class="icon">
-                            <ion-icon name="settings-outline"></ion-icon>
-                        </span>
+                        <span class="icon"><ion-icon name="settings-outline"></ion-icon></span>
                         <span class="title">Settings</span>
                     </a>
                 </li>
-
                 <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="log-out-outline"></ion-icon>
-                        </span>
+                    <a href="#" id="signOutLink"> <!-- Added ID -->
+                        <span class="icon"><ion-icon name="log-out-outline"></ion-icon></span>
                         <span class="title">Sign Out</span>
                     </a>
                 </li>
@@ -710,69 +348,61 @@
         <!-- ========================= Main ==================== -->
         <div class="main">
             <div class="topbar">
-                <div class="toggle">
+                 <!-- Standard Topbar HTML (Toggle, Search, Mail, Notif, User) -->
+                 <div class="toggle">
                     <ion-icon name="menu-outline"></ion-icon>
-                </div>
+                 </div>
 
                 <div class="search-container">
                     <label>
-                      <input type="text" id="search-input" placeholder="Search what you're looking for">
+                      <input type="text" id="search-input" placeholder="Search...">
                       <ion-icon name="search-outline"></ion-icon>
                     </label>
-                    <div id="search-results">
-                    </div>
-                  </div>
+                    <div id="search-results"></div>
+                </div>
 
-                  
                 <div class="mail-container">
-                    <ion-icon name="mail" id="mail-icon-inbox"></ion-icon>
-                    <div id="unread-notification">1</div>
+                    <ion-icon name="mail-outline" id="mail-icon-inbox"></ion-icon>
+                    <div id="unread-mail-badge">1</div>
                     <div id="inbox-preview">
-                    <strong>Inbox</strong>
-                    <hr>
-                    <div id="unread-messages">
-                        <div class="email-item sender">Clients</div>
-                        <div class="email-item subject">3 complaints were submitted</div>
-                        <hr>
-                    </div>
-                    <div id="read-messages">
-                        <div class="email-item sender">Coach</div>
-                        <div class="email-item subject">Can I ask?</div>
-                    </div>
-                    <a href="#">See All</a>
+                        <strong>Inbox</strong><hr>
+                        <div id="unread-messages">
+                            <div class="email-item sender">Finance Dept</div>
+                            <div class="email-item subject">Payment Report Ready</div><hr>
+                        </div>
+                        <div id="read-messages">
+                            <div class="email-item sender">Client Support</div>
+                            <div class="email-item subject">Re: Billing Query C-003</div>
+                        </div>
+                        <a href="#">See All Mail</a>
                     </div>
                 </div>
 
                 <div class="notification-container">
-                    <ion-icon name="notifications" id="notification-icon"></ion-icon>
+                    <ion-icon name="notifications-outline" id="notification-icon"></ion-icon>
                     <div id="notification-badge">1</div>
                     <div id="notifications-dropdown">
-                      <strong>Notifications</strong>
-                      <hr>
+                      <strong>Notifications</strong><hr>
                       <div id="notification-list">
-                        <div class="notification-item title">Today, 1:00 PM</div>
-                        <div class="notification-item message">New clients added.</div>
-                        <hr>
-                        <div class="notification-item title">Sales Update</div>
-                        <div class="notification-item message">It increased by 25%</div>
-                      </div>
-                      <a href="#">See All</a>
+                        <div class="notification-item title">Payment Received</div>
+                        <div class="notification-item message">Alice Smith - Starter Access</div><hr>
+                        </div>
+                      <a href="#">See All Notifications</a>
                     </div>
                   </div>
-            
-                <div class="name">
-                    <p>Peter Pan</p>
+
+                <div class="user-info">
+                    <div class="name">Peter Pan</div>
+                    <div class="user">
+                        <img src="assets/img/ramburat.jpg" alt="User Avatar">
+                    </div>
                 </div>
-    
-                <div class="user">
-                    <img src="assets/img/ramburat.jpg" alt="">
-                </div>                
             </div>
 
-            <!-- Payments -->
-            <div class="container">
+            <!-- ======================= Payments Content ====================== -->
+            <div class="payments-container"> <!-- Specific wrapper for payments content -->
                 <h2>CLIENTS PAYMENTS</h2>
-              
+
                 <div id="filter-container">
                   <label for="subscription-filter">Filter by Subscription:</label>
                   <select id="subscription-filter">
@@ -781,164 +411,144 @@
                     <option value="Coach Connect">Coach Connect</option>
                     <option value="Elite Coaching">Elite Coaching</option>
                   </select>
-                  <button class="filter-button" onclick="filterBySubscription()">Filter</button>
+                  <button class="filter-button" id="filterBtn">Filter</button> <!-- Added ID -->
                 </div>
-              
-                <table id="payments-table">
-                  <thead>
-                    <tr>
-                      <th>Client Name</th>
-                      <th>Payment Status</th>
-                      <th>Plan Subscribed</th>
-                      <th>Monthly Fee (PHP)</th>
-                    </tr>
-                  </thead>
-                  <tbody id="table-body">
-                    </tbody>
-                </table>
 
-                <div id="signOutModal" class="modal">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h2 class="modal-title">Sign Out</h2>
-                      </div>
-                      <div class="modal-body">
-                        <p>Are you sure you want to sign out?</p>
-                      </div>
-                      <div class="modal-footer sign-out-actions">
-                        <button class="modal-button no-button" id="signOutNo">No</button>
-                        <button class="modal-button yes-button" id="signOutYes">Yes</button>
-                      </div>
-                    </div>
+                <div class="table-wrapper"> <!-- Added Wrapper -->
+                    <table id="payments-table">
+                      <thead>
+                        <tr>
+                          <th>Client Name</th>
+                          <th>Payment Status</th>
+                          <th>Plan Subscribed</th>
+                          <th>Monthly Fee (PHP)</th>
+                        </tr>
+                      </thead>
+                      <tbody id="table-body">
+                          <!-- Data populated by JS -->
+                      </tbody>
+                    </table>
+                </div>
+
+             </div> <!-- End .payments-container -->
+
+            <!-- Sign Out Modal -->
+            <div id="signOutModal" class="modal">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h2 class="modal-title">Sign Out</h2>
+                     <!-- Optional close button -->
+                     <!-- <span class="modal-close-button" id="signOutModalClose">×</span> -->
                   </div>
-
+                  <div class="modal-body">
+                    <p>Are you sure you want to sign out?</p>
+                  </div>
+                  <div class="modal-footer sign-out-actions">
+                    <button class="modal-button no-button" id="signOutNo">No</button>
+                    <button class="modal-button yes-button" id="signOutYes">Yes</button>
+                  </div>
+                </div>
               </div>
 
-            <script>
-            let list = document.querySelectorAll(".navigation li");
+        </div> <!-- End .main -->
+    </div> <!-- End .container -->
 
-            function activeLink() {
-            list.forEach((item) => {
-                item.classList.remove("hovered");
-            });
-            this.classList.add("hovered");
+    <script>
+        document.addEventListener('DOMContentLoaded', function() { // Wrap all JS
+
+            // =============== Navigation & Top Bar Logic (Standard) ===============
+            const navigation = document.querySelector(".navigation");
+            const main = document.querySelector(".main");
+            const toggle = document.querySelector(".toggle");
+            const listItems = document.querySelectorAll(".navigation li");
+
+            if (toggle && navigation && main) {
+                toggle.onclick = () => {
+                    navigation.classList.toggle("active");
+                    main.classList.toggle("active");
+                };
             }
+            listItems.forEach(item => item.addEventListener("click", function() {
+                 listItems.forEach(li => li.classList.remove("hovered"));
+                 this.classList.add("hovered");
+            }));
 
-            list.forEach((item) => item.addEventListener("click", activeLink));
-
-            // Menu Toggle (remains the same)
-            let toggle = document.querySelector(".toggle");
-            let navigation = document.querySelector(".navigation");
-            let main = document.querySelector(".main");
-
-            toggle.onclick = function () {
-            navigation.classList.toggle("active");
-            main.classList.toggle("active");
-            };
-
-            //Search Function
+            // Top Bar Search
             const searchInput = document.getElementById('search-input');
             const searchResultsDiv = document.getElementById('search-results');
-
-            const searchData = [
-            "Total Sales",
-            "Total Clients",
-            "Settings",
-            "Total Coaches",
-            "Payments",
-            "Recent Complaints",
-            "Admin Dashboard",
-            "Updates",
-            "Database Updates",
-            "Added Admins"
-            ];
-
-            searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const filteredResults = searchData.filter(item =>
-                item.toLowerCase().includes(searchTerm)
-            );
-
-            displayResults(filteredResults);
-            });
-
-            function displayResults(results) {
-            searchResultsDiv.innerHTML = '';
-
-            if (results.length > 0 && searchInput.value.trim() !== '') {
-                const ul = document.createElement('ul');
-                results.forEach(result => {
-                const li = document.createElement('li');
-                li.textContent = result;
-                li.addEventListener('click', function() {
-                    searchInput.value = this.textContent;
-                    searchResultsDiv.style.display = 'none'; 
+            const siteSearchData = [ /* Add relevant search items */ { name: "Client Payments", link: "#" }, { name: "Settings", link: "adminsettings.html" }, { name: "Alice Smith Payment", action: () => { /* maybe highlight row */ console.log("Searching Alice..."); } } ];
+            if(searchInput && searchResultsDiv) {
+                searchInput.addEventListener('input', function() {
+                    const term = this.value.toLowerCase().trim();
+                    const results = siteSearchData.filter(item => term && item.name.toLowerCase().includes(term));
+                    displaySearchResults(results);
                 });
-                ul.appendChild(li);
-                });
-                searchResultsDiv.appendChild(ul);
-                searchResultsDiv.style.display = 'block'; 
-            } else {
-                searchResultsDiv.style.display = 'none';
+                 const searchIcon = searchInput.nextElementSibling;
+                 if(searchIcon && searchIcon.tagName === 'ION-ICON') searchIcon.onclick = () => searchInput.focus();
             }
+            function displaySearchResults(results) {
+                searchResultsDiv.innerHTML = '';
+                if (results.length > 0) {
+                    const ul = document.createElement('ul');
+                    results.forEach(result => {
+                        const li = document.createElement('li');
+                        li.textContent = result.name;
+                        li.onclick = () => {
+                            searchInput.value = result.name;
+                            searchResultsDiv.style.display = 'none';
+                            if (result.link && result.link !== "#") window.location.href = result.link;
+                            else if (result.action) result.action();
+                        };
+                        ul.appendChild(li);
+                    });
+                    searchResultsDiv.appendChild(ul);
+                    searchResultsDiv.style.display = 'block';
+                } else {
+                    searchResultsDiv.style.display = 'none';
+                }
             }
 
-            document.addEventListener('click', function(event) {
-            if (!event.target.closest('.search-container')) {
-                searchResultsDiv.style.display = 'none';
-            }
-            });
-
-            //Mail Function
+             // Mail Dropdown
             const mailIconInbox = document.getElementById('mail-icon-inbox');
-            const unreadNotification = document.getElementById('unread-notification');
+            const unreadMailBadge = document.getElementById('unread-mail-badge');
             const inboxPreview = document.getElementById('inbox-preview');
-            let hasUnread = true; 
-
-            function updateUnreadIndicator() {
-            unreadNotification.style.display = hasUnread ? 'block' : 'none';
+            let hasUnreadMail = true; // Example
+            if (mailIconInbox && unreadMailBadge && inboxPreview) {
+                const updateMailBadge = () => { unreadMailBadge.style.display = hasUnreadMail ? 'block' : 'none'; }
+                updateMailBadge();
+                mailIconInbox.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    inboxPreview.style.display = inboxPreview.style.display === 'block' ? 'none' : 'block';
+                    if (document.getElementById('notifications-dropdown')) document.getElementById('notifications-dropdown').style.display = 'none'; // Close other dropdown
+                    if (hasUnreadMail && inboxPreview.style.display === 'block') { hasUnreadMail = false; updateMailBadge(); }
+                });
             }
 
-            updateUnreadIndicator();
-
-            mailIconInbox.addEventListener('click', function() {
-            inboxPreview.style.display = (inboxPreview.style.display === 'block' ? 'none' : 'block');
-
-            if (hasUnread && inboxPreview.style.display === 'block') {
-                hasUnread = false;
-                updateUnreadIndicator();
-            ad
-                console.log('Mail icon clicked - marking as read');
-            }
-            });
-
-
-            document.addEventListener('click', function(event) {
-            if (!event.target.closest('.mail-container')) {
-                inboxPreview.style.display = 'none';
-            }
-            });
-
-
-            //Notification Function
+             // Notification Dropdown
             const notificationIcon = document.getElementById('notification-icon');
             const notificationBadge = document.getElementById('notification-badge');
             const notificationsDropdown = document.getElementById('notifications-dropdown');
+            let hasNewNotifications = true; // Example
+             if (notificationIcon && notificationBadge && notificationsDropdown) {
+                 const updateNotifBadge = () => { notificationBadge.style.display = hasNewNotifications ? 'block' : 'none'; }
+                 updateNotifBadge();
+                 notificationIcon.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    notificationsDropdown.style.display = notificationsDropdown.style.display === 'block' ? 'none' : 'block';
+                     if (inboxPreview) inboxPreview.style.display = 'none'; // Close other dropdown
+                    if (hasNewNotifications && notificationsDropdown.style.display === 'block') { hasNewNotifications = false; updateNotifBadge(); }
+                 });
+             }
 
-            notificationIcon.addEventListener('click', function() {
-            notificationsDropdown.style.display = (notificationsDropdown.style.display === 'block' ? 'none' : 'block');
-            
-            notificationBadge.style.display = 'none';
+            // Hide dropdowns/search results on outside click
+             document.addEventListener('click', (event) => {
+                if (searchResultsDiv && !event.target.closest('.search-container')) searchResultsDiv.style.display = 'none';
+                if (inboxPreview && !event.target.closest('.mail-container')) inboxPreview.style.display = 'none';
+                if (notificationsDropdown && !event.target.closest('.notification-container')) notificationsDropdown.style.display = 'none';
             });
 
 
-            document.addEventListener('click', function(event) {
-            if (!event.target.closest('.notification-container')) {
-                notificationsDropdown.style.display = 'none';
-            }
-            });
-
-            //Payments Function
+            // =============== Payments Page Specific Logic ===============
             const paymentsData = [
                 { name: "Alice Smith", status: "Paid", plan: "Starter Access", fee: 499 },
                 { name: "Bob Johnson", status: "Due", plan: "Elite Coaching", fee: 3599 },
@@ -974,83 +584,102 @@
 
             const tableBody = document.getElementById("table-body");
             const subscriptionFilter = document.getElementById("subscription-filter");
+            const filterBtn = document.getElementById("filterBtn");
 
             function renderTable(data) {
-                tableBody.innerHTML = ""; 
+                if (!tableBody) return; // Check if element exists
+                tableBody.innerHTML = "";
                 data.forEach(client => {
-                const row = tableBody.insertRow();
-                const nameCell = row.insertCell();
-                const statusCell = row.insertCell();
-                const planCell = row.insertCell();
-                const feeCell = row.insertCell();
-
-                nameCell.textContent = client.name;
-                statusCell.textContent = client.status;
-                statusCell.classList.add(client.status === "Paid" ? "status-paid" : "status-due");
-                planCell.textContent = client.plan;
-                feeCell.textContent = client.fee;
+                    const row = tableBody.insertRow();
+                    row.insertCell().textContent = client.name;
+                    const statusCell = row.insertCell();
+                    statusCell.textContent = client.status;
+                    statusCell.className = client.status === "Paid" ? "status-paid" : "status-due"; // Use className
+                    row.insertCell().textContent = client.plan;
+                    row.insertCell().textContent = `₱${client.fee.toLocaleString()}`; // Format currency
                 });
             }
 
             function filterBySubscription() {
+                if (!subscriptionFilter) return;
                 const selectedSubscription = subscriptionFilter.value;
-                let filteredData;
-
-                if (selectedSubscription === "") {
-                filteredData = paymentsData;
-                } else {
-                filteredData = paymentsData.filter(client => client.plan === selectedSubscription);
-                }
-
+                let filteredData = selectedSubscription
+                                   ? paymentsData.filter(client => client.plan === selectedSubscription)
+                                   : paymentsData; // Show all if empty
                 renderTable(filteredData);
             }
 
+            // Initial Render
             renderTable(paymentsData);
 
-            //Sign out
-            document.addEventListener('DOMContentLoaded', function() {
-                    const signOutLink = document.querySelector('.navigation ul li:last-child a');
-                    const signOutModal = document.getElementById('signOutModal');
-                    const signOutYesButton = document.getElementById('signOutYes');
-                    const signOutNoButton = document.getElementById('signOutNo');
+            // Filter Button Listener
+            if(filterBtn) {
+                filterBtn.addEventListener('click', filterBySubscription);
+            }
+            // Optional: filter on dropdown change as well
+            // if(subscriptionFilter) {
+            //     subscriptionFilter.addEventListener('change', filterBySubscription);
+            // }
 
-                    if (signOutLink) {
-                    signOutLink.addEventListener('click', function(event) {
-                        event.preventDefault();
-                        showModal(signOutModal);
-                    });
-                    } else {
-                    console.error("Sign Out link not found!");
-                    }
 
-                    signOutYesButton.addEventListener('click', function() {
-                    window.location.href = 'index.html';
-                    });
+            // =============== Sign Out Modal Logic (Standard) ===============
+            const signOutLink = document.getElementById('signOutLink'); // Use ID
+            const signOutModal = document.getElementById('signOutModal');
+            const signOutYesButton = document.getElementById('signOutYes');
+            const signOutNoButton = document.getElementById('signOutNo');
+            // const signOutModalClose = document.getElementById('signOutModalClose'); // Optional X button
 
-                    signOutNoButton.addEventListener('click', function() {
+            function showModal(modalElement) {
+               if(modalElement) modalElement.classList.add('show');
+            }
+            function hideModal(modalElement) {
+               if(modalElement) modalElement.classList.remove('show');
+            }
+
+            if (signOutLink && signOutModal && signOutYesButton && signOutNoButton) {
+                signOutLink.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    showModal(signOutModal);
+                });
+
+                signOutYesButton.addEventListener('click', function() {
+                    console.log("Signing out...");
+                    // Add actual sign out logic here
+                    window.location.href = 'index.html'; // Redirect to login page
+                });
+
+                signOutNoButton.addEventListener('click', function() {
                     hideModal(signOutModal);
-                    });
+                });
 
-                    window.addEventListener('click', function(event) {
-                    if (event.target == signOutModal) {
+                // Optional: Close button listener
+                // if(signOutModalClose) {
+                //     signOutModalClose.addEventListener('click', () => hideModal(signOutModal));
+                // }
+
+                // Close modal if clicking outside the content
+                window.addEventListener('click', function(event) {
+                    if (event.target === signOutModal) {
                         hideModal(signOutModal);
                     }
-                    });
-
-                    // Helper functions for showing and hiding the modal
-                    function showModal(modalElement) {
-                    modalElement.classList.add('show');
-                    }
-
-                    function hideModal(modalElement) {
-                    modalElement.classList.remove('show');
+                });
+                 // Close modal with Escape key
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === "Escape" && signOutModal.classList.contains('show')) {
+                        hideModal(signOutModal);
                     }
                 });
-            </script>
 
-<!-- ====== ionicons ======= -->
-<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+            } else {
+                console.error("Sign out modal elements not all found!");
+            }
+
+        }); // End DOMContentLoaded
+    </script>
+
+    <!-- ====== ionicons ======= -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
 
 </html>

@@ -6,650 +6,177 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard - Manage Guests</title>
     <!-- ======= Styles ====== -->
     <style>
         /* =============== Globals ============== */
-        * {
-            font-family: "Poppins", sans-serif;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        * { font-family: "Poppins", sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --blue: #203A93; --white: #fff; --gray: #f5f5f5; --black1: #222; --black2: #999; --yellow: #F1D27C; --light-blue: #e8eeff; --red: #ff6b6b; --green: #4caf50; --orange: #ff9800; }
+        body { background-color: var(--gray); min-height: 100vh; overflow-x: hidden; }
+        .container { position: relative; width: 100%; }
+
+        /* =============== Navigation ================ */
+        .navigation { position: fixed; width: 300px; height: 100%; background: var(--blue); border-left: 10px solid var(--blue); transition: width 0.5s, left 0.5s; overflow-y: auto; overflow-x: hidden; z-index: 100; left: 0; }
+        @media (max-width: 991px) { .navigation { left: -300px; } .navigation.active { left: 0; width: 300px; } }
+        @media (min-width: 992px) { .navigation.active { width: 80px; } }
+        .navigation ul { position: absolute; top: 0; left: 0; width: 100%; padding-left: 0; }
+        .navigation ul li { position: relative; width: 100%; list-style: none; border-top-left-radius: 30px; border-bottom-left-radius: 30px; }
+        .navigation ul li:hover, .navigation ul li.hovered { background-color: var(--white); }
+        .navigation ul li:nth-child(1) { margin-bottom: 40px; pointer-events: none; }
+        .navigation ul li a { position: relative; display: block; width: 100%; display: flex; text-decoration: none; color: var(--white); transition: color 0.3s; }
+        .navigation ul li:hover a, .navigation ul li.hovered a { color: var(--blue); }
+        .navigation ul li a .icon { position: relative; display: block; min-width: 60px; height: 60px; line-height: 75px; text-align: center; flex-shrink: 0; }
+        .navigation ul li a .icon ion-icon { font-size: 1.75rem; transition: color 0.3s; }
+        .navigation ul li a .title { position: relative; display: block; padding: 0 10px; height: 60px; line-height: 60px; text-align: start; white-space: nowrap; opacity: 1; transition: opacity 0.3s 0.1s ease-in-out; }
+        @media (min-width: 992px) { .navigation.active ul li a .title { opacity: 0; pointer-events: none; transition-delay: 0s; } }
+        .navigation ul li:hover a::before, .navigation ul li.hovered a::before { content: ""; position: absolute; right: 0; top: -50px; width: 50px; height: 50px; background-color: transparent; border-radius: 50%; box-shadow: 35px 35px 0 10px var(--white); pointer-events: none; }
+        .navigation ul li:hover a::after, .navigation ul li.hovered a::after { content: ""; position: absolute; right: 0; bottom: -50px; width: 50px; height: 50px; background-color: transparent; border-radius: 50%; box-shadow: 35px -35px 0 10px var(--white); pointer-events: none; }
+
+        /* ===================== Main ===================== */
+        .main { position: absolute; width: calc(100% - 300px); left: 300px; min-height: 100vh; background: var(--white); transition: width 0.5s, left 0.5s; padding: 20px; }
+        @media (min-width: 992px) { .main.active { width: calc(100% - 80px); left: 80px; } }
+        @media (max-width: 991px) { .main, .main.active { width: 100%; left: 0; } }
+
+        /* ===================== Topbar ===================== */
+        .topbar { width: 100%; height: 60px; display: flex; align-items: center; padding: 0 10px; justify-content: space-between; background: var(--white); border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 90; }
+        .toggle { position: relative; width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; font-size: 2.5rem; cursor: pointer; color: var(--black1); }
+        /* Search */
+        .search-container { position: relative; flex-grow: 1; max-width: 600px; margin: 0 15px; }
+        .search-container label { display: flex; align-items: center; width: 100%; border: 1px solid #ccc; border-radius: 15px; overflow: hidden; background-color: var(--white); }
+        #search-input { flex-grow: 1; padding: 8px 15px; border: none; outline: none; font-size: 1rem; box-sizing: border-box; }
+        .search-container label ion-icon { padding: 0 10px; font-size: 1.2rem; color: #777; }
+        #search-results { position: absolute; top: calc(100% + 5px); left: 0; right: 0; background-color: #fff; border: 1px solid #ccc; border-radius: 8px; margin-top: 2px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); z-index: 110; display: none; overflow: hidden; max-height: 300px; overflow-y: auto; }
+        #search-results ul { list-style: none; padding: 8px 0; margin: 0; }
+        #search-results li { padding: 10px 16px; cursor: pointer; transition: background-color 0.2s ease; font-size: 0.95em; color: #333; }
+        #search-results li:hover { background-color: #f5f5f5; color: #222; }
+        #search-results li:active { background-color: #eee; }
+        #search-results li span.highlight { font-weight: bold; color: #007bff; }
+        /* Topbar Icons & User */
+        .topbar-icons { display: flex; align-items: center; gap: 15px; }
+        .mail-container, .notification-container { position: relative; display: flex; align-items: center; }
+        #mail-icon-inbox, #notification-icon { font-size: 25px; color: var(--blue); cursor: pointer; transition: opacity 0.3s; }
+        #mail-icon-inbox:hover, #notification-icon:hover { opacity: 0.7; }
+        #unread-notification, #notification-badge { position: absolute; top: -5px; right: -5px; background-color: var(--red); color: white; font-size: 11px; border-radius: 50%; width: 16px; height: 16px; text-align: center; line-height: 16px; font-weight: bold; display: block; }
+        #notification-badge { background-color: orange; }
+        #inbox-preview, #notifications-dropdown { position: absolute; top: calc(100% + 10px); right: -10px; background-color: #f9f9f9; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); width: 280px; padding: 15px; display: none; z-index: 110; text-align: left; max-height: 350px; overflow-y: auto; }
+        #inbox-preview strong, #notifications-dropdown strong { display: block; margin-bottom: 8px; font-size: 1.1em; color: var(--black1); }
+        .email-item, .notification-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 4px 0; font-size: 0.9em; }
+        .email-item.sender, .notification-item.title { font-weight: bold; }
+        .email-item.subject, .notification-item.message { color: #555; font-size: 0.85em; }
+        .notification-item.title { margin-top: 5px; font-size: 0.8em; color: var(--black2); }
+        #inbox-preview hr, #notifications-dropdown hr { margin: 8px 0; border: 0; border-top: 1px solid #eee; }
+        #inbox-preview a, #notifications-dropdown a { display: block; margin-top: 10px; font-size: 0.85em; text-align: center; color: #007bff; text-decoration: none; padding-top: 5px; }
+        #inbox-preview a:hover, #notifications-dropdown a:hover { text-decoration: underline; }
+        .user-info { display: flex; align-items: center; gap: 10px; margin-left: 15px; }
+        .user-info .name { color: var(--black1); font-weight: 500; white-space: nowrap; }
+        .user { position: relative; min-width: 40px; width: 40px; height: 40px; border-radius: 50%; overflow: hidden; cursor: pointer; }
+        .user img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+
+        /* ============ Modal Styles (Consistent) ============ */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 1000; justify-content: center; align-items: center; overflow: auto; transition: opacity 0.3s ease; backdrop-filter: blur(3px); opacity: 0; pointer-events: none; }
+        .modal-overlay.active { display: flex; opacity: 1; pointer-events: auto; }
+        .modal { background-color: #fff; border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); width: 90%; max-width: 700px; /* Adjusted default */ margin: auto; transform: scale(0.95) translateY(10px); transition: transform 0.3s ease, opacity 0.3s ease; overflow: hidden; opacity: 0; display: none; }
+        .modal-overlay.active .modal { display: block; transform: scale(1) translateY(0); opacity: 1; }
+        #signOutModal .modal { max-width: 440px; } /* Specific size */
+        .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid #eaeaea; display: flex; justify-content: space-between; align-items: center; background-color: #f8f9fa; }
+        .modal-title { font-size: 1.35rem; font-weight: 600; margin: 0; color: var(--blue); }
+        .modal-close { cursor: pointer; font-size: 1.8rem; color: #999; border: none; background: none; padding: 0; line-height: 1; transition: color 0.2s ease; }
+        .modal-close:hover { color: #555; }
+        .modal-body { padding: 1.5rem; font-size: 1rem; color: #555; line-height: 1.6; max-height: 70vh; overflow-y: auto; text-align: left;}
+        #signOutModal .modal-body { text-align: center; font-size: 1.1rem;}
+        .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid #eaeaea; display: flex; justify-content: flex-end; gap: 12px; background-color: #f8f9fa; }
+        .modal-button { padding: 0.6rem 1.2rem; border-radius: 6px; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease; border: none; }
+        .no-button { background-color: var(--yellow); color: var(--black1); }
+        .no-button:hover { background-color: #e4c370; }
+        .yes-button { background-color: var(--blue); color: white; }
+        .yes-button:hover { background-color: #182c7a; }
+        .ok-button { background-color: var(--green); color: white; }
+        .ok-button:hover { background-color: #45a049; }
+        .send-credentials { background-color: var(--blue); color: white; }
+        .send-credentials:hover { background-color: #182c7a; }
+
+        /* =============== ADMIN GUESTS PAGE SPECIFIC STYLES ============== */
+        .page-container { margin-top: 20px; } /* Container for the main content */
+        .table-section { /* Container for table and filters */
+            background: var(--white); padding: 25px; border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+        .table-section h2 { color: var(--blue); margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee; font-size: 1.4rem; font-weight: 600; }
+        /* Filter Controls */
+        .filter-controls { margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 15px; }
+        .filter-controls select, .filter-controls input[type="text"] { padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem; min-width: 150px; flex-grow: 1; }
+        @media (min-width: 577px) { .filter-controls select, .filter-controls input[type="text"] { flex-grow: 0; } }
+        /* Table Styles */
+        .table-wrapper { overflow-x: auto; width: 100%; margin-top: 10px; -webkit-overflow-scrolling: touch; }
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table thead { background-color: var(--light-blue); }
+        .data-table th, .data-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; font-size: 0.9rem; white-space: nowrap; vertical-align: middle; }
+        .data-table th { color: var(--blue); font-weight: 600; }
+        .data-table tbody tr:hover { background-color: #f9f9f9; }
+        .data-table td .status { padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 500; color: var(--white); display: inline-block; }
+        .status.pending { background-color: var(--orange); }
+        .status.approved { background-color: var(--green); }
+        .status.rejected { background-color: var(--red); }
+        .action-buttons { text-align: right; }
+        .action-buttons button { padding: 4px 8px; border: none; border-radius: 4px; cursor: pointer; font-size: 1.1rem; margin-left: 6px; transition: opacity 0.2s; background: none; color: var(--black2); line-height: 1; vertical-align: middle; }
+        .action-buttons button:hover { opacity: 0.7; }
+        .view-button:hover { color: var(--blue); }
+        .approve-button:hover { color: var(--green); }
+        .reject-button:hover { color: var(--red); }
+        .empty-message { text-align: center; padding: 30px; color: var(--black2); font-style: italic; }
+
+        /* Guest Detail Modal Styles */
+        #guestModal .modal { max-width: 700px; }
+        .guest-info h3 { margin-bottom: 15px; color: var(--blue); font-size: 1.2rem; border-bottom: 1px solid #eee; padding-bottom: 8px;}
+        .guest-info p { margin: 10px 0; line-height: 1.5; }
+        .guest-info strong { color: var(--black1); margin-right: 5px; display: inline-block; min-width: 140px; }
+        .credential-form { border-top: 1px solid #eee; padding-top: 20px; margin-top: 20px; }
+        .credential-form h3 { margin-bottom: 15px; font-size: 1.1rem; color: var(--blue);}
+        .credential-form label { display: block; margin-bottom: 5px; font-weight: 500;}
+        .credential-form input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem;}
+        .credential-form button { display: block; width: 100%; margin-top: 10px; }
+        .message { margin-top: 15px; padding: 10px; border-radius: 4px; text-align: center; font-size: 0.95rem; }
+        .message.success { background-color: #e6ffea; color: var(--green); border: 1px solid #c3e6cb;}
+        .message.error { background-color: #ffebee; color: var(--red); border: 1px solid #f5c6cb; }
+
+
+        /* ================== Responsive Design Adjustments ================== */
+        @media (max-width: 991px) { /* Tablets */
+             .main, .main.active { padding: 15px; }
+             .topbar, .topbar.active { padding: 0 15px; }
+             .search-container { max-width: 400px; }
+             .user-info .name { display: none; }
+             .page-container { gap: 25px; }
+             .table-section { padding: 20px; }
+             .table-section h2 { font-size: 1.3rem; }
         }
 
-        :root {
-            --blue: #203A93;
-            --white: #fff;
-            --gray: #f5f5f5;
-            --black1: #222;
-            --black2: #999;
+        @media (max-width: 767px) { /* Small Tablets / Large Phones */
+             .modal-content { max-width: 90%; padding: 20px; } /* Standard modal adjust */
+             .modal-footer { flex-direction: column; gap: 10px; } /* Standard modal adjust */
+             .modal-button { width: 100%; } /* Standard modal adjust */
+             .topbar { padding: 0 10px; }
+             .search-container { max-width: 250px; }
+             .filter-controls { flex-direction: column; gap: 10px; }
+             .filter-controls select, .filter-controls input { width: 100%; }
+             .data-table th, .data-table td { font-size: 0.85rem; padding: 10px 8px;}
+             .action-buttons button { font-size: 1rem; }
+             .guest-info strong { min-width: 110px;}
         }
 
-        body {
-            min-height: 100vh;
-            overflow-x: hidden;
+        @media (max-width: 479px) { /* Phones */
+             .main { padding: 10px; }
+             .toggle { font-size: 2rem; }
+             .search-container { display: none; }
+             .modal { max-width: 95%; padding: 15px; }
+             .modal-title { font-size: 1.2em; }
+             .page-container { gap: 20px; }
+             .table-section { padding: 15px; }
+             .table-section h2 { font-size: 1.2rem; }
+             .data-table th, .data-table td { font-size: 0.8rem; padding: 8px 6px;}
+             .guest-info p { font-size: 0.9rem;}
+             .guest-info strong { display: block; margin-bottom: 2px; min-width: auto;}
         }
-
-        .container {
-            position: relative;
-            width: 100%;
-        }
-
-/* =============== Navigation ================ */
-.navigation {
-  position: fixed;
-  width: 300px;
-  height: 100%;
-  background: var(--blue);
-  border-left: 10px solid var(--blue);
-  transition: 0.5s;
-  overflow: hidden;
-}
-.navigation.active {
-  width: 80px;
-}
-
-.navigation ul {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-}
-
-.navigation ul li {
-  position: relative;
-  width: 100%;
-  list-style: none;
-  border-top-left-radius: 30px;
-  border-bottom-left-radius: 30px;
-}
-
-.navigation ul li:hover,
-.navigation ul li.hovered {
-  background-color: var(--white);
-}
-
-.navigation ul li:nth-child(1) {
-  margin-bottom: 40px;
-  pointer-events: none;
-}
-
-.navigation ul li a {
-  position: relative;
-  display: block;
-  width: 100%;
-  display: flex;
-  text-decoration: none;
-  color: var(--white);
-}
-.navigation ul li:hover a,
-.navigation ul li.hovered a {
-  color: var(--blue);
-}
-
-.navigation ul li a .icon {
-  position: relative;
-  display: block;
-  min-width: 60px;
-  height: 60px;
-  line-height: 75px;
-  text-align: center;
-}
-.navigation ul li a .icon ion-icon {
-  font-size: 1.75rem;
-}
-
-.navigation ul li a .title {
-  position: relative;
-  display: block;
-  padding: 0 10px;
-  height: 60px;
-  line-height: 60px;
-  text-align: start;
-  white-space: nowrap;
-}
-  
-/* --------- Curve Outside ---------- */
-.navigation ul li:hover a::before,
-.navigation ul li.hovered a::before {
-  content: "";
-  position: absolute;
-  right: 0;
-  top: -50px;
-  width: 50px;
-  height: 50px;
-  background-color: transparent;
-  border-radius: 50%;
-  box-shadow: 35px 35px 0 10px var(--white);
-  pointer-events: none;
-}
-.navigation ul li:hover a::after,
-.navigation ul li.hovered a::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: -50px;
-  width: 50px;
-  height: 50px;
-  background-color: transparent;
-  border-radius: 50%;
-  box-shadow: 35px -35px 0 10px var(--white);
-  pointer-events: none;
-}
-
-
-/* ===================== Main ===================== */
-.main {
-  position: absolute;
-  width: calc(100% - 300px);
-  left: 300px;
-  min-height: 100vh;
-  background: var(--white);
-  transition: 0.5s;
-}
-.main.active {
-  width: calc(100% - 80px);
-  left: 80px;
-}
-
-.topbar {
-  width: 100%;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-  justify-content:space-between;
-}
-
-.toggle {
-  position: relative;
-  width: 60px;
-  height: 60px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 2.5rem;
-  cursor: pointer;
-}
-
-/* =============== Search Icon ================ */
-.search-container {
-  position: relative;
-  width: 800px;
-  margin: 0 10px;
-}
-
-.search-container label {
-  display: flex; 
-align-items: center; 
-width: 100%;
-border: 1px solid #ccc;
-border-radius: 15px;
-overflow: hidden;
-}
-
-#search-input {
-  flex-grow: 1; 
-padding: 10px;
-border: none;
-outline: none;
-font-size: 16px;
-box-sizing: border-box; 
-margin-right: 5px;
-}
-
-.search-container label ion-icon {
-  padding-right: 10px;
-  font-size: 20px; 
-  color: #777;
-}
-
-#search-results {
-  position: absolute;
-  top: calc(100% + 2px); 
-  left: 0;
-  right: 0;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  margin-top: 2px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  z-index: 10;
-  display: none;
-  overflow: hidden;
-}
-
-#search-results ul {
-  list-style: none;
-  padding: 8px 0;
-  margin: 0;
-}
-
-#search-results li {
-  padding: 12px 16px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  font-size: 1.0em;
-  color: #333;
-}
-
-#search-results li:hover {
-  background-color: #f5f5f5;
-  color: #222;
-}
-
-#search-results li:active {
-  background-color: #eee;
-}
-
-
-#search-results li span.highlight {
-  font-weight: bold;
-  color: #007bff; 
-}
-
-/* =============== Mail Icon ================ */
-.mail-container {
-  position: relative;
-  display: inline-block;
-}
-
-#mail-icon-inbox {
-  font-size: 25px;
-  color: #203A93;
-  cursor: pointer;
-}
-
-#mail-icon-inbox:hover {
-  opacity: 0.8;
-}
-
-#unread-notification {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background-color: red;
-  color: white;
-  font-size: 12px;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  text-align: center;
-  line-height: 18px;
-  display: none; 
-}
-
-#inbox-preview {
-  position: absolute;
-  top: calc(100% + 5px);
-  right: -10px;
-  background-color: #f9f9f9;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 250px;
-  padding: 15px;
-  display: none; 
-  z-index: 10;
-  text-align: left;
-}
-
-#inbox-preview strong {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.email-item {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding: 3px 0; 
-}
-
-.email-item.sender {
-  font-weight: bold;
-}
-
-.email-item.subject {
-  color: #555;
-  font-size: 0.9em; 
-}
-
-#inbox-preview hr {
-  margin-top: 8px;
-  margin-bottom: 8px;
-}
-
-#inbox-preview a {
-  display: block;
-  margin-top: 10px;
-  font-size: 0.8em;
-  text-align: right;
-  color: #007bff;
-  text-decoration: none;
-}
-
-/* =============== Notification ================ */
-.notification-container {
-  position: relative;
-  display: inline-block;
-}
-
-#notification-icon {
-  font-size: 25px;
-  color: #203A93;
-  cursor: pointer;
-}
-
-#notification-icon:hover {
-  opacity: 0.8;
-}
-
-#notification-badge {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background-color: orange;
-  color: white;
-  font-size: 12px;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  text-align: center;
-  line-height: 18px;
-  display: block; 
-}
-
-#notifications-dropdown {
-  position: absolute;
-  top: calc(100% + 5px);
-  right: -10px;
-  background-color: #f9f9f9;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 250px;
-  padding: 15px;
-  display: none;
-  z-index: 10;
-  text-align: left;
-}
-
-#notifications-dropdown strong {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.notification-item {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding: 3px 0;
-}
-
-.notification-item.title {
-  font-weight: bold;
-  margin-top: 5px;
-}
-
-.notification-item.message {
-  color: #555;
-  font-size: 0.9em;
-}
-
-#notifications-dropdown hr {
-  margin-top: 8px;
-  margin-bottom: 8px;
-}
-
-#notifications-dropdown a {
-  display: block;
-  margin-top: 10px;
-  font-size: 0.8em;
-  text-align: right;
-  color: #007bff;
-  text-decoration: none;
-}
-
-  
-  /* =============== User ================ */
-.user {
-  position: relative;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  overflow: hidden;
-  cursor: pointer;
-}
-
-
-.user img {
-  position: absolute;
-  justify-items: end;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Guest Table Styles */
-.guest-table-container {
-            margin: 20px;
-            padding: 20px;
-            background: var(--white);
-            border-radius: 20px;
-            box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
-        }
-
-        .guest-table-container h2 {
-            margin-bottom: 20px;
-            color: var(--blue);
-        }
-
-        
-/* Add these styles to your existing CSS */
-
-.guest-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.guest-table th:first-child {
-    border-top-left-radius: 10px;
-}
-
-.guest-table th:last-child {
-    border-top-right-radius: 10px;
-}
-
-.guest-table tr:last-child td:first-child {
-    border-bottom-left-radius: 10px;
-}
-
-.guest-table tr:last-child td:last-child {
-    border-bottom-right-radius: 10px;
-}
-
-/* Optional: Add a subtle border to the entire table */
-.guest-table {
-    border: 1px solid #e0e0e0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-
-        .guest-table th {
-            background-color: var(--blue);
-            color: var(--white);
-            padding: 12px 15px;
-            text-align: left;
-        }
-
-        .guest-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .guest-table tr:hover {
-            background-color: #f5f5f5;
-        }
-
-        .guest-table .status {
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        .guest-table .status.pending {
-            background-color: #FFD700;
-            color: #000;
-        }
-
-        .guest-table .status.approved {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        .guest-table .status.rejected {
-            background-color: #F44336;
-            color: white;
-        }
-
-        .action-buttons button {
-            padding: 6px 12px;
-            margin-right: 5px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .view-button {
-            background-color: var(--blue);
-            color: white;
-        }
-
-        .approve-button {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        .reject-button {
-            background-color: #F44336;
-            color: white;
-        }
-
-        /* Guest Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 10% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 60%;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .close-button {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close-button:hover,
-        .close-button:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .modal-header {
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .guest-info {
-            margin-bottom: 20px;
-        }
-
-        .guest-info h3 {
-            margin-bottom: 10px;
-            color: var(--blue);
-        }
-
-        .guest-info p {
-            margin: 8px 0;
-        }
-
-        .credential-form {
-            border-top: 1px solid #ddd;
-            padding-top: 20px;
-            margin-top: 20px;
-        }
-
-        .credential-form input {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .credential-form button {
-            padding: 10px 15px;
-            margin-top: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .send-credentials {
-            background-color: var(--blue);
-            color: white;
-        }
-
-        .empty-message {
-            text-align: center;
-            padding: 20px;
-            color: var(--black2);
-        }
-
-        .filter-controls {
-            margin-bottom: 20px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .filter-controls select {
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-        }
-
-        .highlight {
-            background-color: #ffffcc;
-        }
-
     </style>
 </head>
 
@@ -657,742 +184,521 @@ margin-right: 5px;
     <!-- =============== Navigation ================ -->
     <div class="container">
         <div class="navigation">
-            <ul>
-                <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="barbell"></ion-icon>
-                        </span>
-                        <span class="title">ENERGIZE</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="testadmin.html">
-                        <span class="icon">
-                            <ion-icon name="home-outline"></ion-icon>
-                        </span>
-                        <span class="title">Dashboard</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="adminclients.html">
-                        <span class="icon">
-                            <ion-icon name="people-outline"></ion-icon>
-                        </span>
-                        <span class="title">Manage Clients</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="admincoaches.html">
-                        <span class="icon">
-                            <ion-icon name="people-outline"></ion-icon>
-                        </span>
-                        <span class="title">Manage Coaches</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="adminguests.html">
-                        <span class="icon">
-                            <ion-icon name="person-add-outline"></ion-icon>
-                        </span>
-                        <span class="title">Manage Guests</span>
-                    </a>
-                </li>
-
-                <li>
-                  <a href="adminmanage.html">
-                      <span class="icon">
-                          <ion-icon name="person-add-outline"></ion-icon>
-                      </span>
-                      <span class="title">Manage Admins</span>
-                  </a>
-              </li>
-
-                <li>
-                    <a href="admincomplaint.html">
-                        <span class="icon">
-                            <ion-icon name="chatbubble-outline"></ion-icon>
-                        </span>
-                        <span class="title">Complaints/Requests</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="adminpayments.html">
-                        <span class="icon">
-                            <ion-icon name="card-outline"></ion-icon>
-                        </span>
-                        <span class="title"> Clients Payments</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="adminsettings.html">
-                        <span class="icon">
-                            <ion-icon name="settings-outline"></ion-icon>
-                        </span>
-                        <span class="title">Settings</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="log-out-outline"></ion-icon>
-                        </span>
-                        <span class="title">Sign Out</span>
-                    </a>
-                </li>
-            </ul>
+             <ul>
+                 <li><a href="#"><span class="icon"><ion-icon name="barbell"></ion-icon></span><span class="title">ENERGIZE</span></a></li>
+                 <li><a href="testadmin.html"><span class="icon"><ion-icon name="home-outline"></ion-icon></span><span class="title">Dashboard</span></a></li>
+                 <li><a href="adminclients.html"><span class="icon"><ion-icon name="people-outline"></ion-icon></span><span class="title">Manage Clients</span></a></li>
+                 <li><a href="admincoaches.html"><span class="icon"><ion-icon name="people-outline"></ion-icon></span><span class="title">Manage Coaches</span></a></li>
+                 <li class="hovered"><a href="adminguests.html"><span class="icon"><ion-icon name="person-add-outline"></ion-icon></span><span class="title">Manage Guests</span></a></li>
+                 <li><a href="adminmanage.html"><span class="icon"><ion-icon name="person-add-outline"></ion-icon></span><span class="title">Manage Admins</span></a></li>
+                 <li><a href="admincomplaint.html"><span class="icon"><ion-icon name="chatbubble-outline"></ion-icon></span><span class="title">Complaints/Requests</span></a></li>
+                 <li><a href="adminpayments.html"><span class="icon"><ion-icon name="card-outline"></ion-icon></span><span class="title"> Clients Payments</span></a></li>
+                 <li><a href="adminsettings.html"><span class="icon"><ion-icon name="settings-outline"></ion-icon></span><span class="title">Settings</span></a></li>
+                 <li><a href="#" id="signOutLink"><span class="icon"><ion-icon name="log-out-outline"></ion-icon></span><span class="title">Sign Out</span></a></li>
+             </ul>
         </div>
 
         <!-- ========================= Main ==================== -->
         <div class="main">
-            <div class="topbar">
-                <div class="toggle">
-                    <ion-icon name="menu-outline"></ion-icon>
-                </div>
+          <div class="topbar">
+               <div class="toggle"><ion-icon name="menu-outline"></ion-icon></div>
+               <div class="search-container">
+                   <label>
+                     <input type="text" id="search-input" placeholder="Search guests...">
+                     <ion-icon name="search-outline"></ion-icon>
+                   </label>
+                   <div id="search-results"></div>
+               </div>
+               <div class="topbar-icons">
+                   <!-- Mail Container with Content -->
+                   <div class="mail-container">
+                       <ion-icon name="mail-outline" id="mail-icon-inbox"></ion-icon>
+                       <div id="unread-notification" style="display: block;">1</div> <!-- Example: 1 unread -->
+                       <div id="inbox-preview">
+                            <strong>Inbox</strong>
+                            <hr>
+                            <div id="unread-messages">
+                                <!-- Example Unread Message -->
+                                <div class="email-item sender">Clients</div>
+                                <div class="email-item subject">3 complaints were submitted</div>
+                                <hr>
+                            </div>
+                            <div id="read-messages">
+                                <!-- Example Read Message -->
+                                <div class="email-item sender">Coach Edward</div>
+                                <div class="email-item subject">Can I ask for leave?</div>
+                            </div>
+                            <a href="#">See All Messages</a> <!-- Link to full inbox -->
+                       </div>
+                   </div>
+                   <!-- Notification Container with Content -->
+                   <div class="notification-container">
+                       <ion-icon name="notifications-outline" id="notification-icon"></ion-icon>
+                       <div id="notification-badge" style="display: block;">1</div> <!-- Example: 1 new notification -->
+                       <div id="notifications-dropdown">
+                            <strong>Notifications</strong>
+                            <hr>
+                            <div id="notification-list">
+                                <!-- Example Notification 1 -->
+                                <div class="notification-item title">Today, 1:00 PM</div>
+                                <div class="notification-item message">New guest 'Alice G.' request pending.</div>
+                                <hr>
+                                <!-- Example Notification 2 -->
+                                <div class="notification-item title">Yesterday</div>
+                                <div class="notification-item message">Client 'John Doe' payment received.</div>
+                            </div>
+                            <a href="#">See All Notifications</a> <!-- Link to full notifications -->
+                       </div>
+                   </div>
+               </div>
+               <div class="user-info">
+                   <div class="name"><p>Peter Pan</p></div>
+                   <div class="user"><img src="assets/img/ramburat.jpg" alt="Admin Avatar"></div>
+               </div>
+          </div>
 
-                <div class="search-container">
-                    <label>
-                      <input type="text" id="search-input" placeholder="Search what you're looking for">
-                      <ion-icon name="search-outline"></ion-icon>
-                    </label>
-                    <div id="search-results">
-                    </div>
-                  </div>
+            <!-- Guest Management Section -->
+            <div class="page-container">
+                <div class="table-section"> <!-- Use generic class -->
+                    <h2>Guest Membership Requests</h2>
 
-                  
-                  <div class="mail-container">
-                    <ion-icon name="mail" id="mail-icon-inbox"></ion-icon>
-                    <div id="unread-notification">1</div>
-                    <div id="inbox-preview">
-                    <strong>Inbox</strong>
-                    <hr>
-                    <div id="unread-messages">
-                        <div class="email-item sender">Clients</div>
-                        <div class="email-item subject">3 complaints were submitted</div>
-                        <hr>
+                    <div class="filter-controls">
+                         <input type="text" id="guest-search" placeholder="Search Name or Email...">
+                         <select id="membership-filter">
+                            <option value="all">All Memberships</option>
+                            <option value="Starter Access">Starter Access</option>
+                            <option value="Coach Connect">Coach Connect</option>
+                            <option value="Elite Coaching">Elite Coaching</option>
+                        </select>
+                        <select id="status-filter">
+                            <option value="all">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
                     </div>
-                    <div id="read-messages">
-                        <div class="email-item sender">Coach</div>
-                        <div class="email-item subject">Can I ask?</div>
+
+                     <div class="table-wrapper">
+                        <table class="data-table" id="guestTable"> <!-- Use generic class -->
+                            <thead>
+                                <tr><th>Guest ID</th><th>Name</th><th>Email</th><th>Membership</th><th>Payment Status</th><th>Status</th><th>Actions</th></tr>
+                            </thead>
+                            <tbody id="guestTableBody"></tbody>
+                        </table>
                     </div>
-                    <a href="#">See All</a>
+                    <div id="emptyMessage" class="empty-message" style="display:none">
+                        No guest membership requests found matching your criteria.
                     </div>
                 </div>
+            </div> <!-- End page-container -->
 
-                <div class="notification-container">
-                    <ion-icon name="notifications" id="notification-icon"></ion-icon>
-                    <div id="notification-badge">1</div>
-                    <div id="notifications-dropdown">
-                      <strong>Notifications</strong>
-                      <hr>
-                      <div id="notification-list">
-                        <div class="notification-item title">Today, 1:00 PM</div>
-                        <div class="notification-item message">New clients added.</div>
-                        <hr>
-                        <div class="notification-item title">Sales Update</div>
-                        <div class="notification-item message">It increased by 25%</div>
-                      </div>
-                      <a href="#">See All</a>
-                    </div>
-                  </div>
-            
-                <div class="name">
-                    <p>Peter Pan</p>
-                </div>
-    
-                <div class="user">
-                    <img src="assets/img/ramburat.jpg" alt="">
-                </div>                
+        </div><!-- End main -->
+
+        <!-- ============ Modals ============ -->
+        <!-- Sign Out Modal -->
+        <div class="modal-overlay" id="signOutModalOverlay">
+            <div class="modal" id="signOutModal">
+                 <div class="modal-header"><h3 class="modal-title">Sign Out</h3><button type="button" class="modal-close" aria-label="Close modal"><ion-icon name="close-outline"></ion-icon></button></div>
+                 <div class="modal-body"><p>Are you sure you want to sign out?</p></div>
+                 <div class="modal-footer"><button type="button" class="modal-button no-button" id="signOutNo">Cancel</button><button type="button" class="modal-button yes-button" id="signOutYes">Sign Out</button></div>
             </div>
+       </div>
 
-              <!-- Guest Management Section -->
-              <div class="guest-table-container">
-                <h2>Guest Membership Requests</h2>
-                
-                <div class="filter-controls">
-                    <select id="membership-filter">
-                        <option value="all">All Memberships</option>
-                        <option value="Starter Access">Starter Access</option>
-                        <option value="Coach Connect">Coach Connect</option>
-                        <option value="Elite Coaching">Elite Coaching</option>
-                    </select>
-                    <select id="status-filter">
-                        <option value="all">All Status</option>
-                        <option value="pending">Pending</option>
-                        <option value="approved">Approved</option>
-                        <option value="rejected">Rejected</option>
-                    </select>
-                </div>
-                
-                <table class="guest-table" id="guestTable">
-                    <thead>
-                        <tr>
-                            <th>Guest ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Membership</th>
-                            <th>Payment Status</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="guestTableBody">
-                        <!-- Guest data will be inserted here via JavaScript -->
-                    </tbody>
-                </table>
-                <div id="emptyMessage" class="empty-message" style="display:none">
-                    No guest membership requests found.
-                </div>
-            </div>
-
-            <!-- Guest Detail Modal -->
+        <!-- Guest Detail Modal -->
+        <div id="guestModalOverlay" class="modal-overlay">
             <div id="guestModal" class="modal">
-                <div class="modal-content">
-                    <span class="close-button">&times;</span>
-                    <div class="modal-header">
-                        <h2>Guest Details</h2>
-                    </div>
-                    <div class="guest-info" id="guestInfo">
-                        <!-- Guest details will be inserted here -->
-                    </div>
-                    <div class="credential-form" id="credentialForm">
+                 <div class="modal-header">
+                      <h2 class="modal-title">Guest Details</h2>
+                      <button type="button" class="modal-close" aria-label="Close modal"><ion-icon name="close-outline"></ion-icon></button>
+                 </div>
+                 <div class="modal-body">
+                     <div class="guest-info" id="guestInfo"></div>
+                     <div class="credential-form" id="credentialForm" style="display: none;">
                         <h3>Send Access Credentials</h3>
-                        <input type="text" id="username" placeholder="Username">
-                        <input type="password" id="password" placeholder="Password">
-                        <button class="send-credentials" id="sendCredentials">Send Credentials</button>
-                    </div>
-                </div>
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" placeholder="Auto-generate or enter username">
+                         <label for="password">Temporary Password:</label>
+                        <input type="password" id="password" placeholder="Auto-generate or enter password">
+                     </div>
+                      <div id="booking-message" class="message" style="display:none;"></div>
+                 </div>
+                 <div class="modal-footer">
+                      <button type="button" class="modal-button no-button" id="closeGuestModalBtn">Close</button>
+                      <button type="button" class="modal-button send-credentials" id="sendCredentials" style="display: none;">Send Credentials & Approve</button>
+                 </div>
             </div>
-
         </div>
-            
-        <script>
+
+    </div> <!-- End container -->
+
+
+    <!-- =========== Scripts =========  -->
+    <script>
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // --- Standard Setup ---
             let list = document.querySelectorAll(".navigation li");
-
-function activeLink() {
-  list.forEach((item) => {
-    item.classList.remove("hovered");
-  });
-  this.classList.add("hovered");
-}
-
-list.forEach((item) => item.addEventListener("click", activeLink));
-
-// Menu Toggle (remains the same)
-let toggle = document.querySelector(".toggle");
-let navigation = document.querySelector(".navigation");
-let main = document.querySelector(".main");
-
-toggle.onclick = function () {
-  navigation.classList.toggle("active");
-  main.classList.toggle("active");
-};
-
-//Search Function
-const searchInput = document.getElementById('search-input');
-const searchResultsDiv = document.getElementById('search-results');
-
-const searchData = [
-  "Total Sales",
-  "Total Clients",
-  "Settings",
-  "Total Coaches",
-  "Payments",
-  "Recent Complaints",
-  "Admin Dashboard",
-  "Updates",
-  "Database Updates",
-  "Added Admins"
-];
-
-searchInput.addEventListener('input', function() {
-  const searchTerm = this.value.toLowerCase();
-  const filteredResults = searchData.filter(item =>
-    item.toLowerCase().includes(searchTerm)
-  );
-
-  displayResults(filteredResults);
-});
-
-function displayResults(results) {
-  searchResultsDiv.innerHTML = '';
-
-  if (results.length > 0 && searchInput.value.trim() !== '') {
-    const ul = document.createElement('ul');
-    results.forEach(result => {
-      const li = document.createElement('li');
-      li.textContent = result;
-      li.addEventListener('click', function() {
-        searchInput.value = this.textContent;
-        searchResultsDiv.style.display = 'none'; 
-      });
-      ul.appendChild(li);
-    });
-    searchResultsDiv.appendChild(ul);
-    searchResultsDiv.style.display = 'block'; 
-  } else {
-    searchResultsDiv.style.display = 'none';
-  }
-}
-
-document.addEventListener('click', function(event) {
-  if (!event.target.closest('.search-container')) {
-    searchResultsDiv.style.display = 'none';
-  }
-});
-
-//Mail Function
-const mailIconInbox = document.getElementById('mail-icon-inbox');
-const unreadNotification = document.getElementById('unread-notification');
-const inboxPreview = document.getElementById('inbox-preview');
-let hasUnread = true; 
-
-function updateUnreadIndicator() {
-  unreadNotification.style.display = hasUnread ? 'block' : 'none';
-}
-
-updateUnreadIndicator();
-
-mailIconInbox.addEventListener('click', function() {
-  inboxPreview.style.display = (inboxPreview.style.display === 'block' ? 'none' : 'block');
-
-  if (hasUnread && inboxPreview.style.display === 'block') {
-    hasUnread = false;
-    updateUnreadIndicator();
-ad
-    console.log('Mail icon clicked - marking as read');
-  }
-});
-
-
-document.addEventListener('click', function(event) {
-  if (!event.target.closest('.mail-container')) {
-    inboxPreview.style.display = 'none';
-  }
-});
-
-
-//Notification Function
-const notificationIcon = document.getElementById('notification-icon');
-const notificationBadge = document.getElementById('notification-badge');
-const notificationsDropdown = document.getElementById('notifications-dropdown');
-
-notificationIcon.addEventListener('click', function() {
-  notificationsDropdown.style.display = (notificationsDropdown.style.display === 'block' ? 'none' : 'block');
-  
-  notificationBadge.style.display = 'none';
-});
-
-
-document.addEventListener('click', function(event) {
-  if (!event.target.closest('.notification-container')) {
-    notificationsDropdown.style.display = 'none';
-  }
-});
-
-// Sample data - replace with your actual data loading mechanism
-let coaches = JSON.parse(localStorage.getItem('coaches')) || [];
-
-// DOM elements
-const coachForm = document.getElementById('addCoachForm');
-const coachesTableBody = document.getElementById('coachesTableBody');
-const coachProfileModal = document.getElementById('coachProfileModal');
-const editCoachForm = document.getElementById('editCoachForm');
-// const closeButton = document.querySelector(".close-button");
-const emptyCoachesMessage = document.getElementById('emptyCoachesMessage');
-
-// Initialize table
-document.addEventListener('DOMContentLoaded', () => {
-  renderCoachesTable();
-  setupEventListeners();
-});
-
-function setupEventListeners() {
-  // Add coach form submission
-  coachForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    addCoach();
-  });
-
-  // Edit form submission
-  editCoachForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    saveCoachChanges();
-  });
-
-  // Close modal when clicking the X
-  closeButton.addEventListener('click', () => {
-    coachProfileModal.style.display = 'none';
-  });
-
-  // Close modal when clicking outside
-  window.addEventListener('click', (e) => {
-    if (e.target === coachProfileModal) {
-      coachProfileModal.style.display = 'none';
-    }
-  });
-
-  // Handle delete button in modal
-  document.querySelector('.delete-button').addEventListener('click', () => {
-    deleteCoach();
-  });
-  
-  // Sign out functionality (from your original code)
-  const signOutLinks = document.querySelectorAll('.navigation li:last-child a');
-  const signOutModal = document.getElementById('signOutModal');
-  const signOutNo = document.getElementById('signOutNo');
-  const signOutYes = document.getElementById('signOutYes');
-
-  signOutLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      signOutModal.style.display = 'block';
-    });
-  });
-
-  if (signOutNo) {
-    signOutNo.addEventListener('click', () => {
-      signOutModal.style.display = 'none';
-    });
-  }
-
-  if (signOutYes) {
-    signOutYes.addEventListener('click', () => {
-      window.location.href = 'index.html'; // Change to your desired logout page
-    });
-  }
-  
-  // Menu toggle functionality (from your original code)
-  let toggle = document.querySelector('.toggle');
-  let navigation = document.querySelector('.navigation');
-  let main = document.querySelector('.main');
-
-  toggle.onclick = function() {
-    navigation.classList.toggle('active');
-    main.classList.toggle('active');
-  }
-}
-
-//Sign out
-document.addEventListener('DOMContentLoaded', function() {
-  const signOutLink = document.querySelector('.navigation ul li:last-child a');
-  const signOutModal = document.getElementById('signOutModal');
-  const signOutYesButton = document.getElementById('signOutYes');
-  const signOutNoButton = document.getElementById('signOutNo');
-
-  if (signOutLink) {
-  signOutLink.addEventListener('click', function(event) {
-      event.preventDefault();
-      showModal(signOutModal);
-  });
-  } else {
-  console.error("Sign Out link not found!");
-  }
-
-  signOutYesButton.addEventListener('click', function() {
-  window.location.href = 'index.html';
-  });
-
-  signOutNoButton.addEventListener('click', function() {
-  hideModal(signOutModal);
-  });
-
-  window.addEventListener('click', function(event) {
-  if (event.target == signOutModal) {
-      hideModal(signOutModal);
-  }
-  });
-
-  // Helper functions for showing and hiding the modal
-  function showModal(modalElement) {
-  modalElement.classList.add('show');
-  }
-
-  function hideModal(modalElement) {
-  modalElement.classList.remove('show');
-  }
-});
-
- // Sample data for guests with membership requests
- let guests = [
-            {
-                id: "G001",
-                name: "John Doe",
-                email: "john.doe@example.com",
-                phone: "123-456-7890",
-                membership: "Starter Access",
-                paymentStatus: "Paid",
-                applicationDate: "2023-05-15",
-                status: "pending",
-                address: "123 Main St, Anytown, CA 12345",
-                fitnessGoals: "Weight loss, Muscle toning",
-                healthConditions: "None",
-                preferredCoach: "No preference",
-                emergencyContact: "Jane Doe, 987-654-3210"
-            },
-            {
-                id: "G002",
-                name: "Jane Smith",
-                email: "jane.smith@example.com",
-                phone: "234-567-8901",
-                membership: "Coach Connect",
-                paymentStatus: "Paid",
-                applicationDate: "2023-05-17",
-                status: "approved",
-                address: "456 Oak Ave, Somewhere, NY 67890",
-                fitnessGoals: "Strength training",
-                healthConditions: "Asthma",
-                preferredCoach: "Mike Johnson",
-                emergencyContact: "Tom Smith, 876-543-2109"
-            },
-            {
-                id: "G003",
-                name: "Robert Brown",
-                email: "robert.brown@example.com",
-                phone: "345-678-9012",
-                membership: "Elite Coaching",
-                paymentStatus: "Pending",
-                applicationDate: "2023-05-18",
-                status: "pending",
-                address: "789 Pine St, Elsewhere, TX 54321",
-                fitnessGoals: "Marathon preparation",
-                healthConditions: "Knee injury (recovered)",
-                preferredCoach: "Sarah Williams",
-                emergencyContact: "Mary Brown, 765-432-1098"
-            },
-            {
-                id: "G004",
-                name: "Emily Davis",
-                email: "emily.davis@example.com",
-                phone: "456-789-0123",
-                membership: "Starter Access",
-                paymentStatus: "Paid",
-                applicationDate: "2023-05-20",
-                status: "rejected",
-                address: "101 Elm St, Nowhere, FL 13579",
-                fitnessGoals: "General fitness",
-                healthConditions: "None",
-                preferredCoach: "No preference",
-                emergencyContact: "David Davis, 654-321-0987"
-            },
-            {
-                id: "G005",
-                name: "Michael Wilson",
-                email: "michael.wilson@example.com",
-                phone: "567-890-1234",
-                membership: "Elite Coaching",
-                paymentStatus: "Paid",
-                applicationDate: "2023-05-21",
-                status: "pending",
-                address: "202 Maple Ave, Someplace, WA 24680",
-                fitnessGoals: "Body building",
-                healthConditions: "None",
-                preferredCoach: "Alex Thompson",
-                emergencyContact: "Linda Wilson, 543-210-9876"
+            function activeLink() {
+                // Find the currently hovered item (if any) and remove the class
+                const currentHovered = document.querySelector(".navigation li.hovered");
+                if (currentHovered) {
+                    currentHovered.classList.remove("hovered");
+                }
+                 // Add the hovered class to the clicked item
+                 // 'this' inside an event listener refers to the element that triggered the event
+                 this.classList.add("hovered");
             }
-        ];
+            // Set initial active state based on current page
+             const currentPageNavItem = Array.from(list).find(item => {
+                 const link = item.querySelector('a');
+                 return link && link.href.endsWith('adminguests.html');
+             });
+             if (currentPageNavItem) {
+                 currentPageNavItem.classList.add("hovered");
+             } else if (list.length > 4) {
+                  // Fallback if URL doesn't match - highlight based on typical order
+                 list[4].classList.add("hovered");
+             }
+            // Add click listener to update active state dynamically
+            list.forEach((item) => item.addEventListener("click", activeLink));
 
-        // Check if there's data in localStorage
-        const storedGuests = localStorage.getItem('guestRequests');
-        if (storedGuests) {
-            guests = JSON.parse(storedGuests);
-        } else {
-            // Initialize with sample data
-            localStorage.setItem('guestRequests', JSON.stringify(guests));
-        }
 
-        // DOM elements
-        const guestTableBody = document.getElementById('guestTableBody');
-        const guestModal = document.getElementById('guestModal');
-        const guestInfo = document.getElementById('guestInfo');
-        const credentialForm = document.getElementById('credentialForm');
-        const closeButton = document.querySelector('.close-button');
-        const emptyMessage = document.getElementById('emptyMessage');
-        const membershipFilter = document.getElementById('membership-filter');
-        const statusFilter = document.getElementById('status-filter');
-        const sendCredentialsButton = document.getElementById('sendCredentials');
+            let toggle = document.querySelector(".toggle");
+            let navigation = document.querySelector(".navigation");
+            let main = document.querySelector(".main");
+            let topbar = document.querySelector(".topbar");
+            if(toggle && navigation && main) { // Removed topbar check as it's not toggled here
+                 toggle.onclick = () => {
+                    console.log("Toggle Clicked!"); // Debug log
+                    navigation.classList.toggle("active");
+                    main.classList.toggle("active"); // This shifts the main content based on nav width
+                 };
+            } else { console.error("Standard nav/main/toggle elements missing."); }
 
-        // Initialize table
-        function renderGuestTable(filteredGuests = guests) {
-            guestTableBody.innerHTML = '';
-            
-            if (filteredGuests.length === 0) {
-                emptyMessage.style.display = 'block';
-                return;
-            }
-            
-            emptyMessage.style.display = 'none';
-            
-            filteredGuests.forEach(guest => {
-                const row = document.createElement('tr');
-                
-                row.innerHTML = `
-                    <td>${guest.id}</td>
-                    <td>${guest.name}</td>
-                    <td>${guest.email}</td>
-                    <td>${guest.membership}</td>
-                    <td>${guest.paymentStatus}</td>
-                    <td><span class="status ${guest.status}">${guest.status}</span></td>
-                    <td class="action-buttons">
-                        <button class="view-button" data-id="${guest.id}">View</button>
-                        ${guest.status === 'pending' && guest.paymentStatus === 'Paid' ? 
-                        `<button class="approve-button" data-id="${guest.id}">Approve</button>
-                         <button class="reject-button" data-id="${guest.id}">Reject</button>` : ''}
-                    </td>
-                `;
-                
-                guestTableBody.appendChild(row);
-            });
-            
-            // Add event listeners to buttons
-            document.querySelectorAll('.view-button').forEach(button => {
-                button.addEventListener('click', () => openGuestDetails(button.dataset.id));
-            });
-            
-            document.querySelectorAll('.approve-button').forEach(button => {
-                button.addEventListener('click', () => approveGuest(button.dataset.id));
-            });
-            
-            document.querySelectorAll('.reject-button').forEach(button => {
-                button.addEventListener('click', () => rejectGuest(button.dataset.id));
-            });
-        }
+            // Search Functionality (Standard)
+            const searchInput = document.getElementById('search-input');
+            const searchResultsDiv = document.getElementById('search-results');
+            const searchDataAdminGuestsPage = [ "John Doe", "Jane Smith", "Guest Requests", "Pending", "Approved", "Rejected", "Filter Guests", "Starter Access", "Coach Connect" ];
 
-        // Filter guests
-        function filterGuests() {
-            const membershipValue = membershipFilter.value;
-            const statusValue = statusFilter.value;
-            
-            let filteredGuests = guests.filter(guest => {
-                const membershipMatch = membershipValue === 'all' || guest.membership === membershipValue;
-                const statusMatch = statusValue === 'all' || guest.status === statusValue;
-                return membershipMatch && statusMatch;
-            });
-            
-            renderGuestTable(filteredGuests);
-        }
-
-        // Open guest details
-        function openGuestDetails(guestId) {
-            const guest = guests.find(g => g.id === guestId);
-            
-            if (!guest) return;
-            
-            guestInfo.innerHTML = `
-                <h3>${guest.name} (${guest.id})</h3>
-                <p><strong>Email:</strong> ${guest.email}</p>
-                <p><strong>Phone:</strong> ${guest.phone}</p>
-                <p><strong>Address:</strong> ${guest.address}</p>
-                <p><strong>Membership:</strong> ${guest.membership}</p>
-                <p><strong>Payment Status:</strong> ${guest.paymentStatus}</p>
-                <p><strong>Application Date:</strong> ${guest.applicationDate}</p>
-                <p><strong>Status:</strong> <span class="status ${guest.status}">${guest.status}</span></p>
-                <p><strong>Fitness Goals:</strong> ${guest.fitnessGoals}</p>
-                <p><strong>Health Conditions:</strong> ${guest.healthConditions}</p>
-                <p><strong>Preferred Coach:</strong> ${guest.preferredCoach}</p>
-                <p><strong>Emergency Contact:</strong> ${guest.emergencyContact}</p>
-            `;
-            
-            // Only show credential form for paid guests with pending status
-            if (guest.status === 'pending' && guest.paymentStatus === 'Paid') {
-                credentialForm.style.display = 'block';
-                sendCredentialsButton.dataset.id = guestId;
-            } else {
-                credentialForm.style.display = 'none';
-            }
-            
-            guestModal.style.display = 'block';
-        }
-
-        // Approve guest
-        function approveGuest(guestId) {
-            const guestIndex = guests.findIndex(g => g.id === guestId);
-            
-            if (guestIndex !== -1) {
-                openGuestDetails(guestId);
-            }
-        }
-
-        // Reject guest
-        function rejectGuest(guestId) {
-            if (confirm('Are you sure you want to reject this guest application?')) {
-                const guestIndex = guests.findIndex(g => g.id === guestId);
-                
-                if (guestIndex !== -1) {
-                    guests[guestIndex].status = 'rejected';
-                    localStorage.setItem('guestRequests', JSON.stringify(guests));
-                    filterGuests();
+            function displayResults(results, searchTerm) {
+                if (!searchResultsDiv) return;
+                searchResultsDiv.innerHTML = '';
+                if (results.length > 0 && searchInput && searchInput.value.trim() !== '') {
+                    const ul = document.createElement('ul');
+                    results.forEach(result => {
+                        const li = document.createElement('li');
+                        const regex = new RegExp(`(${searchTerm})`, 'gi');
+                        li.innerHTML = result.replace(regex, '<span class="highlight">$1</span>');
+                        li.addEventListener('click', () => {
+                            if(searchInput) searchInput.value = result;
+                            searchResultsDiv.style.display = 'none';
+                            console.log("Search Selected:", result);
+                            // If guest search input exists, trigger filter
+                            if (document.getElementById('guest-search')) {
+                                 document.getElementById('guest-search').value = result;
+                                 filterGuests();
+                            }
+                        });
+                        ul.appendChild(li);
+                    });
+                    searchResultsDiv.appendChild(ul);
+                    searchResultsDiv.style.display = 'block';
+                } else {
+                    searchResultsDiv.style.display = 'none';
                 }
             }
-        }
 
-        // Send credentials
-        function sendCredentials(guestId) {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            if (!username || !password) {
-                alert('Please enter both username and password');
-                return;
-            }
-            
-            const guestIndex = guests.findIndex(g => g.id === guestId);
-            
-            if (guestIndex !== -1) {
-                // Update status and save credentials
-                guests[guestIndex].status = 'approved';
-                guests[guestIndex].username = username;
-                guests[guestIndex].password = password;
-                
-                localStorage.setItem('guestRequests', JSON.stringify(guests));
-                
-                // Send notification (simulated)
-                alert(`Credentials sent to ${guests[guestIndex].name} (${guests[guestIndex].email})`);
-                
-                guestModal.style.display = 'none';
-                filterGuests();
-            }
-        }
+            if (searchInput && searchResultsDiv) {
+                 searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase().trim();
+                    if (searchTerm.length > 0) {
+                        const filteredResults = searchDataAdminGuestsPage.filter(item => item.toLowerCase().includes(searchTerm));
+                        displayResults(filteredResults, searchTerm);
+                    } else {
+                         if(searchResultsDiv) searchResultsDiv.style.display = 'none';
+                    }
+                 });
+                 document.addEventListener('click', event => {
+                     const searchContainer = event.target.closest('.search-container');
+                     if (!searchContainer && searchResultsDiv) searchResultsDiv.style.display = 'none';
+                 });
+            } else { console.warn("Search elements not found."); }
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            renderGuestTable();
-            
-            // Setup event listeners
-            membershipFilter.addEventListener('change', filterGuests);
-            statusFilter.addEventListener('change', filterGuests);
-            
-            // Close modal when clicking X
-            closeButton.addEventListener('click', () => {
-                guestModal.style.display = 'none';
-            });
-            
-            // Close modal when clicking outside
-            window.addEventListener('click', (e) => {
-                if (e.target === guestModal) {
-                    guestModal.style.display = 'none';
+            // Mail & Notification Dropdown Functionality (Standard)
+            const mailIconInbox = document.getElementById('mail-icon-inbox');
+            const unreadNotification = document.getElementById('unread-notification');
+            const inboxPreview = document.getElementById('inbox-preview');
+            let hasUnread = true;
+            function updateUnreadIndicator() { if (unreadNotification) unreadNotification.style.display = hasUnread ? 'block' : 'none'; }
+            if(mailIconInbox && inboxPreview && unreadNotification) {
+                 updateUnreadIndicator();
+                 mailIconInbox.addEventListener('click', function(event) {
+                      event.stopPropagation();
+                      const notificationsDropdown = document.getElementById('notifications-dropdown'); // Define inside scope
+                      if (notificationsDropdown) notificationsDropdown.style.display = 'none';
+                      const isVisible = inboxPreview.style.display === 'block';
+                      inboxPreview.style.display = isVisible ? 'none' : 'block';
+                     if (!isVisible && hasUnread) { hasUnread = false; updateUnreadIndicator(); }
+                 });
+            } else { console.warn("Mail elements missing.");}
+
+            const notificationIcon = document.getElementById('notification-icon');
+            const notificationBadge = document.getElementById('notification-badge');
+            const notificationsDropdown = document.getElementById('notifications-dropdown');
+            let hasNewNotifications = true;
+            if (notificationIcon && notificationBadge && notificationsDropdown) {
+                  notificationBadge.style.display = hasNewNotifications ? 'block' : 'none';
+                 notificationIcon.addEventListener('click', function(event) {
+                      event.stopPropagation();
+                      const inboxPreview = document.getElementById('inbox-preview'); // Define inside scope
+                      if (inboxPreview) inboxPreview.style.display = 'none';
+                     const isVisible = notificationsDropdown.style.display === 'block';
+                     notificationsDropdown.style.display = isVisible ? 'none' : 'block';
+                      if (!isVisible && hasNewNotifications) { notificationBadge.style.display = 'none'; }
+                 });
+            } else { console.warn("Notification elements missing."); }
+
+             // Close dropdowns when clicking outside
+             document.addEventListener('click', event => {
+                 const mailContainer = event.target.closest('.mail-container');
+                 const notificationContainer = event.target.closest('.notification-container');
+                 // Check if elements exist before trying to hide
+                 const inboxPreviewEl = document.getElementById('inbox-preview');
+                 const notificationsDropdownEl = document.getElementById('notifications-dropdown');
+                 if (inboxPreviewEl && !mailContainer) inboxPreviewEl.style.display = 'none';
+                 if (notificationsDropdownEl && !notificationContainer) notificationsDropdownEl.style.display = 'none';
+             });
+
+            // --- Modal Handling (Standard) ---
+            function showModal(overlayId) { const overlay = document.getElementById(overlayId); if (overlay) overlay.classList.add('active'); }
+            function hideModal(overlayId) { const overlay = document.getElementById(overlayId); if (overlay) overlay.classList.remove('active'); }
+            document.querySelectorAll('.modal-overlay').forEach(overlay => { overlay.addEventListener('click', (event) => { if (event.target === overlay) hideModal(overlay.id); }); });
+            document.querySelectorAll('.modal-close').forEach(button => { button.addEventListener('click', () => { const overlay = button.closest('.modal-overlay'); if(overlay) hideModal(overlay.id); }); });
+            document.querySelectorAll('.modal-button.ok-button').forEach(button => { button.addEventListener('click', () => { const overlay = button.closest('.modal-overlay'); if(overlay) hideModal(overlay.id); }); });
+            document.addEventListener('keydown', (event) => { if (event.key === 'Escape') { document.querySelectorAll('.modal-overlay.active').forEach(overlay => hideModal(overlay.id)); } });
+
+            // Sign Out Modal Logic (Standard)
+            const signOutLink = document.getElementById('signOutLink'); // Use specific ID
+            const signOutModalOverlay = document.getElementById('signOutModalOverlay');
+            const signOutNoButton = document.getElementById('signOutNo');
+            const signOutYesButton = document.getElementById('signOutYes');
+             if (signOutLink && signOutModalOverlay && signOutNoButton && signOutYesButton) {
+                 signOutLink.addEventListener('click', (event) => { event.preventDefault(); showModal('signOutModalOverlay'); });
+                 signOutNoButton.addEventListener('click', () => hideModal('signOutModalOverlay'));
+                 signOutYesButton.addEventListener('click', () => window.location.href = 'index.html');
+             } else { console.warn("Sign out modal elements not found."); }
+            // --- End Standard Setup & Modals ---
+
+
+             // --- Admin Guests Page Specific JS ---
+             let guests = [
+                 { id: "G001", name: "John Doe", email: "john.doe@example.com", phone: "123-456-7890", membership: "Starter Access", paymentStatus: "Paid", applicationDate: "2023-05-15", status: "pending", address: "123 Main St, Anytown, CA 12345", fitnessGoals: "Weight loss, Muscle toning", healthConditions: "None", preferredCoach: "No preference", emergencyContact: "Jane Doe, 987-654-3210" },
+                 { id: "G002", name: "Jane Smith", email: "jane.smith@example.com", phone: "234-567-8901", membership: "Coach Connect", paymentStatus: "Paid", applicationDate: "2023-05-17", status: "approved", username: "janes", password:"abc", address: "456 Oak Ave, Somewhere, NY 67890", fitnessGoals: "Strength training", healthConditions: "Asthma", preferredCoach: "Mike Johnson", emergencyContact: "Tom Smith, 876-543-2109" },
+                 { id: "G003", name: "Robert Brown", email: "robert.brown@example.com", phone: "345-678-9012", membership: "Elite Coaching", paymentStatus: "Pending", applicationDate: "2023-05-18", status: "pending", address: "789 Pine St, Elsewhere, TX 54321", fitnessGoals: "Marathon preparation", healthConditions: "Knee injury (recovered)", preferredCoach: "Sarah Williams", emergencyContact: "Mary Brown, 765-432-1098" },
+                 { id: "G004", name: "Emily Davis", email: "emily.davis@example.com", phone: "456-789-0123", membership: "Starter Access", paymentStatus: "Paid", applicationDate: "2023-05-20", status: "rejected", address: "101 Elm St, Nowhere, FL 13579", fitnessGoals: "General fitness", healthConditions: "None", preferredCoach: "No preference", emergencyContact: "David Davis, 654-321-0987" },
+                 { id: "G005", name: "Michael Wilson", email: "michael.wilson@example.com", phone: "567-890-1234", membership: "Elite Coaching", paymentStatus: "Paid", applicationDate: "2023-05-21", status: "pending", address: "202 Maple Ave, Someplace, WA 24680", fitnessGoals: "Body building", healthConditions: "None", preferredCoach: "Alex Thompson", emergencyContact: "Linda Wilson, 543-210-9876" }
+             ];
+
+             const storedGuests = localStorage.getItem('adminGuestRequests');
+             if (storedGuests) { try { guests = JSON.parse(storedGuests); } catch (e) { console.error("Error loading guests from localStorage", e); localStorage.setItem('adminGuestRequests', JSON.stringify(guests));} }
+             else { localStorage.setItem('adminGuestRequests', JSON.stringify(guests)); }
+
+             // DOM elements
+             const guestTableBody = document.getElementById('guestTableBody');
+             const guestInfo = document.getElementById('guestInfo');
+             const credentialForm = document.getElementById('credentialForm');
+             const emptyMessage = document.getElementById('emptyMessage');
+             const membershipFilter = document.getElementById('membership-filter');
+             const statusFilter = document.getElementById('status-filter');
+             const guestSearchInput = document.getElementById('guest-search');
+             const sendCredentialsButton = document.getElementById('sendCredentials');
+             const closeGuestModalBtn = document.getElementById('closeGuestModalBtn'); // Get specific close button
+             const bookingMessage = document.getElementById('booking-message'); // Message div inside modal
+
+             if (!guestTableBody || !guestInfo || !credentialForm || !emptyMessage || !membershipFilter || !statusFilter || !guestSearchInput || !sendCredentialsButton || !closeGuestModalBtn || !bookingMessage) {
+                 console.error("One or more essential elements for the Admin Guests page are missing!");
+                 return;
+             }
+
+             let currentGuestId = null;
+
+             function renderGuestTable(filteredGuests = guests) {
+                 if (!guestTableBody) return;
+                 guestTableBody.innerHTML = '';
+                 const guestsToDisplay = filteredGuests;
+
+                 if (guestsToDisplay.length === 0) {
+                     if(emptyMessage) emptyMessage.style.display = 'block';
+                     return;
+                 }
+                 if(emptyMessage) emptyMessage.style.display = 'none';
+
+                 guestsToDisplay.forEach(guest => {
+                     const row = guestTableBody.insertRow();
+                     row.dataset.id = guest.id;
+
+                     row.insertCell().textContent = guest.id;
+                     row.insertCell().textContent = guest.name;
+                     row.insertCell().textContent = guest.email;
+                     row.insertCell().textContent = guest.membership;
+                     row.insertCell().textContent = guest.paymentStatus;
+                     row.insertCell().innerHTML = `<span class="status ${guest.status}">${guest.status}</span>`;
+
+                     const actionsCell = row.insertCell();
+                     actionsCell.classList.add('action-buttons');
+                     actionsCell.innerHTML = `
+                         <button class="action-btn view-button" data-id="${guest.id}" title="View Details"><ion-icon name="eye-outline"></ion-icon></button>
+                         ${guest.status === 'pending' && guest.paymentStatus === 'Paid' ?
+                         `<button class="action-btn approve-button" data-id="${guest.id}" title="Approve & Send Credentials"><ion-icon name="checkmark-circle-outline"></ion-icon></button>
+                          <button class="action-btn reject-button" data-id="${guest.id}" title="Reject Application"><ion-icon name="close-circle-outline"></ion-icon></button>`
+                          : guest.status === 'approved' ? `<span style="color:var(--green); font-size:0.8rem; font-weight:500;">Approved</span>`
+                          : guest.status === 'rejected' ? `<span style="color:var(--red); font-size:0.8rem; font-weight:500;">Rejected</span>`
+                          : guest.paymentStatus !== 'Paid' ? `<span style="color:var(--orange); font-size:0.8rem; font-weight:500;">Payment Pending</span>`
+                          : ''
+                         }
+                     `;
+                 });
+                 attachTableActionListeners(); // Re-attach listeners after rendering
+             }
+
+            function attachTableActionListeners() {
+                // Use event delegation on the table body for better performance
+                if (guestTableBody) {
+                    // Remove previous listener if any (optional, good practice)
+                    // guestTableBody.removeEventListener('click', handleTableActions);
+                    guestTableBody.addEventListener('click', handleTableActions);
                 }
-            });
-            
-            // Send credentials
-            sendCredentialsButton.addEventListener('click', () => {
-                sendCredentials(sendCredentialsButton.dataset.id);
-            });
-        });
-        </script>
- <!-- =========== Scripts =========  -->
- <script src="assets/js/admincoaches.js"></script>
+            }
 
-<!-- ====== ionicons ======= -->
-<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+            function handleTableActions(event) {
+                 const button = event.target.closest('.action-btn'); // Find the clicked button
+                 if (!button) return; // Exit if click wasn't on a button
+
+                 const guestId = button.dataset.id;
+
+                 if (button.classList.contains('view-button')) {
+                      openGuestDetails(guestId);
+                 } else if (button.classList.contains('approve-button')) {
+                      openGuestDetails(guestId, true); // Open modal and show credentials form
+                 } else if (button.classList.contains('reject-button')) {
+                      rejectGuest(guestId);
+                 }
+            }
+
+
+             function filterGuests() {
+                 const membershipValue = membershipFilter.value;
+                 const statusValue = statusFilter.value;
+                 const searchValue = guestSearchInput.value.toLowerCase();
+
+                 let filteredGuests = guests.filter(guest => {
+                     const membershipMatch = membershipValue === 'all' || guest.membership === membershipValue;
+                     const statusMatch = statusValue === 'all' || guest.status === statusValue;
+                     const searchMatch = !searchValue || guest.name.toLowerCase().includes(searchValue) || guest.email.toLowerCase().includes(searchValue);
+                     return membershipMatch && statusMatch && searchMatch;
+                 });
+                 renderGuestTable(filteredGuests);
+             }
+
+             function openGuestDetails(guestId, showCredentialsOnOpen = false) {
+                 const guest = guests.find(g => g.id === guestId);
+                 if (!guest || !guestInfo || !credentialForm || !sendCredentialsButton || !bookingMessage) return;
+                 currentGuestId = guestId; // Store the current guest ID
+
+                 guestInfo.innerHTML = `
+                     <h3>${guest.name} (${guest.id})</h3>
+                     <p><strong>Email:</strong> ${guest.email || 'N/A'}</p>
+                     <p><strong>Phone:</strong> ${guest.phone || 'N/A'}</p>
+                     <p><strong>Address:</strong> ${guest.address || 'N/A'}</p>
+                     <p><strong>Membership Applied:</strong> ${guest.membership}</p>
+                     <p><strong>Payment Status:</strong> ${guest.paymentStatus}</p>
+                     <p><strong>Application Date:</strong> ${guest.applicationDate}</p>
+                     <p><strong>Current Status:</strong> <span class="status ${guest.status}">${guest.status}</span></p>
+                     <p><strong>Fitness Goals:</strong> ${guest.fitnessGoals || 'N/A'}</p>
+                     <p><strong>Health Conditions:</strong> ${guest.healthConditions || 'N/A'}</p>
+                     <p><strong>Preferred Coach:</strong> ${guest.preferredCoach || 'N/A'}</p>
+                     <p><strong>Emergency Contact:</strong> ${guest.emergencyContact || 'N/A'}</p>
+                     ${guest.username ? `<p><strong>Username:</strong> ${guest.username}</p>` : ''}
+                     ${guest.password ? `<p><strong>Password (Demo):</strong> ${guest.password}</p>` : ''}
+                 `;
+
+                 bookingMessage.style.display = 'none';
+                 const shouldShowCredentials = showCredentialsOnOpen && guest.status === 'pending' && guest.paymentStatus === 'Paid';
+
+                 credentialForm.style.display = shouldShowCredentials ? 'block' : 'none';
+                 sendCredentialsButton.style.display = shouldShowCredentials ? 'block' : 'none';
+                 if(closeGuestModalBtn) closeGuestModalBtn.style.display = 'block'; // Ensure close is always visible
+
+                 if(shouldShowCredentials) {
+                    document.getElementById('username').value = guest.email.split('@')[0] || `guest${guest.id}`;
+                    document.getElementById('password').value = generatePassword();
+                 } else {
+                     document.getElementById('username').value = '';
+                     document.getElementById('password').value = '';
+                 }
+
+                 showModal('guestModalOverlay');
+             }
+
+             function rejectGuest(guestId) {
+                 if (confirm(`Are you sure you want to reject guest application ${guestId}?`)) {
+                     const guestIndex = guests.findIndex(g => g.id === guestId);
+                     if (guestIndex !== -1 && guests[guestIndex].status === 'pending') {
+                         guests[guestIndex].status = 'rejected';
+                         localStorage.setItem('adminGuestRequests', JSON.stringify(guests));
+                         filterGuests();
+                         alert(`Guest ${guestId} application rejected.`);
+                     } else { alert("Could not reject application."); }
+                 }
+             }
+
+             function sendCredentials() {
+                 const usernameInput = document.getElementById('username');
+                 const passwordInput = document.getElementById('password');
+                 if (!currentGuestId || !usernameInput || !passwordInput) return;
+                 const username = usernameInput.value.trim();
+                 const password = passwordInput.value.trim();
+
+                 if (!username || !password) { displayModalMessage('Please enter/generate username and password.', 'error'); return; }
+
+                 const guestIndex = guests.findIndex(g => g.id === currentGuestId);
+                 if (guestIndex !== -1) {
+                     guests[guestIndex].status = 'approved';
+                     guests[guestIndex].username = username;
+                     guests[guestIndex].password = password;
+                     localStorage.setItem('adminGuestRequests', JSON.stringify(guests));
+                     console.log(`Credentials sent for ${guests[guestIndex].name}`);
+                     displayModalMessage(`Credentials sent & ${guests[guestIndex].name} approved!`, 'success');
+                     credentialForm.style.display = 'none';
+                     sendCredentialsButton.style.display = 'none';
+                     filterGuests(); // Update table view
+                      // No auto-close, user clicks OK or close button
+                 } else { displayModalMessage('Error finding guest data.', 'error'); }
+             }
+
+            function generatePassword(length = 8) { const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; let retVal = ""; for (let i = 0, n = charset.length; i < length; ++i) { retVal += charset.charAt(Math.floor(Math.random() * n)); } return retVal; }
+            function displayModalMessage(message, type = 'success') { if (bookingMessage) { bookingMessage.textContent = message; bookingMessage.className = `message ${type}`; bookingMessage.style.display = 'block'; } }
+
+             // --- Event Listeners ---
+             if(membershipFilter) membershipFilter.addEventListener('change', filterGuests);
+             if(statusFilter) statusFilter.addEventListener('change', filterGuests);
+             if(guestSearchInput) guestSearchInput.addEventListener('input', filterGuests);
+             if(sendCredentialsButton) sendCredentialsButton.addEventListener('click', sendCredentials);
+             if(closeGuestModalBtn) closeGuestModalBtn.addEventListener('click', () => hideModal('guestModalOverlay'));
+
+             // Initial render
+             renderGuestTable();
+
+            // --- End Admin Guests Page Specific JS ---
+
+        }); // End DOMContentLoaded
+    </script>
+
+
+    <!-- ====== ionicons ======= -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
 
 </html>

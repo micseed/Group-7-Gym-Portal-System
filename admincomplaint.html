@@ -6,18 +6,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Removed Chart.js as it wasn't used here -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard - Complaints & Requests</title>
     <style>
         :root {
             --blue: #203A93;
             --white: #fff;
-            --grey: #f5f5f5;
+            --grey: #f5f5f5; /* Corrected variable name */
             --black1: #222;
             --black2: #999;
         }
 
+        /* Global Reset & Font */
         * {
             margin: 0;
             padding: 0;
@@ -26,7 +28,8 @@
         }
 
         body {
-            overflow-x: hidden;
+            min-height: 100vh; /* Ensure body takes full height */
+            overflow-x: hidden; /* Prevent horizontal scroll on body */
         }
 
         .container {
@@ -34,6 +37,8 @@
             width: 100%;
         }
 
+        /* =============== Navigation ================ */
+        /* Styles are identical to adminguests.html - Keep consistent */
         .navigation {
             position: fixed;
             width: 300px;
@@ -42,211 +47,104 @@
             border-left: 10px solid var(--blue);
             transition: 0.5s;
             overflow: hidden;
+            z-index: 100;
         }
+        .navigation.active { width: 80px; }
+        .navigation ul { position: absolute; top: 0; left: 0; width: 100%; padding-left: 0; }
+        .navigation ul li { position: relative; width: 100%; list-style: none; border-top-left-radius: 30px; border-bottom-left-radius: 30px; }
+        .navigation ul li:hover, .navigation ul li.hovered { background-color: var(--white); }
+        .navigation ul li:nth-child(1) { margin-bottom: 40px; pointer-events: none; }
+        .navigation ul li a { position: relative; display: block; width: 100%; display: flex; text-decoration: none; color: var(--white); }
+        .navigation ul li:hover a, .navigation ul li.hovered a { color: var(--blue); }
+        .navigation ul li a .icon { position: relative; display: block; min-width: 60px; height: 60px; line-height: 75px; text-align: center; }
+        .navigation ul li a .icon ion-icon { font-size: 1.75rem; }
+        .navigation ul li a .title { position: relative; display: block; padding: 0 10px; height: 60px; line-height: 60px; text-align: start; white-space: nowrap; }
+        /* Curves */
+        .navigation ul li:hover a::before, .navigation ul li.hovered a::before { content: ""; position: absolute; right: 0; top: -50px; width: 50px; height: 50px; background-color: transparent; border-radius: 50%; box-shadow: 35px 35px 0 10px var(--white); pointer-events: none; }
+        .navigation ul li:hover a::after, .navigation ul li.hovered a::after { content: ""; position: absolute; right: 0; bottom: -50px; width: 50px; height: 50px; background-color: transparent; border-radius: 50%; box-shadow: 35px -35px 0 10px var(--white); pointer-events: none; }
 
-        .navigation.active {
-            width: 80px;
-        }
+        /* ===================== Main ===================== */
+        /* Styles are identical to adminguests.html - Keep consistent */
+        .main { position: absolute; width: calc(100% - 300px); left: 300px; min-height: 100vh; background: var(--white); transition: 0.5s; }
+        .main.active { width: calc(100% - 80px); left: 80px; }
 
-        .navigation ul {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-        }
+        /* ===================== Topbar ===================== */
+        /* Styles are identical/similar to adminguests.html - Keep consistent */
+        .topbar { width: 100%; height: 60px; display: flex; align-items: center; padding: 0 10px; justify-content: space-between; background: var(--white); box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 99; }
+        .toggle { position: relative; width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; font-size: 2.5rem; cursor: pointer; color: var(--black1); }
+        /* Search */
+        .search-container { position: relative; flex-grow: 1; max-width: 600px; margin: 0 10px; }
+        .search-container label { display: flex; align-items: center; width: 100%; border: 1px solid #ccc; border-radius: 15px; overflow: hidden; background: var(--white); }
+        #search-input { flex-grow: 1; padding: 10px; border: none; outline: none; font-size: 16px; box-sizing: border-box; margin-right: 5px; }
+        .search-container label ion-icon { padding-right: 10px; font-size: 20px; color: #777; cursor: pointer; }
+        #search-results { position: absolute; top: calc(100% + 2px); left: 0; right: 0; background-color: #fff; border: 1px solid #ccc; border-radius: 8px; margin-top: 2px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); z-index: 110; display: none; overflow: hidden; max-height: 300px; overflow-y: auto; }
+        #search-results ul { list-style: none; padding: 8px 0; margin: 0; }
+        #search-results li { padding: 12px 16px; cursor: pointer; transition: background-color 0.2s ease; font-size: 1.0em; color: #333; }
+        #search-results li:hover { background-color: #f5f5f5; color: #222; }
+        /* Mail */
+        .mail-container { position: relative; display: inline-block; margin: 0 5px; }
+        #mail-icon-inbox { font-size: 25px; color: var(--blue); cursor: pointer; padding: 5px; }
+        #mail-icon-inbox:hover { opacity: 0.8; }
+        #unread-mail-badge { /* Changed ID */ position: absolute; top: -2px; right: -2px; background-color: red; color: white; font-size: 11px; border-radius: 50%; width: 16px; height: 16px; text-align: center; line-height: 16px; display: none; pointer-events: none; }
+        #inbox-preview { position: absolute; top: calc(100% + 10px); right: -10px; background-color: #f9f9f9; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); width: 280px; padding: 15px; display: none; z-index: 110; text-align: left; }
+        #inbox-preview strong { display: block; margin-bottom: 5px; }
+        .email-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 3px 0; }
+        .email-item.sender { font-weight: bold; }
+        .email-item.subject { color: #555; font-size: 0.9em; }
+        #inbox-preview hr { margin: 8px 0; }
+        #inbox-preview a { display: block; margin-top: 10px; font-size: 0.8em; text-align: right; color: #007bff; text-decoration: none; }
+        /* Notification */
+        .notification-container { position: relative; display: inline-block; margin: 0 5px; }
+        #notification-icon { font-size: 25px; color: var(--blue); cursor: pointer; padding: 5px; }
+        #notification-icon:hover { opacity: 0.8; }
+        #notification-badge { position: absolute; top: -2px; right: -2px; background-color: orange; color: white; font-size: 11px; border-radius: 50%; width: 16px; height: 16px; text-align: center; line-height: 16px; display: block; pointer-events: none; }
+        #notifications-dropdown { position: absolute; top: calc(100% + 10px); right: -10px; background-color: #f9f9f9; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); width: 280px; padding: 15px; display: none; z-index: 110; text-align: left; }
+        #notifications-dropdown strong { display: block; margin-bottom: 5px; }
+        .notification-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 3px 0; }
+        .notification-item.title { font-weight: bold; margin-top: 5px; }
+        .notification-item.message { color: #555; font-size: 0.9em; }
+        #notifications-dropdown hr { margin: 8px 0; }
+        #notifications-dropdown a { display: block; margin-top: 10px; font-size: 0.8em; text-align: right; color: #007bff; text-decoration: none; }
+        /* User */
+        .user-info { display: flex; align-items: center; margin-left: 10px; }
+        .user-info .name { margin-right: 10px; font-weight: 500; white-space: nowrap; }
+        .user { position: relative; min-width: 40px; width: 40px; height: 40px; border-radius: 50%; overflow: hidden; cursor: pointer; }
+        .user img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
 
-        .navigation ul li {
-            position: relative;
-            width: 100%;
-            list-style: none;
-            border-top-left-radius: 30px;
-            border-bottom-left-radius: 30px;
-        }
-
-        .navigation ul li:hover,
-        .navigation ul li.hovered {
-            background-color: var(--white);
-        }
-
-        .navigation ul li:nth-child(1) {
-            margin-bottom: 40px;
-            pointer-events: none;
-        }
-
-        .navigation ul li a {
-            position: relative;
-            display: block;
-            width: 100%;
-            display: flex;
-            text-decoration: none;
-            color: var(--white);
-        }
-
-        .navigation ul li:hover a,
-        .navigation ul li.hovered a {
-            color: var(--blue);
-        }
-
-        .navigation ul li a .icon {
-            position: relative;
-            display: block;
-            min-width: 60px;
-            height: 60px;
-            line-height: 75px;
-            text-align: center;
-        }
-
-        .navigation ul li a .icon ion-icon {
-            font-size: 1.75rem;
-        }
-
-        .navigation ul li a .title {
-            position: relative;
-            display: block;
-            padding: 0 10px;
-            height: 60px;
-            line-height: 60px;
-            text-align: start;
-            white-space: nowrap;
-        }
-
-        /* ===== Main ===== */
-        .main {
-            position: absolute;
-            width: calc(100% - 300px);
-            left: 300px;
-            min-height: 100vh;
-            background: var(--white);
-            transition: 0.5s;
-        }
-
-        .main.active {
-            width: calc(100% - 80px);
-            left: 80px;
-        }
-
-        .topbar {
-            width: 100%;
-            height: 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 10px;
-            background: var(--white);
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .toggle {
-            position: relative;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2.5rem;
-            cursor: pointer;
-        }
-
-        .search-container {
-            position: relative;
-            width: 400px;
-            margin: 0 10px;
-        }
-
-        .search-container label {
-            position: relative;
-            width: 100%;
-        }
-
-        .search-container label input {
-            width: 100%;
-            height: 40px;
-            border-radius: 40px;
-            padding: 5px 20px;
-            padding-left: 35px;
-            font-size: 18px;
-            outline: none;
-            border: 1px solid var(--black2);
-        }
-
-        .search-container label ion-icon {
-            position: absolute;
-            top: 0;
-            left: 10px;
-            font-size: 1.2rem;
-        }
-
-        .mail-container, .notification-container {
-            position: relative;
-            margin: 0 10px;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        #unread-notification, #notification-badge {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background-color: red;
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 12px;
-        }
-
-        .user {
-            position: relative;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            overflow: hidden;
-            cursor: pointer;
-        }
-
-        .user img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .name {
-            position: relative;
-            margin-right: 10px;
-            font-weight: 500;
-        }
-
-        /* Table Styles */
+        /* ================== Complaints/Requests Section ================== */
         .view-clients-complaints {
             padding: 20px;
         }
 
         .view-clients-complaints h2 {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             color: var(--blue);
             text-align: center;
+            font-size: 1.8rem;
         }
 
         .section-title {
-            margin: 30px 0 20px;
+            margin: 30px 0 15px;
             color: var(--blue);
             text-align: center;
             font-size: 1.5rem;
         }
 
+        /* Table Wrapper for Responsiveness */
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto; /* Enable horizontal scrolling */
+            margin-bottom: 30px;
+            border-radius: 10px;
+            border: 1px solid #eee; /* Subtle border */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); /* Subtle shadow */
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            border-radius: 10px;
+             /* min-width to force scrollbar when needed, adjust as necessary */
+            min-width: 900px;
         }
 
         thead {
@@ -255,63 +153,48 @@
         }
 
         th, td {
-            padding: 15px;
+            padding: 12px 15px; /* Slightly reduced padding */
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #eee; /* Lighter border */
+            white-space: nowrap; /* Prevent wrapping by default */
+        }
+         /* Allow specific columns to wrap */
+         td:nth-child(4), /* Subject */
+         td:nth-child(5) { /* Details */
+             white-space: normal;
+         }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9; /* Zebra striping */
         }
 
         tbody tr:hover {
-            background-color: #f9f9f9;
+            background-color: #f0f0f0;
         }
 
         .status {
             padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 14px;
+            border-radius: 12px; /* Pill shape */
+            font-size: 13px;
             font-weight: 500;
             text-align: center;
             display: inline-block;
             min-width: 90px;
         }
+        /* Updated Status Colors for better contrast/meaning */
+        .status.new { background-color: #cfe2ff; color: #0d6efd; } /* Blue */
+        .status.in-progress { background-color: #fff3cd; color: #664d03; } /* Yellow */
+        .status.resolved { background-color: #d1e7dd; color: #0f5132; } /* Green */
+        .status.closed { background-color: #e2e3e5; color: #41464b; } /* Grey */
+        .status.pending { background-color: #cfe2ff; color: #0d6efd; } /* Blue */
+        .status.approved { background-color: #d1e7dd; color: #0f5132; } /* Green */
+        .status.rejected { background-color: #f8d7da; color: #842029; } /* Red */
 
-        .status.new {
-            background-color: #ffcccb;
-            color: #ff0000;
-        }
-
-        .status.in-progress {
-            background-color: #fff2cc;
-            color: #ff9900;
-        }
-
-        .status.resolved {
-            background-color: #d1e7dd;
-            color: #198754;
-        }
-
-        .status.closed {
-            background-color: #e2e3e5;
-            color: #495057;
-        }
-
-        .status.pending {
-            background-color: #cfe2ff;
-            color: #0d6efd;
-        }
-
-        .status.approved {
-            background-color: #d1e7dd;
-            color: #198754;
-        }
-
-        .status.rejected {
-            background-color: #f8d7da;
-            color: #dc3545;
-        }
 
         .action-buttons {
             display: flex;
             gap: 5px;
+            white-space: nowrap; /* Keep buttons together */
         }
 
         .view-button, .approve-button, .reject-button {
@@ -320,117 +203,147 @@
             border-radius: 4px;
             cursor: pointer;
             font-weight: 500;
-            transition: all 0.3s ease;
+            font-size: 14px; /* Ensure consistent size */
+            transition: all 0.2s ease;
         }
 
-        .view-button {
-            background-color: var(--blue);
-            color: white;
-        }
-
-        .approve-button {
-            background-color: #198754;
-            color: white;
-        }
-
-        .reject-button {
-            background-color: #dc3545;
-            color: white;
-        }
+        .view-button { background-color: var(--blue); color: white; }
+        .approve-button { background-color: #198754; color: white; }
+        .reject-button { background-color: #dc3545; color: white; }
 
         .view-button:hover, .approve-button:hover, .reject-button:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
+            opacity: 0.85;
+            transform: translateY(-1px);
         }
 
         /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
+       /* ==== Modal Styles ==== */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Prevent body scroll when modal is open (optional but good) */
+    background-color: rgba(0, 0, 0, 0.5);
+}
 
-        .modal-content {
-            background-color: #fff;
-            margin: 5% auto;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            width: 70%;
-            max-width: 800px;
-            animation: modalFadeIn 0.3s;
-        }
+.modal-content {
+    background-color: #fff;
+    /* Adjust margin to use vh for better vertical centering with max-height */
+    margin: 5vh auto;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 750px;
+    animation: modalFadeIn 0.3s ease-out;
+    position: relative; /* Keep for close button */
+
+    /* === Add these lines for overall modal scrolling === */
+    max-height: 90vh; /* Limit height to 90% of viewport height */
+    overflow-y: auto; /* Enable vertical scrollbar ONLY if content exceeds max-height */
+    /* ================================================== */
+}
 
         @keyframes modalFadeIn {
-            from {opacity: 0; transform: translateY(-30px);}
-            to {opacity: 1; transform: translateY(0);}
+            from {opacity: 0; transform: translateY(-20px) scale(0.98);}
+            to {opacity: 1; transform: translateY(0) scale(1);}
         }
 
         .modal-close-button {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .modal-close-button:hover {
-            color: black;
-        }
+    color: #aaa;
+    position: absolute; /* Stays relative to modal-content */
+    top: 10px;
+    right: 15px;
+    font-size: 32px;
+    font-weight: bold;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    z-index: 1; /* Ensure it's above scrolling content if needed */
+}
+.modal-close-button:hover { color: #333; }
+/* Optional: Style the scrollbar for the modal-content (Webkit) */
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+.modal-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 0 8px 8px 0; /* Match modal radius on right */
+}
+.modal-content::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+}
 
         .modal h3 {
+            margin-top: 0; /* Remove top margin */
             margin-bottom: 20px;
             color: var(--blue);
             border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
+            padding-bottom: 15px;
+            font-size: 1.4rem;
         }
 
-        .modal-details-section {
-            margin-bottom: 20px;
-        }
+        .modal-details-section { margin-bottom: 20px; }
 
         .detail-item {
-            margin-bottom: 15px;
+            margin-bottom: 12px; /* Adjust spacing */
+            line-height: 1.6;
         }
 
         .detail-item strong {
             display: inline-block;
-            width: 150px;
+            min-width: 140px; /* Consistent label width */
             font-weight: 600;
+            color: var(--black1);
         }
 
         .complaint-description {
-            background-color: #f9f9f9;
+            background-color: #f8f9fa; /* Lighter background */
             padding: 15px;
             border-radius: 5px;
             margin: 15px 0;
             border-left: 4px solid var(--blue);
+            line-height: 1.7;
+            font-size: 0.95rem;
+            color: #333;
         }
 
         .modal-actions-section {
             border-top: 1px solid #eee;
             padding-top: 20px;
+            margin-top: 20px; /* Add space above actions */
         }
 
         .modal-actions-section h4 {
-            margin: 15px 0 10px;
+            margin-top: 0; /* Remove default margin */
+            margin-bottom: 15px;
             color: var(--black1);
+            font-size: 1.1rem;
+        }
+
+        .modal-actions-section label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
         }
 
         .modal-actions-section select,
         .modal-actions-section textarea {
             width: 100%;
             padding: 10px;
-            margin: 8px 0 15px;
-            border: 1px solid #ddd;
+            margin-bottom: 15px; /* Spacing below inputs */
+            border: 1px solid #ccc; /* Slightly darker border */
             border-radius: 4px;
             box-sizing: border-box;
+            font-size: 0.95rem;
         }
 
         .modal-actions-section textarea {
@@ -445,511 +358,247 @@
             cursor: pointer;
             font-weight: 500;
             margin-right: 10px;
-            transition: all 0.3s ease;
+            margin-bottom: 10px; /* Spacing for wrapped buttons */
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
         }
 
-        .update-status-button {
-            background-color: var(--blue);
-            color: white;
-        }
-
-        .reassign-button {
-            background-color: #6f42c1;
-            color: white;
-        }
-
-        .warning-button {
-            background-color: #fd7e14;
-            color: white;
-        }
-
-        .save-notes-button {
-            background-color: #20c997;
-            color: white;
-        }
+        .update-status-button { background-color: var(--blue); color: white; }
+        .reassign-button { background-color: #6f42c1; color: white; } /* Purple */
+        .warning-button { background-color: #fd7e14; color: white; } /* Orange */
+        .save-notes-button { background-color: #198754; color: white; } /* Green */
 
         .action-button:hover {
             opacity: 0.9;
-            transform: translateY(-2px);
+            transform: translateY(-1px);
         }
 
         /* Reject Request Modal */
-        .reject-reason-container {
-            margin-top: 15px;
-        }
+        .reject-reason-container { margin-top: 15px; }
+        .reject-reason-container label { display: block; margin-bottom: 5px; font-weight: 500; }
+        .reject-reason-container textarea { width: 100%; min-height: 80px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; font-size: 0.95rem;}
+        .reject-modal-buttons { display: flex; justify-content: flex-end; margin-top: 20px; gap: 10px; }
+        .reject-modal-buttons button { padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: 500; }
+        .cancel-button { background-color: #6c757d; color: white; }
+        .submit-button { background-color: #dc3545; color: white; }
 
-        .reject-reason-container textarea {
-            width: 100%;
-            min-height: 100px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            resize: vertical;
-        }
+        /* Warning Severity */
+        .warning-severity { margin: 15px 0; }
+        .warning-severity label { margin-right: 10px; }
 
-        .reject-modal-buttons {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 15px;
-            gap: 10px;
-        }
-
-        .reject-modal-buttons button {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 500;
-        }
-
-        .cancel-button {
-            background-color: #6c757d;
-            color: white;
-        }
-
-        .submit-button {
-            background-color: #dc3545;
-            color: white;
-        }
-
-        /* Notification toast */
+        /* Toast Notification */
         .toast {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background-color: #4CAF50;
+            background-color: #333; /* Default dark */
             color: white;
-            padding: 16px;
-            border-radius: 4px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             display: none;
             z-index: 2000;
-            animation: fadeIn 0.5s;
+            animation: fadeInToast 0.4s, fadeOutToast 0.4s 2.6s forwards;
+            font-size: 0.95rem;
         }
+        .toast.success { background-color: #28a745; } /* Green */
+        .toast.error { background-color: #dc3545; } /* Red */
 
-        @keyframes fadeIn {
-            from {opacity: 0; transform: translateY(20px);}
-            to {opacity: 1; transform: translateY(0);}
-        }
+        @keyframes fadeInToast { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOutToast { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(20px); } }
 
         /* Sign out modal */
-        #signOutModal {
-            display: none;
+        #signOutModal .modal-content { max-width: 400px; } /* Smaller sign out modal */
+        .sign-out-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+        .modal-button { padding: 8px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: 500; }
+        .yes-button { background-color: #dc3545; color: white; }
+        .no-button { background-color: #6c757d; color: white; }
+
+
+        /* ============ Responsive Design ============ */
+        @media (max-width: 991px) {
+            .navigation { width: 80px; }
+            .navigation.active { width: 300px; }
+            .main { width: calc(100% - 80px); left: 80px; }
+            .main.active { width: calc(100% - 300px); left: 300px; }
+            .search-container { max-width: 400px; }
+            table { min-width: 800px; } /* Adjust min-width */
         }
 
-        .sign-out-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 20px;
+        @media (max-width: 768px) {
+            .navigation { left: -300px; width: 300px; }
+            .navigation.active { left: 0; width: 300px; }
+            .main { width: 100%; left: 0; }
+            .main.active { width: 100%; left: 0; }
+            .toggle { z-index: 101; color: var(--blue); }
+            .topbar { padding: 0 10px; flex-wrap: wrap; height: auto; padding-bottom: 5px; }
+            .search-container { order: 3; width: calc(100% - 20px); margin: 8px 10px 0; max-width: none; }
+            .user-info .name { display: none; }
+            .user-info { margin-left: 5px; }
+            .view-clients-complaints { padding: 15px; }
+            table { min-width: 700px; } /* Further adjust min-width */
+            th, td { padding: 10px 12px; }
+            .modal-content { width: 90%; max-width: 90%; margin: 5% auto; }
         }
 
-        .modal-button {
-            padding: 8px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 500;
-        }
+        @media (max-width: 480px) {
+             .topbar {
+                 /* height: auto; */ /* Allow height to adjust based on content */
+                 padding: 5px 10px; /* Padding around the content */
+                 display: flex;
+                 align-items: center; /* Align items on the first line vertically */
+                 justify-content: space-between; /* Pushes toggle left, icons/user right */
+                 flex-wrap: wrap; /* *** MOST IMPORTANT: Allows wrapping *** */
+             }
 
-        .yes-button {
-            background-color: #dc3545;
-            color: white;
-        }
+             /* --- Items on the first line --- */
+             .toggle {
+                 order: 1; /* Ensure toggle comes first */
+                 flex-shrink: 0; /* Prevent shrinking */
+             }
 
-        .no-button {
-            background-color: #6c757d;
-            color: white;
-        }
+             /* Group mail, notification, user together visually using default order */
+             /* We rely on space-between of parent to push them right */
+             .mail-container,
+             .notification-container,
+             .user-info {
+                 order: 2; /* Ensure they come after toggle */
+                 margin: 0 3px; /* Your desired spacing */
+                 flex-shrink: 0; /* Prevent shrinking */
+             }
+             .user-info .name {
+                 display: none; /* Hide name */
+             }
 
-        /* ===================== Main ===================== */
-.main {
-  position: absolute;
-  width: calc(100% - 300px);
-  left: 300px;
-  min-height: 100vh;
-  background: var(--white);
-  transition: 0.5s;
-}
-.main.active {
-  width: calc(100% - 80px);
-  left: 80px;
-}
-
-.topbar {
-  width: 100%;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-  justify-content:space-between;
-}
-
-.toggle {
-  position: relative;
-  width: 60px;
-  height: 60px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 2.5rem;
-  cursor: pointer;
-}
-
-/* =============== Search Icon ================ */
-.search-container {
-  position: relative;
-  width: 800px;
-  margin: 0 10px;
-}
-
-.search-container label {
-  display: flex; 
-align-items: center; 
-width: 100%;
-border: 1px solid #ccc;
-border-radius: 15px;
-overflow: hidden;
-}
-
-#search-input {
-  flex-grow: 1; 
-padding: 10px;
-border: none;
-outline: none;
-font-size: 16px;
-box-sizing: border-box; 
-margin-right: 5px;
-}
-
-.search-container label ion-icon {
-  padding-right: 10px;
-  font-size: 20px; 
-  color: #777;
-}
-
-#search-results {
-  position: absolute;
-  top: calc(100% + 2px); 
-  left: 0;
-  right: 0;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  margin-top: 2px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  z-index: 10;
-  display: none;
-  overflow: hidden;
-}
-
-#search-results ul {
-  list-style: none;
-  padding: 8px 0;
-  margin: 0;
-}
-
-#search-results li {
-  padding: 12px 16px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  font-size: 1.0em;
-  color: #333;
-}
-
-#search-results li:hover {
-  background-color: #f5f5f5;
-  color: #222;
-}
-
-#search-results li:active {
-  background-color: #eee;
-}
+             /* --- Search container on the second line --- */
+             .search-container {
+                 order: 3; /* Force it to the next line */
+                 width: 100%; /* Make it take full width */
+                 margin: 8px 0 5px 0; /* Your desired vertical margin */
+             }
+             /* Search input styling */
+             .search-container label {
+                 display: flex; /* Ensure label behaves correctly */
+                 align-items: center;
+                 position: relative; /* Needed for absolute icon positioning */
+                 border: 1px solid #ccc; /* Add border if needed */
+                 border-radius: 15px;
+                 overflow: hidden;
+             }
+             .search-container label input {
+                 flex-grow: 1; /* Input takes space within label */
+                 font-size: 14px;
+                 height: 36px;
+                 padding: 5px 10px 5px 30px; /* Adjust padding */
+                 border: none; /* Remove default border */
+                 outline: none;
+             }
+             .search-container label ion-icon {
+                 position: absolute; /* Position icon inside label */
+                 font-size: 16px;
+                 left: 8px;
+                 top: 50%;
+                 transform: translateY(-50%);
+                 color: #777;
+             }
+             #search-results {
+                 top: calc(100% + 1px);
+                 width: 100%; /* Make dropdown full width */
+                 left: 0;
+                 right: 0;
+             }
 
 
-#search-results li span.highlight {
-  font-weight: bold;
-  color: #007bff; 
-}
+             /* --- Your other styles for this breakpoint --- */
+             .user { width: 35px; height: 35px; min-width: 35px; }
+             #mail-icon-inbox, #notification-icon { font-size: 22px; padding: 4px;} /* Keep padding */
+             #unread-mail-badge, #notification-badge { width: 14px; height: 14px; line-height: 14px; font-size: 10px; top: -1px; right: -1px;}
 
-/* =============== Mail Icon ================ */
-.mail-container {
-  position: relative;
-  display: inline-block;
-}
+             .view-clients-complaints { padding: 10px; }
+             .view-clients-complaints h2, .section-title { font-size: 1.3rem; }
+             .table-wrapper {
+                width: 100%;
+                overflow-x: auto;
+                margin-bottom: 20px;
+             }
+             table { min-width: 600px; }
+             th, td { padding: 8px 10px; font-size: 0.85em;}
+             .status { font-size: 12px; padding: 4px 8px; min-width: 80px;}
+             .action-buttons button { padding: 5px 8px; font-size: 12px; }
+             .modal-content { padding: 15px; width: 95%; max-width: 95%; margin: 20px auto; max-height: 90vh; overflow-y: auto; }
+             .modal h3 { font-size: 1.2rem; padding-bottom: 10px; margin-bottom: 15px;}
+             .modal-close-button { font-size: 28px; top: 5px; right: 10px; }
+             .detail-item { font-size: 0.9em; margin-bottom: 10px;}
+             .detail-item strong { min-width: 100px; }
+             .modal-actions-section select, .modal-actions-section textarea { font-size: 0.9rem; padding: 8px; }
+             .action-button { padding: 7px 12px; font-size: 0.85rem; }
+             .reject-modal-buttons button { padding: 7px 12px; font-size: 0.85rem; }
+             .modal-content::-webkit-scrollbar { width: 8px; }
+             .modal-content::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 0 8px 8px 0; }
+             .modal-content::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+             .modal-content::-webkit-scrollbar-thumb:hover { background: #aaa; }
+         }
+         
 
-#mail-icon-inbox {
-  font-size: 25px;
-  color: #203A93;
-  cursor: pointer;
-}
-
-#mail-icon-inbox:hover {
-  opacity: 0.8;
-}
-
-#unread-notification {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background-color: red;
-  color: white;
-  font-size: 12px;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  text-align: center;
-  line-height: 18px;
-  display: none; 
-}
-
-#inbox-preview {
-  position: absolute;
-  top: calc(100% + 5px);
-  right: -10px;
-  background-color: #f9f9f9;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 250px;
-  padding: 15px;
-  display: none; 
-  z-index: 10;
-  text-align: left;
-}
-
-#inbox-preview strong {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.email-item {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding: 3px 0; 
-}
-
-.email-item.sender {
-  font-weight: bold;
-}
-
-.email-item.subject {
-  color: #555;
-  font-size: 0.9em; 
-}
-
-#inbox-preview hr {
-  margin-top: 8px;
-  margin-bottom: 8px;
-}
-
-#inbox-preview a {
-  display: block;
-  margin-top: 10px;
-  font-size: 0.8em;
-  text-align: right;
-  color: #007bff;
-  text-decoration: none;
-}
-
-/* =============== Notification ================ */
-.notification-container {
-  position: relative;
-  display: inline-block;
-}
-
-#notification-icon {
-  font-size: 25px;
-  color: #203A93;
-  cursor: pointer;
-}
-
-#notification-icon:hover {
-  opacity: 0.8;
-}
-
-#notification-badge {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background-color: orange;
-  color: white;
-  font-size: 12px;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  text-align: center;
-  line-height: 18px;
-  display: block; 
-}
-
-#notifications-dropdown {
-  position: absolute;
-  top: calc(100% + 5px);
-  right: -10px;
-  background-color: #f9f9f9;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 250px;
-  padding: 15px;
-  display: none;
-  z-index: 10;
-  text-align: left;
-}
-
-#notifications-dropdown strong {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.notification-item {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding: 3px 0;
-}
-
-.notification-item.title {
-  font-weight: bold;
-  margin-top: 5px;
-}
-
-.notification-item.message {
-  color: #555;
-  font-size: 0.9em;
-}
-
-#notifications-dropdown hr {
-  margin-top: 8px;
-  margin-bottom: 8px;
-}
-
-#notifications-dropdown a {
-  display: block;
-  margin-top: 10px;
-  font-size: 0.8em;
-  text-align: right;
-  color: #007bff;
-  text-decoration: none;
-}
-
-/* =============== User ================ */
-.user {
-  position: relative;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  overflow: hidden;
-  cursor: pointer;
-}
-
-
-.user img {
-  position: absolute;
-  justify-items: end;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
     </style>
-    <title>Admin Dashboard</title>
 </head>
 
 <body>
-    <!-- =============== Navigation ================ -->
     <div class="container">
         <div class="navigation">
             <ul>
                 <li>
                     <a href="#">
-                        <span class="icon">
-                            <ion-icon name="barbell"></ion-icon>
-                        </span>
+                        <span class="icon"><ion-icon name="barbell"></ion-icon></span>
                         <span class="title">ENERGIZE</span>
                     </a>
                 </li>
-
                 <li>
                     <a href="testadmin.html">
-                        <span class="icon">
-                            <ion-icon name="home-outline"></ion-icon>
-                        </span>
+                        <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
                         <span class="title">Dashboard</span>
                     </a>
                 </li>
-
                 <li>
                     <a href="adminclients.html">
-                        <span class="icon">
-                            <ion-icon name="people-outline"></ion-icon>
-                        </span>
+                        <span class="icon"><ion-icon name="people-outline"></ion-icon></span>
                         <span class="title">Manage Clients</span>
                     </a>
                 </li>
-
                 <li>
                     <a href="admincoaches.html">
-                        <span class="icon">
-                            <ion-icon name="people-outline"></ion-icon>
-                        </span>
+                        <span class="icon"><ion-icon name="people-outline"></ion-icon></span>
                         <span class="title">Manage Coaches</span>
                     </a>
                 </li>
-
                 <li>
                     <a href="adminguests.html">
-                        <span class="icon">
-                            <ion-icon name="person-add-outline"></ion-icon>
-                        </span>
+                        <span class="icon"><ion-icon name="person-add-outline"></ion-icon></span>
                         <span class="title">Manage Guests</span>
                     </a>
                 </li>
-
-                <li>
-                    <a href="adminmanage.html">
-                        <span class="icon">
-                            <ion-icon name="person-add-outline"></ion-icon>
-                        </span>
-                        <span class="title">Manage Admins</span>
-                    </a>
-                </li>
-
-                <li>
+                <li><a href="adminmanage.html"><span class="icon"><ion-icon name="person-add-outline"></ion-icon></span><span class="title">Manage Admins</span></a></li>
+                <li class="hovered"> <!-- Mark current page -->
                     <a href="admincomplaint.html">
-                        <span class="icon">
-                            <ion-icon name="chatbubble-outline"></ion-icon>
-                        </span>
+                        <span class="icon"><ion-icon name="chatbubble-outline"></ion-icon></span>
                         <span class="title">Complaints/Requests</span>
                     </a>
                 </li>
-
                 <li>
                     <a href="adminpayments.html">
-                        <span class="icon">
-                            <ion-icon name="card-outline"></ion-icon>
-                        </span>
-                        <span class="title"> Clients Payments</span>
+                        <span class="icon"><ion-icon name="card-outline"></ion-icon></span>
+                        <span class="title">Clients Payments</span>
                     </a>
                 </li>
-
                 <li>
                     <a href="adminsettings.html">
-                        <span class="icon">
-                            <ion-icon name="settings-outline"></ion-icon>
-                        </span>
+                        <span class="icon"><ion-icon name="settings-outline"></ion-icon></span>
                         <span class="title">Settings</span>
                     </a>
                 </li>
-
                 <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="log-out-outline"></ion-icon>
-                        </span>
+                    <a href="#" id="signOutLink"> <!-- Added ID for JS -->
+                        <span class="icon"><ion-icon name="log-out-outline"></ion-icon></span>
                         <span class="title">Sign Out</span>
                     </a>
                 </li>
@@ -965,245 +614,244 @@ margin-right: 5px;
 
                 <div class="search-container">
                     <label>
-                      <input type="text" id="search-input" placeholder="Search what you're looking for">
-                     
+                      <input type="text" id="search-input" placeholder="Search anything...">
+                      <ion-icon name="search-outline"></ion-icon> <!-- Added Icon -->
                     </label>
                     <div id="search-results">
+                        <!-- Search results -->
                     </div>
-                  </div>
+                </div>
 
-                  
-                  <div class="mail-container">
-                    <ion-icon name="mail" id="mail-icon-inbox"></ion-icon>
-                    <div id="unread-notification">1</div>
+                <div class="mail-container">
+                    <ion-icon name="mail-outline" id="mail-icon-inbox"></ion-icon>
+                    <div id="unread-mail-badge">1</div> <!-- Updated ID -->
                     <div id="inbox-preview">
-                    <strong>Inbox</strong>
-                    <hr>
-                    <div id="unread-messages">
-                        <div class="email-item sender">Clients</div>
-                        <div class="email-item subject">3 complaints were submitted</div>
-                        <hr>
-                    </div>
-                    <div id="read-messages">
-                        <div class="email-item sender">Coach</div>
-                        <div class="email-item subject">Can I ask?</div>
-                    </div>
-                    <a href="#">See All</a>
+                        <strong>Inbox</strong><hr>
+                        <div id="unread-messages">
+                            <div class="email-item sender">Client Support</div>
+                            <div class="email-item subject">Urgent: Complaint C-001</div><hr>
+                        </div>
+                        <div id="read-messages">
+                            <div class="email-item sender">Coach Lisa</div>
+                            <div class="email-item subject">Re: Session Availability</div>
+                        </div>
+                        <a href="#">See All Mail</a>
                     </div>
                 </div>
 
                 <div class="notification-container">
-                    <ion-icon name="notifications" id="notification-icon"></ion-icon>
-                    <div id="notification-badge">1</div>
+                    <ion-icon name="notifications-outline" id="notification-icon"></ion-icon>
+                    <div id="notification-badge">2</div> <!-- Example count -->
                     <div id="notifications-dropdown">
-                      <strong>Notifications</strong>
-                      <hr>
+                      <strong>Notifications</strong><hr>
                       <div id="notification-list">
-                        <div class="notification-item title">Today, 1:00 PM</div>
-                        <div class="notification-item message">New clients added.</div>
-                        <hr>
-                        <div class="notification-item title">Sales Update</div>
-                        <div class="notification-item message">It increased by 25%</div>
+                        <div class="notification-item title">Request Update</div>
+                        <div class="notification-item message">Request R-002 approved.</div><hr>
+                        <div class="notification-item title">New Complaint</div>
+                        <div class="notification-item message">Complaint C-005 submitted.</div>
                       </div>
-                      <a href="#">See All</a>
+                      <a href="#">See All Notifications</a>
                     </div>
-                  </div>
-            
-                <div class="name">
-                    <p>Peter Pan</p>
                 </div>
-    
-                <div class="user">
-                    <img src="assets/img/ramburat.jpg" alt="">
-                </div>                
+
+                <div class="user-info">
+                    <div class="name">Peter Pan</div>
+                    <div class="user">
+                        <img src="assets/img/ramburat.jpg" alt="User Avatar"> <!-- Ensure path is correct -->
+                    </div>
+                </div>
             </div>
 
-            <!-- Complaints -->
+            <!-- Complaints & Requests Content Area -->
             <div class="view-clients-complaints">
                 <h2>CLIENTS COMPLAINTS</h2>
-
-                <table id="complaintsTable">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Date Submitted</th>
-                            <th>Client</th>
-                            <th>Subject</th>
-                            <th>Status</th>
-                            <th>Coach Involved</th>
-                            <th>Priority</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="complaintsTableBody">
-                        <tr>
-                            <td>C-001</td>
-                            <td>2025-04-22</td>
-                            <td>Sarah Johnson</td>
-                            <td>Unprofessional Behavior</td>
-                            <td><span class="status new">New</span></td>
-                            <td>Coach Mike</td>
-                            <td>High</td>
-                            <td>
-                                <button class="view-button" onclick="openComplaintDetailsModal('C-001')">View</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>C-002</td>
-                            <td>2025-04-20</td>
-                            <td>Robert Chen</td>
-                            <td>Session Cancellation</td>
-                            <td><span class="status in-progress">In Progress</span></td>
-                            <td>Coach Lisa</td>
-                            <td>Medium</td>
-                            <td>
-                                <button class="view-button" onclick="openComplaintDetailsModal('C-002')">View</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>C-003</td>
-                            <td>2025-04-18</td>
-                            <td>Emily Wilson</td>
-                            <td>Billing Issue</td>
-                            <td><span class="status resolved">Resolved</span></td>
-                            <td>Coach Alex</td>
-                            <td>Low</td>
-                            <td>
-                                <button class="view-button" onclick="openComplaintDetailsModal('C-003')">View</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>C-004</td>
-                            <td>2025-04-15</td>
-                            <td>David Martinez</td>
-                            <td>Poor Communication</td>
-                            <td><span class="status new">New</span></td>
-                            <td>Coach Samantha</td>
-                            <td>High</td>
-                            <td>
-                                <button class="view-button" onclick="openComplaintDetailsModal('C-004')">View</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-wrapper">
+                    <table id="complaintsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Date Submitted</th>
+                                <th>Client</th>
+                                <th>Subject</th>
+                                <th>Status</th>
+                                <th>Coach Involved</th>
+                                <th>Priority</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="complaintsTableBody">
+                            <!-- Rows populated by sample data or fetched dynamically -->
+                            <tr data-id="C-001">
+                                <td>C-001</td>
+                                <td>2025-04-22</td>
+                                <td>Sarah Johnson</td>
+                                <td>Unprofessional Behavior</td>
+                                <td><span class="status new">New</span></td>
+                                <td>Coach Mike</td>
+                                <td>High</td>
+                                <td class="action-buttons"><button class="view-button" data-action="view">View</button></td>
+                            </tr>
+                            <tr data-id="C-002">
+                                <td>C-002</td>
+                                <td>2025-04-20</td>
+                                <td>Robert Chen</td>
+                                <td>Session Cancellation</td>
+                                <td><span class="status in-progress">In Progress</span></td>
+                                <td>Coach Lisa</td>
+                                <td>Medium</td>
+                                <td class="action-buttons"><button class="view-button" data-action="view">View</button></td>
+                            </tr>
+                            <tr data-id="C-003">
+                                <td>C-003</td>
+                                <td>2025-04-18</td>
+                                <td>Emily Wilson</td>
+                                <td>Billing Issue</td>
+                                <td><span class="status resolved">Resolved</span></td>
+                                <td>Coach Alex</td>
+                                <td>Low</td>
+                                <td class="action-buttons"><button class="view-button" data-action="view">View</button></td>
+                            </tr>
+                             <tr data-id="C-004">
+                                <td>C-004</td>
+                                <td>2025-04-15</td>
+                                <td>David Martinez</td>
+                                <td>Poor Communication</td>
+                                <td><span class="status new">New</span></td>
+                                <td>Coach Samantha</td>
+                                <td>High</td>
+                                <td class="action-buttons"><button class="view-button" data-action="view">View</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
                 <h2 class="section-title">CLIENT REQUESTS</h2>
+                <div class="table-wrapper">
+                    <table id="clientRequestsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Date Submitted</th>
+                                <th>Client</th>
+                                <th>Request Type</th>
+                                <th>Details</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clientRequestsTableBody">
+                            <!-- Rows populated by sample data or fetched dynamically -->
+                           <tr data-id="R-001">
+                                <td>R-001</td>
+                                <td>2025-04-27</td>
+                                <td>Michael Brown</td>
+                                <td>Coach Reassignment</td>
+                                <td>Request to switch from Coach Mike to Coach Lisa</td>
+                                <td><span class="status pending">Pending</span></td>
+                                <td class="action-buttons">
+                                    <button class="approve-button" data-action="approve">Approve</button>
+                                    <button class="reject-button" data-action="reject">Reject</button>
+                                </td>
+                            </tr>
+                            <tr data-id="R-002">
+                                <td>R-002</td>
+                                <td>2025-04-26</td>
+                                <td>Jessica Lee</td>
+                                <td>Session Reschedule</td>
+                                <td>Reschedule from April 30 to May 2</td>
+                                <td><span class="status pending">Pending</span></td>
+                                <td class="action-buttons">
+                                    <button class="approve-button" data-action="approve">Approve</button>
+                                    <button class="reject-button" data-action="reject">Reject</button>
+                                </td>
+                            </tr>
+                            <tr data-id="R-003">
+                                <td>R-003</td>
+                                <td>2025-04-25</td>
+                                <td>Kevin Wong</td>
+                                <td>Coach Reassignment</td>
+                                <td>Request to switch from Coach Samantha to Coach Alex</td>
+                                <td><span class="status pending">Pending</span></td>
+                                <td class="action-buttons">
+                                    <button class="approve-button" data-action="approve">Approve</button>
+                                    <button class="reject-button" data-action="reject">Reject</button>
+                                </td>
+                            </tr>
+                             <tr data-id="R-004">
+                                <td>R-004</td>
+                                <td>2025-04-23</td>
+                                <td>Anna Garcia</td>
+                                <td>Session Reschedule</td>
+                                <td>Reschedule from April 29 to May 1</td>
+                                <td><span class="status pending">Pending</span></td>
+                                <td class="action-buttons">
+                                    <button class="approve-button" data-action="approve">Approve</button>
+                                    <button class="reject-button" data-action="reject">Reject</button>
+                                </td>
+                            </tr>
+                            <tr data-id="R-005"> <!-- Example Approved -->
+                                <td>R-005</td>
+                                <td>2025-04-22</td>
+                                <td>Brian Clark</td>
+                                <td>Session Reschedule</td>
+                                <td>Moved session from May 1 to May 3</td>
+                                <td><span class="status approved">Approved</span></td>
+                                <td class="action-buttons">
+                                    <button class="view-button" data-action="view-request">View</button>
+                                </td>
+                            </tr>
+                             <tr data-id="R-006"> <!-- Example Rejected -->
+                                <td>R-006</td>
+                                <td>2025-04-21</td>
+                                <td>Chloe Davis</td>
+                                <td>Coach Reassignment</td>
+                                <td>Requested switch to Coach David (Unavailable)</td>
+                                <td><span class="status rejected">Rejected</span></td>
+                                <td class="action-buttons">
+                                    <button class="view-button" data-action="view-request">View</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-                <table id="clientRequestsTable">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Date Submitted</th>
-                            <th>Client</th>
-                            <th>Request Type</th>
-                            <th>Details</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="clientRequestsTableBody">
-                        <tr>
-                            <td>R-001</td>
-                            <td>2025-04-27</td>
-                            <td>Michael Brown</td>
-                            <td>Coach Reassignment</td>
-                            <td>Request to switch from Coach Mike to Coach Lisa</td>
-                            <td><span class="status pending">Pending</span></td>
-                            <td class="action-buttons">
-                                <button class="approve-button" onclick="approveRequest('R-001')">Approve</button>
-                                <button class="reject-button" onclick="openRejectModal('R-001')">Reject</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>R-002</td>
-                            <td>2025-04-26</td>
-                            <td>Jessica Lee</td>
-                            <td>Session Reschedule</td>
-                            <td>Reschedule from April 30 to May 2</td>
-                            <td><span class="status pending">Pending</span></td>
-                            <td class="action-buttons">
-                                <button class="approve-button" onclick="approveRequest('R-002')">Approve</button>
-                                <button class="reject-button" onclick="openRejectModal('R-002')">Reject</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>R-003</td>
-                            <td>2025-04-25</td>
-                            <td>Kevin Wong</td>
-                            <td>Coach Reassignment</td>
-                            <td>Request to switch from Coach Samantha to Coach Alex</td>
-                            <td><span class="status pending">Pending</span></td>
-                            <td class="action-buttons">
-                                <button class="approve-button" onclick="approveRequest('R-003')">Approve</button>
-                                <button class="reject-button" onclick="openRejectModal('R-003')">Reject</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>R-004</td>
-                            <td>2025-04-23</td>
-                            <td>Anna Garcia</td>
-                            <td>Session Reschedule</td>
-                            <td>Reschedule from April 29 to May 1</td>
-                            <td><span class="status pending">Pending</span></td>
-                            <td class="action-buttons">
-                                <button class="approve-button" onclick="approveRequest('R-004')">Approve</button>
-                                <button class="reject-button" onclick="openRejectModal('R-004')">Reject</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
+                <!-- Modals Container -->
                 <!-- Complaint Details Modal -->
                 <div id="complaintDetailsModal" class="modal">
                     <div class="modal-content">
-                        <span class="modal-close-button" onclick="closeComplaintDetailsModal()">&times;</span>
+                        <span class="modal-close-button">×</span>
                         <h3>Complaint Details</h3>
                         <div class="modal-details-section" id="complaintDetails">
-                            <div class="detail-item">
-                                <strong>Complaint ID:</strong> <span id="modal-complaint-id">C-001</span>
-                            </div>
-                            <div class="detail-item">
-                                <strong>Date Submitted:</strong> <span id="modal-date">2025-04-22</span>
-                            </div>
-                            <div class="detail-item">
-                                <strong>Client:</strong> <span id="modal-client">Sarah Johnson</span>
-                            </div>
-                            <div class="detail-item">
-                                <strong>Client Email:</strong> <span id="modal-client-email">sarahjohnson@email.com</span>
-                            </div>
-                            <div class="detail-item">
-                                <strong>Subject:</strong> <span id="modal-subject">Unprofessional Behavior</span>
-                            </div>
-                            <div class="detail-item">
-                                <strong>Coach Involved:</strong> <span id="modal-coach">Coach Mike</span>
-                            </div>
-                            <div class="detail-item">
-                                <strong>Priority:</strong> <span id="modal-priority">High</span>
-                            </div>
+                            <!-- Content populated by JS -->
+                            <div class="detail-item"><strong>Complaint ID:</strong> <span id="modal-complaint-id"></span></div>
+                            <div class="detail-item"><strong>Date Submitted:</strong> <span id="modal-date"></span></div>
+                            <div class="detail-item"><strong>Client:</strong> <span id="modal-client"></span></div>
+                            <div class="detail-item"><strong>Client Email:</strong> <span id="modal-client-email"></span></div>
+                            <div class="detail-item"><strong>Subject:</strong> <span id="modal-subject"></span></div>
+                            <div class="detail-item"><strong>Coach Involved:</strong> <span id="modal-coach"></span></div>
+                            <div class="detail-item"><strong>Priority:</strong> <span id="modal-priority"></span></div>
                             <div class="detail-item">
                                 <strong>Description:</strong>
-                                <div class="complaint-description" id="modal-description">
-                                    During my session on April 20, Coach Mike was constantly checking his phone and seemed distracted. When I asked a question about my exercise form, he gave a dismissive answer and didn't provide proper guidance. This is not the level of professionalism I expect from a fitness coach, especially considering the premium membership I've paid for.
-                                </div>
+                                <div class="complaint-description" id="modal-description"></div>
                             </div>
                         </div>
                         <div class="modal-actions-section">
-                            <label for="complaintStatus">Status:</label>
+                            <label for="complaintStatus">Update Status:</label>
                             <select id="complaintStatus">
                                 <option value="new">New</option>
-                                <option value="in_progress">In Progress</option>
+                                <option value="in-progress">In Progress</option>
                                 <option value="resolved">Resolved</option>
                                 <option value="closed">Closed</option>
                             </select>
-                            <button class="action-button update-status-button" onclick="updateComplaintStatus()">Update Status</button>
+                            <button class="action-button update-status-button" data-action="update-status">Update Status</button>
 
                             <h4>Coach Actions</h4>
-                            <button class="action-button reassign-button" onclick="openReassignClientModal()">Reassign Client</button>
-                            <button class="action-button warning-button" onclick="openIssueWarningModal()">Issue Warning</button>
+                            <button class="action-button reassign-button" data-action="open-reassign">Reassign Client</button>
+                            <button class="action-button warning-button" data-action="open-warning">Issue Warning</button>
 
                             <h4>Mediation Notes</h4>
-                            <textarea id="mediationNotes" placeholder="Enter notes about actions taken to resolve this complaint..."></textarea>
-                            <button class="action-button save-notes-button" onclick="saveMediationNotes()">Save Notes</button>
+                            <textarea id="mediationNotes" placeholder="Enter notes about actions taken..."></textarea>
+                            <button class="action-button save-notes-button" data-action="save-notes">Save Notes</button>
                         </div>
                     </div>
                 </div>
@@ -1211,563 +859,554 @@ margin-right: 5px;
                 <!-- Reassign Client Modal -->
                 <div id="reassignClientModal" class="modal">
                     <div class="modal-content">
-                        <span class="modal-close-button" onclick="closeReassignClientModal()">&times;</span>
+                        <span class="modal-close-button">×</span>
                         <h3>Reassign Client</h3>
-                        <div class="detail-item">
-                            <strong>Client:</strong> <span id="reassign-client">Sarah Johnson</span>
-                        </div>
-                        <div class="detail-item">
-                            <strong>Current Coach:</strong> <span id="reassign-current-coach">Coach Mike</span>
-                        </div>
+                        <div class="detail-item"><strong>Client:</strong> <span id="reassign-client"></span></div>
+                        <div class="detail-item"><strong>Current Coach:</strong> <span id="reassign-current-coach"></span></div>
                         <label for="newCoach">Select New Coach:</label>
                         <select id="newCoach">
                             <option value="">Select a coach...</option>
-                            <option value="coach-lisa">Coach Lisa</option>
-                            <option value="coach-alex">Coach Alex</option>
-                            <option value="coach-samantha">Coach Samantha</option>
-                            <option value="coach-james">Coach James</option>
-                            <option value="coach-david">Coach David</option>
+                            <!-- Add coaches dynamically in real app -->
+                            <option value="Coach Lisa">Coach Lisa</option>
+                            <option value="Coach Alex">Coach Alex</option>
+                            <option value="Coach Samantha">Coach Samantha</option>
+                            <option value="Coach James">Coach James</option>
+                            <option value="Coach David">Coach David</option>
                         </select>
-                        <button class="action-button reassign-button" onclick="reassignClient()">Reassign</button>
+                        <button class="action-button reassign-button" data-action="confirm-reassign">Reassign</button>
                     </div>
                 </div>
 
                 <!-- Issue Warning Modal -->
                 <div id="issueWarningModal" class="modal">
                     <div class="modal-content">
-                        <span class="modal-close-button" onclick="closeIssueWarningModal()">&times;</span>
+                        <span class="modal-close-button">×</span>
                         <h3>Issue Warning to Coach</h3>
-                        <div class="detail-item">
-                            <strong>Coach:</strong> <span id="warning-coach">Coach Mike</span>
-                        </div>
-                        <div class="detail-item">
-                            <strong>Related to Complaint:</strong> <span id="warning-complaint">C-001</span>
-                        </div>
+                        <div class="detail-item"><strong>Coach:</strong> <span id="warning-coach"></span></div>
+                        <div class="detail-item"><strong>Related to Complaint:</strong> <span id="warning-complaint-id"></span></div>
                         <label for="warningText">Warning Message:</label>
-                        <textarea id="warningText" placeholder="Enter the warning message to be sent to the coach..."></textarea>
-                        <!-- Continuing from the Issue Warning Modal section -->
-<textarea id="warningText" placeholder="Enter the warning message to be sent to the coach..."></textarea>
-<div class="warning-severity">
-    <label>Warning Severity:</label>
-    <select id="warningSeverity">
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
-    </select>
-</div>
-<button class="action-button warning-button" onclick="issueWarning()">Send Warning</button>
-</div>
-</div>
+                        <textarea id="warningText" placeholder="Enter the warning message..."></textarea>
+                        <div class="warning-severity">
+                            <label>Warning Severity:</label>
+                            <select id="warningSeverity">
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                        <button class="action-button warning-button" data-action="confirm-warning">Send Warning</button>
+                    </div>
+                </div>
 
-<!-- Reject Request Modal -->
-<div id="rejectRequestModal" class="modal">
-    <div class="modal-content">
-        <span class="modal-close-button" onclick="closeRejectModal()">&times;</span>
-        <h3>Reject Client Request</h3>
-        <div class="detail-item">
-            <strong>Request ID:</strong> <span id="reject-request-id"></span>
-        </div>
-        <div class="detail-item">
-            <strong>Client:</strong> <span id="reject-client"></span>
-        </div>
-        <div class="detail-item">
-            <strong>Request Type:</strong> <span id="reject-request-type"></span>
-        </div>
-        <div class="reject-reason-container">
-            <label for="rejectReason">Reason for Rejection:</label>
-            <textarea id="rejectReason" placeholder="Please provide a reason for rejecting this request..."></textarea>
-        </div>
-        <div class="reject-modal-buttons">
-            <button class="modal-button cancel-button" onclick="closeRejectModal()">Cancel</button>
-            <button class="modal-button submit-button" onclick="rejectRequest()">Submit</button>
-        </div>
-    </div>
-</div>
+                <!-- Reject Request Modal -->
+                <div id="rejectRequestModal" class="modal">
+                    <div class="modal-content">
+                        <span class="modal-close-button">×</span>
+                        <h3>Reject Client Request</h3>
+                        <div class="detail-item"><strong>Request ID:</strong> <span id="reject-request-id"></span></div>
+                        <div class="detail-item"><strong>Client:</strong> <span id="reject-client-name"></span></div>
+                        <div class="detail-item"><strong>Request Type:</strong> <span id="reject-request-type"></span></div>
+                        <div class="reject-reason-container">
+                            <label for="rejectReason">Reason for Rejection:</label>
+                            <textarea id="rejectReason" placeholder="Provide a reason..."></textarea>
+                        </div>
+                        <div class="reject-modal-buttons">
+                            <button class="modal-button cancel-button" data-action="cancel-reject">Cancel</button>
+                            <button class="modal-button submit-button" data-action="confirm-reject">Submit Rejection</button>
+                        </div>
+                    </div>
+                </div>
 
-<!-- Sign Out Modal -->
-<div id="signOutModal" class="modal">
-    <div class="modal-content">
-        <span class="modal-close-button" onclick="closeSignOutModal()">&times;</span>
-        <h3>Sign Out</h3>
-        <p>Are you sure you want to sign out?</p>
-        <div class="sign-out-actions">
-            <button class="modal-button no-button" onclick="closeSignOutModal()">No</button>
-            <button class="modal-button yes-button" onclick="signOut()">Yes</button>
-        </div>
-    </div>
-</div>
-
-<!-- Toast Notification -->
-<div id="toast" class="toast"></div>
-
-</div>
-</div>
-
-<script>
-    // Menu Toggle
-    let toggle = document.querySelector('.toggle');
-    let navigation = document.querySelector('.navigation');
-    let main = document.querySelector('.main');
-
-    toggle.onclick = function () {
-        navigation.classList.toggle('active');
-        main.classList.toggle('active');
-    }
-
-    // Add hovered class to selected list item
-    let list = document.querySelectorAll('.navigation li');
-    function activeLink() {
-        list.forEach((item) => {
-            item.classList.remove('hovered');
-        });
-        this.classList.add('hovered');
-    }
-    list.forEach((item) => {
-        item.addEventListener('mouseenter', activeLink);
-    });
-
-    // Complaint Details Modal
-    function openComplaintDetailsModal(complaintId) {
-        const modal = document.getElementById('complaintDetailsModal');
-        
-        // In a real application, you would fetch the complaint details based on the ID
-        // For now, we'll use static data
-        if (complaintId === 'C-001') {
-            document.getElementById('modal-complaint-id').textContent = 'C-001';
-            document.getElementById('modal-date').textContent = '2025-04-22';
-            document.getElementById('modal-client').textContent = 'Sarah Johnson';
-            document.getElementById('modal-client-email').textContent = 'sarahjohnson@email.com';
-            document.getElementById('modal-subject').textContent = 'Unprofessional Behavior';
-            document.getElementById('modal-coach').textContent = 'Coach Mike';
-            document.getElementById('modal-priority').textContent = 'High';
-            document.getElementById('modal-description').textContent = 'During my session on April 20, Coach Mike was constantly checking his phone and seemed distracted. When I asked a question about my exercise form, he gave a dismissive answer and didn\'t provide proper guidance. This is not the level of professionalism I expect from a fitness coach, especially considering the premium membership I\'ve paid for.';
-            document.getElementById('complaintStatus').value = 'new';
-        } else if (complaintId === 'C-002') {
-            document.getElementById('modal-complaint-id').textContent = 'C-002';
-            document.getElementById('modal-date').textContent = '2025-04-20';
-            document.getElementById('modal-client').textContent = 'Robert Chen';
-            document.getElementById('modal-client-email').textContent = 'robertchen@email.com';
-            document.getElementById('modal-subject').textContent = 'Session Cancellation';
-            document.getElementById('modal-coach').textContent = 'Coach Lisa';
-            document.getElementById('modal-priority').textContent = 'Medium';
-            document.getElementById('modal-description').textContent = 'Coach Lisa cancelled my session for the third time this month with less than 2 hours notice. This is very disruptive to my schedule and I\'m not getting the consistent training that I\'m paying for. I would like this addressed immediately.';
-            document.getElementById('complaintStatus').value = 'in_progress';
-        } else if (complaintId === 'C-003') {
-            document.getElementById('modal-complaint-id').textContent = 'C-003';
-            document.getElementById('modal-date').textContent = '2025-04-18';
-            document.getElementById('modal-client').textContent = 'Emily Wilson';
-            document.getElementById('modal-client-email').textContent = 'emilywilson@email.com';
-            document.getElementById('modal-subject').textContent = 'Billing Issue';
-            document.getElementById('modal-coach').textContent = 'Coach Alex';
-            document.getElementById('modal-priority').textContent = 'Low';
-            document.getElementById('modal-description').textContent = 'I was charged twice for my April membership. I\'ve already contacted my bank but would like this resolved from your end as well. Please check your records and process a refund for the duplicate charge.';
-            document.getElementById('complaintStatus').value = 'resolved';
-        } else if (complaintId === 'C-004') {
-            document.getElementById('modal-complaint-id').textContent = 'C-004';
-            document.getElementById('modal-date').textContent = '2025-04-15';
-            document.getElementById('modal-client').textContent = 'David Martinez';
-            document.getElementById('modal-client-email').textContent = 'davidmartinez@email.com';
-            document.getElementById('modal-subject').textContent = 'Poor Communication';
-            document.getElementById('modal-coach').textContent = 'Coach Samantha';
-            document.getElementById('modal-priority').textContent = 'High';
-            document.getElementById('modal-description').textContent = 'Coach Samantha is not responding to my messages about scheduling sessions. I\'ve sent three messages over the past week with no response. This lack of communication is making it impossible to plan my training schedule.';
-            document.getElementById('complaintStatus').value = 'new';
-        }
-
-        // Set reassign modal data
-        document.getElementById('reassign-client').textContent = document.getElementById('modal-client').textContent;
-        document.getElementById('reassign-current-coach').textContent = document.getElementById('modal-coach').textContent;
-        
-        // Set warning modal data
-        document.getElementById('warning-coach').textContent = document.getElementById('modal-coach').textContent;
-        document.getElementById('warning-complaint').textContent = complaintId;
-
-        modal.style.display = 'block';
-    }
-
-    function closeComplaintDetailsModal() {
-        const modal = document.getElementById('complaintDetailsModal');
-        modal.style.display = 'none';
-    }
-
-    function updateComplaintStatus() {
-        const status = document.getElementById('complaintStatus').value;
-        const complaintId = document.getElementById('modal-complaint-id').textContent;
-        
-        // Update the status in the table (in a real app, this would update the database)
-        const rowsInTable = document.querySelectorAll('#complaintsTableBody tr');
-        rowsInTable.forEach(row => {
-            const idCell = row.querySelector('td:first-child');
-            if (idCell && idCell.textContent === complaintId) {
-                const statusCell = row.querySelector('td:nth-child(5) .status');
-                statusCell.className = 'status ' + (status === 'in_progress' ? 'in-progress' : status);
-                statusCell.textContent = status === 'in_progress' ? 'In Progress' : 
-                                         status.charAt(0).toUpperCase() + status.slice(1);
-            }
-        });
-        
-        showToast('Complaint status updated successfully!');
-    }
-
-    // Reassign Client Modal
-    function openReassignClientModal() {
-        document.getElementById('reassignClientModal').style.display = 'block';
-    }
-
-    function closeReassignClientModal() {
-        document.getElementById('reassignClientModal').style.display = 'none';
-    }
-
-    function reassignClient() {
-        const newCoach = document.getElementById('newCoach');
-        
-        if (newCoach.value === '') {
-            showToast('Please select a coach to reassign the client to.', 'error');
-            return;
-        }
-        
-        // In a real application, this would update the database
-        const coachName = newCoach.options[newCoach.selectedIndex].text;
-        
-        // Update the coach in the complaint details modal
-        document.getElementById('modal-coach').textContent = coachName;
-        
-        // Also update in the table
-        const complaintId = document.getElementById('modal-complaint-id').textContent;
-        const rowsInTable = document.querySelectorAll('#complaintsTableBody tr');
-        rowsInTable.forEach(row => {
-            const idCell = row.querySelector('td:first-child');
-            if (idCell && idCell.textContent === complaintId) {
-                const coachCell = row.querySelector('td:nth-child(6)');
-                coachCell.textContent = coachName;
-            }
-        });
-        
-        showToast('Client reassigned successfully!');
-        closeReassignClientModal();
-    }
-
-    // Issue Warning Modal
-    function openIssueWarningModal() {
-        document.getElementById('issueWarningModal').style.display = 'block';
-    }
-
-    function closeIssueWarningModal() {
-        document.getElementById('issueWarningModal').style.display = 'none';
-    }
-
-    function issueWarning() {
-        const warningText = document.getElementById('warningText').value;
-        
-        if (warningText.trim() === '') {
-            showToast('Please enter a warning message.', 'error');
-            return;
-        }
-        
-        // In a real application, this would send the warning to the coach
-        showToast('Warning issued to coach successfully!');
-        closeIssueWarningModal();
-    }
-
-    // Client Request Functions
-    function approveRequest(requestId) {
-        // In a real application, this would update the database
-        const rowsInTable = document.querySelectorAll('#clientRequestsTableBody tr');
-        rowsInTable.forEach(row => {
-            const idCell = row.querySelector('td:first-child');
-            if (idCell && idCell.textContent === requestId) {
-                const statusCell = row.querySelector('td:nth-child(6) .status');
-                statusCell.className = 'status approved';
-                statusCell.textContent = 'Approved';
-                
-                // Replace action buttons with "View" button
-                const actionsCell = row.querySelector('td:last-child');
-                actionsCell.innerHTML = '<button class="view-button" onclick="viewApprovedRequest(\'' + requestId + '\')">View</button>';
-            }
-        });
-        
-        showToast('Request approved successfully!');
-    }
-
-    function openRejectModal(requestId) {
-        const modal = document.getElementById('rejectRequestModal');
-        
-        // Find the request in the table
-        const rowsInTable = document.querySelectorAll('#clientRequestsTableBody tr');
-        rowsInTable.forEach(row => {
-            const idCell = row.querySelector('td:first-child');
-            if (idCell && idCell.textContent === requestId) {
-                const clientCell = row.querySelector('td:nth-child(3)');
-                const typeCell = row.querySelector('td:nth-child(4)');
-                
-                document.getElementById('reject-request-id').textContent = requestId;
-                document.getElementById('reject-client').textContent = clientCell.textContent;
-                document.getElementById('reject-request-type').textContent = typeCell.textContent;
-            }
-        });
-        
-        modal.style.display = 'block';
-    }
-
-    function closeRejectModal() {
-        document.getElementById('rejectRequestModal').style.display = 'none';
-    }
-
-    function rejectRequest() {
-        const rejectReason = document.getElementById('rejectReason').value;
-        
-        if (rejectReason.trim() === '') {
-            showToast('Please provide a reason for rejection.', 'error');
-            return;
-        }
-        
-        const requestId = document.getElementById('reject-request-id').textContent;
-        
-        // In a real application, this would update the database
-        const rowsInTable = document.querySelectorAll('#clientRequestsTableBody tr');
-        rowsInTable.forEach(row => {
-            const idCell = row.querySelector('td:first-child');
-            if (idCell && idCell.textContent === requestId) {
-                const statusCell = row.querySelector('td:nth-child(6) .status');
-                statusCell.className = 'status rejected';
-                statusCell.textContent = 'Rejected';
-                
-                // Replace action buttons with "View" button
-                const actionsCell = row.querySelector('td:last-child');
-                actionsCell.innerHTML = '<button class="view-button" onclick="viewRejectedRequest(\'' + requestId + '\')">View</button>';
-            }
-        });
-        
-        showToast('Request rejected successfully!');
-        closeRejectModal();
-    }
-
-    function viewApprovedRequest(requestId) {
-        // This would show details of the approved request
-        showToast('Viewing approved request: ' + requestId);
-    }
-
-    function viewRejectedRequest(requestId) {
-        // This would show details of the rejected request
-        showToast('Viewing rejected request: ' + requestId);
-    }
-
-    // Toast notification
-    function showToast(message, type = 'success') {
-        const toast = document.getElementById('toast');
-        toast.textContent = message;
-        toast.style.backgroundColor = type === 'success' ? '#4CAF50' : '#f44336';
-        toast.style.display = 'block';
-        
-        setTimeout(() => {
-            toast.style.display = 'none';
-        }, 3000);
-    }
-
-    // Save mediation notes
-    function saveMediationNotes() {
-        const notes = document.getElementById('mediationNotes').value;
-        
-        if (notes.trim() === '') {
-            showToast('Please enter some notes before saving.', 'error');
-            return;
-        }
-        
-        // In a real application, this would save the notes to the database
-        showToast('Mediation notes saved successfully!');
-    }
-
-    // Sign Out functionality
-    document.querySelector('.navigation li:last-child a').addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('signOutModal').style.display = 'block';
-    });
-
-    function closeSignOutModal() {
-        document.getElementById('signOutModal').style.display = 'none';
-    }
-
-    function signOut() {
-        // In a real application, this would sign the user out and redirect to login page
-        window.location.href = 'login.html';
-    }
-
-   //Search Button
-const searchInput = document.getElementById('search-input');
-const searchResultsDiv = document.getElementById('search-results');
-
-const searchData = [
-  "Sessions with Client",
-  "Workout Plan",
-  "My Clients",
-  "Session Today",
-  "Bookings",
-  "Requested Sessions",
-  "Plans",
-  "Messages",
-  "Settings",
-  "Profile"
-];
-
-searchInput.addEventListener('input', function() {
-  const searchTerm = this.value.toLowerCase();
-  const filteredResults = searchData.filter(item =>
-    item.toLowerCase().includes(searchTerm)
-  );
-
-  displayResults(filteredResults);
-});
-
-function displayResults(results) {
-  searchResultsDiv.innerHTML = '';
-
-  if (results.length > 0 && searchInput.value.trim() !== '') {
-    const ul = document.createElement('ul');
-    results.forEach(result => {
-      const li = document.createElement('li');
-      li.textContent = result;
-      li.addEventListener('click', function() {
-        searchInput.value = this.textContent;
-        searchResultsDiv.style.display = 'none'; 
-      });
-      ul.appendChild(li);
-    });
-    searchResultsDiv.appendChild(ul);
-    searchResultsDiv.style.display = 'block'; 
-  } else {
-    searchResultsDiv.style.display = 'none'; 
-  }
-}
+                 <!-- View Request Details Modal (Generic for Approved/Rejected) -->
+                <div id="viewRequestModal" class="modal">
+                    <div class="modal-content">
+                        <span class="modal-close-button">×</span>
+                        <h3>Request Details</h3>
+                         <div class="modal-details-section">
+                            <div class="detail-item"><strong>Request ID:</strong> <span id="view-request-id"></span></div>
+                            <div class="detail-item"><strong>Date Submitted:</strong> <span id="view-request-date"></span></div>
+                            <div class="detail-item"><strong>Client:</strong> <span id="view-request-client"></span></div>
+                            <div class="detail-item"><strong>Request Type:</strong> <span id="view-request-type"></span></div>
+                            <div class="detail-item"><strong>Details:</strong> <span id="view-request-details"></span></div>
+                            <div class="detail-item"><strong>Status:</strong> <span id="view-request-status"></span></div>
+                            <div class="detail-item" id="view-request-reason-item" style="display:none;">
+                                <strong>Reason (Rejected):</strong> <span id="view-request-reason"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
 
-document.addEventListener('click', function(event) {
-  if (!event.target.closest('.search-container')) {
-    searchResultsDiv.style.display = 'none';
-  }
-});
+                <!-- Sign Out Modal -->
+                <div id="signOutModal" class="modal">
+                    <div class="modal-content">
+                        <span class="modal-close-button">×</span>
+                        <h3>Sign Out</h3>
+                        <p>Are you sure you want to sign out?</p>
+                        <div class="sign-out-actions">
+                            <button class="modal-button no-button" data-action="close">No</button>
+                            <button class="modal-button yes-button" data-action="confirm-signout">Yes</button>
+                        </div>
+                    </div>
+                </div>
 
-//Mail Button
-const mailIconInbox = document.getElementById('mail-icon-inbox');
-const unreadNotification = document.getElementById('unread-notification');
-const inboxPreview = document.getElementById('inbox-preview');
-let hasUnread = true; 
+                <!-- Toast Notification Placeholder -->
+                <div id="toast" class="toast"></div>
 
-function updateUnreadIndicator() {
-  unreadNotification.style.display = hasUnread ? 'block' : 'none';
-}
+            </div> <!-- End .view-clients-complaints -->
+        </div> <!-- End .main -->
+    </div> <!-- End .container -->
 
-updateUnreadIndicator();
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
 
-mailIconInbox.addEventListener('click', function() {
-  inboxPreview.style.display = (inboxPreview.style.display === 'block' ? 'none' : 'block');
-  
-  if (hasUnread && inboxPreview.style.display === 'block') {
-    hasUnread = false;
-    updateUnreadIndicator();
-   
-    console.log('Mail icon clicked - marking as read');
-  }
-});
+            // =============== Globals / State ===============
+            let currentComplaintId = null; // Track which complaint is open in the main modal
+            let currentRequestId = null; // Track which request is open for rejection
+
+            // Sample Data (Replace with actual data fetching)
+            const complaintData = {
+                "C-001": { date: "2025-04-22", client: "Sarah Johnson", email: "sarah.j@example.com", subject: "Unprofessional Behavior", coach: "Coach Mike", priority: "High", description: "During my session on April 20, Coach Mike was constantly checking his phone...", status: "new", notes: "" },
+                "C-002": { date: "2025-04-20", client: "Robert Chen", email: "rob.chen@example.com", subject: "Session Cancellation", coach: "Coach Lisa", priority: "Medium", description: "Coach Lisa cancelled my session for the third time...", status: "in-progress", notes: "Spoke to Coach Lisa, emphasized policy." },
+                "C-003": { date: "2025-04-18", client: "Emily Wilson", email: "emily.w@example.com", subject: "Billing Issue", coach: "Coach Alex", priority: "Low", description: "I was charged twice for my April membership...", status: "resolved", notes: "Duplicate charge refunded on 2025-04-19." },
+                "C-004": { date: "2025-04-15", client: "David Martinez", email: "david.m@example.com", subject: "Poor Communication", coach: "Coach Samantha", priority: "High", description: "Coach Samantha is not responding to my messages...", status: "new", notes: "" }
+            };
+            const requestData = {
+                "R-001": { date: "2025-04-27", client: "Michael Brown", type: "Coach Reassignment", details: "Request to switch from Coach Mike to Coach Lisa", status: "pending", reason: "" },
+                "R-002": { date: "2025-04-26", client: "Jessica Lee", type: "Session Reschedule", details: "Reschedule from April 30 to May 2", status: "pending", reason: "" },
+                "R-003": { date: "2025-04-25", client: "Kevin Wong", type: "Coach Reassignment", details: "Request to switch from Coach Samantha to Coach Alex", status: "pending", reason: "" },
+                "R-004": { date: "2025-04-23", client: "Anna Garcia", type: "Session Reschedule", details: "Reschedule from April 29 to May 1", status: "pending", reason: "" },
+                "R-005": { date: "2025-04-22", client: "Brian Clark", type: "Session Reschedule", details: "Moved session from May 1 to May 3", status: "approved", reason: "" },
+                "R-006": { date: "2025-04-21", client: "Chloe Davis", type: "Coach Reassignment", details: "Requested switch to Coach David (Unavailable)", status: "rejected", reason: "Coach David is currently fully booked." }
+            };
+
+             // =============== DOM Elements ===============
+            const navigation = document.querySelector(".navigation");
+            const main = document.querySelector(".main");
+            const toggle = document.querySelector(".toggle");
+            const listItems = document.querySelectorAll(".navigation li");
+            const searchInput = document.getElementById('search-input');
+            const searchResultsDiv = document.getElementById('search-results');
+            const mailIconInbox = document.getElementById('mail-icon-inbox');
+            const unreadMailBadge = document.getElementById('unread-mail-badge');
+            const inboxPreview = document.getElementById('inbox-preview');
+            const notificationIcon = document.getElementById('notification-icon');
+            const notificationBadge = document.getElementById('notification-badge');
+            const notificationsDropdown = document.getElementById('notifications-dropdown');
+            const complaintsTableBody = document.getElementById('complaintsTableBody');
+            const clientRequestsTableBody = document.getElementById('clientRequestsTableBody');
+            const complaintDetailsModal = document.getElementById('complaintDetailsModal');
+            const reassignClientModal = document.getElementById('reassignClientModal');
+            const issueWarningModal = document.getElementById('issueWarningModal');
+            const rejectRequestModal = document.getElementById('rejectRequestModal');
+            const viewRequestModal = document.getElementById('viewRequestModal');
+            const signOutModal = document.getElementById('signOutModal');
+            const signOutLink = document.getElementById('signOutLink');
+            const toastElement = document.getElementById('toast');
 
 
-document.addEventListener('click', function(event) {
-  if (!event.target.closest('.mail-container')) {
-    inboxPreview.style.display = 'none';
-  }
-});
-
-
-//Notification Icon
-const notificationIcon = document.getElementById('notification-icon');
-const notificationBadge = document.getElementById('notification-badge');
-const notificationsDropdown = document.getElementById('notifications-dropdown');
-
-notificationIcon.addEventListener('click', function() {
-  notificationsDropdown.style.display = (notificationsDropdown.style.display === 'block' ? 'none' : 'block');
-  
-  notificationBadge.style.display = 'none';
-});
-
-
-document.addEventListener('click', function(event) {
-  if (!event.target.closest('.notification-container')) {
-    notificationsDropdown.style.display = 'none';
-  }
-});
-
-
-    // Search functionality
-    document.getElementById('search-input').addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase();
-        
-        if (searchTerm.length < 2) return;
-        
-        // Search complaints
-        const complaints = document.querySelectorAll('#complaintsTableBody tr');
-        const requests = document.querySelectorAll('#clientRequestsTableBody tr');
-        
-        let results = [];
-        
-        complaints.forEach(row => {
-            const client = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-            const subject = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
-            
-            if (client.includes(searchTerm) || subject.includes(searchTerm)) {
-                results.push({
-                    type: 'Complaint',
-                    id: row.querySelector('td:first-child').textContent,
-                    text: client + ' - ' + subject
-                });
-            }
-        });
-        
-        requests.forEach(row => {
-            const client = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-            const type = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
-            
-            if (client.includes(searchTerm) || type.includes(searchTerm)) {
-                results.push({
-                    type: 'Request',
-                    id: row.querySelector('td:first-child').textContent,
-                    text: client + ' - ' + type
-                });
-            }
-        });
-        
-        // Display results
-        if (results.length > 0) {
-            const resultsDiv = document.getElementById('search-results');
-            resultsDiv.innerHTML = '';
-            resultsDiv.style.display = 'block';
-            
-            results.forEach(result => {
-                const resultItem = document.createElement('div');
-                resultItem.className = 'search-result-item';
-                resultItem.innerHTML = `<strong>${result.type}:</strong> ${result.text}`;
-                resultItem.onclick = function() {
-                    if (result.type === 'Complaint') {
-                        openComplaintDetailsModal(result.id);
-                    } else {
-                        // Handle request click
-                    }
-                    document.getElementById('search-input').value = '';
-                    resultsDiv.style.display = 'none';
+            // =============== Navigation & Top Bar Logic (Consistent with adminguests.html) ===============
+            if (toggle && navigation && main) {
+                toggle.onclick = () => {
+                    navigation.classList.toggle("active");
+                    main.classList.toggle("active");
                 };
-                resultsDiv.appendChild(resultItem);
+            }
+            listItems.forEach(item => item.addEventListener("click", function() {
+                 listItems.forEach(li => li.classList.remove("hovered"));
+                 this.classList.add("hovered");
+            }));
+
+            // Top Bar Search (Example data - adapt as needed)
+            const siteSearchData = [ { name: "Dashboard", link: "testadmin.html" }, /* ... other pages */ { name: "Complaint C-001", action: () => openComplaintDetailsModal('C-001') }, { name: "Request R-001", action: () => { /* Open request view */ showToast('Viewing Request R-001'); } }];
+            if(searchInput && searchResultsDiv) {
+                searchInput.addEventListener('input', function() {
+                    const term = this.value.toLowerCase().trim();
+                    const results = siteSearchData.filter(item => term && item.name.toLowerCase().includes(term));
+                    displaySearchResults(results);
+                });
+                const searchIcon = searchInput.nextElementSibling;
+                if(searchIcon && searchIcon.tagName === 'ION-ICON') searchIcon.onclick = () => searchInput.focus();
+            }
+            function displaySearchResults(results) {
+                searchResultsDiv.innerHTML = '';
+                if (results.length > 0) {
+                    const ul = document.createElement('ul');
+                    results.forEach(result => {
+                        const li = document.createElement('li');
+                        li.textContent = result.name;
+                        li.onclick = () => {
+                            searchInput.value = result.name;
+                            searchResultsDiv.style.display = 'none';
+                            if (result.link) window.location.href = result.link;
+                            else if (result.action) result.action();
+                        };
+                        ul.appendChild(li);
+                    });
+                    searchResultsDiv.appendChild(ul);
+                    searchResultsDiv.style.display = 'block';
+                } else {
+                    searchResultsDiv.style.display = 'none';
+                }
+            }
+
+             // Mail Dropdown
+             let hasUnreadMail = true;
+             if (mailIconInbox && unreadMailBadge && inboxPreview) {
+                const updateMailBadge = () => { unreadMailBadge.style.display = hasUnreadMail ? 'block' : 'none'; }
+                updateMailBadge();
+                mailIconInbox.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    inboxPreview.style.display = inboxPreview.style.display === 'block' ? 'none' : 'block';
+                    if (notificationsDropdown) notificationsDropdown.style.display = 'none';
+                    if (hasUnreadMail && inboxPreview.style.display === 'block') { hasUnreadMail = false; updateMailBadge(); }
+                });
+             }
+
+             // Notification Dropdown
+             let hasNewNotifications = true; // Example state
+             if (notificationIcon && notificationBadge && notificationsDropdown) {
+                 const updateNotifBadge = () => { notificationBadge.style.display = hasNewNotifications ? 'block' : 'none'; }
+                 updateNotifBadge();
+                 notificationIcon.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    notificationsDropdown.style.display = notificationsDropdown.style.display === 'block' ? 'none' : 'block';
+                    if (inboxPreview) inboxPreview.style.display = 'none';
+                    if (hasNewNotifications && notificationsDropdown.style.display === 'block') { hasNewNotifications = false; updateNotifBadge(); }
+                 });
+             }
+
+            // Hide dropdowns/search results on outside click
+            document.addEventListener('click', (event) => {
+                if (searchResultsDiv && !event.target.closest('.search-container')) searchResultsDiv.style.display = 'none';
+                if (inboxPreview && !event.target.closest('.mail-container')) inboxPreview.style.display = 'none';
+                if (notificationsDropdown && !event.target.closest('.notification-container')) notificationsDropdown.style.display = 'none';
             });
-        }
-    });
 
-    // When clicking outside the search results, hide them
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.search-container')) {
-            document.getElementById('search-results').style.display = 'none';
-        }
-    });
-</script>
+            // =============== Utility Functions ===============
+            function showToast(message, type = 'success') {
+                toastElement.textContent = message;
+                toastElement.className = 'toast ' + type; // Reset classes and add type
+                toastElement.style.display = 'block';
+                // Animation handles fade out, no need for timeout to hide
+                // setTimeout(() => { toastElement.style.display = 'none'; }, 3000);
+            }
 
-<!-- =========== Scripts =========  -->
-<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+            function findRow(tableBody, id) {
+                return tableBody.querySelector(`tr[data-id="${id}"]`);
+            }
+
+            function updateStatusInTable(tableBody, id, newStatus) {
+                 const row = findRow(tableBody, id);
+                 if (row) {
+                    const statusCell = row.querySelector('td .status');
+                    if (statusCell) {
+                        const statusClass = newStatus.toLowerCase().replace(' ', '-');
+                        statusCell.className = `status ${statusClass}`;
+                        statusCell.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1).replace('-', ' ');
+                    }
+                 }
+            }
+
+             function updateActionsInTable(tableBody, id, newStatus) {
+                const row = findRow(tableBody, id);
+                 if (row) {
+                    const actionsCell = row.querySelector('td.action-buttons');
+                    if (actionsCell) {
+                        if (newStatus === 'approved' || newStatus === 'rejected') {
+                            actionsCell.innerHTML = `<button class="view-button" data-action="view-request">View</button>`;
+                        } // Keep pending actions otherwise (handled by initial render/data)
+                    }
+                }
+             }
+
+             function closeModal(modalElement) {
+                 if(modalElement) modalElement.style.display = 'none';
+             }
+
+
+            // =============== Modal Opening Functions ===============
+            function openComplaintDetailsModal(id) {
+                currentComplaintId = id;
+                const data = complaintData[id];
+                if (!data) { console.error("Complaint data not found for", id); return; }
+
+                document.getElementById('modal-complaint-id').textContent = id;
+                document.getElementById('modal-date').textContent = data.date;
+                document.getElementById('modal-client').textContent = data.client;
+                document.getElementById('modal-client-email').textContent = data.email;
+                document.getElementById('modal-subject').textContent = data.subject;
+                document.getElementById('modal-coach').textContent = data.coach;
+                document.getElementById('modal-priority').textContent = data.priority;
+                document.getElementById('modal-description').textContent = data.description;
+                document.getElementById('complaintStatus').value = data.status.replace('-', '_'); // Match select values
+                document.getElementById('mediationNotes').value = data.notes || '';
+
+                 // Also set data for sub-modals opened from this one
+                 document.getElementById('reassign-client').textContent = data.client;
+                 document.getElementById('reassign-current-coach').textContent = data.coach;
+                 document.getElementById('warning-coach').textContent = data.coach;
+                 document.getElementById('warning-complaint-id').textContent = id;
+
+                complaintDetailsModal.style.display = 'block';
+            }
+
+            function openRejectModal(id) {
+                currentRequestId = id;
+                const data = requestData[id];
+                 if (!data) { console.error("Request data not found for", id); return; }
+
+                document.getElementById('reject-request-id').textContent = id;
+                document.getElementById('reject-client-name').textContent = data.client;
+                document.getElementById('reject-request-type').textContent = data.type;
+                document.getElementById('rejectReason').value = ''; // Clear previous reason
+
+                rejectRequestModal.style.display = 'block';
+            }
+
+             function openViewRequestModal(id) {
+                const data = requestData[id];
+                if (!data) { console.error("Request data not found for", id); return; }
+
+                document.getElementById('view-request-id').textContent = id;
+                document.getElementById('view-request-date').textContent = data.date;
+                document.getElementById('view-request-client').textContent = data.client;
+                document.getElementById('view-request-type').textContent = data.type;
+                document.getElementById('view-request-details').textContent = data.details;
+                document.getElementById('view-request-status').innerHTML = `<span class="status ${data.status}">${data.status}</span>`; // Display status nicely
+
+                 const reasonItem = document.getElementById('view-request-reason-item');
+                 const reasonSpan = document.getElementById('view-request-reason');
+                if (data.status === 'rejected' && data.reason) {
+                    reasonSpan.textContent = data.reason;
+                    reasonItem.style.display = 'block';
+                } else {
+                    reasonItem.style.display = 'none';
+                }
+
+                viewRequestModal.style.display = 'block';
+             }
+
+
+            // =============== Modal Action Functions ===============
+            function handleUpdateComplaintStatus() {
+                if (!currentComplaintId) return;
+                const newStatusRaw = document.getElementById('complaintStatus').value;
+                const newStatus = newStatusRaw.replace('_', '-'); // Convert back to class format
+                complaintData[currentComplaintId].status = newStatus; // Update data source
+                updateStatusInTable(complaintsTableBody, currentComplaintId, newStatus);
+                showToast(`Complaint ${currentComplaintId} status updated to ${newStatus}.`);
+                // Optionally close modal: closeModal(complaintDetailsModal);
+            }
+
+            function handleOpenReassignModal() {
+                if (!currentComplaintId) return;
+                reassignClientModal.style.display = 'block';
+            }
+
+            function handleConfirmReassign() {
+                 if (!currentComplaintId) return;
+                 const newCoachSelect = document.getElementById('newCoach');
+                 const newCoachName = newCoachSelect.value;
+                 if (!newCoachName) {
+                     showToast('Please select a new coach.', 'error');
+                     return;
+                 }
+                 // Update data source
+                 complaintData[currentComplaintId].coach = newCoachName;
+                 // Update main modal display
+                 document.getElementById('modal-coach').textContent = newCoachName;
+                 // Update table display
+                 const row = findRow(complaintsTableBody, currentComplaintId);
+                 if(row) row.querySelector('td:nth-child(6)').textContent = newCoachName;
+
+                 showToast(`Client reassigned to ${newCoachName} for complaint ${currentComplaintId}.`);
+                 closeModal(reassignClientModal);
+                 newCoachSelect.value = ""; // Reset select
+            }
+
+             function handleOpenWarningModal() {
+                 if (!currentComplaintId) return;
+                 issueWarningModal.style.display = 'block';
+             }
+
+             function handleConfirmWarning() {
+                 if (!currentComplaintId) return;
+                 const warningText = document.getElementById('warningText').value.trim();
+                 const severity = document.getElementById('warningSeverity').value;
+                  if (!warningText) {
+                     showToast('Please enter a warning message.', 'error');
+                     return;
+                 }
+                 // In real app, send warning to coach via backend
+                 console.log(`Issuing ${severity} warning to ${complaintData[currentComplaintId].coach} regarding ${currentComplaintId}: ${warningText}`);
+                 showToast(`Warning sent to coach regarding ${currentComplaintId}.`);
+                 closeModal(issueWarningModal);
+                 document.getElementById('warningText').value = ''; // Clear textarea
+            }
+
+             function handleSaveNotes() {
+                  if (!currentComplaintId) return;
+                  const notes = document.getElementById('mediationNotes').value.trim();
+                  complaintData[currentComplaintId].notes = notes; // Update data source
+                  console.log(`Notes saved for complaint ${currentComplaintId}: ${notes}`);
+                  showToast(`Notes saved for complaint ${currentComplaintId}.`);
+             }
+
+             function handleApproveRequest(id) {
+                 if(!requestData[id]) return;
+                 requestData[id].status = 'approved'; // Update data source
+                 updateStatusInTable(clientRequestsTableBody, id, 'approved');
+                 updateActionsInTable(clientRequestsTableBody, id, 'approved');
+                 showToast(`Request ${id} approved.`);
+             }
+
+             function handleConfirmReject() {
+                 if(!currentRequestId) return;
+                 const reason = document.getElementById('rejectReason').value.trim();
+                  if (!reason) {
+                     showToast('Please provide a reason for rejection.', 'error');
+                     return;
+                 }
+                 // Update data source
+                 requestData[currentRequestId].status = 'rejected';
+                 requestData[currentRequestId].reason = reason;
+
+                 updateStatusInTable(clientRequestsTableBody, currentRequestId, 'rejected');
+                 updateActionsInTable(clientRequestsTableBody, currentRequestId, 'rejected');
+
+                 showToast(`Request ${currentRequestId} rejected.`);
+                 closeModal(rejectRequestModal);
+             }
+
+
+            // =============== Event Listeners Setup ===============
+
+            // Table button clicks (using event delegation)
+            complaintsTableBody.addEventListener('click', (e) => {
+                const button = e.target.closest('button');
+                if (button && button.dataset.action === 'view') {
+                    const row = button.closest('tr');
+                    if (row && row.dataset.id) {
+                        openComplaintDetailsModal(row.dataset.id);
+                    }
+                }
+            });
+
+            clientRequestsTableBody.addEventListener('click', (e) => {
+                const button = e.target.closest('button');
+                if (!button) return;
+
+                const action = button.dataset.action;
+                const row = button.closest('tr');
+                const id = row ? row.dataset.id : null;
+
+                if(!id) return;
+
+                if (action === 'approve') {
+                    handleApproveRequest(id);
+                } else if (action === 'reject') {
+                    openRejectModal(id);
+                } else if (action === 'view-request') {
+                    openViewRequestModal(id);
+                }
+            });
+
+            // Modal close buttons
+            document.querySelectorAll('.modal .modal-close-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    closeModal(button.closest('.modal'));
+                });
+            });
+
+             // Close modal on background click
+            document.querySelectorAll('.modal').forEach(modal => {
+                 modal.addEventListener('click', (e) => {
+                    if (e.target === modal) { // Only if clicking the background itself
+                        closeModal(modal);
+                    }
+                });
+            });
+
+
+            // Buttons inside Complaint Details Modal
+            complaintDetailsModal.addEventListener('click', (e) => {
+                 const button = e.target.closest('button[data-action]');
+                 if (!button) return;
+                 const action = button.dataset.action;
+
+                 if(action === 'update-status') handleUpdateComplaintStatus();
+                 else if(action === 'open-reassign') handleOpenReassignModal();
+                 else if(action === 'open-warning') handleOpenWarningModal();
+                 else if(action === 'save-notes') handleSaveNotes();
+            });
+
+             // Buttons inside Reassign Modal
+            reassignClientModal.addEventListener('click', (e) => {
+                 const button = e.target.closest('button[data-action]');
+                 if (button && button.dataset.action === 'confirm-reassign') {
+                     handleConfirmReassign();
+                 }
+            });
+
+             // Buttons inside Warning Modal
+            issueWarningModal.addEventListener('click', (e) => {
+                 const button = e.target.closest('button[data-action]');
+                 if (button && button.dataset.action === 'confirm-warning') {
+                    handleConfirmWarning();
+                 }
+            });
+
+            // Buttons inside Reject Modal
+            rejectRequestModal.addEventListener('click', (e) => {
+                 const button = e.target.closest('button[data-action]');
+                 if (!button) return;
+                 const action = button.dataset.action;
+
+                 if(action === 'confirm-reject') handleConfirmReject();
+                 else if(action === 'cancel-reject') closeModal(rejectRequestModal);
+            });
+
+            // Sign Out Modal Logic
+            if (signOutLink) {
+                signOutLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    signOutModal.style.display = 'block';
+                });
+            }
+            signOutModal.addEventListener('click', (e) => {
+                 const button = e.target.closest('button[data-action]');
+                 if (!button) return;
+                 const action = button.dataset.action;
+
+                 if(action === 'confirm-signout') {
+                     console.log("Signing out...");
+                     showToast("Signing out...", "success");
+                     // Add actual sign out logic (clear tokens, redirect)
+                     // window.location.href = '/login.html'; // Example redirect
+                     setTimeout(() => closeModal(signOutModal), 500); // Close after slight delay
+                 } else if (action === 'close') {
+                     closeModal(signOutModal);
+                 }
+            });
+
+            // Close modals with Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === "Escape") {
+                    document.querySelectorAll('.modal').forEach(closeModal);
+                }
+            });
+
+            // =============== Initial Load ===============
+            // In a real app, you'd fetch data and then populate tables here
+            // For now, the static HTML serves as the initial state
+            console.log("Admin complaints/requests page loaded.");
+
+        }); // End DOMContentLoaded
+    </script>
+
+    <!-- Ionicons -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
 </html>

@@ -6,320 +6,770 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard - Manage Coaches</title>
     <!-- ======= Styles ====== -->
-    <link rel="stylesheet" href="assets/css/admincoaches.css">
+    <!-- <link rel="stylesheet" href="assets/css/admincoaches.css"> --> <!-- Removed link -->
+    <style>
+      /* =============== Globals ============== */
+      * { font-family: "Poppins", sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+      :root { --blue: #203A93; --white: #fff; --gray: #f5f5f5; --black1: #222; --black2: #999; --yellow: #F1D27C; --light-blue: #e8eeff; --red: #ff6b6b; --green: #4caf50; --orange: #ff9800; }
+      body { background-color: var(--gray); min-height: 100vh; overflow-x: hidden; }
+      .container { position: relative; width: 100%; }
+
+      /* =============== Navigation ================ */
+      .navigation { position: fixed; width: 300px; height: 100%; background: var(--blue); border-left: 10px solid var(--blue); transition: width 0.5s, left 0.5s; overflow-y: auto; overflow-x: hidden; z-index: 100; left: 0; }
+      @media (max-width: 991px) { .navigation { left: -300px; } .navigation.active { left: 0; width: 300px; } }
+      @media (min-width: 992px) { .navigation.active { width: 80px; } }
+      .navigation ul { position: absolute; top: 0; left: 0; width: 100%; padding-left: 0; }
+      .navigation ul li { position: relative; width: 100%; list-style: none; border-top-left-radius: 30px; border-bottom-left-radius: 30px; }
+      .navigation ul li:hover, .navigation ul li.hovered { background-color: var(--white); }
+      .navigation ul li:nth-child(1) { margin-bottom: 40px; pointer-events: none; }
+      .navigation ul li a { position: relative; display: block; width: 100%; display: flex; text-decoration: none; color: var(--white); transition: color 0.3s; }
+      .navigation ul li:hover a, .navigation ul li.hovered a { color: var(--blue); }
+      .navigation ul li a .icon { position: relative; display: block; min-width: 60px; height: 60px; line-height: 75px; text-align: center; flex-shrink: 0; }
+      .navigation ul li a .icon ion-icon { font-size: 1.75rem; transition: color 0.3s; }
+      .navigation ul li a .title { position: relative; display: block; padding: 0 10px; height: 60px; line-height: 60px; text-align: start; white-space: nowrap; opacity: 1; transition: opacity 0.3s 0.1s ease-in-out; }
+      @media (min-width: 992px) { .navigation.active ul li a .title { opacity: 0; pointer-events: none; transition-delay: 0s; } }
+      .navigation ul li:hover a::before, .navigation ul li.hovered a::before { content: ""; position: absolute; right: 0; top: -50px; width: 50px; height: 50px; background-color: transparent; border-radius: 50%; box-shadow: 35px 35px 0 10px var(--white); pointer-events: none; }
+      .navigation ul li:hover a::after, .navigation ul li.hovered a::after { content: ""; position: absolute; right: 0; bottom: -50px; width: 50px; height: 50px; background-color: transparent; border-radius: 50%; box-shadow: 35px -35px 0 10px var(--white); pointer-events: none; }
+
+      /* ===================== Main ===================== */
+      .main { position: absolute; width: calc(100% - 300px); left: 300px; min-height: 100vh; background: var(--white); transition: width 0.5s, left 0.5s; padding: 20px; }
+      @media (min-width: 992px) { .main.active { width: calc(100% - 80px); left: 80px; } }
+      @media (max-width: 991px) { .main, .main.active { width: 100%; left: 0; } }
+
+      /* ===================== Topbar ===================== */
+      .topbar { width: 100%; height: 60px; display: flex; align-items: center; padding: 0 10px; justify-content: space-between; background: var(--white); border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 90; }
+      .toggle { position: relative; width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; font-size: 2.5rem; cursor: pointer; color: var(--black1); }
+      /* Search */
+      .search-container { position: relative; flex-grow: 1; max-width: 600px; margin: 0 15px; }
+      .search-container label { display: flex; align-items: center; width: 100%; border: 1px solid #ccc; border-radius: 15px; overflow: hidden; background-color: var(--white); }
+      #search-input { flex-grow: 1; padding: 8px 15px; border: none; outline: none; font-size: 1rem; box-sizing: border-box; }
+      .search-container label ion-icon { padding: 0 10px; font-size: 1.2rem; color: #777; }
+      #search-results { position: absolute; top: calc(100% + 5px); left: 0; right: 0; background-color: #fff; border: 1px solid #ccc; border-radius: 8px; margin-top: 2px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); z-index: 110; display: none; overflow: hidden; max-height: 300px; overflow-y: auto; }
+      #search-results ul { list-style: none; padding: 8px 0; margin: 0; }
+      #search-results li { padding: 10px 16px; cursor: pointer; transition: background-color 0.2s ease; font-size: 0.95em; color: #333; }
+      #search-results li:hover { background-color: #f5f5f5; color: #222; }
+      #search-results li:active { background-color: #eee; }
+      #search-results li span.highlight { font-weight: bold; color: #007bff; }
+      /* Topbar Icons & User */
+      .topbar-icons { display: flex; align-items: center; gap: 15px; }
+      .mail-container, .notification-container { position: relative; display: flex; align-items: center; }
+      #mail-icon-inbox, #notification-icon { font-size: 25px; color: var(--blue); cursor: pointer; transition: opacity 0.3s; }
+      #mail-icon-inbox:hover, #notification-icon:hover { opacity: 0.7; }
+      #unread-notification, #notification-badge { position: absolute; top: -5px; right: -5px; background-color: var(--red); color: white; font-size: 11px; border-radius: 50%; width: 16px; height: 16px; text-align: center; line-height: 16px; font-weight: bold; display: block; }
+      #notification-badge { background-color: orange; }
+      #inbox-preview, #notifications-dropdown { position: absolute; top: calc(100% + 10px); right: -10px; background-color: #f9f9f9; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); width: 280px; padding: 15px; display: none; z-index: 110; text-align: left; max-height: 350px; overflow-y: auto; }
+      #inbox-preview strong, #notifications-dropdown strong { display: block; margin-bottom: 8px; font-size: 1.1em; color: var(--black1); }
+      .email-item, .notification-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 4px 0; font-size: 0.9em; }
+      .email-item.sender, .notification-item.title { font-weight: bold; }
+      .email-item.subject, .notification-item.message { color: #555; font-size: 0.85em; }
+      .notification-item.title { margin-top: 5px; font-size: 0.8em; color: var(--black2); }
+      #inbox-preview hr, #notifications-dropdown hr { margin: 8px 0; border: 0; border-top: 1px solid #eee; }
+      #inbox-preview a, #notifications-dropdown a { display: block; margin-top: 10px; font-size: 0.85em; text-align: center; color: #007bff; text-decoration: none; padding-top: 5px; }
+      #inbox-preview a:hover, #notifications-dropdown a:hover { text-decoration: underline; }
+      .user-info { display: flex; align-items: center; gap: 10px; margin-left: 15px; }
+      .user-info .name { color: var(--black1); font-weight: 500; white-space: nowrap; }
+      .user { position: relative; min-width: 40px; width: 40px; height: 40px; border-radius: 50%; overflow: hidden; cursor: pointer; }
+      .user img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+
+      /* ============ Modal Styles (Consistent) ============ */
+      .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 1000; justify-content: center; align-items: center; overflow: auto; transition: opacity 0.3s ease; backdrop-filter: blur(3px); opacity: 0; pointer-events: none; }
+      .modal-overlay.active { display: flex; opacity: 1; pointer-events: auto; }
+      .modal { background-color: #fff; border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); width: 90%; max-width: 600px; margin: auto; transform: scale(0.95) translateY(10px); transition: transform 0.3s ease, opacity 0.3s ease; overflow: hidden; opacity: 0; display: none; }
+      .modal-overlay.active .modal { display: block; transform: scale(1) translateY(0); opacity: 1; }
+      #signOutModal .modal { max-width: 440px; }
+      #addSuccessModal .modal, #deleteConfirmModal .modal { max-width: 450px; }
+      #coachProfileModal .modal { max-width: 700px; } /* Coach details modal size */
+      .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid #eaeaea; display: flex; justify-content: space-between; align-items: center; background-color: #f8f9fa; }
+      .modal-title { font-size: 1.35rem; font-weight: 600; margin: 0; color: var(--blue); }
+      .modal-close { cursor: pointer; font-size: 1.8rem; color: #999; border: none; background: none; padding: 0; line-height: 1; transition: color 0.2s ease; }
+      .modal-close:hover { color: #555; }
+      .modal-body { padding: 1.5rem; font-size: 1rem; color: #555; line-height: 1.6; max-height: 70vh; overflow-y: auto; text-align: left; }
+      #signOutModal .modal-body, #deleteConfirmModal .modal-body, #addSuccessModal .modal-body { text-align: center; }
+      #addSuccessModal .modal-body p { font-size: 1.1rem; }
+      #addSuccessModal .success-icon { font-size: 3rem; color: var(--green); margin-bottom: 15px; display: block; }
+      .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid #eaeaea; display: flex; justify-content: flex-end; gap: 12px; background-color: #f8f9fa; }
+      .modal-button { padding: 0.6rem 1.2rem; border-radius: 6px; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease; border: none; }
+      .no-button { background-color: var(--yellow); color: var(--black1); }
+      .no-button:hover { background-color: #e4c370; }
+      .yes-button { background-color: var(--blue); color: white; }
+      .yes-button:hover { background-color: #182c7a; }
+      .delete-confirm-button { background-color: var(--red); color: white; }
+      .delete-confirm-button:hover { background-color: #d32f2f; }
+      .ok-button { background-color: var(--green); color: white; }
+      .ok-button:hover { background-color: #45a049; }
+       /* Edit Modal specific buttons */
+      .save-button { background-color: var(--blue); color: white; }
+      .save-button:hover { background-color: #182c7a; }
+      .delete-button { background-color: var(--red); color: white; }
+      .delete-button:hover { background-color: #d32f2f; }
+
+      /* =============== ADMIN COACHES PAGE SPECIFIC STYLES ============== */
+      .page-container {
+          display: grid;
+          grid-template-columns: 1fr; /* Mobile first - stack */
+          gap: 30px;
+          margin-top: 20px;
+      }
+
+      @media (min-width: 1200px) { /* Wider screens: 2 columns for forms, table spans */
+          .page-container { grid-template-columns: repeat(auto-fit, minmax(850px, 1fr)); }
+          .table-section { grid-column: 1 / -1; }
+      }
+       @media (min-width: 992px) and (max-width: 1199px) { /* Medium desktops: forms side-by-side OR stacked*/
+           .page-container { grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); }
+           .table-section { grid-column: 1 / -1; } /* Force table below on medium */
+       }
+
+      .form-section, .table-section {
+          background-color: var(--white); padding: 25px; border-radius: 10px;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+          min-width: 0; /* Prevent grid blowout */
+      }
+
+      .form-section h3, .table-section h2 {
+          color: var(--blue); margin-bottom: 20px; padding-bottom: 10px;
+          border-bottom: 1px solid #eee; font-size: 1.4rem; font-weight: 600;
+      }
+
+      /* Form Styles */
+      .add-form .form-row { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 15px; }
+      .add-form .form-group { flex: 1; min-width: 200px; }
+      .add-form label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.95rem; color: var(--black1); }
+      .add-form input[type="text"], .add-form input[type="email"], .add-form input[type="tel"],
+      .add-form select { width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 1rem; transition: border-color 0.3s, box-shadow 0.3s; outline: none; }
+      .add-form input:focus, .add-form select:focus { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(32, 58, 147, 0.2); }
+      .add-form select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23aaa'%3E%3Cpath fill-rule='evenodd' d='M8 11.5a.5.5 0 0 1-.354-.146l-4-4a.5.5 0 0 1 .708-.708L8 10.293l3.646-3.647a.5.5 0 0 1 .708.708l-4 4A.5.5 0 0 1 8 11.5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px 16px; padding-right: 35px; }
+      .form-actions { display: flex; justify-content: flex-end; margin-top: 20px; }
+      .btn-submit { padding: 10px 25px; border: none; border-radius: 6px; font-size: 1rem; font-weight: 500; cursor: pointer; transition: background-color 0.3s, box-shadow 0.3s; background-color: var(--blue); color: var(--white); }
+      .btn-submit:hover { background-color: #182c7a; box-shadow: 0 2px 5px rgba(0,0,0,0.15);}
+
+      /* Coaches Table Styles */
+      .table-wrapper { overflow-x: auto; width: 100%; margin-top: 10px; -webkit-overflow-scrolling: touch; }
+      .data-table { width: 100%; border-collapse: collapse; }
+      .data-table thead { background-color: var(--light-blue); }
+      .data-table th, .data-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; font-size: 0.9rem; white-space: nowrap; vertical-align: middle; }
+      .data-table th { color: var(--blue); font-weight: 600; }
+      .data-table tbody tr:hover { background-color: #f9f9f9; }
+      .data-table td[data-label="Actions"] { text-align: right; white-space: normal; } /* Allow actions to wrap */
+      .action-btn { padding: 4px 8px; border: none; border-radius: 4px; cursor: pointer; font-size: 1.1rem; margin-left: 6px; transition: opacity 0.2s; background: none; color: var(--black2); line-height: 1; vertical-align: middle; }
+      .action-btn:hover { opacity: 0.7; }
+      .view-btn:hover { color: var(--green); }
+      .delete-btn:hover { color: var(--red); }
+      .status-available { color: var(--green); font-weight: 500;}
+      .status-unavailable { color: var(--orange); font-weight: 500;}
+
+       /* Edit Coach Modal Form Styles */
+      #editCoachForm .form-row { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 15px; }
+      #editCoachForm .form-group { flex: 1; min-width: 200px; }
+      #editCoachForm label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.95rem; color: var(--black1); }
+      #editCoachForm input, #editCoachForm select { width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 1rem; }
+      #editCoachForm select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23aaa'%3E%3Cpath fill-rule='evenodd' d='M8 11.5a.5.5 0 0 1-.354-.146l-4-4a.5.5 0 0 1 .708-.708L8 10.293l3.646-3.647a.5.5 0 0 1 .708.708l-4 4A.5.5 0 0 1 8 11.5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px 16px; padding-right: 35px; }
+      #coachProfileModal .modal-footer { justify-content: space-between; } /* Space out buttons in edit */
+
+
+      /* ================== Responsive Design Adjustments ================== */
+      @media (max-width: 991px) { /* Tablets */
+           .main, .main.active { padding: 15px; }
+           .topbar, .topbar.active { padding: 0 15px; }
+           .search-container { max-width: 400px; margin: 0 10px; }
+           .user-info .name { display: none; }
+           .page-container { grid-template-columns: 1fr; gap: 25px; } /* Stack form/table */
+      }
+
+      @media (max-width: 767px) { /* Small Tablets / Large Phones */
+           .modal-content { max-width: 90%; padding: 20px; }
+           .modal-footer { flex-direction: column; gap: 10px; }
+           .modal-button { width: 100%; }
+           .topbar { padding: 0 10px; }
+           .search-container { max-width: 250px; }
+           .form-section, .table-section { padding: 20px; }
+           .form-section h3, .table-section h2 { font-size: 1.3rem; }
+           .add-form .form-row { flex-direction: column; gap: 0; margin-bottom: 0;}
+           .add-form .form-group { margin-bottom: 15px; }
+           .form-actions { justify-content: stretch; }
+           .form-actions button { width: 100%; }
+           .data-table th, .data-table td { font-size: 0.85rem; padding: 10px 8px;}
+           .action-btn { font-size: 1rem; }
+           #editCoachForm .form-row { flex-direction: column; gap: 0; margin-bottom: 0; }
+           #editCoachForm .form-group { margin-bottom: 15px; }
+           #coachProfileModal .modal-footer { flex-direction: column-reverse; } /* Stack edit modal buttons */
+      }
+
+      @media (max-width: 479px) { /* Phones */
+           .main { padding: 10px; }
+           .toggle { font-size: 2rem; }
+           .search-container { display: none; }
+           .modal { max-width: 95%; padding: 15px; }
+           .modal-title { font-size: 1.2em; }
+           .page-container { gap: 20px; }
+           .form-section, .table-section { padding: 15px; }
+           .form-section h3, .table-section h2 { font-size: 1.2rem; }
+           .add-form input, .add-form select { font-size: 0.95rem; padding: 8px 10px;}
+           .btn-submit { font-size: 0.95rem; }
+           .data-table th, .data-table td { font-size: 0.8rem; padding: 8px 6px;}
+      }
+  </style>
 </head>
 
 <body>
-    <!-- =============== Navigation ================ -->
-    <div class="container">
-        <div class="navigation">
-            <ul>
-                <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="barbell"></ion-icon>
-                        </span>
-                        <span class="title">ENERGIZE</span>
-                    </a>
-                </li>
+  <!-- =============== Navigation ================ -->
+  <div class="container">
+      <div class="navigation">
+          <ul>
+              <li><a href="#"><span class="icon"><ion-icon name="barbell"></ion-icon></span><span class="title">ENERGIZE</span></a></li>
+              <li><a href="testadmin.html"><span class="icon"><ion-icon name="home-outline"></ion-icon></span><span class="title">Dashboard</span></a></li>
+              <li><a href="adminclients.html"><span class="icon"><ion-icon name="people-outline"></ion-icon></span><span class="title">Manage Clients</span></a></li>
+              <li class="hovered"><a href="admincoaches.html"><span class="icon"><ion-icon name="people-outline"></ion-icon></span><span class="title">Manage Coaches</span></a></li>
+              <li><a href="adminguests.html"><span class="icon"><ion-icon name="person-add-outline"></ion-icon></span><span class="title">Manage Guests</span></a></li>
+              <li><a href="adminmanage.html"><span class="icon"><ion-icon name="person-add-outline"></ion-icon></span><span class="title">Manage Admins</span></a></li>
+              <li><a href="admincomplaint.html"><span class="icon"><ion-icon name="chatbubble-outline"></ion-icon></span><span class="title">Complaints/Requests</span></a></li>
+              <li><a href="adminpayments.html"><span class="icon"><ion-icon name="card-outline"></ion-icon></span><span class="title"> Clients Payments</span></a></li>
+              <li><a href="adminsettings.html"><span class="icon"><ion-icon name="settings-outline"></ion-icon></span><span class="title">Settings</span></a></li>
+              <li><a href="#" id="signOutLink"><span class="icon"><ion-icon name="log-out-outline"></ion-icon></span><span class="title">Sign Out</span></a></li>
+          </ul>
+      </div>
 
-                <li>
-                    <a href="testadmin.html">
-                        <span class="icon">
-                            <ion-icon name="home-outline"></ion-icon>
-                        </span>
-                        <span class="title">Dashboard</span>
-                    </a>
-                </li>
+      <!-- ========================= Main ==================== -->
+      <div class="main">
+          <div class="topbar">
+               <div class="toggle"><ion-icon name="menu-outline"></ion-icon></div>
+               <div class="search-container">
+                   <label>
+                     <input type="text" id="search-input" placeholder="Search coaches...">
+                     <ion-icon name="search-outline"></ion-icon>
+                   </label>
+                   <div id="search-results"></div>
+               </div>
+               <div class="topbar-icons">
+                   <div class="mail-container">
+                       <ion-icon name="mail-outline" id="mail-icon-inbox"></ion-icon>
+                       <div id="unread-notification" style="display: block;">1</div>
+                       <div id="inbox-preview">
+                            <strong>Inbox</strong><hr>
+                            <div id="unread-messages"><div class="email-item sender">Clients</div><div class="email-item subject">3 complaints submitted</div><hr></div>
+                            <div id="read-messages"><div class="email-item sender">Coach</div><div class="email-item subject">Can I ask?</div></div>
+                            <a href="#">See All</a>
+                       </div>
+                   </div>
+                   <div class="notification-container">
+                       <ion-icon name="notifications-outline" id="notification-icon"></ion-icon>
+                       <div id="notification-badge" style="display: block;">1</div>
+                       <div id="notifications-dropdown">
+                            <strong>Notifications</strong><hr>
+                            <div id="notification-list"><div class="notification-item title">Today, 1:00 PM</div><div class="notification-item message">New clients added.</div><hr><div class="notification-item title">Sales Update</div><div class="notification-item message">It increased by 25%</div></div>
+                            <a href="#">See All</a>
+                       </div>
+                   </div>
+               </div>
+               <div class="user-info">
+                   <div class="name"><p>Peter Pan</p></div>
+                   <div class="user"><img src="assets/img/ramburat.jpg" alt=""></div>
+              </div>
+          </div>
 
-                <li>
-                    <a href="adminclients.html">
-                        <span class="icon">
-                            <ion-icon name="people-outline"></ion-icon>
-                        </span>
-                        <span class="title">Manage Clients</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="admincoaches.html">
-                        <span class="icon">
-                            <ion-icon name="people-outline"></ion-icon>
-                        </span>
-                        <span class="title">Manage Coaches</span>
-                    </a>
-                </li>
-
-                <li>
-                  <a href="adminguests.html">
-                      <span class="icon">
-                          <ion-icon name="person-add-outline"></ion-icon>
-                      </span>
-                      <span class="title">Manage Guests</span>
-                  </a>
-              </li>
-
-              <li>
-                <a href="adminmanage.html">
-                    <span class="icon">
-                        <ion-icon name="person-add-outline"></ion-icon>
-                    </span>
-                    <span class="title">Manage Admins</span>
-                </a>
-            </li>
-            
-                <li>
-                    <a href="admincomplaint.html">
-                        <span class="icon">
-                            <ion-icon name="chatbubble-outline"></ion-icon>
-                        </span>
-                        <span class="title">Complaints/Requests</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="adminpayments.html">
-                        <span class="icon">
-                            <ion-icon name="card-outline"></ion-icon>
-                        </span>
-                        <span class="title"> Clients Payments</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="adminsettings.html">
-                        <span class="icon">
-                            <ion-icon name="settings-outline"></ion-icon>
-                        </span>
-                        <span class="title">Settings</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="log-out-outline"></ion-icon>
-                        </span>
-                        <span class="title">Sign Out</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-
-        <!-- ========================= Main ==================== -->
-        <div class="main">
-            <div class="topbar">
-                <div class="toggle">
-                    <ion-icon name="menu-outline"></ion-icon>
-                </div>
-
-                <div class="search-container">
-                    <label>
-                      <input type="text" id="search-input" placeholder="Search what you're looking for">
-                      <ion-icon name="search-outline"></ion-icon>
-                    </label>
-                    <div id="search-results">
-                    </div>
-                  </div>
-
-                  
-                  <div class="mail-container">
-                    <ion-icon name="mail" id="mail-icon-inbox"></ion-icon>
-                    <div id="unread-notification">1</div>
-                    <div id="inbox-preview">
-                    <strong>Inbox</strong>
-                    <hr>
-                    <div id="unread-messages">
-                        <div class="email-item sender">Clients</div>
-                        <div class="email-item subject">3 complaints were submitted</div>
-                        <hr>
-                    </div>
-                    <div id="read-messages">
-                        <div class="email-item sender">Coach</div>
-                        <div class="email-item subject">Can I ask?</div>
-                    </div>
-                    <a href="#">See All</a>
-                    </div>
-                </div>
-
-                <div class="notification-container">
-                    <ion-icon name="notifications" id="notification-icon"></ion-icon>
-                    <div id="notification-badge">1</div>
-                    <div id="notifications-dropdown">
-                      <strong>Notifications</strong>
-                      <hr>
-                      <div id="notification-list">
-                        <div class="notification-item title">Today, 1:00 PM</div>
-                        <div class="notification-item message">New clients added.</div>
-                        <hr>
-                        <div class="notification-item title">Sales Update</div>
-                        <div class="notification-item message">It increased by 25%</div>
+          <!-- ================== Coach Management Content ================== -->
+          <div class="page-container">
+              <!-- Coach Form Section -->
+              <div class="form-section">
+                  <h3>Add New Coach</h3>
+                  <form id="addCoachForm" class="add-form">
+                      <div class="form-row">
+                          <div class="form-group"><label for="coachName">Name*</label><input type="text" id="coachName" required></div>
+                          <div class="form-group"><label for="coachEmail">Email*</label><input type="email" id="coachEmail" required></div>
                       </div>
-                      <a href="#">See All</a>
-                    </div>
+                      <div class="form-row">
+                          <div class="form-group"><label for="coachPhone">Phone</label><input type="tel" id="coachPhone"></div>
+                          <div class="form-group"><label for="coachSpecialty">Specialty*</label><input type="text" id="coachSpecialty" required placeholder="e.g., Strength, Yoga, HIIT"></div>
+                      </div>
+                       <div class="form-row">
+                            <div class="form-group"><label for="coachAvailability">Availability</label><select id="coachAvailability" required><option value="Available">Available</option><option value="Unavailable">Unavailable</option></select></div>
+                       </div>
+                      <div class="form-actions">
+                          <button type="submit" class="btn-submit">Add Coach</button>
+                      </div>
+                  </form>
+              </div>
+
+              <!-- Coaches Table Section -->
+              <div class="table-section">
+                  <h2>Manage Coaches</h2>
+                   <div class="table-wrapper">
+                      <table id="coachesTable" class="data-table">
+                          <thead>
+                              <tr><th>Name</th><th>Email</th><th>Phone</th><th>Specialty</th><th>Availability</th><th>Actions</th></tr>
+                          </thead>
+                          <tbody id="coachesTableBody"></tbody>
+                      </table>
                   </div>
-            
-                <div class="name">
-                    <p>Peter Pan</p>
+                  <p id="emptyCoachesMessage" style="display:none; padding: 20px; text-align: center; color: var(--black2);">No coaches registered yet.</p>
+              </div>
+          </div> <!-- End page-container -->
+
+      </div> <!-- End main -->
+
+
+      <!-- ============ Modals ============ -->
+      <!-- Sign Out Modal -->
+      <div class="modal-overlay" id="signOutModalOverlay">
+           <div class="modal" id="signOutModal">
+               <div class="modal-header"><h3 class="modal-title">Sign Out</h3><button type="button" class="modal-close" aria-label="Close modal"><ion-icon name="close-outline"></ion-icon></button></div>
+               <div class="modal-body"><p>Are you sure you want to sign out?</p></div>
+               <div class="modal-footer"><button type="button" class="modal-button no-button" id="signOutNo">Cancel</button><button type="button" class="modal-button yes-button" id="signOutYes">Sign Out</button></div>
+           </div>
+      </div>
+
+      <!-- Add Success Modal -->
+      <div id="addSuccessModalOverlay" class="modal-overlay">
+           <div class="modal" id="addSuccessModal">
+                <div class="modal-header"><h3 class="modal-title">Success!</h3></div>
+                <div class="modal-body">
+                     <ion-icon name="checkmark-circle-outline" class="success-icon" style="justify-self: center;"></ion-icon>
+                    <p id="successMessageText">Item added successfully!</p>
                 </div>
-    
-                <div class="user">
-                    <img src="assets/img/ramburat.jpg" alt="">
-                </div>                
-            </div>
+                <div class="modal-footer" style="justify-content: center;"><button type="button" class="modal-button ok-button" id="addSuccessOk">OK</button></div>
+           </div>
+      </div>
 
-           <!-- Coach Form Section -->
-<div class="form-section">
-    <h3>Add New Coach</h3>
-    <form id="addCoachForm" class="add-form">
-      <div class="form-row">
-        <div class="form-group">
-          <label for="coachName">Name</label>
-          <input type="text" id="coachName" required>
-        </div>
-        <div class="form-group">
-          <label for="coachEmail">Email</label>
-          <input type="email" id="coachEmail" required>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="coachPhone">Phone</label>
-          <input type="tel" id="coachPhone" required>
-        </div>
-        <div class="form-group">
-          <label for="coachClient">Assigned Client</label>
-          <input type="text" id="coachClient">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="coachSessions">Sessions</label>
-          <input type="text" id="coachSessions" required>
-        </div>
-        <div class="form-group">
-          <label for="coachSpecialty">Specialty</label>
-          <input type="text" id="coachSpecialty" required>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="coachAvailability">Availability</label>
-          <select id="coachAvailability" required>
-            <option value="available">Available</option>
-            <option value="unavailable">Unavailable</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-actions">
-        <button type="submit" class="btn-submit">Add Coach</button>
-      </div>
-    </form>
-  </div>
-  
-  <!-- Coaches Table Section -->
-  <div class="view-coaches-container">
-    <h2>ENERGIZE GYM CENTER COACHES</h2>
-    <table id="coachesTable">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Phone</th>
-          <th>Assigned Client</th>
-          <th>Sessions</th>
-          <th>Specialty</th>
-          <th>Availability</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="coachesTableBody">
-        <!-- Coach rows will be populated here -->
-      </tbody>
-    </table>
-    <p id="emptyCoachesMessage" style="display:none;">No coaches registered yet.</p>
-  </div>
-  
-  <!-- Coach Details Modal -->
-  <div id="coachProfileModal" class="modal">
-    <div class="modal-content">
-      <span class="close-button">&times;</span>
-      <h3>Coach Details</h3>
-      <form id="editCoachForm">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="editCoachName">Name</label>
-            <input type="text" id="editCoachName" required>
-          </div>
-          <div class="form-group">
-            <label for="editCoachEmail">Email</label>
-            <input type="email" id="editCoachEmail" required>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="editCoachPhone">Phone</label>
-            <input type="tel" id="editCoachPhone" required>
-          </div>
-          <div class="form-group">
-            <label for="editCoachClient">Assigned Client</label>
-            <input type="text" id="editCoachClient">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="editCoachSessions">Sessions</label>
-            <input type="text" id="editCoachSessions" required>
-          </div>
-          <div class="form-group">
-            <label for="editCoachSpecialty">Specialty</label>
-            <input type="text" id="editCoachSpecialty" required>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="editCoachAvailability">Availability</label>
-            <select id="editCoachAvailability" required>
-              <option value="available">Available</option>
-              <option value="unavailable">Unavailable</option>
-            </select>
-          </div>
-        </div>
-        <input type="hidden" id="editCoachId">
-        <div class="modal-actions">
-          <button type="submit" class="save-button">Save Changes</button>
-          <button type="button" class="delete-button">Delete Coach</button>
-        </div>
-      </form>
-    </div>
-  </div>
+       <!-- Delete Confirmation Modal -->
+       <div id="deleteConfirmModalOverlay" class="modal-overlay">
+           <div class="modal" id="deleteConfirmModal">
+                <div class="modal-header"><h3 class="modal-title">Confirm Deletion</h3><button type="button" class="modal-close" aria-label="Close modal"><ion-icon name="close-outline"></ion-icon></button></div>
+                <div class="modal-body"><p>Are you sure you want to delete <strong id="deleteItemNameSpan">this item</strong>? This action cannot be undone.</p></div>
+                <div class="modal-footer"><button type="button" class="modal-button no-button" id="deleteCancelBtn">Cancel</button><button type="button" class="modal-button delete-confirm-button" id="deleteConfirmBtn">Delete</button></div>
+           </div>
+       </div>
 
-  <div id="signOutModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title">Sign Out</h2>
-      </div>
-      <div class="modal-body">
-        <p>Are you sure you want to sign out?</p>
-      </div>
-      <div class="modal-footer sign-out-actions">
-        <button class="modal-button no-button" id="signOutNo">No</button>
-        <button class="modal-button yes-button" id="signOutYes">Yes</button>
-      </div>
-    </div>
-  </div>
-        </div>
-            
- <!-- =========== Scripts =========  -->
- <script src="assets/js/admincoaches.js"></script>
+       <!-- Coach Details & Edit Modal -->
+       <div id="coachProfileModalOverlay" class="modal-overlay">
+           <div class="modal" id="coachProfileModal">
+               <div class="modal-header"><h3 class="modal-title" id="coachModalTitle">Coach Details</h3><button type="button" class="modal-close" aria-label="Close modal"><ion-icon name="close-outline"></ion-icon></button></div>
+               <div class="modal-body">
+                   <form id="editCoachForm">
+                       <div class="form-row">
+                          <div class="form-group"><label for="editCoachName">Name</label><input type="text" id="editCoachName" required></div>
+                          <div class="form-group"><label for="editCoachEmail">Email</label><input type="email" id="editCoachEmail" required></div>
+                       </div>
+                       <div class="form-row">
+                          <div class="form-group"><label for="editCoachPhone">Phone</label><input type="tel" id="editCoachPhone"></div>
+                          <div class="form-group"><label for="editCoachSpecialty">Specialty</label><input type="text" id="editCoachSpecialty" required></div>
+                       </div>
+                       <div class="form-row">
+                          <div class="form-group"><label for="editCoachAvailability">Availability</label><select id="editCoachAvailability" required><option value="Available">Available</option><option value="Unavailable">Unavailable</option></select></div>
+                       </div>
+                       <input type="hidden" id="editCoachId">
+                   </form>
+               </div>
+                <div class="modal-footer">
+                    <button type="button" class="modal-button delete-button" id="modalDeleteCoachBtn">Delete Coach</button>
+                    <button type="submit" form="editCoachForm" class="modal-button save-button yes-button">Save Changes</button>
+                </div>
+           </div>
+       </div>
 
-<!-- ====== ionicons ======= -->
-<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+  </div> <!-- End container -->
+
+
+  <!-- =========== Scripts =========  -->
+  <script>
+      // Wait for DOM to be fully loaded
+      document.addEventListener('DOMContentLoaded', function() {
+
+          // --- Standard Setup ---
+          let list = document.querySelectorAll(".navigation li");
+          function activeLink() { /* Standard activeLink */ }
+          // Activate correct nav item
+           list.forEach((item) => item.addEventListener("click", activeLink));
+           const currentPageNavItem = Array.from(list).find(item => item.querySelector('a[href="admincoaches.html"]'));
+           if (currentPageNavItem) { list.forEach(item => item.classList.remove("hovered")); currentPageNavItem.classList.add("hovered"); }
+           else if (list.length > 3) list[3].classList.add("hovered"); // Fallback
+
+          let toggle = document.querySelector(".toggle");
+          let navigation = document.querySelector(".navigation");
+          let main = document.querySelector(".main");
+          let topbar = document.querySelector(".topbar"); // Added selector
+
+          // Ensure elements exist before adding listener for toggle
+          if(toggle && navigation && main && topbar) {
+              toggle.onclick = () => {
+                  console.log("Toggle Clicked"); // Debug
+                  navigation.classList.toggle("active");
+                  main.classList.toggle("active");
+                  topbar.classList.toggle("active"); // Make sure topbar toggles if needed by CSS
+              };
+          } else {
+               console.error("Toggle, Navigation, Main, or Topbar element not found!");
+          }
+
+          // Search Functionality (Standard)
+          const searchInput = document.getElementById('search-input');
+          const searchResultsDiv = document.getElementById('search-results');
+          const searchDataAdminCoaches = [ "Edward Linkin", "Sarah Lee", "Mike Smith", "Add Coach", "Edit Coach", "Strength", "Yoga" ];
+
+          function displayResults(results, searchTerm) {
+               if (!searchResultsDiv) return;
+               searchResultsDiv.innerHTML = '';
+               if (results.length > 0 && searchInput && searchInput.value.trim() !== '') {
+                  const ul = document.createElement('ul');
+                  results.forEach(result => {
+                      const li = document.createElement('li');
+                      const regex = new RegExp(`(${searchTerm})`, 'gi');
+                      li.innerHTML = result.replace(regex, '<span class="highlight">$1</span>');
+                      li.addEventListener('click', () => {
+                          if(searchInput) searchInput.value = result;
+                          searchResultsDiv.style.display = 'none';
+                          console.log("Search Selected:", result);
+                      });
+                      ul.appendChild(li);
+                  });
+                  searchResultsDiv.appendChild(ul);
+                  searchResultsDiv.style.display = 'block';
+              } else {
+                  searchResultsDiv.style.display = 'none';
+              }
+          }
+
+          if (searchInput && searchResultsDiv) {
+               searchInput.addEventListener('input', function() {
+                  const searchTerm = this.value.toLowerCase().trim();
+                  if (searchTerm.length > 0) {
+                      const filteredResults = searchDataAdminCoaches.filter(item => item.toLowerCase().includes(searchTerm));
+                      displayResults(filteredResults, searchTerm);
+                  } else {
+                       if(searchResultsDiv) searchResultsDiv.style.display = 'none';
+                  }
+              });
+              document.addEventListener('click', event => {
+                  const searchContainer = event.target.closest('.search-container');
+                  if (!searchContainer && searchResultsDiv) {
+                       searchResultsDiv.style.display = 'none';
+                  }
+              });
+          } else {
+               console.warn("Search input or results container not found.");
+          }
+
+
+          // Mail & Notification Dropdown Functionality (Standard)
+          const mailIconInbox = document.getElementById('mail-icon-inbox');
+          const unreadNotification = document.getElementById('unread-notification');
+          const inboxPreview = document.getElementById('inbox-preview');
+          let hasUnread = true;
+          function updateUnreadIndicator() { if (unreadNotification) unreadNotification.style.display = hasUnread ? 'block' : 'none'; }
+          if(mailIconInbox && inboxPreview && unreadNotification) {
+               updateUnreadIndicator();
+               mailIconInbox.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                    const notificationsDropdown = document.getElementById('notifications-dropdown');
+                    if (notificationsDropdown) notificationsDropdown.style.display = 'none';
+                    const isVisible = inboxPreview.style.display === 'block';
+                    inboxPreview.style.display = isVisible ? 'none' : 'block';
+                   if (!isVisible && hasUnread) { hasUnread = false; updateUnreadIndicator(); }
+               });
+          } else { console.warn("Mail elements not found.");}
+
+          const notificationIcon = document.getElementById('notification-icon');
+          const notificationBadge = document.getElementById('notification-badge');
+          const notificationsDropdown = document.getElementById('notifications-dropdown');
+          let hasNewNotifications = true;
+          if (notificationIcon && notificationBadge && notificationsDropdown) {
+                notificationBadge.style.display = hasNewNotifications ? 'block' : 'none';
+               notificationIcon.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                    if (inboxPreview) inboxPreview.style.display = 'none';
+                   const isVisible = notificationsDropdown.style.display === 'block';
+                   notificationsDropdown.style.display = isVisible ? 'none' : 'block';
+                    if (!isVisible && hasNewNotifications) { notificationBadge.style.display = 'none'; }
+               });
+          } else { console.warn("Notification elements not found."); }
+
+           // Close dropdowns when clicking outside
+           document.addEventListener('click', event => {
+               const mailContainer = event.target.closest('.mail-container');
+               const notificationContainer = event.target.closest('.notification-container');
+               if (inboxPreview && !mailContainer) inboxPreview.style.display = 'none';
+               if (notificationsDropdown && !notificationContainer) notificationsDropdown.style.display = 'none';
+           });
+
+
+          // --- Modal Handling (Standard) ---
+          function showModal(overlayId) { const overlay = document.getElementById(overlayId); if (overlay) overlay.classList.add('active'); }
+          function hideModal(overlayId) { const overlay = document.getElementById(overlayId); if (overlay) overlay.classList.remove('active'); }
+          document.querySelectorAll('.modal-overlay').forEach(overlay => { overlay.addEventListener('click', (event) => { if (event.target === overlay) hideModal(overlay.id); }); });
+          document.querySelectorAll('.modal-close').forEach(button => { button.addEventListener('click', () => { const overlay = button.closest('.modal-overlay'); if(overlay) hideModal(overlay.id); }); });
+          document.querySelectorAll('.modal-button.ok-button').forEach(button => { button.addEventListener('click', () => { const overlay = button.closest('.modal-overlay'); if(overlay) hideModal(overlay.id); }); });
+          document.addEventListener('keydown', (event) => { if (event.key === 'Escape') { document.querySelectorAll('.modal-overlay.active').forEach(overlay => hideModal(overlay.id)); } });
+
+          // Sign Out Modal Logic (Standard)
+          const signOutLink = document.getElementById('signOutLink');
+          const signOutModalOverlay = document.getElementById('signOutModalOverlay');
+          const signOutNoButton = document.getElementById('signOutNo');
+          const signOutYesButton = document.getElementById('signOutYes');
+          if (signOutLink && signOutModalOverlay && signOutNoButton && signOutYesButton) { /* ... Standard sign out listeners ... */ }
+          else { console.warn("Sign out modal elements not found."); }
+          // --- End Standard Setup & Modals ---
+
+
+          // --- Admin Coaches Page Specific JS ---
+
+          // DOM Elements
+          const addCoachForm = document.getElementById('addCoachForm');
+          const coachesTableBody = document.getElementById('coachesTableBody');
+          const emptyCoachesMessage = document.getElementById('emptyCoachesMessage');
+          const coachProfileModalOverlay = document.getElementById('coachProfileModalOverlay');
+          const coachModalTitle = document.getElementById('coachModalTitle');
+          const editCoachForm = document.getElementById('editCoachForm');
+          const editCoachNameInput = document.getElementById('editCoachName');
+          const editCoachEmailInput = document.getElementById('editCoachEmail');
+          const editCoachPhoneInput = document.getElementById('editCoachPhone');
+          const editCoachSpecialtyInput = document.getElementById('editCoachSpecialty');
+          const editCoachAvailabilitySelect = document.getElementById('editCoachAvailability');
+          const editCoachIdInput = document.getElementById('editCoachId');
+          const modalDeleteCoachBtn = document.getElementById('modalDeleteCoachBtn');
+          const successMessageText = document.getElementById('successMessageText');
+          const addSuccessOkBtn = document.getElementById('addSuccessOk');
+          const deleteConfirmBtn = document.getElementById('deleteConfirmBtn');
+          const deleteCancelBtn = document.getElementById('deleteCancelBtn');
+          const deleteItemNameSpan = document.getElementById('deleteItemNameSpan');
+
+           if (!addCoachForm || !coachesTableBody || !coachProfileModalOverlay || !editCoachForm) {
+               console.error("Essential elements for coach management are missing!");
+           }
+
+          // Initial Coach Data
+          let coaches = [
+              { id: 201, name: "Edward Linkin", email: "ed.link@example.com", phone: "(555) 111-2222", specialty: "Strength, Bodybuilding", availability: "Available" },
+              { id: 202, name: "Sarah Lee", email: "sarah.lee@example.com", phone: "(555) 333-4444", specialty: "Yoga, Flexibility", availability: "Unavailable" },
+              { id: 203, name: "Mike Smith", email: "mike.s@example.com", phone: "(555) 555-6666", specialty: "HIIT, Cardio", availability: "Available" },
+          ];
+           let coachToDelete = { id: null, element: null };
+
+          // --- Table Functions ---
+           function addCoachRowToTable(coach) {
+               if (!coachesTableBody) return;
+               const newRow = coachesTableBody.insertRow();
+               newRow.dataset.id = coach.id;
+               newRow.classList.add('data-row'); // Common class
+
+               const headers = ["Name", "Email", "Phone", "Specialty", "Availability", "Actions"];
+               const cellsData = [ coach.name, coach.email || '-', coach.phone || '-', coach.specialty || '-', coach.availability ];
+
+               cellsData.forEach((cellData, index) => {
+                   const cell = newRow.insertCell();
+                   cell.textContent = cellData;
+                   // Add status class for Availability
+                   if (headers[index] === "Availability") {
+                        cell.innerHTML = `<span class="status-${cellData.toLowerCase()}">${cellData}</span>`; // Wrap status in styled span
+                   }
+               });
+
+               // Actions Cell
+               const actionsCell = newRow.insertCell();
+                actionsCell.style.textAlign = 'right';
+                actionsCell.innerHTML = `
+                    <button class="action-btn view-btn" title="View/Edit Coach"><ion-icon name="eye-outline"></ion-icon></button>
+                    <button class="action-btn delete-btn" title="Delete Coach"><ion-icon name="trash-outline"></ion-icon></button>
+                `;
+                // **Important:** Call attachCoachActionListeners HERE, right after creating the buttons
+                attachCoachActionListeners(newRow);
+                checkEmptyCoachesTable();
+            }
+
+
+            function attachCoachActionListeners(row) {
+                const viewBtn = row.querySelector('.view-btn');
+                const deleteBtn = row.querySelector('.delete-btn');
+                viewBtn?.removeEventListener('click', handleViewCoachDetails);
+                deleteBtn?.removeEventListener('click', handleDeleteCoach);
+                 // Add new listeners
+                 if(viewBtn) viewBtn.addEventListener('click', handleViewCoachDetails);
+                if(deleteBtn) deleteBtn.addEventListener('click', handleDeleteCoach);
+          }
+
+          function populateCoachesTable() {
+                 if (coachesTableBody) {
+                     coachesTableBody.innerHTML = '';
+                     coaches.forEach(coach => addCoachRowToTable(coach));
+                 }
+                 checkEmptyCoachesTable();
+             }
+           function checkEmptyCoachesTable() {
+               if (emptyCoachesMessage) emptyCoachesMessage.style.display = coaches.length === 0 ? 'block' : 'none';
+           }
+
+          // --- Event Handlers ---
+
+          // Add Coach
+          if(addCoachForm) {
+              addCoachForm.addEventListener('submit', (e) => {
+                  e.preventDefault();
+                  const nameInput = document.getElementById('coachName');
+                  const emailInput = document.getElementById('coachEmail');
+                  const phoneInput = document.getElementById('coachPhone');
+                  const specialtyInput = document.getElementById('coachSpecialty');
+                  const availabilitySelect = document.getElementById('coachAvailability');
+
+                  if (!nameInput?.value.trim()) { alert("Coach Name is required."); nameInput.focus(); return; }
+                  if (!emailInput?.value.trim() || !emailInput.checkValidity()) { alert("Valid Coach Email is required."); emailInput.focus(); return; }
+                  if (!specialtyInput?.value.trim()) { alert("Coach Specialty is required."); specialtyInput.focus(); return; }
+
+                  const coach = {
+                      id: Date.now(), name: nameInput.value.trim(),
+                      email: emailInput.value.trim(), phone: phoneInput?.value.trim() || '',
+                      specialty: specialtyInput.value.trim(),
+                      availability: availabilitySelect?.value || 'Available'
+                  };
+                  coaches.push(coach);
+                  addCoachRowToTable(coach);
+                  addCoachForm.reset();
+                  if(successMessageText) successMessageText.textContent = "Coach added successfully!";
+                  showModal('addSuccessModalOverlay');
+              });
+          }
+
+           // OK on Success Modal
+           if (addSuccessOkBtn) { addSuccessOkBtn.addEventListener('click', () => hideModal('addSuccessModalOverlay')); }
+
+          // View/Edit Coach Details
+          function handleViewCoachDetails(event) {
+                 const row = event.target.closest('.data-row');
+                 if (!row || !row.dataset.id) return;
+                 const id = row.dataset.id;
+                 const coach = coaches.find(c => c.id == id);
+
+                 if (!coach || !editCoachForm /*... check other modal elements ...*/ ) {
+                     console.error("Modal elements missing or coach not found for editing"); return;
+                 }
+
+                 coachModalTitle.textContent = `View/Edit Coach`;
+                 editCoachIdInput.value = id;
+                 editCoachNameInput.value = coach.name || '';
+               editCoachEmailInput.value = coach.email || '';
+               editCoachPhoneInput.value = coach.phone || '';
+               editCoachSpecialtyInput.value = coach.specialty || '';
+               editCoachAvailabilitySelect.value = coach.availability || 'Available';
+               
+
+               // Re-attach delete listener
+               const currentModalDeleteButton = document.getElementById('modalDeleteCoachBtn');
+                 if (currentModalDeleteButton) {
+                    // Define the handler function *inside* handleViewCoachDetails
+                    // so it closes over the correct id and name
+                    const deleteHandler = () => {
+                        handleDeleteFromModal(id, coach.name);
+                    };
+                    // Remove previous listener before adding new one
+                    currentModalDeleteButton.replaceWith(currentModalDeleteButton.cloneNode(true)); // Clone to clear old listener
+                    document.getElementById('modalDeleteCoachBtn').addEventListener('click', deleteHandler); // Attach to the new button
+                 }
+
+
+                 showModal('coachProfileModalOverlay');
+             }
+
+          // Handle Edit Coach Form Submission
+           if(editCoachForm) {
+               editCoachForm.addEventListener('submit', (e) => {
+                   e.preventDefault();
+                   const id = editCoachIdInput?.value;
+                   if (!id) return;
+                   const index = coaches.findIndex(c => c.id == id);
+                   if (index === -1) return;
+
+                   if (!editCoachNameInput?.value.trim()) { alert("Coach Name cannot be empty."); return; }
+                   if (!editCoachEmailInput?.value.trim() || !editCoachEmailInput.checkValidity()) { alert("Valid Coach Email is required."); return; }
+                   if (!editCoachSpecialtyInput?.value.trim()) { alert("Coach Specialty cannot be empty."); return; }
+
+                   const updatedCoach = {
+                       id: parseInt(id), name: editCoachNameInput.value.trim(),
+                       email: editCoachEmailInput.value.trim(), phone: editCoachPhoneInput?.value.trim() || '',
+                       specialty: editCoachSpecialtyInput.value.trim(),
+                       availability: editCoachAvailabilitySelect?.value || 'Available'
+                   };
+
+                   coaches[index] = { ...coaches[index], ...updatedCoach };
+                   populateCoachesTable();
+                   hideModal('coachProfileModalOverlay');
+                   alert(`Coach updated successfully!`);
+               });
+           }
+
+
+          // Delete Coach Action Trigger (from table)
+           function handleDeleteCoach(event) {
+               const row = event.target.closest('.data-row');
+               if (!row || !row.dataset.id) return;
+               coachToDelete.element = row;
+               coachToDelete.id = row.dataset.id;
+               const name = row.querySelector('td:first-child')?.textContent || 'this coach';
+
+               if (deleteItemNameSpan) deleteItemNameSpan.textContent = name;
+               showModal('deleteConfirmModalOverlay');
+           }
+
+           // Delete action from inside Edit Modal
+           function handleDeleteCoach(event) {
+                 const row = event.target.closest('.data-row');
+                 if (!row || !row.dataset.id) return;
+                 coachToDelete.element = row;
+                 coachToDelete.id = row.dataset.id;
+                 const name = row.querySelector('td:first-child')?.textContent || 'this coach';
+
+                 if (deleteItemNameSpan) deleteItemNameSpan.textContent = name;
+                 showModal('deleteConfirmModalOverlay');
+             }
+
+            // Delete action from inside Edit Modal
+             function handleDeleteFromModal(id, name) {
+                  const rowElement = document.querySelector(`.data-table .data-row[data-id="${id}"]`);
+                  if (rowElement) {
+                       coachToDelete = { id, element: rowElement };
+                       if (deleteItemNameSpan) deleteItemNameSpan.textContent = name || 'this coach';
+                       hideModal('coachProfileModalOverlay'); // Close edit modal
+                       showModal('deleteConfirmModalOverlay'); // Show confirmation
+                  } else {
+                       console.error("Row element not found for coach modal delete.");
+                  }
+             }
+          // Confirm Delete Action
+          if (deleteConfirmBtn) {
+              deleteConfirmBtn.addEventListener('click', () => {
+                  if (coachToDelete.element && coachToDelete.id) {
+                       const initialLength = coaches.length;
+                       coaches = coaches.filter(c => c.id != coachToDelete.id);
+
+                       if (coaches.length < initialLength) {
+                           coachToDelete.element.remove();
+                           checkEmptyCoachesTable();
+                           console.log(`Coach with ID ${coachToDelete.id} deleted.`);
+                       } else { console.error("Coach to delete not found in array."); }
+                  } else { console.error("Missing coach details for deletion."); }
+                  hideModal('deleteConfirmModalOverlay');
+                  coachToDelete = { id: null, element: null };
+              });
+          }
+
+          // Cancel Delete Action
+           if(deleteCancelBtn) {
+               deleteCancelBtn.addEventListener('click', () => {
+                    coachToDelete = { id: null, element: null };
+                    hideModal('deleteConfirmModalOverlay');
+                });
+           }
+
+          // Initial Population
+          populateCoachesTable();
+
+          // --- End Coach Page Specific JS ---
+
+      }); // End DOMContentLoaded
+  </script>
+
+
+  <!-- ====== ionicons ======= -->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
 
 </html>

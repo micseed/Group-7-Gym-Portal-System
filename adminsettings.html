@@ -6,834 +6,342 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>Admin Dashboard</title>
+    <!-- Chart.js removed unless needed -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" /> <!-- Font Awesome if needed -->
+    <title>Admin Dashboard - Settings</title>
     <style>
         /* =============== Globals ============== */
         * {
-        font-family: "Poppins", sans-serif;
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-
         :root {
-        --blue: #203A93;
-        --white: #fff;
-        --gray: #f5f5f5;
-        --black1: #222;
-        --black2: #999;
+            --blue: #203A93;
+            --white: #fff;
+            --gray: #f5f5f5;
+            --black1: #222;
+            --black2: #999;
+            --green: #198754; /* Added for consistency */
+            --red: #dc3545; /* Added for consistency */
         }
-
-        body {
-        min-height: 100vh;
-        overflow-x: hidden;
-        }
-
-        .container {
-        position: relative;
-        width: 100%;
-        }
+        body { min-height: 100vh; overflow-x: hidden; background-color: var(--gray); /* Add light background */ }
+        .container { position: relative; width: 100%; }
 
         /* =============== Navigation ================ */
-        .navigation {
-        position: fixed;
-        width: 300px;
-        height: 100%;
-        background: var(--blue);
-        border-left: 10px solid var(--blue);
-        transition: 0.5s;
-        overflow: hidden;
-        }
-        .navigation.active {
-        width: 80px;
-        }
+        /* --- Standard Navigation Styles --- */
+        .navigation { position: fixed; width: 300px; height: 100%; background: var(--blue); border-left: 10px solid var(--blue); transition: 0.5s; overflow: hidden; z-index: 100; }
+        .navigation.active { width: 80px; }
+        .navigation ul { position: absolute; top: 0; left: 0; width: 100%; padding-left: 0; }
+        .navigation ul li { position: relative; width: 100%; list-style: none; border-top-left-radius: 30px; border-bottom-left-radius: 30px; }
+        .navigation ul li:hover, .navigation ul li.hovered { background-color: var(--white); }
+        .navigation ul li:nth-child(1) { margin-bottom: 40px; pointer-events: none; }
+        .navigation ul li a { position: relative; display: block; width: 100%; display: flex; text-decoration: none; color: var(--white); }
+        .navigation ul li:hover a, .navigation ul li.hovered a { color: var(--blue); }
+        .navigation ul li a .icon { position: relative; display: block; min-width: 60px; height: 60px; line-height: 75px; text-align: center; }
+        .navigation ul li a .icon ion-icon { font-size: 1.75rem; }
+        .navigation ul li a .title { position: relative; display: block; padding: 0 10px; height: 60px; line-height: 60px; text-align: start; white-space: nowrap; }
+        /* Curves */
+        .navigation ul li:hover a::before, .navigation ul li.hovered a::before { content: ""; position: absolute; right: 0; top: -50px; width: 50px; height: 50px; background-color: transparent; border-radius: 50%; box-shadow: 35px 35px 0 10px var(--white); pointer-events: none; }
+        .navigation ul li:hover a::after, .navigation ul li.hovered a::after { content: ""; position: absolute; right: 0; bottom: -50px; width: 50px; height: 50px; background-color: transparent; border-radius: 50%; box-shadow: 35px -35px 0 10px var(--white); pointer-events: none; }
 
-        .navigation ul {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        }
+        /* ===================== Main Layout ===================== */
+        /* --- Standard Main Layout Styles --- */
+        .main { position: absolute; width: calc(100% - 300px); left: 300px; min-height: 100vh; background: var(--gray); transition: 0.5s; padding-bottom: 20px; /* Add padding at bottom */ }
+        .main.active { width: calc(100% - 80px); left: 80px; }
 
-        .navigation ul li {
-        position: relative;
-        width: 100%;
-        list-style: none;
-        border-top-left-radius: 30px;
-        border-bottom-left-radius: 30px;
-        }
+        /* ===================== Topbar ===================== */
+        /* --- Standard Topbar Styles --- */
+        .topbar { width: 100%; height: 60px; display: flex; align-items: center; padding: 0 10px; justify-content: space-between; background: var(--white); box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 99; }
+        .toggle { position: relative; width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; font-size: 2.5rem; cursor: pointer; color: var(--black1); flex-shrink: 0; }
+        /* Search */
+        .search-container { position: relative; flex-grow: 1; max-width: 600px; margin: 0 10px; }
+        .search-container label { display: flex; align-items: center; width: 100%; border: 1px solid #ccc; border-radius: 15px; overflow: hidden; background: var(--white); position: relative; }
+        #search-input { flex-grow: 1; padding: 10px 10px 10px 30px; border: none; outline: none; font-size: 16px; box-sizing: border-box; }
+        .search-container label ion-icon { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); font-size: 20px; color: #777; cursor: pointer; }
+        #search-results { position: absolute; top: calc(100% + 2px); left: 0; right: 0; background-color: #fff; border: 1px solid #ccc; border-radius: 8px; margin-top: 2px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); z-index: 110; display: none; overflow: hidden; max-height: 300px; overflow-y: auto; }
+        #search-results ul { list-style: none; padding: 8px 0; margin: 0; }
+        #search-results li { padding: 12px 16px; cursor: pointer; transition: background-color 0.2s ease; font-size: 1.0em; color: #333; }
+        #search-results li:hover { background-color: #f5f5f5; color: #222; }
+        /* Mail */
+        .mail-container { position: relative; display: inline-block; margin: 0 5px; flex-shrink: 0; }
+        #mail-icon-inbox { font-size: 25px; color: var(--blue); cursor: pointer; padding: 5px; }
+        #mail-icon-inbox:hover { opacity: 0.8; }
+        #unread-mail-badge { position: absolute; top: -2px; right: -2px; background-color: red; color: white; font-size: 11px; border-radius: 50%; width: 16px; height: 16px; text-align: center; line-height: 16px; display: none; pointer-events: none; }
+        #inbox-preview { position: absolute; top: calc(100% + 10px); right: -10px; background-color: #f9f9f9; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); width: 280px; padding: 15px; display: none; z-index: 110; text-align: left; }
+        #inbox-preview strong { display: block; margin-bottom: 5px; }
+        .email-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 3px 0; }
+        .email-item.sender { font-weight: bold; }
+        .email-item.subject { color: #555; font-size: 0.9em; }
+        #inbox-preview hr { margin: 8px 0; }
+        #inbox-preview a { display: block; margin-top: 10px; font-size: 0.8em; text-align: right; color: #007bff; text-decoration: none; }
+        /* Notification */
+        .notification-container { position: relative; display: inline-block; margin: 0 5px; flex-shrink: 0; }
+        #notification-icon { font-size: 25px; color: var(--blue); cursor: pointer; padding: 5px; }
+        #notification-icon:hover { opacity: 0.8; }
+        #notification-badge { position: absolute; top: -2px; right: -2px; background-color: orange; color: white; font-size: 11px; border-radius: 50%; width: 16px; height: 16px; text-align: center; line-height: 16px; display: block; pointer-events: none; }
+        #notifications-dropdown { position: absolute; top: calc(100% + 10px); right: -10px; background-color: #f9f9f9; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); width: 280px; padding: 15px; display: none; z-index: 110; text-align: left; }
+        #notifications-dropdown strong { display: block; margin-bottom: 5px; }
+        .notification-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 3px 0; }
+        .notification-item.title { font-weight: bold; margin-top: 5px; }
+        .notification-item.message { color: #555; font-size: 0.9em; }
+        #notifications-dropdown hr { margin: 8px 0; }
+        #notifications-dropdown a { display: block; margin-top: 10px; font-size: 0.8em; text-align: right; color: #007bff; text-decoration: none; }
+        /* User */
+        .user-info { display: flex; align-items: center; margin-left: 10px; flex-shrink: 0; }
+        .user-info .name { margin-right: 10px; font-weight: 500; white-space: nowrap; }
+        .user { position: relative; min-width: 40px; width: 40px; height: 40px; border-radius: 50%; overflow: hidden; cursor: pointer; }
+        .user img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
 
-        .navigation ul li:hover,
-        .navigation ul li.hovered {
-        background-color: var(--white);
-        }
-
-        .navigation ul li:nth-child(1) {
-        margin-bottom: 40px;
-        pointer-events: none;
-        }
-
-        .navigation ul li a {
-        position: relative;
-        display: block;
-        width: 100%;
-        display: flex;
-        text-decoration: none;
-        color: var(--white);
-        }
-        .navigation ul li:hover a,
-        .navigation ul li.hovered a {
-        color: var(--blue);
-        }
-
-        .navigation ul li a .icon {
-        position: relative;
-        display: block;
-        min-width: 60px;
-        height: 60px;
-        line-height: 75px;
-        text-align: center;
-        }
-        .navigation ul li a .icon ion-icon {
-        font-size: 1.75rem;
-        }
-
-        .navigation ul li a .title {
-        position: relative;
-        display: block;
-        padding: 0 10px;
-        height: 60px;
-        line-height: 60px;
-        text-align: start;
-        white-space: nowrap;
-        }
-
-        /* --------- curve outside ---------- */
-        .navigation ul li:hover a::before,
-        .navigation ul li.hovered a::before {
-        content: "";
-        position: absolute;
-        right: 0;
-        top: -50px;
-        width: 50px;
-        height: 50px;
-        background-color: transparent;
-        border-radius: 50%;
-        box-shadow: 35px 35px 0 10px var(--white);
-        pointer-events: none;
-        }
-        .navigation ul li:hover a::after,
-        .navigation ul li.hovered a::after {
-        content: "";
-        position: absolute;
-        right: 0;
-        bottom: -50px;
-        width: 50px;
-        height: 50px;
-        background-color: transparent;
-        border-radius: 50%;
-        box-shadow: 35px -35px 0 10px var(--white);
-        pointer-events: none;
-        }
-
-        /* ===================== Main ===================== */
-        .main {
-        position: absolute;
-        width: calc(100% - 300px);
-        left: 300px;
-        min-height: 100vh;
-        background: var(--white);
-        transition: 0.5s;
-        }
-        .main.active {
-        width: calc(100% - 80px);
-        left: 80px;
-        }
-
-        .topbar {
-        width: 100%;
-        height: 60px;
-        display: flex;
-        align-items: center;
-        padding: 0 10px;
-        justify-content:space-between;
-        }
-
-        .toggle {
-        position: relative;
-        width: 60px;
-        height: 60px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 2.5rem;
-        cursor: pointer;
-        }
-
-        /* =============== Search Icon ================ */
-        .search-container {
-        position: relative;
-        width: 800px;
-        margin: 0 10px;
-        }
-
-        .search-container label {
-        display: flex; 
-        align-items: center; 
-        width: 100%;
-        border: 1px solid #ccc;
-        border-radius: 15px;
-        overflow: hidden;
-        }
-
-        #search-input {
-        flex-grow: 1; 
-        padding: 10px;
-        border: none;
-        outline: none;
-        font-size: 16px;
-        box-sizing: border-box; 
-        margin-right: 5px;
-        }
-
-        .search-container label ion-icon {
-        padding-right: 10px;
-        font-size: 20px; 
-        color: #777;
-        }
-
-        #search-results {
-        position: absolute;
-        top: calc(100% + 2px); 
-        left: 0;
-        right: 0;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        margin-top: 2px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-        z-index: 10;
-        display: none;
-        overflow: hidden;
-        }
-
-        #search-results ul {
-        list-style: none;
-        padding: 8px 0;
-        margin: 0;
-        }
-
-        #search-results li {
-        padding: 12px 16px;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-        font-size: 1.0em;
-        color: #333;
-        }
-
-        #search-results li:hover {
-        background-color: #f5f5f5;
-        color: #222;
-        }
-
-        #search-results li:active {
-        background-color: #eee;
-        }
-
-
-        #search-results li span.highlight {
-        font-weight: bold;
-        color: #007bff; 
-        }
-
-        /* =============== Mail Icon ================ */
-        .mail-container {
-        position: relative;
-        display: inline-block;
-        }
-
-        #mail-icon-inbox {
-        font-size: 25px;
-        color: #203A93;
-        cursor: pointer;
-        }
-
-        #mail-icon-inbox:hover {
-        opacity: 0.8;
-        }
-
-        #unread-notification {
-        position: absolute;
-        top: -8px;
-        right: -8px;
-        background-color: red;
-        color: white;
-        font-size: 12px;
-        border-radius: 50%;
-        width: 18px;
-        height: 18px;
-        text-align: center;
-        line-height: 18px;
-        display: none; 
-        }
-
-        #inbox-preview {
-        position: absolute;
-        top: calc(100% + 5px);
-        right: -10px;
-        background-color: #f9f9f9;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        width: 250px;
-        padding: 15px;
-        display: none; 
-        z-index: 10;
-        text-align: left;
-        }
-
-        #inbox-preview strong {
-        display: block;
-        margin-bottom: 5px;
-        }
-
-        .email-item {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        padding: 3px 0; 
-        }
-
-        .email-item.sender {
-        font-weight: bold;
-        }
-
-        .email-item.subject {
-        color: #555;
-        font-size: 0.9em; 
-        }
-
-        #inbox-preview hr {
-        margin-top: 8px;
-        margin-bottom: 8px;
-        }
-
-        #inbox-preview a {
-        display: block;
-        margin-top: 10px;
-        font-size: 0.8em;
-        text-align: right;
-        color: #007bff;
-        text-decoration: none;
-        }
-
-        /* =============== Notification ================ */
-        .notification-container {
-        position: relative;
-        display: inline-block;
-        }
-
-        #notification-icon {
-        font-size: 25px;
-        color: #203A93;
-        cursor: pointer;
-        }
-
-        #notification-icon:hover {
-        opacity: 0.8;
-        }
-
-        #notification-badge {
-        position: absolute;
-        top: -8px;
-        right: -8px;
-        background-color: orange;
-        color: white;
-        font-size: 12px;
-        border-radius: 50%;
-        width: 18px;
-        height: 18px;
-        text-align: center;
-        line-height: 18px;
-        display: block; 
-        }
-
-        #notifications-dropdown {
-        position: absolute;
-        top: calc(100% + 5px);
-        right: -10px;
-        background-color: #f9f9f9;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        width: 250px;
-        padding: 15px;
-        display: none;
-        z-index: 10;
-        text-align: left;
-        }
-
-        #notifications-dropdown strong {
-        display: block;
-        margin-bottom: 5px;
-        }
-
-        .notification-item {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        padding: 3px 0;
-        }
-
-        .notification-item.title {
-        font-weight: bold;
-        margin-top: 5px;
-        }
-
-        .notification-item.message {
-        color: #555;
-        font-size: 0.9em;
-        }
-
-        #notifications-dropdown hr {
-        margin-top: 8px;
-        margin-bottom: 8px;
-        }
-
-        #notifications-dropdown a {
-        display: block;
-        margin-top: 10px;
-        font-size: 0.8em;
-        text-align: right;
-        color: #007bff;
-        text-decoration: none;
-        }
-
-        /* ======================= User ====================== */
-        .user {
-        position: relative;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        overflow: hidden;
-        cursor: pointer;
-        }
-
-
-        .user img {
-        position: absolute;
-        justify-items: end;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        }
-
-        /* Settings */
+        /* ======================= Settings Page Specific Styles ====================== */
         .settings-container {
-        background-color: #fff;
-        border-radius: 12px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        padding: 30px;
-        width: 90%;
-        max-width: 800px;
-        margin-top: 70px;
-        margin-bottom: 70px;
-        justify-self: center;
+            background-color: var(--white);
+            border-radius: 10px; /* Consistent radius */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); /* Consistent shadow */
+            padding: 30px;
+            width: 95%; /* Use percentage */
+            max-width: 800px; /* Max width */
+            margin: 20px auto; /* Center the container */
         }
-
-        h2 {
-        color: #333;
-        margin-bottom: 30px;
-        text-align: center;
+        .settings-container h2 {
+            color: var(--blue);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            text-align: left; /* Align title left */
+            font-size: 1.6rem;
         }
-
         .setting-group {
-        margin-bottom: 25px;
-        padding-bottom: 25px;
-        border-bottom: 1px solid #eee;
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #eee;
         }
-
-        .setting-group:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
-        padding-bottom: 0;
+        .setting-group:last-of-type { /* Use last-of-type for better accuracy */
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
         }
-
         .setting-title {
-        color: #555;
-        margin-bottom: 15px;
-        font-size: 1.1em;
-        font-weight: bold;
+            color: var(--black1); /* Darker title */
+            margin-bottom: 20px;
+            font-size: 1.2rem; /* Adjust size */
+            font-weight: 600; /* Bolder */
         }
-
         .setting-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px; /* Increased spacing */
+            gap: 15px; /* Add gap between label and control */
+            flex-wrap: wrap; /* Allow wrapping on small screens */
         }
-
         .setting-label {
-        color: #777;
-        flex-grow: 1;
+            color: #555; /* Slightly darker label */
+            flex-basis: 200px; /* Give label a base width */
+            flex-grow: 1; /* Allow label to grow */
+            font-weight: 500;
         }
-
         .setting-control {
-        flex-shrink: 0;
+            flex-basis: 250px; /* Give control a base width */
+            flex-grow: 1; /* Allow control to grow */
+            max-width: 350px; /* Limit max width of controls */
         }
-
         /* Input styles */
-        input[type="text"],
-        input[type="email"],
-        input[type="password"],
-        select {
-            padding: 10px;
+        .setting-control input[type="text"],
+        .setting-control input[type="email"],
+        .setting-control input[type="password"],
+        .setting-control select {
+            width: 100%; /* Make input fill its container */
+            padding: 10px 12px;
             border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
-            width: 250px;
-            color: #555;
+            border-radius: 6px;
+            font-size: 1rem;
+            color: #333;
         }
-
-        select {
-        appearance: none;
-        background-image: url('currency.jpg');
-        background-repeat: no-repeat;
-        background-position: right 10px center;
-        background-size: 16px;
-        padding-right: 30px;
+        .setting-control select {
+            appearance: none;
+            /* Simple background arrow */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236c757d' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 12px;
+            padding-right: 30px;
         }
-
-        input[type="checkbox"] {
-        width: 20px;
-        height: 20px;
-        cursor: pointer;
-        }
-
+         /* Toggle Switch */
         .toggle-switch {
-        position: relative;
-        display: inline-block;
-        width: 50px;
-        height: 28px;
+            position: relative;
+            display: inline-block;
+            width: 50px; /* Adjust size */
+            height: 26px; /* Adjust size */
+            flex-shrink: 0; /* Prevent switch from shrinking */
         }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 26px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--blue); }
+        input:focus + .slider { box-shadow: 0 0 1px var(--blue); }
+        input:checked + .slider:before { transform: translateX(24px); }
 
-        .toggle-switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
+        /* Save Button */
+        .settings-container button#save-button { /* Specific selector */
+            background-color: var(--green);
+            color: white;
+            border: none;
+            padding: 10px 25px; /* Adjust padding */
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+            margin-top: 10px; /* Reduced top margin */
+            display: block; /* Make it block level */
+            margin-left: auto; /* Push to the right */
+            margin-right: 0;
         }
-
-        .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #ccc;
-        transition: .4s;
-        border-radius: 34px;
+        .settings-container button#save-button:hover {
+            background-color: #157347; /* Darker green */
         }
-
-        .slider:before {
-        position: absolute;
-        content: "";
-        height: 20px;
-        width: 20px;
-        left: 4px;
-        bottom: 4px;
-        background-color: white;
-        transition: .4s;
-        border-radius: 50%;
+        .alert { /* For success/error messages (optional display) */
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
         }
+        .alert.success { background-color: #d1e7dd; color: #0f5132; }
+        .alert.error { background-color: #f8d7da; color: #842029; }
 
-        input:checked + .slider {
-        background-color: #007bff;
+        /* =================== Modal Styles (Success, Error, Sign Out) ================== */
+        /* --- Standard Modal Styles --- */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); }
+        .modal.show { display: flex; justify-content: center; align-items: center; animation: fadeInBg 0.3s ease-out; }
+        .modal-content { background-color: #fefefe; margin: auto; padding: 25px; border: none; width: 90%; max-width: 450px; border-radius: 8px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2); position: relative; animation: modalFadeIn 0.3s ease-out; }
+        .modal-header { padding-bottom: 15px; border-bottom: 1px solid #eee; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .modal-title { font-size: 1.4rem; color: var(--blue); font-weight: 600; margin: 0; }
+        .modal-body { font-size: 1rem; color: #555; margin-bottom: 25px; line-height: 1.6; }
+        .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; padding-top: 15px; border-top: 1px solid #eee; }
+        .modal-button { border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 1rem; font-weight: 500; transition: all 0.2s ease; }
+        /* Specific Button Styles */
+        #signOutModal .yes-button, #errorModal .modal-button { background-color: #dc3545; color: white; }
+        #signOutModal .yes-button:hover, #errorModal .modal-button:hover { background-color: #c82333; }
+        #signOutModal .no-button { background-color: #6c757d; color: white; }
+        #signOutModal .no-button:hover { background-color: #5a6268; }
+        #successModal .modal-button { background-color: var(--green); color: white; }
+        #successModal .modal-button:hover { background-color: #157347; }
+
+        .close-button { /* Style for X button in modals */
+            font-size: 28px; font-weight: bold; color: #aaa; cursor: pointer; line-height: 1; background: none; border: none; padding: 0;
         }
+        .close-button:hover { color: #333; }
 
-        input:focus + .slider {
-        box-shadow: 0 0 1px #007bff;
+
+        /* =================== Responsive Design ================== */
+        /* --- Standard Responsive Styles --- */
+        @media (max-width: 991px) {
+            .navigation { width: 80px; }
+            .navigation.active { width: 300px; }
+            .main { width: calc(100% - 80px); left: 80px; }
+            .main.active { width: calc(100% - 300px); left: 300px; }
+            .search-container { max-width: 400px; }
+            .settings-container { width: 90%; }
         }
+        @media (max-width: 768px) {
+            .navigation { left: -300px; width: 300px; }
+            .navigation.active { left: 0; width: 300px; }
+            .main { width: 100%; left: 0; }
+            .main.active { width: 100%; left: 0; }
+            .toggle { z-index: 101; color: var(--blue); }
+            .topbar { padding: 0 10px; }
+            .search-container { max-width: 300px; }
+            .user-info .name { display: none; }
 
-        input:checked + .slider:before {
-        transform: translateX(22px);
+            .settings-container { margin: 15px auto; padding: 20px; width: 95%;}
+            .setting-item { flex-direction: column; align-items: flex-start; gap: 8px; } /* Stack items vertically */
+            .setting-control { max-width: 100%; width: 100%; flex-basis: auto; } /* Control takes full width */
+            .setting-label { flex-basis: auto; margin-bottom: 5px;}
+            .settings-container button#save-button { width: 100%; margin-top: 20px; } /* Full width save button */
         }
+        @media (max-width: 480px) {
+             .topbar { padding: 5px 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+             .toggle { order: 1; flex-shrink: 0; }
+             .mail-container, .notification-container, .user-info { order: 2; margin: 0 3px; flex-shrink: 0; }
+             .search-container { order: 3; width: 100%; margin: 8px 0 5px 0; }
+             .search-container label input { font-size: 14px; height: 36px; padding-left: 30px; }
+             .search-container label ion-icon { font-size: 16px; left: 8px; }
+             #search-results { top: calc(100% + 1px); width: 100%; left: 0; right: 0; }
+             .user-info .name { display: none; }
+             .user { width: 35px; height: 35px; min-width: 35px; }
+             #mail-icon-inbox, #notification-icon { font-size: 22px; padding: 4px;}
+             #unread-mail-badge, #notification-badge { width: 14px; height: 14px; line-height: 14px; font-size: 10px; top: -1px; right: -1px;}
 
-        button {
-        background-color: #28a745;
-        color: white;
-        border: none;
-        padding: 12px 20px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 16px;
-        transition: background-color 0.3s ease;
-        margin-top: 20px;
+             .settings-container { padding: 15px; margin: 10px auto; width: 95%;}
+             .settings-container h2 { font-size: 1.4rem; }
+             .setting-title { font-size: 1.1rem; margin-bottom: 15px; }
+             .setting-control input, .setting-control select { font-size: 0.95rem; padding: 8px 10px; }
+             .modal-content { width: 95%; padding: 20px; }
+             .modal-title { font-size: 1.2rem; }
+             .modal-body { font-size: 0.95rem; }
+             .modal-button { padding: 8px 15px; font-size: 0.9rem; }
         }
-
-        button:hover {
-        background-color: #1e7e34;
-        }
-
-        /* Modal Styles */
-        .modal {
-        display: none;
-        position: fixed; 
-        z-index: 1; 
-        left: 0;
-        top: 0;
-        width: 100%; 
-        height: 100%; 
-        overflow: auto; 
-        background-color: rgba(0,0,0,0.4); 
-        }
-
-        .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto; 
-        padding: 20px;
-        border: 1px solid #888;
-        width: 30%; 
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        position: relative;
-        }
-
-        .modal-header {
-        padding: 10px 0;
-        border-bottom: 1px solid #eee;
-        margin-bottom: 15px;
-        }
-
-        .modal-title {
-        font-size: 1.2em;
-        color: #333;
-        font-weight: bold;
-        }
-
-        .modal-body {
-        padding: 15px 0;
-        }
-
-        .modal-footer {
-        padding-top: 20px;
-        border-top: 1px solid #eee;
-        text-align: center;
-        }
-
-        .modal-button {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-        transition: background-color 0.3s ease;
-        }
-
-        .modal-button:hover {
-        background-color: #0056b3;
-        }
-
-        .close-button {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-        }
-
-        .close-button:hover,
-        .close-button:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-        }
-
-        /* Modal Styles for Sign out*/
-        .modal {
-        display: none; 
-        position: fixed; 
-        z-index: 1000; 
-        left: 0;
-        top: 0;
-        width: 100%; 
-        height: 100%; 
-        overflow: auto; 
-        background-color: rgba(0,0,0,0.4); 
-        backdrop-filter: blur(5px);
-        justify-content: center;
-        align-items: center;
-        }
-
-        .modal.show {
-        display: flex; 
-        }
-
-        .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto; 
-        padding: 30px;
-        border: 1px solid #888;
-        width: 600px; 
-        max-width: 400px; 
-        border-radius: 15px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        position: relative;
-        }
-
-        .modal-header {
-        padding-bottom: 20px;
-        border-bottom: 1px solid #eee;
-        margin-bottom: 20px;
-        }
-
-        .modal-title {
-        font-size: 1.5em;
-        color: #333;
-        font-weight: bold;
-        }
-
-        .modal-body {
-        font-size: 1.1em;
-        color: #555;
-        margin-bottom: 20px;
-        }
-
-        .modal-footer.sign-out-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 15px;
-        }
-
-        .modal-button {
-        background-color: #007bff; 
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-        transition: background-color 0.3s ease;
-        }
-
-        .modal-button:hover {
-        background-color: #0056b3;
-        }
-
-        .modal-button.yes-button {
-        background-color: #203A93;
-        }
-
-        .modal-button.yes-button:hover {
-        background-color: #c82333;
-        }
-
-        .modal-button.no-button {
-        background-color: #F1D27C;
-        }
-
-        .modal-button.no-button:hover {
-        background-color: #5a6268;
-        }
-
     </style>
 </head>
 
 <body>
-    <!-- =============== Navigation ================ -->
-    <div class="container">
+    <div class="container"> <!-- Master container -->
         <div class="navigation">
-            <ul>
+             <ul>
                 <li>
                     <a href="#">
-                        <span class="icon">
-                            <ion-icon name="barbell"></ion-icon>
-                        </span>
+                        <span class="icon"><ion-icon name="barbell"></ion-icon></span>
                         <span class="title">ENERGIZE</span>
                     </a>
                 </li>
-
                 <li>
                     <a href="testadmin.html">
-                        <span class="icon">
-                            <ion-icon name="home-outline"></ion-icon>
-                        </span>
+                        <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
                         <span class="title">Dashboard</span>
                     </a>
                 </li>
-
                 <li>
                     <a href="adminclients.html">
-                        <span class="icon">
-                            <ion-icon name="people-outline"></ion-icon>
-                        </span>
+                        <span class="icon"><ion-icon name="people-outline"></ion-icon></span>
                         <span class="title">Manage Clients</span>
                     </a>
                 </li>
-
                 <li>
                     <a href="admincoaches.html">
-                        <span class="icon">
-                            <ion-icon name="people-outline"></ion-icon>
-                        </span>
+                        <span class="icon"><ion-icon name="people-outline"></ion-icon></span>
                         <span class="title">Manage Coaches</span>
                     </a>
                 </li>
-
                 <li>
-                  <a href="adminguests.html">
-                      <span class="icon">
-                          <ion-icon name="person-add-outline"></ion-icon>
-                      </span>
-                      <span class="title">Manage Guests</span>
-                  </a>
-              </li>
-
-              <li>
-                <a href="adminmanage.html">
-                    <span class="icon">
-                        <ion-icon name="person-add-outline"></ion-icon>
-                    </span>
-                    <span class="title">Manage Admins</span>
-                </a>
-            </li>
-
-                <li>
-                  <a href="admincomplaint.html">
-                      <span class="icon">
-                          <ion-icon name="chatbubble-outline"></ion-icon>
-                      </span>
-                      <span class="title">Complaints/Requests</span>
-                  </a>
-              </li>
-
-                <li>
-                    <a href="adminpayments.html">
-                        <span class="icon">
-                            <ion-icon name="card-outline"></ion-icon>
-                        </span>
-                        <span class="title"> Clients Payments</span>
+                    <a href="adminguests.html">
+                        <span class="icon"><ion-icon name="person-add-outline"></ion-icon></span>
+                        <span class="title">Manage Guests</span>
                     </a>
                 </li>
-
+                <li><a href="adminmanage.html"><span class="icon"><ion-icon name="person-add-outline"></ion-icon></span><span class="title">Manage Admins</span></a></li>
                 <li>
+                    <a href="admincomplaint.html">
+                        <span class="icon"><ion-icon name="chatbubble-outline"></ion-icon></span>
+                        <span class="title">Complaints/Requests</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="adminpayments.html">
+                        <span class="icon"><ion-icon name="card-outline"></ion-icon></span>
+                        <span class="title">Clients Payments</span>
+                    </a>
+                </li>
+                <li class="hovered"> <!-- Mark current page -->
                     <a href="adminsettings.html">
-                        <span class="icon">
-                            <ion-icon name="settings-outline"></ion-icon>
-                        </span>
+                        <span class="icon"><ion-icon name="settings-outline"></ion-icon></span>
                         <span class="title">Settings</span>
                     </a>
                 </li>
-
                 <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="log-out-outline"></ion-icon>
-                        </span>
+                    <a href="#" id="signOutLink"> <!-- Added ID -->
+                        <span class="icon"><ion-icon name="log-out-outline"></ion-icon></span>
                         <span class="title">Sign Out</span>
                     </a>
                 </li>
@@ -842,320 +350,327 @@
 
         <!-- ========================= Main ==================== -->
         <div class="main">
-            <div class="topbar">
-                <div class="toggle">
+             <div class="topbar">
+                 <!-- Standard Topbar HTML -->
+                 <div class="toggle">
                     <ion-icon name="menu-outline"></ion-icon>
-                </div>
+                 </div>
 
                 <div class="search-container">
                     <label>
-                      <input type="text" id="search-input" placeholder="Search what you're looking for">
+                      <input type="text" id="search-input" placeholder="Search...">
                       <ion-icon name="search-outline"></ion-icon>
                     </label>
-                    <div id="search-results">
-                    </div>
-                  </div>
+                    <div id="search-results"></div>
+                </div>
 
-                  
                 <div class="mail-container">
-                    <ion-icon name="mail" id="mail-icon-inbox"></ion-icon>
-                    <div id="unread-notification">1</div>
+                  <ion-icon name="mail-outline" id="mail-icon-inbox"></ion-icon>
+                    <div id="unread-mail-badge">1</div>
                     <div id="inbox-preview">
-                    <strong>Inbox</strong>
-                    <hr>
-                    <div id="unread-messages">
-                        <div class="email-item sender">Clients</div>
-                        <div class="email-item subject">3 complaints were submitted</div>
-                        <hr>
-                    </div>
-                    <div id="read-messages">
-                        <div class="email-item sender">Coach</div>
-                        <div class="email-item subject">Can I ask?</div>
-                    </div>
-                    <a href="#">See All</a>
+                        <strong>Inbox</strong><hr>
+                        <div id="unread-messages">
+                            <div class="email-item sender">System Alert</div>
+                            <div class="email-item subject">Settings Backup Complete</div><hr>
+                        </div>
+                        <div id="read-messages">
+                           <div class="email-item sender">Admin Team</div>
+                           <div class="email-item subject">Weekly Sync Meeting</div>
+                        </div>
+                        <a href="#">See All Mail</a>
                     </div>
                 </div>
 
                 <div class="notification-container">
-                    <ion-icon name="notifications" id="notification-icon"></ion-icon>
+                  <ion-icon name="notifications-outline" id="notification-icon"></ion-icon>
                     <div id="notification-badge">1</div>
                     <div id="notifications-dropdown">
-                      <strong>Notifications</strong>
-                      <hr>
+                      <strong>Notifications</strong><hr>
                       <div id="notification-list">
-                        <div class="notification-item title">Today, 1:00 PM</div>
-                        <div class="notification-item message">New clients added.</div>
-                        <hr>
-                        <div class="notification-item title">Sales Update</div>
-                        <div class="notification-item message">It increased by 25%</div>
-                      </div>
-                      <a href="#">See All</a>
+                        <div class="notification-item title">Security Update</div>
+                        <div class="notification-item message">Password policy enforced.</div><hr>
+                        </div>
+                      <a href="#">See All Notifications</a>
                     </div>
                   </div>
-            
-                <div class="name">
-                    <p>Peter Pan</p>
+
+                <div class="user-info">
+                    <div class="name">Peter Pan</div>
+                    <div class="user">
+                        <img src="assets/img/ramburat.jpg" alt="User Avatar">
+                    </div>
                 </div>
-    
-                <div class="user">
-                  <img src="assets/img/ramburat.jpg" alt="">
-                </div>                
             </div>
 
-            <!-- Settings -->
+            <!-- ======================= Settings Content ====================== -->
             <div class="settings-container">
                 <h2>Admin Settings</h2>
-            
+
+                <!-- Account Info -->
                 <div class="setting-group">
                   <h3 class="setting-title">Account Information</h3>
                   <div class="setting-item">
                     <label class="setting-label" for="username">Username:</label>
-                    <input class="setting-control" type="text" id="username" value="admin123">
+                    <div class="setting-control">
+                        <input type="text" id="username" value="admin123">
+                    </div>
                   </div>
                   <div class="setting-item">
                     <label class="setting-label" for="email">Email:</label>
-                    <input class="setting-control" type="email" id="email" value="admin@example.com">
+                     <div class="setting-control">
+                        <input type="email" id="email" value="admin@example.com">
+                     </div>
                   </div>
                   <div class="setting-item">
                     <label class="setting-label" for="new-password">New Password:</label>
-                    <input class="setting-control" type="password" id="new-password" placeholder="Leave blank to keep current">
+                     <div class="setting-control">
+                        <input type="password" id="new-password" placeholder="Leave blank to keep current">
+                     </div>
                   </div>
                   <div class="setting-item">
                     <label class="setting-label" for="confirm-password">Confirm New Password:</label>
-                    <input class="setting-control" type="password" id="confirm-password" placeholder="Confirm new password">
+                     <div class="setting-control">
+                        <input type="password" id="confirm-password" placeholder="Confirm new password">
+                     </div>
                   </div>
                 </div>
-            
+
+                <!-- Gym Settings -->
                 <div class="setting-group">
                   <h3 class="setting-title">Gym Settings</h3>
                   <div class="setting-item">
                     <label class="setting-label" for="gym-name">Gym Name:</label>
-                    <input class="setting-control" type="text" id="gym-name" value="Energize Fitness">
+                     <div class="setting-control">
+                        <input type="text" id="gym-name" value="Energize Fitness">
+                     </div>
                   </div>
                   <div class="setting-item">
                     <label class="setting-label" for="currency">Currency:</label>
-                    <select class="setting-control" id="currency">
-                      <option value="PHP" selected>Philippine Peso (PHP)</option>
-                      <option value="USD">US Dollar (USD)</option>
-                      <option value="EUR">Euro (EUR)</option>
-                    </select>
+                     <div class="setting-control">
+                        <select id="currency">
+                          <option value="PHP" selected>Philippine Peso (PHP)</option>
+                          <option value="USD">US Dollar (USD)</option>
+                          <option value="EUR">Euro (EUR)</option>
+                        </select>
+                     </div>
                   </div>
                   <div class="setting-item">
                     <label class="setting-label">Allow New Registrations:</label>
-                    <label class="toggle-switch setting-control">
-                      <input type="checkbox" id="allow-registration" checked>
-                      <span class="slider"></span>
-                    </label>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="allow-registration" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
                   </div>
                 </div>
-            
+
+                <!-- Notification Settings -->
                 <div class="setting-group">
                   <h3 class="setting-title">Notification Settings</h3>
                   <div class="setting-item">
                     <label class="setting-label">Email Notifications:</label>
-                    <label class="toggle-switch setting-control">
-                      <input type="checkbox" id="email-notifications">
-                      <span class="slider"></span>
-                    </label>
+                     <div class="setting-control">
+                        <label class="toggle-switch">
+                          <input type="checkbox" id="email-notifications">
+                          <span class="slider"></span>
+                        </label>
+                     </div>
                   </div>
                   <div class="setting-item">
                     <label class="setting-label">SMS Notifications:</label>
-                    <label class="toggle-switch setting-control">
-                      <input type="checkbox" id="sms-notifications" checked>
-                      <span class="slider"></span>
-                    </label>
+                     <div class="setting-control">
+                        <label class="toggle-switch">
+                          <input type="checkbox" id="sms-notifications" checked>
+                          <span class="slider"></span>
+                        </label>
+                     </div>
                   </div>
                 </div>
-            
+
+                <!-- Save Button -->
                 <button id="save-button">Save Changes</button>
-                <div id="message" class="alert" style="display:none;"></div>
+                <div id="message" class="alert" style="display:none;"></div> <!-- Optional message area -->
 
-                <div id="successModal" class="modal">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <span class="close-button" id="closeModal">&times;</span>
-                        <h2 class="modal-title">Success</h2>
-                      </div>
-                      <div class="modal-body">
-                        <p>Settings saved successfully!</p>
-                      </div>
-                      <div class="modal-footer">
-                        <button class="modal-button" id="okayButton">Okay</button>
-                      </div>
-                    </div>
-                  </div>
-              
-                  <div id="errorModal" class="modal">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <span class="close-button" id="closeErrorModal">&times;</span>
-                        <h2 class="modal-title">Error</h2>
-                      </div>
-                      <div class="modal-body">
-                        <p id="errorMessage"></p>
-                      </div>
-                      <div class="modal-footer">
-                        <button class="modal-button" id="errorOkayButton">Okay</button>
-                      </div>
-                    </div>
-                  </div>
+            </div> <!-- End settings-container -->
 
+
+            <!-- Success Modal -->
+            <div id="successModal" class="modal">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h2 class="modal-title">Success</h2>
+                    <button class="close-button" id="closeModal">×</button>
+                  </div>
+                  <div class="modal-body">
+                    <p>Settings saved successfully!</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="modal-button" id="okayButton">Okay</button>
+                  </div>
+                </div>
             </div>
 
-                  <div id="signOutModal" class="modal">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h2 class="modal-title">Sign Out</h2>
-                      </div>
-                      <div class="modal-body">
-                        <p>Are you sure you want to sign out?</p>
-                      </div>
-                      <div class="modal-footer sign-out-actions">
-                        <button class="modal-button no-button" id="signOutNo">No</button>
-                        <button class="modal-button yes-button" id="signOutYes">Yes</button>
-                      </div>
-                    </div>
+            <!-- Error Modal -->
+            <div id="errorModal" class="modal">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h2 class="modal-title">Error</h2>
+                     <button class="close-button" id="closeErrorModal">×</button>
                   </div>
-            
-              </div>
+                  <div class="modal-body">
+                    <p id="errorMessage"></p>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="modal-button" id="errorOkayButton">Okay</button>
+                  </div>
+                </div>
+            </div>
 
-            <script>
-                let list = document.querySelectorAll(".navigation li");
-    
-                function activeLink() {
-                list.forEach((item) => {
-                    item.classList.remove("hovered");
-                });
-                this.classList.add("hovered");
-                }
-    
-                list.forEach((item) => item.addEventListener("click", activeLink));
-    
-                // Menu Toggle (remains the same)
-                let toggle = document.querySelector(".toggle");
-                let navigation = document.querySelector(".navigation");
-                let main = document.querySelector(".main");
-    
-                toggle.onclick = function () {
-                navigation.classList.toggle("active");
-                main.classList.toggle("active");
+            <!-- Sign Out Modal -->
+            <div id="signOutModal" class="modal">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h2 class="modal-title">Sign Out</h2>
+                    <!-- Optional Close Button -->
+                     <!-- <button class="close-button" id="signOutModalClose">×</button> -->
+                  </div>
+                  <div class="modal-body">
+                    <p>Are you sure you want to sign out?</p>
+                  </div>
+                  <div class="modal-footer sign-out-actions">
+                    <button class="modal-button no-button" id="signOutNo">No</button>
+                    <button class="modal-button yes-button" id="signOutYes">Yes</button>
+                  </div>
+                </div>
+            </div>
+
+        </div> <!-- End .main -->
+    </div> <!-- End .container -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() { // Wrap all JS
+
+            // =============== Navigation & Top Bar Logic (Standard) ===============
+            const navigation = document.querySelector(".navigation");
+            const main = document.querySelector(".main");
+            const toggle = document.querySelector(".toggle");
+            const listItems = document.querySelectorAll(".navigation li");
+
+            if (toggle && navigation && main) {
+                toggle.onclick = () => {
+                    navigation.classList.toggle("active");
+                    main.classList.toggle("active");
                 };
-    
-                //Search Function
-                const searchInput = document.getElementById('search-input');
-                const searchResultsDiv = document.getElementById('search-results');
-    
-                const searchData = [
-                "Total Sales",
-                "Total Clients",
-                "Settings",
-                "Total Coaches",
-                "Payments",
-                "Recent Complaints",
-                "Admin Dashboard",
-                "Updates",
-                "Database Updates",
-                "Added Admins"
-                ];
-    
+            }
+            listItems.forEach(item => item.addEventListener("click", function() {
+                 listItems.forEach(li => li.classList.remove("hovered"));
+                 this.classList.add("hovered");
+            }));
+
+            // Top Bar Search
+            const searchInput = document.getElementById('search-input');
+            const searchResultsDiv = document.getElementById('search-results');
+            const siteSearchData = [ /* Add relevant search items */ { name: "Account Settings", action: () => { document.getElementById('username').focus(); } }, { name: "Gym Settings", action: () => { document.getElementById('gym-name').focus(); } }, { name: "Notifications", action: () => { /* scroll? */ } }, { name: "Payments", link: "adminpayments.html" } ];
+            if(searchInput && searchResultsDiv) {
                 searchInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                const filteredResults = searchData.filter(item =>
-                    item.toLowerCase().includes(searchTerm)
-                );
-    
-                displayResults(filteredResults);
+                    const term = this.value.toLowerCase().trim();
+                    const results = siteSearchData.filter(item => term && item.name.toLowerCase().includes(term));
+                    displaySearchResults(results);
                 });
-    
-                function displayResults(results) {
+                 const searchIcon = searchInput.closest('label').querySelector('ion-icon');
+                 if(searchIcon) searchIcon.onclick = () => searchInput.focus();
+            }
+            function displaySearchResults(results) {
                 searchResultsDiv.innerHTML = '';
-    
-                if (results.length > 0 && searchInput.value.trim() !== '') {
+                if (results.length > 0) {
                     const ul = document.createElement('ul');
                     results.forEach(result => {
-                    const li = document.createElement('li');
-                    li.textContent = result;
-                    li.addEventListener('click', function() {
-                        searchInput.value = this.textContent;
-                        searchResultsDiv.style.display = 'none'; 
-                    });
-                    ul.appendChild(li);
+                        const li = document.createElement('li');
+                        li.textContent = result.name;
+                        li.onclick = () => {
+                            searchInput.value = result.name;
+                            searchResultsDiv.style.display = 'none';
+                            if (result.link && result.link !== "#") window.location.href = result.link;
+                            else if (result.action) result.action();
+                        };
+                        ul.appendChild(li);
                     });
                     searchResultsDiv.appendChild(ul);
-                    searchResultsDiv.style.display = 'block'; 
+                    searchResultsDiv.style.display = 'block';
                 } else {
                     searchResultsDiv.style.display = 'none';
                 }
-                }
-    
-                document.addEventListener('click', function(event) {
-                if (!event.target.closest('.search-container')) {
-                    searchResultsDiv.style.display = 'none';
-                }
-                });
-    
-                //Mail Function
-                const mailIconInbox = document.getElementById('mail-icon-inbox');
-                const unreadNotification = document.getElementById('unread-notification');
-                const inboxPreview = document.getElementById('inbox-preview');
-                let hasUnread = true; 
-    
-                function updateUnreadIndicator() {
-                unreadNotification.style.display = hasUnread ? 'block' : 'none';
-                }
-    
-                updateUnreadIndicator();
-    
-                mailIconInbox.addEventListener('click', function() {
-                inboxPreview.style.display = (inboxPreview.style.display === 'block' ? 'none' : 'block');
-    
-                if (hasUnread && inboxPreview.style.display === 'block') {
-                    hasUnread = false;
-                    updateUnreadIndicator();
-                ad
-                    console.log('Mail icon clicked - marking as read');
-                }
-                });
-    
-    
-                document.addEventListener('click', function(event) {
-                if (!event.target.closest('.mail-container')) {
-                    inboxPreview.style.display = 'none';
-                }
-                });
-    
-    
-                //Notification Function
-                const notificationIcon = document.getElementById('notification-icon');
-                const notificationBadge = document.getElementById('notification-badge');
-                const notificationsDropdown = document.getElementById('notifications-dropdown');
-    
-                notificationIcon.addEventListener('click', function() {
-                notificationsDropdown.style.display = (notificationsDropdown.style.display === 'block' ? 'none' : 'block');
-                
-                notificationBadge.style.display = 'none';
-                });
-    
-    
-                document.addEventListener('click', function(event) {
-                if (!event.target.closest('.notification-container')) {
-                    notificationsDropdown.style.display = 'none';
-                }
-                });
+            }
 
-                //Settings Function
-                document.addEventListener('DOMContentLoaded', function() {
-                const saveButton = document.getElementById('save-button');
-                const successModal = document.getElementById('successModal');
-                const errorModal = document.getElementById('errorModal');
-                const closeModalButton = document.getElementById('closeModal');
-                const okayButton = document.getElementById('okayButton');
-                const closeErrorModalButton = document.getElementById('closeErrorModal');
-                const errorOkayButton = document.getElementById('errorOkayButton');
-                const errorMessageDisplay = document.getElementById('errorMessage');
-                const passwordInput = document.getElementById('new-password');
-                const confirmPasswordInput = document.getElementById('confirm-password');
+             // Mail Dropdown
+            const mailIconInbox = document.getElementById('mail-icon-inbox');
+            const unreadMailBadge = document.getElementById('unread-mail-badge');
+            const inboxPreview = document.getElementById('inbox-preview');
+            let hasUnreadMail = false; // Example (set based on actual data)
+            if (mailIconInbox && unreadMailBadge && inboxPreview) {
+                const updateMailBadge = () => { unreadMailBadge.style.display = hasUnreadMail ? 'block' : 'none'; }
+                updateMailBadge();
+                mailIconInbox.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    inboxPreview.style.display = inboxPreview.style.display === 'block' ? 'none' : 'block';
+                    if (document.getElementById('notifications-dropdown')) document.getElementById('notifications-dropdown').style.display = 'none'; // Close other dropdown
+                    if (hasUnreadMail && inboxPreview.style.display === 'block') { hasUnreadMail = false; updateMailBadge(); }
+                });
+            }
 
+             // Notification Dropdown
+            const notificationIcon = document.getElementById('notification-icon');
+            const notificationBadge = document.getElementById('notification-badge');
+            const notificationsDropdown = document.getElementById('notifications-dropdown');
+            let hasNewNotifications = true; // Example
+             if (notificationIcon && notificationBadge && notificationsDropdown) {
+                 const updateNotifBadge = () => { notificationBadge.style.display = hasNewNotifications ? 'block' : 'none'; }
+                 updateNotifBadge();
+                 notificationIcon.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    notificationsDropdown.style.display = notificationsDropdown.style.display === 'block' ? 'none' : 'block';
+                     if (inboxPreview) inboxPreview.style.display = 'none'; // Close other dropdown
+                    if (hasNewNotifications && notificationsDropdown.style.display === 'block') { hasNewNotifications = false; updateNotifBadge(); }
+                 });
+             }
+
+            // Hide dropdowns/search results on outside click
+             document.addEventListener('click', (event) => {
+                if (searchResultsDiv && !event.target.closest('.search-container')) searchResultsDiv.style.display = 'none';
+                if (inboxPreview && !event.target.closest('.mail-container')) inboxPreview.style.display = 'none';
+                if (notificationsDropdown && !event.target.closest('.notification-container')) notificationsDropdown.style.display = 'none';
+            });
+
+
+            // =============== Settings Page Specific Logic ===============
+            const saveButton = document.getElementById('save-button');
+            const successModal = document.getElementById('successModal');
+            const errorModal = document.getElementById('errorModal');
+            const closeModalButton = document.getElementById('closeModal');
+            const okayButton = document.getElementById('okayButton');
+            const closeErrorModalButton = document.getElementById('closeErrorModal');
+            const errorOkayButton = document.getElementById('errorOkayButton');
+            const errorMessageDisplay = document.getElementById('errorMessage');
+            const passwordInput = document.getElementById('new-password');
+            const confirmPasswordInput = document.getElementById('confirm-password');
+
+            function showModal(modalElement) {
+               if(modalElement) modalElement.classList.add('show');
+            }
+            function hideModal(modalElement) {
+               if(modalElement) modalElement.classList.remove('show');
+            }
+            function showErrorModal(message) {
+                if(errorMessageDisplay && errorModal) {
+                    errorMessageDisplay.textContent = message;
+                    showModal(errorModal);
+                } else {
+                    alert(message); // Fallback
+                }
+            }
+
+            if(saveButton) {
                 saveButton.addEventListener('click', function() {
                     const username = document.getElementById('username').value;
                     const email = document.getElementById('email').value;
@@ -1167,109 +682,88 @@
                     const emailNotifications = document.getElementById('email-notifications').checked;
                     const smsNotifications = document.getElementById('sms-notifications').checked;
 
-                    if (newPassword !== confirmPassword) {
-                    showErrorModal('Passwords do not match!');
-                    return;
+                    // Basic Validation
+                    if (newPassword && newPassword !== confirmPassword) {
+                        showErrorModal('Passwords do not match!');
+                        return;
+                    }
+                    if (!username || !email || !gymName) {
+                         showErrorModal('Please fill in all required fields (Username, Email, Gym Name).');
+                         return;
                     }
 
+
+                    // Prepare data (exclude password if blank)
                     const settingsData = {
-                    username: username,
-                    email: email,
-                    newPassword: newPassword,
-                    gymName: gymName,
-                    currency: currency,
-                    allowRegistration: allowRegistration,
-                    emailNotifications: emailNotifications,
-                    smsNotifications: smsNotifications
+                        username: username,
+                        email: email,
+                        gymName: gymName,
+                        currency: currency,
+                        allowRegistration: allowRegistration,
+                        emailNotifications: emailNotifications,
+                        smsNotifications: smsNotifications
                     };
+                    if (newPassword) {
+                        settingsData.newPassword = newPassword; // Only include if set
+                    }
 
+                    // Simulate saving
                     console.log('Settings data to be saved:', settingsData);
+                    // ** Replace console.log with your actual API call to save data **
 
-                    showSuccessModal();
+                    // Show success
+                    if(successModal) showModal(successModal);
 
-                    passwordInput.value = '';
-                    confirmPasswordInput.value = '';
-                     });
+                    // Clear password fields after simulated save
+                    if(passwordInput) passwordInput.value = '';
+                    if(confirmPasswordInput) confirmPasswordInput.value = '';
+                 });
+             }
 
-                    function showSuccessModal() {
-                        successModal.style.display = "block";
-                    }
+            // Listeners for closing modals
+             if(closeModalButton) closeModalButton.addEventListener('click', () => hideModal(successModal));
+             if(okayButton) okayButton.addEventListener('click', () => hideModal(successModal));
+             if(closeErrorModalButton) closeErrorModalButton.addEventListener('click', () => hideModal(errorModal));
+             if(errorOkayButton) errorOkayButton.addEventListener('click', () => hideModal(errorModal));
 
-                    function showErrorModal(message) {
-                        errorMessageDisplay.textContent = message;
-                        errorModal.style.display = "block";
-                    }
+            // Close modals on outside click
+            window.addEventListener('click', function(event) {
+                if (event.target === successModal) hideModal(successModal);
+                if (event.target === errorModal) hideModal(errorModal);
+                if (event.target === document.getElementById('signOutModal')) hideModal(document.getElementById('signOutModal')); // Close signout modal too
+            });
 
-                    closeModalButton.addEventListener('click', function() {
-                        successModal.style.display = "none";
-                    });
+            // =============== Sign Out Modal Logic (Standard) ===============
+            const signOutLink = document.getElementById('signOutLink');
+            const signOutModal = document.getElementById('signOutModal');
+            const signOutYesButton = document.getElementById('signOutYes');
+            const signOutNoButton = document.getElementById('signOutNo');
 
-                    okayButton.addEventListener('click', function() {
-                        successModal.style.display = "none";
-                    });
-
-                    closeErrorModalButton.addEventListener('click', function() {
-                        errorModal.style.display = "none";
-                    });
-
-                    errorOkayButton.addEventListener('click', function() {
-                        errorModal.style.display = "none";
-                    });
-
-                    window.addEventListener('click', function(event) {
-                        if (event.target == successModal) {
-                        successModal.style.display = "none";
-                        }
-                        if (event.target == errorModal) {
-                        errorModal.style.display = "none";
-                        }
-                    });
-                    });
-
-                    //Sign out
-                    document.addEventListener('DOMContentLoaded', function() {
-                    const signOutLink = document.querySelector('.navigation ul li:last-child a');
-                    const signOutModal = document.getElementById('signOutModal');
-                    const signOutYesButton = document.getElementById('signOutYes');
-                    const signOutNoButton = document.getElementById('signOutNo');
-
-                    if (signOutLink) {
-                    signOutLink.addEventListener('click', function(event) {
-                        event.preventDefault();
-                        showModal(signOutModal);
-                    });
-                    } else {
-                    console.error("Sign Out link not found!");
-                    }
-
-                    signOutYesButton.addEventListener('click', function() {
-                    window.location.href = 'index.html';
-                    });
-
-                    signOutNoButton.addEventListener('click', function() {
-                    hideModal(signOutModal);
-                    });
-
-                    window.addEventListener('click', function(event) {
-                    if (event.target == signOutModal) {
-                        hideModal(signOutModal);
-                    }
-                    });
-
-                    // Helper functions for showing and hiding the modal
-                    function showModal(modalElement) {
-                    modalElement.classList.add('show');
-                    }
-
-                    function hideModal(modalElement) {
-                    modalElement.classList.remove('show');
-                    }
+            if (signOutLink && signOutModal && signOutYesButton && signOutNoButton) {
+                signOutLink.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    showModal(signOutModal);
                 });
-            </script>
+                signOutYesButton.addEventListener('click', function() {
+                    console.log("Signing out...");
+                    window.location.href = 'index.html'; // Redirect
+                });
+                signOutNoButton.addEventListener('click', () => hideModal(signOutModal));
+            }
 
-<!-- ====== ionicons ======= -->
-<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+            // Close modals with Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === "Escape") {
+                    document.querySelectorAll('.modal.show').forEach(hideModal);
+                }
+            });
+
+        }); // End DOMContentLoaded
+    </script>
+
+    <!-- ====== ionicons ======= -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
 
 </html>
