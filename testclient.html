@@ -45,18 +45,21 @@
         /* =============== Navigation ================ */
         .navigation {
             position: fixed;
-            width: 300px;
-            height: 100%;
-            background: var(--blue);
-            border-left: 10px solid var(--blue);
-            transition: 0.5s;
-            overflow-y: auto; /* Allow scrolling */
-            overflow-x: hidden;
-            z-index: 100;
+    width: 300px;
+    height: 100%;
+    background: var(--blue);
+    border-left: 10px solid var(--blue);
+    /* MODIFIED: Added 'left' to transition */
+    transition: width 0.5s, left 0.5s;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 100;
+    left: 0; /* Default desktop position */
         }
         .navigation.active {
-            width: 80px;
-        }
+    width: 80px;
+    /* 'left' will be handled by default or media query */
+}
 
         .navigation ul {
             position: absolute;
@@ -134,18 +137,20 @@
 
         /* ===================== Main ===================== */
         .main {
-            position: absolute;
-            width: calc(100% - 300px);
-            left: 300px;
-            min-height: 100vh;
-            background: var(--white); /* Consistent background */
-            transition: 0.5s;
-            padding: 20px;
-        }
-        .main.active {
-            width: calc(100% - 80px);
-            left: 80px;
-        }
+    position: absolute;
+    width: calc(100% - 300px);
+    left: 300px; /* Default desktop position */
+    min-height: 100vh;
+    background: var(--white);
+    /* MODIFIED: Added 'left' to transition */
+    transition: width 0.5s, left 0.5s;
+    padding: 20px;
+}
+.main.active {
+    width: calc(100% - 80px);
+    left: 80px; /* Default active desktop/tablet position */
+}
+
 
         /* ===================== Topbar ===================== */
         .topbar {
@@ -453,25 +458,150 @@
         }
 
         @media (max-width: 767px) { /* Small Tablets / Large Phones */
-            /* ... other rules ... */
+            .navigation {
+        /* Start hidden off-screen with collapsed width */
+        left: -80px;
+        width: 80px;
+        /* Optional: hide the thick border when fully hidden */
+        /* border-left: none; */
+    }
+    .navigation.active {
+        /* Slide into view when active */
+        left: 0;
+        width: 80px; /* Ensure it stays collapsed */
+         /* Optional: restore border if hidden above */
+        /* border-left: 10px solid var(--blue); */
+    }
 
-             /* --- FIX: Stack CardBox earlier --- */
-            .cardBox {
-                grid-template-columns: 1fr; /* Stack cards into a single column */
-                gap: 15px; /* Adjust gap for single column */
-            }
-            /* --- End FIX --- */
+    .main {
+        /* Take full width when nav is hidden */
+        width: 100%;
+        left: 0;
+    }
+    .main.active {
+        /* Shift over when nav becomes active */
+        width: calc(100% - 80px);
+        left: 80px;
+    }
 
-            .dashboard-grid {
-                grid-template-columns: 1fr; /* Explicitly stack widgets */
-            }
-            /* Reset any specific column spans */
-             .weekly-schedule { grid-column: auto; }
-             .coach-info-section { grid-column: auto; }
-             /* ... reset other spans if needed */
+    /* Keep existing 767px rules */
+    .cardBox {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    .weekly-schedule { grid-column: auto; }
+    .coach-info-section { grid-column: auto; }
+    .coach-actions { justify-content: center; }
 
-             .coach-actions { justify-content: center; } /* Center buttons when stacked */
-        }
+    .user-info {
+        /* Remove gap as there's only one item (the image) left */
+        gap: 0;
+        margin-left: 10px; /* Keep some margin from icons */
+        /* Ensure it doesn't take unnecessary space */
+        flex-shrink: 0;
+    }
+    .user-info .name {
+        /* Hide the name completely */
+        display: none;
+    }
+    .user {
+        /* Keep or adjust image size as needed */
+        width: 35px;
+        height: 35px;
+        min-width: 35px;
+    }
+    /* --- End FIX --- */
+
+    /* --- Sidebar/Main content rules from previous step --- */
+    .navigation {
+        left: -80px;
+        width: 80px;
+    }
+    .navigation.active {
+        left: 0;
+        width: 80px;
+    }
+    .main {
+        width: 100%;
+        left: 0;
+    }
+    .main.active {
+        width: calc(100% - 80px);
+        left: 80px;
+    }
+    /* --- End Sidebar/Main --- */
+
+
+    /* Keep existing 767px rules for cards, dashboard grid etc. */
+    .cardBox {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    .weekly-schedule { grid-column: auto; }
+    .coach-info-section { grid-column: auto; }
+    .coach-actions { justify-content: center; }
+}
+
+
+@media (max-width: 479px) { /* Phones */
+     /* --- Refine Topbar Wrapping --- */
+     .topbar {
+        flex-wrap: wrap;
+        height: auto;
+        padding-bottom: 10px;
+        gap: 5px 10px;
+     }
+     .toggle { order: 0; flex-basis: auto; }
+     .user-info {
+         order: 1;
+         margin-left: 0; /* Remove margin when wrapping */
+         /* No gap needed */
+     }
+     .user {
+         /* Adjust size for smallest screens if needed */
+         width: 30px;
+         height: 30px;
+         min-width: 30px;
+     }
+     /* Name is already hidden by the 767px rule */
+     .topbar-icons { order: 2; margin-left: auto; /* Push right */ }
+     .search-container {
+         order: 3;
+         width: 100%;
+         margin: 5px 0 0 0;
+         max-width: none;
+     }
+     /* --- End Topbar Wrapping --- */
+
+
+    /* Keep other existing 479px rules */
+    .cardBox {
+         grid-template-columns: 1fr;
+         gap: 10px;
+    }
+    .cardBox .card { padding: 15px; }
+    .cardBox .card .numbers { font-size: 1.6rem; }
+    .cardBox .card .cardName { font-size: 0.85rem; }
+    .cardBox .card .iconBx { font-size: 2.2rem; }
+
+    .widget { padding: 15px; }
+    .widget h3 { font-size: 1.1rem; }
+    .button { width: 100%; margin-top: 10px;}
+    .widget .button + .button { margin-left: 0; }
+    .goals-section .button { align-self: stretch; }
+    .coach-profile { flex-direction: column; align-items: center; text-align: center;}
+    .coach-avatar { width: 70px; height: 70px;}
+    .schedule-grid { grid-template-columns: repeat(7, minmax(80px, 1fr)); gap: 5px;}
+    .day-header { font-size: 0.8rem; padding: 6px;}
+    .workout-item { font-size: 0.8rem; padding: 6px 8px;}
+}
+        
 
         @media (max-width: 479px) { /* Phones */
             /* ... other rules ... */
@@ -481,24 +611,52 @@
                  grid-template-columns: 1fr; /* Ensure single column */
                  gap: 10px;
             }
-            /* Adjust card padding/fonts */
-             .cardBox .card { padding: 15px; }
-             .cardBox .card .numbers { font-size: 1.6rem; }
-             .cardBox .card .cardName { font-size: 0.85rem; }
-             .cardBox .card .iconBx { font-size: 2.2rem; }
-             /* --- End FIX --- */
+            .cardBox .card { padding: 15px; }
+    .cardBox .card .numbers { font-size: 1.6rem; }
+    .cardBox .card .cardName { font-size: 0.85rem; }
+    .cardBox .card .iconBx { font-size: 2.2rem; }
 
-            .widget { padding: 15px; }
-            .widget h3 { font-size: 1.1rem; }
-            .button { width: 100%; margin-top: 10px;} /* Make buttons full width */
-            .widget .button + .button { margin-left: 0; } /* Remove left margin */
-            .goals-section .button { align-self: stretch; } /* Make update goals full width */
-            .coach-profile { flex-direction: column; align-items: center; text-align: center;}
-            .coach-avatar { width: 70px; height: 70px;}
-            .schedule-grid { grid-template-columns: repeat(7, minmax(80px, 1fr)); gap: 5px;}
-            .day-header { font-size: 0.8rem; padding: 6px;}
-            .workout-item { font-size: 0.8rem; padding: 6px 8px;}
-        }
+    .widget { padding: 15px; }
+    .widget h3 { font-size: 1.1rem; }
+    .button { width: 100%; margin-top: 10px;}
+    .widget .button + .button { margin-left: 0; }
+    .goals-section .button { align-self: stretch; }
+    .coach-profile { flex-direction: column; align-items: center; text-align: center;}
+    .coach-avatar { width: 70px; height: 70px;}
+    .schedule-grid { grid-template-columns: repeat(7, minmax(80px, 1fr)); gap: 5px;}
+    .day-header { font-size: 0.8rem; padding: 6px;}
+    .workout-item { font-size: 0.8rem; padding: 6px 8px;}
+
+    /* Adjust search bar or other topbar elements if needed */
+    .topbar { flex-wrap: wrap; height: auto; padding-bottom: 5px;}
+    .search-container {
+        order: 3; /* Search below everything */
+        width: 100%;
+        margin: 5px 0 0 0; /* Adjust margin */
+        max-width: none;
+    }
+    .topbar-icons { order: 2; margin-left: auto; /* Push icons right if space allows */}
+    .user-info {
+        order: 1; /* Ensure it comes before icons if wrapping */
+        margin-left: 0; /* Remove margin when potentially wrapping */
+        gap: 5px; /* Further reduce gap */
+        /* Ensure it takes available space if needed when wrapped */
+        /* flex-grow: 1; */ /* Uncomment if needed */
+        /* justify-content: flex-end; */ /* Uncomment if needed */
+    }
+    .user-info { order: 1; }
+    .user-info .name {
+        font-size: 0.85rem; /* Even smaller name */
+        /* Optional: Hide name entirely if too cramped */
+        /* display: none; */
+    }
+    .user {
+        width: 30px; /* Smaller image */
+        height: 30px;
+        min-width: 30px; /* Match width */
+    }
+    .toggle { order: 0; flex-basis: auto; /* Reset basis if needed */ }
+}
     </style>
 
 </head>
