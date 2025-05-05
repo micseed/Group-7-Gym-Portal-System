@@ -21,6 +21,23 @@
       text-align: center;
       overflow: hidden;
     }
+
+    #loginSuccessModal .modal { max-width: 450px; }
+
+/* ... (Other modal styles) ... */
+
+#loginSuccessModal .modal-body { text-align: center; }
+#loginSuccessModal .success-icon {
+    display: block; /* Center the icon */
+    margin: 0 auto 15px auto;
+    font-size: 3.5rem; /* Adjust size */
+    color: var(--green);
+    line-height: 1;
+}
+#loginSuccessModal p {
+    font-size: 1.1rem;
+    color: var(--black1);
+}
   </style>
 </head>
 <body>
@@ -46,10 +63,26 @@
         </div>
         <p class="error-message" id="loginError"></p>
         <button type="submit" class="login-button">Login</button>
+         <!-- Error Message Area -->
+    <p id="loginError" style="color: red; margin-top: 10px; display: none;"></p>
         <p class="register-link">Don't have an account? <a href="register.html">Register here</a></p>
       </form>
     </div>
   </div>
+
+  <div class="modal-overlay" id="loginSuccessModalOverlay">
+    <div class="modal" id="loginSuccessModal">
+        <div class="modal-header">
+            <h3 class="modal-title">Login Successful!</h3>
+            <!-- No close button needed for auto-redirect -->
+        </div>
+        <div class="modal-body" style="text-align: center;">
+            <ion-icon name="checkmark-circle-outline" class="success-icon"></ion-icon>
+            <p id="loginSuccessMessage">Redirecting to your dashboard...</p>
+        </div>
+        <!-- No footer needed for auto-redirect -->
+    </div>
+
 
   <script src="assets/js/login.js"></script>
 </body>

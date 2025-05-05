@@ -601,24 +601,54 @@
     
 // Handle login button
 const loginBtn = document.querySelector(".login-btn");
-loginBtn.addEventListener("click", function() {
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-  
-  if (username && password) {
-    // Check if user is a guest
-    if (username.toLowerCase() === "guest") {
-      // Redirect to guest payment page
-      window.location.href = "guestsplan.html";
-    } else {
-      // Redirect to client dashboard for regular users
-      window.location.href = "payment.html";
-    }
-  } else {
-    alert("Please enter both username and password");
-  }
+
+// Check if the button exists before adding the listener
+if (loginBtn) {
+    loginBtn.addEventListener("click", function() {
+        const usernameInput = document.getElementById("username");
+        const passwordInput = document.getElementById("password");
+
+        // Check if input fields exist
+        if (!usernameInput || !passwordInput) {
+            console.error("Username or password input field not found!");
+            alert("Error: Login fields are missing.");
+            return; // Stop execution if fields aren't found
+        }
+
+        const username = usernameInput.value;
+        const password = passwordInput.value;
+
+        if (username && password) {
+            const lowerCaseUsername = username.toLowerCase();
+
+            // 1. Check if the username is "admin"
+            if (lowerCaseUsername === "admin") {
+                alert("Admin login detected. Proceeding to payment is not allowed for admins.");
+                // Do not redirect for admin
+            }
+            // 2. Check if user is a guest (and not admin)
+            else if (lowerCaseUsername === "guest") {
+                // Redirect to guest payment page
+                window.location.href = "guestsplan.html"; // Corrected filename from prompt
+            }
+            // 3. Handle regular users (not admin, not guest)
+            else {
+                // Redirect to client payment page for regular users
+                window.location.href = "payment.html";
+            }
+        } else {
+            alert("Please enter both username and password");
+        }
+    });
+} else {
+    console.error("Login button with class '.login-btn' not found!");
+}
+
+// Note: Removed the extra closing }); from your original code snippet.
+// Ensure this script is placed after the HTML elements it references,
+// or wrapped in a DOMContentLoaded listener.
 });
-  });
+ 
 
    // JavaScript for hamburger menu toggle
 document.addEventListener('DOMContentLoaded', function() {
